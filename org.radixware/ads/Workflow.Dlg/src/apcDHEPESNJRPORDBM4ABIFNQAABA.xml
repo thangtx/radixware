@@ -1,0 +1,852 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="apcDHEPESNJRPORDBM4ABIFNQAABA" Name="PropList" Type="3" Environment="common-client" IsDual="true">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcLMSW2DRESFCB3ANLIYN5A6Z7OY" Environment="explorer">
+        <xsc:Item>
+          <xsc:Java>import com.trolltech.qt.gui.QAbstractItemView;
+import com.trolltech.qt.gui.QFont;
+import com.trolltech.qt.gui.QHeaderView;
+import com.trolltech.qt.gui.QTableWidgetItem;
+</xsc:Java>
+        </xsc:Item>
+      </Src>
+      <Src Name="Headeradc4GDETUOW3VC6VCSM6AOYRMCWLM">
+        <xsc:Item>
+          <xsc:Java>import java.util.ArrayList;
+import java.util.HashMap;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcLHGZVP7MHVHN5HZVXFGW5J2KYE"/>
+    </Bodies>
+    <MethodGroup Id="cmgND6F7STOCBGGTBH74WYKPVBOFY" Name="Root">
+      <Group Id="cmgQF2FPFWLKBEVTCX7YOUXN6U72I" Name="Methods" Members="mth35BWPZFJRPORDBM4ABIFNQAABA mth5P7Y7GFKRPORDBM4ABIFNQAABA mthEXFGAVVLRPORDBM4ABIFNQAABA mthLXA2WPNNRPORDBM4ABIFNQAABA mthQEBPG65NRPORDBM4ABIFNQAABA mthSH5QNNVNRPORDBM4ABIFNQAABA mthWE6XP45TRPORDBM4ABIFNQAABA mthYHCKEVWGRPORDBM4ABIFNQAABA mthRESZBMGHRPORDBM4ABIFNQAABA mthP6GHDTPTRXORDBM5ABIFNQAABA mth75L6ZPSJYVD2VNNNYX2UFVFBBU"/>
+    </MethodGroup>
+    <PropertyGroup Id="cpgQATNKVKW4BE2XPO7VVUEXMHFCA" Name="Root">
+      <Group Id="cpgFSDCBXASFBBRHGMGYDVPOWMP5Q" Name="Properties" Members="prpLJ5KPVFJRPORDBM4ABIFNQAABA prpLE46W7ZBSTORDBNEABIFNQAABA"/>
+    </PropertyGroup>
+    <Properties>
+      <Property Id="prpLE46W7ZBSTORDBNEABIFNQAABA" Name="classId" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+      </Property>
+      <Property Id="prpLJ5KPVFJRPORDBM4ABIFNQAABA" Name="list" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="400" extStr="java.util.ArrayList">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </Type>
+        <InitialValue>
+          <ValAsStr>null</ValAsStr>
+        </InitialValue>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth35BWPZFJRPORDBM4ABIFNQAABA" Name="clear" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA prpLJ5KPVFJRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.clear();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth5P7Y7GFKRPORDBM4ABIFNQAABA" Name="add" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="prop" Id="mprPJUQ6SJP2JFQHBRVO7VVUNQIMQ">
+            <Type TypeId="411" Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA prpLJ5KPVFJRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.add(prop);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthEXFGAVVLRPORDBM4ABIFNQAABA" Name="get" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="index" Id="mprFGNO6XP5W5GNXGVMMNNUVKHP2U">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> prop = null;
+try
+{
+   prop = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA prpLJ5KPVFJRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.get(index);
+}
+catch(Exception e)   
+{
+}
+return prop;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthLXA2WPNNRPORDBM4ABIFNQAABA" Name="getDifference" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="oldPropertyList" Id="mprAMJHFP2LOJH43M7MFO4LKIGQRI">
+            <Type TypeId="411" Path="apcDHEPESNJRPORDBM4ABIFNQAABA"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="apcMSRMXKRASTORDBNEABIFNQAABA"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="apcMSRMXKRASTORDBNEABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> difference =
+	new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcMSRMXKRASTORDBNEABIFNQAABA mthATHEXZRASTORDBNEABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA prpLE46W7ZBSTORDBNEABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>); 
+
+//fill new values map	
+HashMap&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, String> propertyMap = new HashMap&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, String>();
+for(int i=0; i&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA mthSH5QNNVNRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(); i++)
+{
+   </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> p = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA mthEXFGAVVLRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(i);
+   propertyMap.put(p.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA mthHIYD6UJUSTORDBNFABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), p.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA mthAKEREZJUSTORDBNFABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+}   
+
+//fill old  values map
+HashMap&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, String> oldPropertyMap = new HashMap&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, String>();
+for(int i=0; i&lt;oldPropertyList.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA mthSH5QNNVNRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(); i++)
+{
+   </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> p = oldPropertyList.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA mthEXFGAVVLRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(i);
+   oldPropertyMap.put(p.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA mthHIYD6UJUSTORDBNFABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), p.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA mthAKEREZJUSTORDBNFABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+}   
+
+//check new values against old
+for(int i=0; i&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA mthSH5QNNVNRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(); i++)
+{
+   </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> p = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA mthEXFGAVVLRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(i);
+   </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> id = p.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA mthHIYD6UJUSTORDBNFABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+   String value = p.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA mthAKEREZJUSTORDBNFABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+   String oldValue = null;
+   boolean fAdd = true;
+   if(oldPropertyMap.containsKey(id))
+   {
+      oldValue = oldPropertyMap.get(id);
+      fAdd = !</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA mthIJLFWICYSTORDBNFABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(oldValue, value);
+   }                                     
+   if(fAdd)
+      difference.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcMSRMXKRASTORDBNEABIFNQAABA mthFAPH7URBSTORDBNEABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcTBIJ74EWSPORDBNDABIFNQAABA mthJCKQOOMXSPORDBNDABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(id, oldValue, value));
+}   
+
+//check old values against new
+for(int i=0; i&lt;oldPropertyList.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA mthSH5QNNVNRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(); i++)
+{
+   </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> p = oldPropertyList.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA mthEXFGAVVLRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(i);
+   </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> id = p.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA prp7FKNOCVJRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+   String oldValue = p.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA prpLXFNYHFJRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+   if(!propertyMap.containsKey(id))
+      difference.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcMSRMXKRASTORDBNEABIFNQAABA mthFAPH7URBSTORDBNEABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcTBIJ74EWSPORDBNDABIFNQAABA mthJCKQOOMXSPORDBNDABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(id, oldValue, null));      
+}   
+
+return difference;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthP6GHDTPTRXORDBM5ABIFNQAABA" Name="writeToTable" Nature="0" Environment="explorer" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="env" Id="mprH4DFMVHD55HXPGIJAC2ZYTIHZY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="table" Id="mprC5M4YBHMZJCGNITSGT6VNGRHAM">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QTableWidget"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>//table
+{
+    table.setColumnCount(2);
+    table.setRowCount(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA mthSH5QNNVNRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+    table.verticalHeader().hide();
+    
+    QFont font = table.horizontalHeader().font();
+    font.setBold(true);
+    table.horizontalHeader().setFont(font);
+            
+    ArrayList&lt;String> labels = new ArrayList&lt;String>();
+    labels.add(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsBBYPL6XTRXORDBM5ABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    labels.add(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsBFYPL6XTRXORDBM5ABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    table.setHorizontalHeaderLabels(labels);
+}   
+								 
+for(int i=0; i&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA mthSH5QNNVNRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(); i++)
+{
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> property = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA mthEXFGAVVLRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(i);
+    table.setItem(i, 0, new QTableWidgetItem(property.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA mthAFERJKEMSPORDBNCABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(env,</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA prpLE46W7ZBSTORDBNEABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)));
+    table.setItem(i, 1, new QTableWidgetItem(property.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA prpLXFNYHFJRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>));
+}
+
+table.horizontalHeader().resizeSections(QHeaderView.ResizeMode.ResizeToContents);
+
+table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows);
+table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthQEBPG65NRPORDBM4ABIFNQAABA" Name="PropList" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="classId" Id="mprBG2CXBWZONBMXEZQGI63U4OK2E">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA prpLJ5KPVFJRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = new ArrayList&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA prpLE46W7ZBSTORDBNEABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = classId;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthRESZBMGHRPORDBM4ABIFNQAABA" Name="toString" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="env" Id="mprNEFYWKHTVFHJZDLB4DQVF4R74I">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>String s = "{";
+
+for(int i=0; i&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA prpLJ5KPVFJRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.size(); i++)
+{
+   if(i>0)
+      s += "; ";
+   s += </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA prpLJ5KPVFJRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.get(i).</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA mthWQGFE5OHRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(env,</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA prpLE46W7ZBSTORDBNEABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}
+
+s += "}";
+
+return s;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthSH5QNNVNRPORDBM4ABIFNQAABA" Name="size" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <ReturnType TypeId="401" extStr="int"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA prpLJ5KPVFJRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.size();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthWE6XP45TRPORDBM4ABIFNQAABA" Name="PropList" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="env" Id="mprNUBZJ3M4ONCBVKPDFG4WB7J4BU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="classId" Id="mprYVN3GVRQG5FIVLU5OPFM5OHNT4">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="xmlString" Id="mprAEORCX2Y3NGD5JN6PPH3RNSFOU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA prpLJ5KPVFJRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = new ArrayList&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA prpLE46W7ZBSTORDBNEABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = classId;
+try
+{
+	</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6JHHAUMDPXORDBMMABIFNQAABA" extStr="PropertyList"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> propertyList =
+		</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6JHHAUMDPXORDBMMABIFNQAABA" extStr="PropertyList.Factory"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.parse(xmlString);
+
+	if(propertyList!=null)
+	{
+		if(!propertyList.getItemList().isEmpty())
+		{
+			</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcS24WA4C5SNAKJMW6G6CVRNWCSY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> classDef =
+				env.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthRFQCEXJDNJDINHW32QFZAVEBV4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getClassPresentationDef(classId);
+
+			for(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6JHHAUMDPXORDBMMABIFNQAABA" extStr="PropertyList.Item"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> item : propertyList.getItemList())
+			{                                                 
+				</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> propId = item.getId();
+				
+				</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcVVXBPMW6ERC43P3LVZRXM66XZE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> propDef = classDef.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcS24WA4C5SNAKJMW6G6CVRNWCSY mthPDHRSZSCNBE7JOSZKAZ4SRIWBY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(propId);
+
+				String propValue = null;
+				{
+					</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> valEntityId = null;
+					if(propDef instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcMRMDDQUF2ZHNVD3M3UX2GC5FXQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)
+						valEntityId = ((</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcMRMDDQUF2ZHNVD3M3UX2GC5FXQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)propDef).</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMRMDDQUF2ZHNVD3M3UX2GC5FXQ mthSHH22MQGQNEE7MOQTYVWPQGW5Y" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+
+					Object obj = org.radixware.kernel.common.client.utils.ValueConverter.easPropXmlVal2ObjVal(
+						
+							item, //property
+							propDef.getType(), //valType                                                        
+							valEntityId
+						);
+
+					propValue = obj!=null ? obj.toString() : </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsKFMTCMVURPORDBM4ABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+					
+					</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA mth5P7Y7GFKRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA mth4VW33W5KRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(propId, propValue));
+				}
+			}
+		}
+	}	
+}
+catch(Exception e)		
+{
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYHCKEVWGRPORDBM4ABIFNQAABA" Name="isEmpty" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA prpLJ5KPVFJRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.isEmpty();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth75L6ZPSJYVD2VNNNYX2UFVFBBU" Name="writeToTable" Nature="0" Environment="web" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="env" Id="mprPNADLKDNS5HRLALNSWAMUYLJME">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="table" Id="mpr2OM5DDSY4NEEJOKGWSM3IZHV5U">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.Grid"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>//table
+{
+    table.addColumn(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsJLDBRY75NNF4VGRJ3V6GZMOHUA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+
+    table.addColumn(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsOPTDSYDLZNCHNLKLBAP4E3KTRM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}
+
+for (int i = 0; i &lt; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA mthSH5QNNVNRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(); i++) {
+    org.radixware.wps.rwt.Grid.Row row = table.addRow();
+
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> property = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA mthEXFGAVVLRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(i);
+
+    row.getCell(0).Value = property.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA mthAFERJKEMSPORDBNCABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(env,</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA prpLE46W7ZBSTORDBNEABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    row.getCell(1).Value = property.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA prpLXFNYHFJRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

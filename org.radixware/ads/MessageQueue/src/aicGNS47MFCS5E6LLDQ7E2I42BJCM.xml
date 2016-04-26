@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicGNS47MFCS5E6LLDQ7E2I42BJCM" Name="IMqQueueProducer" Type="5" Environment="common">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.server.units.mq.interfaces.IMqQueueProducer"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderaicGNS47MFCS5E6LLDQ7E2I42BJCM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaicGNS47MFCS5E6LLDQ7E2I42BJCM"/>
+    </Bodies>
+    <MethodGroup Id="cmg5LFMYGG5HRC3LKL6A5QIYKLPGQ" Name="Root"/>
+    <PropertyGroup Id="cpgGQF3ZOJFQZFONENVYIY6HMPZSE" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth2A7YYGSVUJD3ZOE2VXLBURYUVY" Name="send" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="send(Lorg.radixware.schemas.messagequeue.MqMessageMeta;Lorg.radixware.schemas.messagequeue.MqMessageBody;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprPKZZ5CLIAJAMJIY3G4RBA5QJMU">
+            <Type TypeId="400" extStr="org.radixware.schemas.messagequeue.MqMessageMeta"/>
+          </Parameter>
+          <Parameter Name="arg1" Id="mprYYG7LEQCC5EN7ESXFCE6LAEEAM">
+            <Type TypeId="400" extStr="org.radixware.schemas.messagequeue.MqMessageBody"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.io.IOException"/>
+        </ThrownExceptions>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

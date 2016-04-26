@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aic4F62VGIXTJD63LWEIX3FOSIUZI" Name="IEditingHistory" Type="5" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.types.IEditingHistory"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcGGD3WBDNLFFFJBFV4G5I7QV264"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcIRHJRAWGXZFDTHZX4FKHFBSFTM"/>
+    </Bodies>
+    <MethodGroup Id="cmgP5B3NWUKZVE27NSILQ6B2ZKKAU" Name="Root"/>
+    <PropertyGroup Id="cpgA5KFC3QA6RHBPGBNY7PM3KFSRY" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth6FKMUFZFN5EOTJPCSLSJDRREU4" Name="isEmpty" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isEmpty()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthQJGYATVZYNACJGDSJNJBG4WOEQ" Name="getSize" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getSize()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthBF32FBRKKNEQDOVPCWNI3V3PJM" Name="getEntry" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getEntry(I)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="rowIndex" Id="mprW5DDM3Y4JVE3NAWY5Y4F7ZIV5E">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthUP575F4UDBBMXNEQXYHX43QNRA" Name="getEntries" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getEntries()Ljava.util.List&lt;Ljava.lang.String;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="21"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthUI675IX23VCEFEATI7UX3G5ZYM" Name="clear" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="clear()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthL7EWRCDHZND2XH5OICAC2M4NXI" Name="flush" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="flush()V"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.client.types.EditingHistoryException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthC66H2QEE6FHNHFQGDJNICZKMUU" Name="addEntry" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="addEntry(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="entry" Id="mprIYP6EK24IZHNVK6VVHKE2PJ7VI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

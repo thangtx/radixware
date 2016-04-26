@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcLDTCUGRNQJD4VIR73X2RCRLK4Q" Name="SchemeRetriever" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcSC7W2RHN75BTHKBIDTDPE443MQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcDIAX7TR5ERDOHHB7YYEBY7GWIE">
+        <xsc:Item>
+          <xsc:Java>private final </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> userSession;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmgG3PPFCE645BCVAXIM7C3NLXKHA" Name="Root"/>
+    <PropertyGroup Id="cpgE5QHPWOAAFATFD4PSWUN3CWDHE" Name="Root"/>
+    <Properties>
+      <Property Id="prdDU43ZL3OCFAEXBKL7E6TK2EUVQ" Name="namespace" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="221"/>
+      </Property>
+      <Property Id="prdOZHZ7SOJNZDYHEWYSHJDQXLYYM" Name="scheme" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="221"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth7KBWZR6FGNHKJHJFLFESUMMN3I" Name="getSchema" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="namespace" Id="mprHZ77NJVQIVF7TCDZIILOXRERGM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>for (int i=0; i&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLDTCUGRNQJD4VIR73X2RCRLK4Q prdDU43ZL3OCFAEXBKL7E6TK2EUVQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.size(); i++) {
+    if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLDTCUGRNQJD4VIR73X2RCRLK4Q prdDU43ZL3OCFAEXBKL7E6TK2EUVQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.get(i).equals(namespace))
+        return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLDTCUGRNQJD4VIR73X2RCRLK4Q prdOZHZ7SOJNZDYHEWYSHJDQXLYYM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.get(i);
+}
+org.radixware.kernel.common.client.env.DefManager defManager = userSession.DefManager;
+org.radixware.kernel.common.client.env.ReleaseRepository repository = defManager.Repository;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="400" extStr="java.io.InputStream"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> is = repository.getInputStreamForXmlScheme(namespace);
+byte[] res = null;
+try {
+    res = new byte[is.available()];
+    is.read(res);
+} 
+catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="400" extStr="java.io.IOException"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {   
+    
+}
+String r = new String(res);
+return r;
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthBCUVW3JKGRBRDLQODWPN433UDA" Name="SchemeRetriever" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprXN75VNXUGJGQPCN7OVVK5RDSJY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this.userSession = userSession;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLDTCUGRNQJD4VIR73X2RCRLK4Q prdDU43ZL3OCFAEXBKL7E6TK2EUVQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLDTCUGRNQJD4VIR73X2RCRLK4Q prdOZHZ7SOJNZDYHEWYSHJDQXLYYM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthIXOGAV6BWJETTEVDB5HGE72ROY" Name="Factory" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprRT7WE434G5COZMXEU5ZA3KEUTY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adcLDTCUGRNQJD4VIR73X2RCRLK4Q"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLDTCUGRNQJD4VIR73X2RCRLK4Q mthBCUVW3JKGRBRDLQODWPN433UDA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(userSession);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthT6WSZFOV3NARPGUZZUIMEXAJCI" Name="addScheme" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="nameSpace" Id="mpr2HDOD5UK6JHDFLPUP4AQCATAQU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="scheme" Id="mprMKGF72NKE5FOTHQ76J6P2GF64A">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLDTCUGRNQJD4VIR73X2RCRLK4Q prdDU43ZL3OCFAEXBKL7E6TK2EUVQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.add(nameSpace);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLDTCUGRNQJD4VIR73X2RCRLK4Q prdOZHZ7SOJNZDYHEWYSHJDQXLYYM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.add(scheme);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Implements>
+      <Interface TypeId="411" Path="aicCOZKKYOEPZFINFFYLNRIVUPZMQ"/>
+    </Implements>
+  </AdsClassDefinition>
+</AdsDefinition>

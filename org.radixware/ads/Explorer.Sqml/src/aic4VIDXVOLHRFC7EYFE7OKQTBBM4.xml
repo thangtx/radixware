@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aic4VIDXVOLHRFC7EYFE7OKQTBBM4" Name="ISqmlPackageDef" Type="5" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.meta.sqml.ISqmlPackageDef"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcA6VUU6E2BVGODDWZ4UJHY5SANU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcC7XRGXURXFCLDGXT65QG2ATHTE"/>
+    </Bodies>
+    <MethodGroup Id="cmgKMD7WIPVXJDJ3ABRVLVHWWO27I" Name="Root"/>
+    <PropertyGroup Id="cpg6JCYONPFVNB2VGO6EK4UU7CZ2U" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthVVIVJGCPCZHC7H5YM6ZGGH4RF4" Name="getFunctionById" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getFunctionById(Lorg.radixware.kernel.common.types.Id;)Lorg.radixware.kernel.common.client.meta.sqml.ISqmlFunctionDef;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="functionId" Id="mprXDWWUS5Q6ZDKTJXJVVEIVOY7N4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlFunctionDef"/>
+      </Method>
+      <Method Id="mthJSUCU45YBJGLDFNL5VEQ2I2JXU" Name="getFunctionsCount" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getFunctionsCount()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthAXZBIQUB7FF5RNBTOZSUT5EOEM" Name="getAllFunctions" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getAllFunctions()Ljava.util.List&lt;Lorg.radixware.kernel.common.client.meta.sqml.ISqmlFunctionDef;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlFunctionDef"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthG7ORU2BY5FDZRBZZUTULML43WA" Name="getFunction" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getFunction(I)Lorg.radixware.kernel.common.client.meta.sqml.ISqmlFunctionDef;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mprEQ4LFVJRVZGAJA66UKGXOWP4LY">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlFunctionDef"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

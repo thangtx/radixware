@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcCU4SVHQWURBPXHHC5DKCY62MEI" Name="Framer" DescriptionId="mls7GO3K5L75NGKDOG2H3AQI7IFTE" Type="3" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.utils.Framer"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcYFD6LZXWAJEOZIWJLHDTGI2EIQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcXTEOLS2A7BASBB7O33UKTSCT3Q"/>
+    </Bodies>
+    <MethodGroup Id="cmgKK4VLESW3JBVDGMBCDRRIGF6OI" Name="Root"/>
+    <PropertyGroup Id="cpgW4F6AKMVQNCFZA2VELDQSAH3GI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthA7WKWTC2YFBADMUZY7OF2NWIKE" Name="Framer" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.io.InputStream;Ljava.io.OutputStream;Ljava.lang.String;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="inp" Id="mpr6D2VQXD7U5BWLOWHU4MIIWXYGA">
+            <Type TypeId="400" extStr="java.io.InputStream"/>
+          </Parameter>
+          <Parameter Name="out" Id="mprRPJFAQA77BGSBKHTLIHHL2PWTI">
+            <Type TypeId="400" extStr="java.io.OutputStream"/>
+          </Parameter>
+          <Parameter Name="inFormat" Id="mpr7YJ6FTU7NVGNTBLLELKME4TCSY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="outFormat" Id="mprOWDJUT7RMZAVLJUNG6KVTKUCFE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthNLR2ZEN4TBG6VCLKODTM2LBX7I" Name="recvFrame" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="recvFrame(JLjava.util.Map&lt;Ljava.lang.String;Ljava.lang.String;>;)[B"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="timeoutMillis" Id="mprHAYTVNPLPFBBFJSI26NHTHJKE4">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="headerAttrs" Id="mpr6LIZAIBXCNECBEDBSZ5OOPILUU">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="byte" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.io.IOException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.utils.InvalidDataException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthWLE4DICBFRAR7KW57LDOYDLC6M" Name="sendFrame" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="sendFrame([BLjava.util.Map&lt;Ljava.lang.String;Ljava.lang.String;>;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="body" Id="mpr7JRZK425QJFXRKROHZC3V2ZN5Y">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="headerAttrs" Id="mprGNQIJ6EJFZB5HPM3EZQ5P5HECI">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.io.IOException"/>
+        </ThrownExceptions>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

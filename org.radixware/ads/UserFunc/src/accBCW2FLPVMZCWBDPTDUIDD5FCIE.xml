@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="accBCW2FLPVMZCWBDPTDUIDD5FCIE" Name="GetUserFuncLastUpdateTimeCursor" Type="4">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderaccBCW2FLPVMZCWBDPTDUIDD5FCIE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaccBCW2FLPVMZCWBDPTDUIDD5FCIE"/>
+    </Bodies>
+    <MethodGroup Id="cmg3SCBVES7LRGFRGJU44GEWV27RY" Name="Root"/>
+    <PropertyGroup Id="cpgD2BFQNEMEVHVVKLMLDN6SBE64A" Name="Root"/>
+    <Properties>
+      <Property Id="prfUN2G5T7ZABFHBJX4RKKRHOT3WE" Name="lastUpdateTime" Nature="3" IsConst="true" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="12"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prmYICCFERUQ5DZ7PH2DRQIUHSAEI" Name="pUpDefId" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmJTQN36LSCRG43P2RUF6EVXVUQQ" Name="pUpOwnerEntityId" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmD5OUE7Z4KBDD7OKWPGKHUVE47M" Name="pUpOwnerPid" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="open" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="pUpDefId" Id="mprYICCFERUQ5DZ7PH2DRQIUHSAEI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="pUpOwnerEntityId" Id="mprJTQN36LSCRG43P2RUF6EVXVUQQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="pUpOwnerPid" Id="mprD5OUE7Z4KBDD7OKWPGKHUVE47M">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="accBCW2FLPVMZCWBDPTDUIDD5FCIE"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="true">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>select </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblJ6SOXKD3ZHOBDCMTAALOMT5GDM" PropId="colYF2NT733ZHOBDCMTAALOMT5GDM" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accBCW2FLPVMZCWBDPTDUIDD5FCIE" PropId="prfUN2G5T7ZABFHBJX4RKKRHOT3WE" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+where
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblJ6SOXKD3ZHOBDCMTAALOMT5GDM" PropId="col7QMAJND3ZHOBDCMTAALOMT5GDM" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmYICCFERUQ5DZ7PH2DRQIUHSAEI"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+    and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblJ6SOXKD3ZHOBDCMTAALOMT5GDM" PropId="col7UMAJND3ZHOBDCMTAALOMT5GDM" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmJTQN36LSCRG43P2RUF6EVXVUQQ"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+    and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblJ6SOXKD3ZHOBDCMTAALOMT5GDM" PropId="col7YMAJND3ZHOBDCMTAALOMT5GDM" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmD5OUE7Z4KBDD7OKWPGKHUVE47M"/>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="411" Path="pdcCursor____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

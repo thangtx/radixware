@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclJFUUR32PQ5BTLNMJVOAKUJZOUA" Name="MetricType.AppMetric.Stat" Type="2" ClientEnvironment="explorer">
+    <AccessRules IsAbstract="true"/>
+    <Headers>
+      <Src Name="HeaderadcEZHD3LTW35CPNACPAYE4KH4ALQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcJY6REAXYAREPBGTVOUE3FD64NI"/>
+    </Bodies>
+    <MethodGroup Id="cmgP26IWRHSIZFRDHTZYIBMXCVVOY" Name="Root"/>
+    <PropertyGroup Id="cpgROTV5ZTFMND75HZIYZXF23S2UE" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthBS7ODJBINFEE3ESFD3EK7RWYPM" Name="calcValue" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true"/>
+        <Parameters>
+          <Parameter Name="lastControlTime" Id="mprANFOQBZATNFZXKKXWMTOW3M3AE">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="currentControlTime" Id="mprBDAZPNEP6RECTKPW4H4ZW2XBYI">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adcRF4NNLJCFRETZC4NEP3XLVK5BI"/>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthIT2CW4S27RB3XNEN22I7VDSY74" Name="getValueType" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <ReturnType TypeId="21" Path="acsJW5X3HYYBFFT3LECMFTSPIZYQE"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsJW5X3HYYBFFT3LECMFTSPIZYQE aciDVG6HS76WNHNBKDPWNNTRSCMSU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM"/>
+    <Presentations>
+      <EditorPresentations>
+        <EditorPresentation Id="epr7TKZ54GYXVBDXNPQ5GVXVVQSNM" Name="General" BasePresentationId="eprSE464PGOZVAYPG5C7DZYJQ4P3E" InheritanceMask="40112" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprSE464PGOZVAYPG5C7DZYJQ4P3E" ClientEnvironment="explorer">
+          <AccessRules IsPublished="false"/>
+          <ChildExplorerItems/>
+          <EditorPages>
+            <Page Id="epgBLOETUBE3RCINP7GTEZFWRN2KA" Name="General" TitleId="mlsJS4OI6ZYLNAVPAFZRYXO6P3TXA" Type="1">
+              <Properties>
+                <Property Id="colKK3G7VOVNBESRPNV7SEYWFKLDQ" Row="2" Column="0"/>
+                <Property Id="colP5GRYC4WIRFDVCOV3AYNBAPYY4" Row="5" Column="0"/>
+                <Property Id="colXHO3TMONUZFWVLGCBFATASRCZ4" Row="6" Column="0"/>
+                <Property Id="colSYQ72HEL2RD3VFYFLWVG6GFZEA" Row="7" Column="0"/>
+                <Property Id="col2RJUTHZLBFGDPHT5NR6S6APSYM" Row="8" Column="0"/>
+                <Property Id="colI5HMBXQKAZBVTJSJ5YVNSGCR5Y" Row="9" Column="0"/>
+                <Property Id="colNWD3JCD37ZDAVKKCLTUEPMO3TQ" Row="10" Column="0"/>
+                <Property Id="col4YKCVXTHZVETTGSLJZFJB6PPEY" Row="11" Column="0"/>
+                <Property Id="col773ODXVAM5DIZIORVOBGIBYK7Y" Row="3" Column="0"/>
+                <Property Id="colUH6LIE6A55C5BEX56Y7GPPZMHQ" Row="14" Column="0"/>
+                <Property Id="colNS4TO66OSNH3DCZS64EDNL7VDU" Row="0" Column="0"/>
+                <Property Id="colQKG6VKSKMBFG7G2WMCOW2DCD2A" Row="4" Column="0"/>
+                <Property Id="prdJHAQ5ULMWBAVTHGBDBL34ZHGME" Row="1" Column="0"/>
+                <Property Id="colJERRR2BH2ZD2XGDYMYUS67KOKY" Row="13" Column="0"/>
+                <Property Id="colPSRIBABNSJD45B3FB3UDKHACIM" Row="12" Column="0"/>
+              </Properties>
+            </Page>
+            <PageOrder>
+              <Item PageId="epgBLOETUBE3RCINP7GTEZFWRN2KA" Level="1"/>
+              <Item PageId="epg6O4DDW7XZRHEHF7JGHBYCEPBEQ" Level="1"/>
+            </PageOrder>
+          </EditorPages>
+          <ObjectTitleFormat Id="etfUAZO4IAYORCPZE7OIDYEHZ4UM4"/>
+        </EditorPresentation>
+      </EditorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="aclMXE64MHT2VHC3K32SQMOHDM6F4"/>
+  </AdsClassDefinition>
+</AdsDefinition>

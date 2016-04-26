@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" xmlns:edit="http://schemas.radixware.org/editmask.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="acl2YFDJVYUURDWDGPWOHWCY6N5IA" Name="CalendarItem.Relative.DayOfQuarter" Type="2">
+    <AccessRules Access="4" IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderadcEO7T75QFD5GLNHHF3ECOTKUFZI">
+        <xsc:Item>
+          <xsc:Java>import java.util.Calendar;
+import java.util.GregorianCalendar;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcWHNJ4HG7OJHRHCXDCKUFGEVTNQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgSSCRP4POU5CPRFM6C55XSVACU4" Name="Root">
+      <Group Id="cmgUUD4G44VHJAEDCVTWEPGGPJKDU" Name="Ovr" Members="mthVW4XVUSPYFHDVM34UMIJ6K4SAY mthYCF66GWYBVDJ7AJAX3Z7FSUYC4 mthJDBXBNYHK5FCNIPHN64G6QKXZA"/>
+      <Group Id="cmgJIIRKKQVG5GQ7MSCAGJH2N5RG4" Name="Quarter" Members="mthQSNZNV25MJEHBKQQ5EFC74XJGQ mthSNIKUWYUUJFSDANMFIVLKB67CQ mthGDF7KFYM7FCLRKVSDO4XVF2DWE mthLQUXNQBOLRGSPLV7XBN5XTQUG4"/>
+    </MethodGroup>
+    <PropertyGroup Id="cpg6QFOZJGCP5DNJFIQ7FR6WTGFN4" Name="Root"/>
+    <Properties>
+      <Property Id="colDKQ7RUH5YZGIZMYREMQUYMV4OM" Name="offsetDir" Nature="0" IsConst="false" IsOverride="true">
+        <AccessRules/>
+        <Type TypeId="2" Path="acsDVW367ITGZA5RFDEOKSNUSKAFI"/>
+        <Presentation InheritanceMask="1">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colYTXRDPZ6I3OBDCIOAALOMT5GDM" Name="offset" Nature="0" IsConst="false" IsOverride="true">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="1">
+          <Editing NotNull="true" IsDuplicatesEnabled="true">
+            <EditMask>
+              <edit:Int MaxValue="31" MinLength="0" MinValue="1" NumberBase="10" PadChar="0" StepSize="1"/>
+            </EditMask>
+          </Editing>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthJDBXBNYHK5FCNIPHN64G6QKXZA" Name="isIncluded" Nature="0" IsOverride="true">
+        <AccessRules Access="4" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="startDateCalendar" Id="mprE3FEU6LA4VFRPDNC5IXHXZ54WI">
+            <Type TypeId="400" extStr="java.util.Calendar"/>
+          </Parameter>
+          <Parameter Name="dateCalendar" Id="mprB4TXZYM5AFHT5GGIORGY6FEQYE">
+            <Type TypeId="400" extStr="java.util.Calendar"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl2YFDJVYUURDWDGPWOHWCY6N5IA mthX2DV6VS53RFDFJQLL45YVLVNIY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(startDateCalendar, dateCalendar) &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colFDW6KVZ6I3OBDCIOAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsVA7VVTUNEBFXLNKSXHQ4A75NVY aci4OZPPEOE3ZDENMBBT6543IFBSA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthAIUKQYDTZVBBJCLDCOBFRZITYE" Name="calcNearest" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="startDateCalendar" Id="mprRBTL4KIZHRCKFJ4I6X4QRJ4ULU">
+            <Type TypeId="400" extStr="java.util.Calendar"/>
+          </Parameter>
+          <Parameter Name="dateCalendar" Id="mprDGLLAHFJ4VC2NMQE53EZA47CXM">
+            <Type TypeId="400" extStr="java.util.Calendar"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.Calendar"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final int startDay = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl2YFDJVYUURDWDGPWOHWCY6N5IA mthQSNZNV25MJEHBKQQ5EFC74XJGQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(startDateCalendar);
+
+Calendar cal = new GregorianCalendar();
+cal.setTime(dateCalendar.getTime());
+final int curDayOfQuarter = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl2YFDJVYUURDWDGPWOHWCY6N5IA mthQSNZNV25MJEHBKQQ5EFC74XJGQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(cal);
+
+//boolean debug = cal.get(Calendar.DAY_OF_MONTH) == 3;
+//if (debug)
+//    System.out.println("\tstart Day: " + startDay);
+//if (debug)
+//    System.out.println("\tcur Day: " + curDayOfQuater);
+
+if(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colDKQ7RUH5YZGIZMYREMQUYMV4OM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsDVW367ITGZA5RFDEOKSNUSKAFI aciNESOBQSS5BCZRFUR7I57ZTHY5M" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)
+{
+	if (curDayOfQuarter >= startDay)
+                cal = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl2YFDJVYUURDWDGPWOHWCY6N5IA mthSNIKUWYUUJFSDANMFIVLKB67CQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(cal, startDay);
+	else
+	{
+                cal = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl2YFDJVYUURDWDGPWOHWCY6N5IA mthGDF7KFYM7FCLRKVSDO4XVF2DWE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(cal);
+                cal = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl2YFDJVYUURDWDGPWOHWCY6N5IA mthSNIKUWYUUJFSDANMFIVLKB67CQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(cal, startDay);
+/*                
+		cal.add(Calendar.MONTH, -1);
+		if (cal.getActualMaximum(Calendar.DAY_OF_MONTH) &lt; startDay)
+		{
+			cal.set(Calendar.DAY_OF_MONTH, 1);
+			cal.add(Calendar.MONTH, 1);
+		}
+		else
+			cal.set(Calendar.DAY_OF_MONTH, startDay);
+*/
+	}
+}
+else
+{
+	if (curDayOfQuarter >= startDay)
+	{
+                cal = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl2YFDJVYUURDWDGPWOHWCY6N5IA mthLQUXNQBOLRGSPLV7XBN5XTQUG4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(cal);
+                cal = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl2YFDJVYUURDWDGPWOHWCY6N5IA mthSNIKUWYUUJFSDANMFIVLKB67CQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(cal, startDay);
+	}
+	else
+	{
+                cal = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl2YFDJVYUURDWDGPWOHWCY6N5IA mthSNIKUWYUUJFSDANMFIVLKB67CQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(cal, startDay);
+/*                
+		if (cal.getActualMaximum(Calendar.DAY_OF_MONTH) &lt; startDay)
+		{
+			cal.set(Calendar.DAY_OF_MONTH, 1);
+			cal.add(Calendar.MONTH, 1);
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+		}
+		else
+		{
+			cal.set(Calendar.DAY_OF_MONTH, startDay);
+		}
+*/
+	}
+
+//	if (cal.get(Calendar.DAY_OF_MONTH) == startDay) {
+//		cal.add(Calendar.DAY_OF_MONTH, -1);
+//	}
+
+}
+return cal;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthOYESDQBEI7OBDCIPAALOMT5GDM" Name="check" Nature="0" IsOverride="true">
+        <AccessRules Access="4" IsPublished="false"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclVF3WHTJTZFFGBB3ZT426H6KZ24 mthOYESDQBEI7OBDCIPAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM mthKQ6M3EO7LFD4LFMIEWKYBICRRI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthX2DV6VS53RFDFJQLL45YVLVNIY" Name="dayMatches" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="startDateCalendar" Id="mprCCBEL4XW4BDFVECUVOYXXKBBII">
+            <Type TypeId="400" extStr="java.util.Calendar"/>
+          </Parameter>
+          <Parameter Name="dateCalendar" Id="mprAOOAKUUTIVAMVKXNE3XBG4XZOI">
+            <Type TypeId="400" extStr="java.util.Calendar"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>//java.text.DateFormat dateFormat = java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
+
+Calendar cal = new GregorianCalendar();
+cal.setTime(dateCalendar.getTime());
+int offset = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colYTXRDPZ6I3OBDCIOAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.intValue() - 1;
+
+//boolean debug = cal.get(Calendar.DAY_OF_MONTH) == 3;
+//if (debug)
+//    System.out.println("dayMatches\t date: " + dateFormat.format(dateCalendar.getTime()));
+
+Calendar nearestStartDate = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl2YFDJVYUURDWDGPWOHWCY6N5IA mthAIUKQYDTZVBBJCLDCOBFRZITYE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(startDateCalendar, dateCalendar);
+//if (debug)
+//    System.out.println("\tnearest start date: " + dateFormat.format(nearestStartDate.getTime()));
+cal.setTime(nearestStartDate.getTime());
+
+if(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colDKQ7RUH5YZGIZMYREMQUYMV4OM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsDVW367ITGZA5RFDEOKSNUSKAFI aciNESOBQSS5BCZRFUR7I57ZTHY5M" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)
+{
+	cal.add(Calendar.DAY_OF_YEAR, offset);
+/*        
+	Calendar anotherStartDate = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl2YFDJVYUURDWDGPWOHWCY6N5IA mthAIUKQYDTZVBBJCLDCOBFRZITYE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(startDateCalendar, cal);
+	if(!nearestStartDate.equals(anotherStartDate))
+	{
+		anotherStartDate.add(Calendar.DAY_OF_YEAR, -1);
+		cal = anotherStartDate;
+	}
+*/
+}
+else
+{
+	cal.add(Calendar.DAY_OF_YEAR, -offset);
+/*        
+	Calendar anotherStartDate = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl2YFDJVYUURDWDGPWOHWCY6N5IA mthAIUKQYDTZVBBJCLDCOBFRZITYE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(startDateCalendar, cal);
+	if(!nearestStartDate.equals(anotherStartDate))
+		cal = anotherStartDate;
+*/
+}
+
+//if (debug)
+//    System.out.println("\tresult: " + dateFormat.format(cal.getTime()));
+return cal.equals(dateCalendar);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthVW4XVUSPYFHDVM34UMIJ6K4SAY" Name="getValueTitle" Nature="0" IsOverride="true">
+        <AccessRules Access="4" IsPublished="false"/>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colYTXRDPZ6I3OBDCIOAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colDKQ7RUH5YZGIZMYREMQUYMV4OM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null)
+	? </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colYTXRDPZ6I3OBDCIOAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + " " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colDKQ7RUH5YZGIZMYREMQUYMV4OM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getTitle().toLowerCase()
+	: null;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYCF66GWYBVDJ7AJAX3Z7FSUYC4" Name="isExcluded" Nature="0" IsOverride="true">
+        <AccessRules Access="4" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="startDateCalendar" Id="mprAB45JU2RCREB7MN5WYR2ZCW5HI">
+            <Type TypeId="400" extStr="java.util.Calendar"/>
+          </Parameter>
+          <Parameter Name="dateCalendar" Id="mprO6YPNVTFWRCYHED7GBDV6SRBAA">
+            <Type TypeId="400" extStr="java.util.Calendar"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl2YFDJVYUURDWDGPWOHWCY6N5IA mthX2DV6VS53RFDFJQLL45YVLVNIY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(startDateCalendar, dateCalendar) &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colFDW6KVZ6I3OBDCIOAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsVA7VVTUNEBFXLNKSXHQ4A75NVY aci4OZPPEOE3ZDENMBBT6543IFBSA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthQSNZNV25MJEHBKQQ5EFC74XJGQ" Name="dayOfQuarter" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="dateCalendar" Id="mprOHFL7D4QEBGPLPPWSERAT2DNFM">
+            <Type TypeId="400" extStr="java.util.Calendar"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>Calendar cal = new GregorianCalendar();
+cal.setTime(dateCalendar.getTime());
+
+//final int month = dateCalendar.get(Calendar.MONTH);
+
+//final int quater = month / 3;
+//int monthInQuater = dateCalendar.get(Calendar.MONTH) % 3;
+//boolean debug = cal.get(Calendar.DAY_OF_MONTH) == 3;
+//if (debug)
+//    System.out.println("dayMatches\t date: " + dateFormat.format(dateCalendar.getTime()));
+
+int dayOfQuarter = cal.get(Calendar.DAY_OF_MONTH);
+int monthInQuater = cal.get(Calendar.MONTH) % 3;
+while (--monthInQuater >= 0) {
+    cal.add(Calendar.MONTH, -1);
+    dayOfQuarter += cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+}
+
+return dayOfQuarter;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthSNIKUWYUUJFSDANMFIVLKB67CQ" Name="setDayOfQuarter" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="dateCalendar" Id="mpr227BMQUQRNDVVPZ6Y3B6ZN3BOE">
+            <Type TypeId="400" extStr="java.util.Calendar"/>
+          </Parameter>
+          <Parameter Name="dayOfQuarter" Id="mpr7WUHC6PGTVH25O3FBDDCKVKPRI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.Calendar"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>Calendar cal = new GregorianCalendar();
+cal.setTime(dateCalendar.getTime());
+
+final int oldDayOfQuarter = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl2YFDJVYUURDWDGPWOHWCY6N5IA mthQSNZNV25MJEHBKQQ5EFC74XJGQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(dateCalendar);
+cal.add(Calendar.DAY_OF_YEAR, dayOfQuarter - oldDayOfQuarter);
+return cal;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthGDF7KFYM7FCLRKVSDO4XVF2DWE" Name="prevQuarter" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="dateCalendar" Id="mprRUG37ZP5EVGP7DOF35FUA233BY">
+            <Type TypeId="400" extStr="java.util.Calendar"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.Calendar"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>Calendar cal = new GregorianCalendar();
+cal.setTime(dateCalendar.getTime());
+
+cal.add(Calendar.MONTH, -3);
+return cal;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthLQUXNQBOLRGSPLV7XBN5XTQUG4" Name="nextQuarter" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="dateCalendar" Id="mprVXKNWCDJEBHLRADI5TFX74ZPIM">
+            <Type TypeId="400" extStr="java.util.Calendar"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.Calendar"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>Calendar cal = new GregorianCalendar();
+cal.setTime(dateCalendar.getTime());
+
+cal.add(Calendar.MONTH, +3);
+return cal;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblCRD53OZ5I3OBDCIOAALOMT5GDM"/>
+    <Presentations ObjectTitleId="mls7MTD7UJ275FHPOXNDRC74GONGQ">
+      <ClassCatalogs>
+        <ClassCatalog Id="eccX6JDRFJHQNHXVMN4QMV6A3RDUU" Name="Relative">
+          <AccessRules Access="2" IsPublished="false"/>
+          <ClassRef Order="125.0"/>
+        </ClassCatalog>
+      </ClassCatalogs>
+      <EditorPresentations>
+        <EditorPresentation Id="eprAHSO4ETNURDWXIHZIOKHXZYPJQ" Name="General" BasePresentationId="epr62PPCZHVI3OBDCIPAALOMT5GDM" InheritanceMask="3216" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="epr62PPCZHVI3OBDCIPAALOMT5GDM">
+          <AccessRules Access="2" IsPublished="false"/>
+          <ChildExplorerItems/>
+          <EditorPages>
+            <Page Id="epgH5EFQA6ULFE5FJPHY7UZMFQVHE" Name="Main" Type="1">
+              <Properties>
+                <Property Id="colKMHFBYXXI3OBDCIPAALOMT5GDM" Row="0" Column="0"/>
+                <Property Id="colOCF4R7J5I3OBDCIOAALOMT5GDM" Row="1" Column="0"/>
+                <Property Id="colFDW6KVZ6I3OBDCIOAALOMT5GDM" Row="2" Column="0"/>
+                <Property Id="prd66PK2BGT2BGJJJH4XNKK3RGSV4" Row="3" Column="0"/>
+                <Property Id="colYTXRDPZ6I3OBDCIOAALOMT5GDM" Row="4" Column="0"/>
+                <Property Id="colDKQ7RUH5YZGIZMYREMQUYMV4OM" Row="5" Column="0"/>
+              </Properties>
+            </Page>
+            <PageOrder>
+              <Item PageId="epgH5EFQA6ULFE5FJPHY7UZMFQVHE" Level="1"/>
+            </PageOrder>
+          </EditorPages>
+          <ObjectTitleFormat Id="etf3MQNK6PMPFFJJHG6QZ4WUX2I7Q"/>
+        </EditorPresentation>
+      </EditorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="aclUFYV43DVWRDX3MVLJZIRC33NFI"/>
+  </AdsClassDefinition>
+</AdsDefinition>

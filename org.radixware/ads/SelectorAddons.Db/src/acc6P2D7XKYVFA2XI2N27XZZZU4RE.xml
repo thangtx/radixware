@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="acc6P2D7XKYVFA2XI2N27XZZZU4RE" Name="GetMaxAddonSeqCursor" Type="4">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="Headeradc4OPHDADUAZD5JKN3JQ5S2SVDBQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcFCB6TSKBH5DF7LHZVVQN67ZQXM"/>
+    </Bodies>
+    <MethodGroup Id="cmgVVKI56HJP5B2HHMOUBAKL2KX6A" Name="Root"/>
+    <PropertyGroup Id="cpgUG65LCZU2FD3NDC7Z6LX75KLB4" Name="Root"/>
+    <Properties>
+      <Property Id="prm2HSCO3GVNNE5TNJ4BOYXOQZCW4" Name="parTableGuid" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmNAYZM2MMZRE5FK5J6GOK7CZC4E" Name="parClassGuid" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prf3THIDDVLQZAR5EXIO6OPTWHCOY" Name="seq" Nature="3" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="open" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="parTableGuid" Id="mpr2HSCO3GVNNE5TNJ4BOYXOQZCW4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="parClassGuid" Id="mprNAYZM2MMZRE5FK5J6GOK7CZC4E">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="acc6P2D7XKYVFA2XI2N27XZZZU4RE"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="true">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>Select max(</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colYNFESMLQLBCGDCKG7FGDPYNPR4" Owner="TABLE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>) as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="acc6P2D7XKYVFA2XI2N27XZZZU4RE" PropId="prf3THIDDVLQZAR5EXIO6OPTWHCOY" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+From </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:TableSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+Where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colDCQEQLHEC5F6VO633LHAE6BDMQ" Owner="TABLE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prm2HSCO3GVNNE5TNJ4BOYXOQZCW4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="col36K2MUPKPRGPPAGLVPAUJ52PQE" Owner="TABLE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmNAYZM2MMZRE5FK5J6GOK7CZC4E"/>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" Alias="addons"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="411" Path="pdcCursor____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

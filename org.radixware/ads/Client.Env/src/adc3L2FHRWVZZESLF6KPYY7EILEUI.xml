@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc3L2FHRWVZZESLF6KPYY7EILEUI" Name="ReleaseRepository" Type="3" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.env.ReleaseRepository"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcNHJJKHBOZJEZPMSAGNHWZDMTGI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcH5FUW6ET75ABJPJH4XYPTCDZGU"/>
+    </Bodies>
+    <MethodGroup Id="cmgBWVRYUVJC5AVBMQQJUIZ3Z6BYI" Name="Root"/>
+    <PropertyGroup Id="cpgNWK3LYWSIJG7LOK4QM6UFUGJSI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth5ICB2AWI65CZ5PWN5T5NTLJGAY" Name="getDefinitionsForDomain" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getDefinitionsForDomain(Lorg.radixware.kernel.common.types.Id;Lorg.radixware.kernel.common.enums.EDefType;)Ljava.util.Collection&lt;Lorg.radixware.kernel.common.client.env.ReleaseRepository.DefinitionInfo;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="domainId" Id="mprMXSCQ44VU5EJDAFNBTBQYADEEQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+          <Parameter Name="defType" Id="mprQUH7CPQDAFENVOLCZZFVFAB2OE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EDefType"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.Collection">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.env.ReleaseRepository.DefinitionInfo"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mth56JLT4VR4RBDTKRIARH6SKACEQ" Name="getRootMsdlSchemeById" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getRootMsdlSchemeById(Lorg.radixware.kernel.common.types.Id;)Lorg.radixware.kernel.common.msdl.RootMsdlScheme;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="schemaId" Id="mprOTEJNU5HWBCLFM342ERNE4XSTY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.msdl.RootMsdlScheme"/>
+      </Method>
+      <Method Id="mthRGVFLVYTRRCVDLPX6OINMNA4VQ" Name="getXmlSchemeFileName" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getXmlSchemeFileName(Ljava.lang.String;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="namespace" Id="mprRYQER5HH2ZA2NDMSBSZ4PAYMOQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthD33NJZFNEBAMLDZFPT2CTMNHCQ" Name="findXmlSchemeIdByTargetNameSpace" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="findXmlSchemeIdByTargetNameSpace(Ljava.lang.String;)Lorg.radixware.kernel.common.types.Id;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="namespace" Id="mprJ6H4T32ZHBFW3LVMFKUNPZC4EA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+      </Method>
+      <Method Id="mthD6W7U6XPKRBXJFN7EEZSHYV7B4" Name="isClassExtends" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isClassExtends(Lorg.radixware.kernel.common.types.Id;Lorg.radixware.kernel.common.types.Id;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="derivedClassId" Id="mprR6O57SNMCZD33JR2G554PZ5CZY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+          <Parameter Name="ancestorClassId" Id="mprL3EKVEZM45BDFM7A3WUZHAWIPI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth5UVUICFIU5HOZPQGS2Z57BZB44" Name="getInputStreamForMsdlScheme" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getInputStreamForMsdlScheme(Lorg.radixware.kernel.common.types.Id;)Ljava.io.InputStream;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="msdlSchemeId" Id="mprSBKYBOLRUZE57CNQKYQRLLPMUA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.io.InputStream"/>
+      </Method>
+      <Method Id="mth74R3AFC7ENDIPDJZZOWY5FCXBY" Name="getInputStreamForXmlScheme" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getInputStreamForXmlScheme(Ljava.lang.String;)Ljava.io.InputStream;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="namespace" Id="mpr4NXS23RAJZA7POWOPZMMIZDR44">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.io.InputStream"/>
+      </Method>
+      <Method Id="mthQB76MUVHEJGULK7S5OZ7DOYEY4" Name="getImageFilePath" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getImageFilePath(Lorg.radixware.kernel.common.types.Id;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="imageId" Id="mpr3Y4WM2RGFBGOBBR7YVY5RU7H6U">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthTDIB7FPTYVB75KWQNC3KUVAXEQ" Name="getInputStreamForXmlScheme" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getInputStreamForXmlScheme(Lorg.radixware.kernel.common.types.Id;)Ljava.io.InputStream;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="schemaId" Id="mprDLAR6M4KTFHOHI2M3FQDXURNVU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.io.InputStream"/>
+      </Method>
+      <Method Id="mthGK2C2O2KVFAQTGDRPP4VAJFNQU" Name="getDefinitionsForDomain" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getDefinitionsForDomain(Lorg.radixware.kernel.common.types.Id;)Ljava.util.Collection&lt;Lorg.radixware.kernel.common.client.env.ReleaseRepository.DefinitionInfo;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="domainId" Id="mprMSV7R62HUBG4TGTF6VPZDPL4D4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.Collection">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.env.ReleaseRepository.DefinitionInfo"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthUVBQL4GT3FB5BJQQQSXMEUV3MM" Name="getDescendantsRecursively" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getDescendantsRecursively(Lorg.radixware.kernel.common.types.Id;)Ljava.util.Collection&lt;Lorg.radixware.kernel.common.types.Id;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="classId" Id="mprL7AEI7IBX5ALXHDNH2HH5YEQ2A">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.Collection">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthPUJHBI5SAFB3RE3WL4R22LLVG4" Name="getDirectDescenders" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getDirectDescenders(Lorg.radixware.kernel.common.types.Id;)Ljava.util.Collection&lt;Lorg.radixware.kernel.common.types.Id;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="classId" Id="mprZ7LF7NILUZD6BPBBMVODASQTOA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.Collection">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mth3KL6VRBENBE73N2XGVQVQ74TVM" Name="isDefinitionInDomain" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isDefinitionInDomain(Lorg.radixware.kernel.common.types.Id;Lorg.radixware.kernel.common.types.Id;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="defId" Id="mprIIURB5YTEFG6ZOXM2HK2BY2BRM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+          <Parameter Name="domainId" Id="mpr4QMTDSA54JF6ZJLX62UZ7FTCAY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

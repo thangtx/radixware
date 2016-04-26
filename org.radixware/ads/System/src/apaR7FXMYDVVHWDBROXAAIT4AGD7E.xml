@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="apaR7FXMYDVVHWDBROXAAIT4AGD7E" Name="SapAdapter" Type="20">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="Headeradc74IFWFUVLFFRPJ2VGTGRMHLBSE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcFMT3I7Q76NDFTALKUME4XUCBKQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgI3WAVYRUWRBUFLXF2VWG44DM4M" Name="Root"/>
+    <PropertyGroup Id="cpgPRQQOSCIXNFUNH445WMH7DVJ2I" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthDVPR662MUFCB7O6X425DBXV2E4" Name="doInit" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="propVals" Id="mprS6YVBVTSMFCNZBXF3HH7GH6BDM">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.PropValHandlersByIdMap"/>
+          </Parameter>
+          <Parameter Name="src" Id="mpr4U2D5WR5CBH6DMEARUFGZZ4K6I">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
+          </Parameter>
+          <Parameter Name="initPhase" Id="mprFKCQJJ3H7VBEXFUL3HBM3MIDP4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EEntityInitializationPhase"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI mthDVPR662MUFCB7O6X425DBXV2E4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(propVals, src, initPhase);
+// on interactive creation systemId is not set to 1 by default (as we can't create such saps by hands)
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.valueOf(1).equals(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI mthT7TMFDG7AVCQDOVEOA76ZWJL4M" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getProp(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecR7FXMYDVVHWDBROXAAIT4AGD7E colFHZWU3QRLDNBDJA6ACQMTAIZT4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)))
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI mthT7TMFDG7AVCQDOVEOA76ZWJL4M" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().setProp(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecR7FXMYDVVHWDBROXAAIT4AGD7E colFHZWU3QRLDNBDJA6ACQMTAIZT4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, null); </xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblR7FXMYDVVHWDBROXAAIT4AGD7E"/>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc23ASAAB5INHV7MBJMRGPHAELJU" Name="ModificationsList" Type="3" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.views.ModificationsList"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc23ASAAB5INHV7MBJMRGPHAELJU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc23ASAAB5INHV7MBJMRGPHAELJU"/>
+    </Bodies>
+    <MethodGroup Id="cmgLMI57MGMRJC3FCZKFPJIRGMC3M" Name="Root"/>
+    <PropertyGroup Id="cpg7EWUDHEAFRCZRPGEQMEAYM5HMU" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthKEBVSGD255BVFJRG4RB45MUVK4" Name="askForApplyChanges" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="askForApplyChanges(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.client.widgets.IWidget;)Ljava.util.List&lt;Lorg.radixware.kernel.common.client.views.ModificationsList.ModifiedObject;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprSEYBT3AUENEX7DHMMULLAE5QBA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parentWidget" Id="mprKRFTGR2WVRAIBF3B6AVRU6KLTI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IWidget"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.views.ModificationsList.ModifiedObject"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthVEQG35ZZMBGJ3ILELEIQ6DXWYI" Name="applyChanges" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="applyChanges(Lorg.radixware.kernel.common.client.IClientEnvironment;Ljava.util.List&lt;Lorg.radixware.kernel.common.client.views.ModificationsList.ModifiedObject;>;Lorg.radixware.kernel.common.client.exceptions.IProblemHandler;)Ljava.util.List&lt;Lorg.radixware.kernel.common.client.views.ModificationsList.ModifiedObject;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprB7LPZEP2EFA5NLMTT6VYLM3DPY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="objects" Id="mprJNAYZFXYXRHORACFD57MCWMLNU">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.views.ModificationsList.ModifiedObject"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="problemHandler" Id="mprNBO5WCZWWFAH7AQCFBUXDZW52E">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.exceptions.IProblemHandler"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.views.ModificationsList.ModifiedObject"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthWPX7FL2BJZENPENR5I7D5Q4FVM" Name="ModificationsList" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.views.IView;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="view" Id="mprYP4ZL53NYRBI5IN67F2RFDU5ZE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.views.IView"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthZBWCE4HXUZD23GLYGJNB4ECTL4" Name="getModifiedObjectsList" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getModifiedObjectsList()Ljava.util.List&lt;Lorg.radixware.kernel.common.client.views.ModificationsList.ModifiedObject;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.views.ModificationsList.ModifiedObject"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthEO4B3HMR5FACFJD4N2N7ENUEAQ" Name="cancelChanges" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="cancelChanges()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth2LDZDMRPB5BIRPPKEGMRW64234" Name="getModifiedObjectsTree" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getModifiedObjectsTree()Ljava.util.List&lt;Lorg.radixware.kernel.common.client.views.ModificationsList.ModifiedObject;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.views.ModificationsList.ModifiedObject"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthYLLBPF633JB6PNY2OM43WZA2AU" Name="isEmpty" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isEmpty()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

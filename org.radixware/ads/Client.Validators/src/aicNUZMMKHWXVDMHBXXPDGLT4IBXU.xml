@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicNUZMMKHWXVDMHBXXPDGLT4IBXU" Name="IInputValidator" Type="5" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.meta.mask.validators.IInputValidator"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcRJMMMNAKUVGBZGRSU4RJ7GB3XY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcBFT3MFDPPZBMBJOIAJYTV7EPEI"/>
+    </Bodies>
+    <MethodGroup Id="cmg4KYKY7OKLJHMHHSKXBX636U6MM" Name="Root"/>
+    <PropertyGroup Id="cpg5KJQOQBX6NBJJMSRJRME4TLPAQ" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth6YHSXY5SKJBAZNYKUOAURUJV3Q" Name="fixup" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="fixup(Ljava.lang.String;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="input" Id="mpr7VL27TNHHZH7JJA7KSWQA74VIA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthNN2Y43CMLJGURP6HXC2VKBBQPU" Name="validate" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="validate(Lorg.radixware.kernel.common.client.IClientEnvironment;Ljava.lang.String;I)Lorg.radixware.kernel.common.client.meta.mask.validators.ValidationResult;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprAJ47ZUMX55EHVAMRJQWSCA6NQ4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="text" Id="mprDKB3KOKIGJAKTCWBL7QX4UZFTY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="pos" Id="mprUZ5VCMPJTBFYBH6CHOOBAE7WKQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.validators.ValidationResult"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

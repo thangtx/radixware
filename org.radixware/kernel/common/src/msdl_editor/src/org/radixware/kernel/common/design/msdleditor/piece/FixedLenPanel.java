@@ -1,0 +1,271 @@
+/*
+ * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. This Source Code is distributed
+ * WITHOUT ANY WARRANTY; including any implied warranties but not limited to
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * Mozilla Public License, v. 2.0. for more details.
+ */
+
+/*
+ * FixedLen.java
+ *
+ * Created on 5 Ноябрь 2008 г., 13:45
+ */
+
+package org.radixware.kernel.common.design.msdleditor.piece;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import org.apache.xmlbeans.XmlObject;
+
+import org.radixware.kernel.common.design.msdleditor.AbstractEditItem;
+import org.radixware.kernel.common.design.msdleditor.enums.EAlign;
+import org.radixware.kernel.common.design.msdleditor.enums.EUnit;
+import org.radixware.kernel.common.exceptions.SmioException;
+import org.radixware.kernel.common.msdl.MsdlUnitContext;
+import org.radixware.kernel.common.msdl.fields.AbstractFieldModel;
+import org.radixware.kernel.common.msdl.fields.parser.SmioCoder;
+import org.radixware.schemas.msdl.FixedLenDef;
+
+
+public class FixedLenPanel extends AbstractEditItem implements ActionListener, PadFiller.ICoderProvider {
+    private FixedLenDef fixedLenDef;
+    private AbstractFieldModel fieldModel;
+    private boolean opened = false;
+    private SmioCoder smioCoder;
+    private PadFiller pf = null;
+    /** Creates new form FixedLen */
+
+    public FixedLenPanel() {
+        initComponents();
+//        ArrayList<JLabel> l = new ArrayList<JLabel>();
+//        l.add(jLabelLength);
+//        l.add(jLabelUnit);
+//        ArrayList<JComponent> e = new ArrayList<JComponent>();
+//        e.add(jSpinnerLen);
+//        e.add(selectUnitPanel);
+//        //DefaultLayout.doLayout(jPanelHigh, l, e,true);
+//
+//        ArrayList<JLabel> ll = new ArrayList<JLabel>();
+//        ll.add(jLabelAlign1);
+//        ll.add(jLabelPad1);
+//        ArrayList<JComponent> ee = new ArrayList<JComponent>();
+//        ee.add(selectAlignPanel);
+//        ee.add(selectPadPanel);
+        //DefaultLayout.doLayout(jPanelLow, ll, ee,true);
+    }
+
+    public void open(AbstractFieldModel fieldModel, FixedLenDef fixedLenDef) {
+        super.open(fieldModel.getMsdlField());
+        this.fieldModel = fieldModel;
+        this.fixedLenDef = fixedLenDef;
+        update();
+        selectAlignPanel.addActionListener(this);
+        selectAlignPanel.getSetParentPanel().addActionListener(this);
+        selectUnitPanel.addActionListener(this);
+        selectUnitPanel.getSetParentPanel().addActionListener(this);
+        selectPadPanel.addActionListener(this);
+        selectPadPanel.getSetParentPanel().addActionListener(this);
+        trimToLenCheckBox.addActionListener(this);
+        opened = true;
+
+    }
+    
+    public SmioCoder getCoder() {
+        if (smioCoder == null) {
+            String encoding = fieldModel.getEncoding();
+            if (encoding != null) {
+                smioCoder = new SmioCoder(encoding);
+            }
+        }
+        return smioCoder;
+    }
+
+    @Override
+    public void update() {
+        jSpinnerLen.setValue(fixedLenDef.getLen());
+        if(fixedLenDef.isSetTrimToLengthIfExceed()) {
+            trimToLenCheckBox.setSelected(fixedLenDef.getTrimToLengthIfExceed());
+        } 
+        selectAlignPanel.setAlign(EAlign.getInstance(fixedLenDef.getAlign()),
+                             EAlign.getInstance(fieldModel.getAlign()));
+        selectUnitPanel.setUnit(EUnit.getInstance(fixedLenDef.getUnit()),
+                            EUnit.getInstance(fieldModel.getUnit(true, 
+                                    new MsdlUnitContext(MsdlUnitContext.EContext.FIXED_LEN))));
+
+        boolean padEnabled = selectAlignPanel.getComboBoxAlign() != EAlign.NONE;
+        selectPadPanel.setVisible(padEnabled);
+        jLabelPad1.setVisible(padEnabled);
+        if (padEnabled) {
+            initPF();
+            pf.fillWidgets();
+        }
+        super.update();
+    }
+
+    private void save() {
+        if (!opened)
+            return;
+        fixedLenDef.setLen((Long)jSpinnerLen.getValue());
+        fixedLenDef.setTrimToLengthIfExceed(trimToLenCheckBox.isSelected());
+        fixedLenDef.setAlign(selectAlignPanel.getAlign().getValue());
+        fixedLenDef.setUnit(selectUnitPanel.getUnit().getValue());
+        boolean padEnabled = selectAlignPanel.getComboBoxAlign() != EAlign.NONE;
+        selectPadPanel.setVisible(padEnabled);
+        jLabelPad1.setVisible(padEnabled);
+        if (padEnabled) {
+            initPF();
+            pf.fillDefinition();
+        }
+        fieldModel.setModified();
+    }
+    /** This method is called from within the constructor to
+     * initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is
+     * always regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        contentsPanel = new javax.swing.JPanel();
+        jLabelLength = new javax.swing.JLabel();
+        jSpinnerLen = new javax.swing.JSpinner();
+        jLabelUnit = new javax.swing.JLabel();
+        selectUnitPanel = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.UnitPanel();
+        jLabelAlign1 = new javax.swing.JLabel();
+        jLabelPad1 = new javax.swing.JLabel();
+        selectPadPanel = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtHexPanel();
+        trimToLenTitle = new javax.swing.JLabel();
+        trimToLenCheckBox = new javax.swing.JCheckBox();
+        selectAlignPanel = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.AlignPanel();
+
+        setMinimumSize(new java.awt.Dimension(100, 130));
+        setPreferredSize(new java.awt.Dimension(100, 130));
+        setLayout(new java.awt.BorderLayout());
+
+        jLabelLength.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("org/radixware/kernel/common/design/msdleditor/Bundle"); // NOI18N
+        jLabelLength.setText(bundle.getString("LENGTH")); // NOI18N
+
+        jSpinnerLen.setModel(new javax.swing.SpinnerNumberModel(Long.valueOf(1L), Long.valueOf(0L), null, Long.valueOf(1L)));
+        jSpinnerLen.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerLenStateChanged(evt);
+            }
+        });
+
+        jLabelUnit.setText(bundle.getString("UNIT")); // NOI18N
+        jLabelUnit.setMaximumSize(new java.awt.Dimension(50, 15));
+        jLabelUnit.setMinimumSize(new java.awt.Dimension(50, 15));
+
+        selectUnitPanel.setMaximumSize(new java.awt.Dimension(32767, 24));
+
+        jLabelAlign1.setText(bundle.getString("ALIGN")); // NOI18N
+        jLabelAlign1.setMaximumSize(new java.awt.Dimension(50, 15));
+        jLabelAlign1.setMinimumSize(new java.awt.Dimension(50, 15));
+
+        jLabelPad1.setText(bundle.getString("PAD_BIN")); // NOI18N
+        jLabelPad1.setMaximumSize(new java.awt.Dimension(50, 15));
+        jLabelPad1.setMinimumSize(new java.awt.Dimension(50, 15));
+
+        trimToLenTitle.setText("Trim to length if exceeds");
+
+        trimToLenCheckBox.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        trimToLenCheckBox.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+        trimToLenCheckBox.setMargin(new java.awt.Insets(1, 1, 1, 1));
+
+        javax.swing.GroupLayout contentsPanelLayout = new javax.swing.GroupLayout(contentsPanel);
+        contentsPanel.setLayout(contentsPanelLayout);
+        contentsPanelLayout.setHorizontalGroup(
+            contentsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(contentsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(contentsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(contentsPanelLayout.createSequentialGroup()
+                        .addComponent(trimToLenTitle)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(trimToLenCheckBox)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(contentsPanelLayout.createSequentialGroup()
+                        .addGroup(contentsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabelPad1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabelAlign1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabelUnit, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabelLength, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(84, 84, 84)
+                        .addGroup(contentsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(contentsPanelLayout.createSequentialGroup()
+                                .addComponent(jSpinnerLen)
+                                .addGap(20, 20, 20))
+                            .addComponent(selectUnitPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(selectAlignPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
+                            .addComponent(selectPadPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+        );
+        contentsPanelLayout.setVerticalGroup(
+            contentsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(contentsPanelLayout.createSequentialGroup()
+                .addGap(7, 7, 7)
+                .addGroup(contentsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jSpinnerLen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabelLength))
+                .addGap(5, 5, 5)
+                .addGroup(contentsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(selectUnitPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabelUnit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(5, 5, 5)
+                .addGroup(contentsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(contentsPanelLayout.createSequentialGroup()
+                        .addComponent(selectAlignPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(5, 5, 5)
+                        .addComponent(selectPadPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(contentsPanelLayout.createSequentialGroup()
+                        .addComponent(jLabelAlign1, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(5, 5, 5)
+                        .addComponent(jLabelPad1, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(contentsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(trimToLenTitle, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(trimToLenCheckBox, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addContainerGap())
+        );
+
+        add(contentsPanel, java.awt.BorderLayout.CENTER);
+    }// </editor-fold>//GEN-END:initComponents
+        private void jSpinnerLenStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerLenStateChanged
+            save();
+    }//GEN-LAST:event_jSpinnerLenStateChanged
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel contentsPanel;
+    private javax.swing.JLabel jLabelAlign1;
+    private javax.swing.JLabel jLabelLength;
+    private javax.swing.JLabel jLabelPad1;
+    private javax.swing.JLabel jLabelUnit;
+    private javax.swing.JSpinner jSpinnerLen;
+    private org.radixware.kernel.common.design.msdleditor.field.panel.simple.AlignPanel selectAlignPanel;
+    private org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtHexPanel selectPadPanel;
+    private org.radixware.kernel.common.design.msdleditor.field.panel.simple.UnitPanel selectUnitPanel;
+    private javax.swing.JCheckBox trimToLenCheckBox;
+    private javax.swing.JLabel trimToLenTitle;
+    // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        save();
+    }
+
+    private void initPF() {
+        if (pf == null)
+            try {
+                pf = new PadFiller((XmlObject)fixedLenDef, selectUnitPanel, selectPadPanel, this, fieldModel);
+            }
+            catch(SmioException exc) {
+                exc.printStackTrace();
+                pf = null;
+            }
+    }
+}

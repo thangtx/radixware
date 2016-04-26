@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="afhMDX26PVL6ZB6FGJATJO3JY7M4A" Name="ImportReportForm" TitleId="mlsOAQ3ZQQNGBD5ZFQ7SNN6SELUZE" Type="19" SuppressedWarnings="1004">
+    <AccessRules IsFinal="true" IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderadcM3U3SVQFSVAPFEVDCXMIZA33AQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcRFSCNZVY4RCPRFEXHPAZQJ36NE"/>
+    </Bodies>
+    <MethodGroup Id="cmg3LWRNTJUDNEHPPIE4FXX6HPJSI" Name="Root"/>
+    <PropertyGroup Id="cpgF2W5FPML5NDHXHJUHMEHBUUFFU" Name="Root"/>
+    <Properties>
+      <Property Id="prdX3LAZYTC6BHXPMEEVB6KLMGONQ" Name="importResult" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="451" Path="xsdCLQXH4AV3RFFPKLY4MMD43CXAU" extStr="ImportResultDocument"/>
+        <Presentation InheritanceMask="4">
+          <Editing EditPossibility="1" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthTYWXJRLODNAT7LXOISEO5SFPZU" Name="onSubmit" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="context" Id="mpr74DI77IODRB7DL36PKAZORMUYU">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.FormHandler.Context"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.types.FormHandler.NextDialogsRequest"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Presentations IconId="imgAQEBQCMY25ACRP73RBOCQIJ7PU">
+      <Form InheritanceMask="0">
+        <Model Id="afmMDX26PVL6ZB6FGJATJO3JY7M4A" Name="ImportReportForm:Model" Type="18">
+          <AccessRules IsPublished="false"/>
+          <Headers>
+            <Src Name="Headeradc3243V6IM2RFL3IIXRWDTOBTXGY"/>
+          </Headers>
+          <Bodies>
+            <Src Name="BodyadcLCLMVE6N2ZGF5DEKMSBJZW5ZOM"/>
+          </Bodies>
+          <MethodGroup Id="cmgBA5Z56AS5FENHASKPDMX4IROB4" Name="Root">
+            <Group Id="cmgRPTT3V6LIFABVKLTB7VYOHDGBA" Name="Slots" Members="mthMLR3DGSGIFC55DHK3CJMWDG5PE mthVIW2S4Y35RBKZIFF62COT4NSAE"/>
+          </MethodGroup>
+          <PropertyGroup Id="cpgMQRTKV57RBASPFQGY2UULWITFQ" Name="Root"/>
+          <Properties/>
+          <Methods>
+            <Method Id="mthVIW2S4Y35RBKZIFF62COT4NSAE" Name="Form_opened" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+              <AccessRules IsPublished="false"/>
+              <Parameters>
+                <Parameter Name="widget" Id="mprODDZ33Y3EFFFLB2XHRO7OBHHJI">
+                  <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+                </Parameter>
+              </Parameters>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:Java>if (</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhMDX26PVL6ZB6FGJATJO3JY7M4A prdX3LAZYTC6BHXPMEEVB6KLMGONQ" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value==null){
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcCICJHDC22RGH5ACUPHLRTZQL6Y mthU5FRK4ENVRG4LFASZ32I5JYL2Y" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>();
+}
+{
+    final com.trolltech.qt.gui.QFont font = new com.trolltech.qt.gui.QFont(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhMDX26PVL6ZB6FGJATJO3JY7M4A cfdMDX26PVL6ZB6FGJATJO3JY7M4A wdgWW6FSOQNBRE2ZFBHX52SYRUBOA" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthEBGE5HKLUZANTC43RBKSBPXBLY" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>());
+    font.setBold(true);
+    font.setPixelSize(16);
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhMDX26PVL6ZB6FGJATJO3JY7M4A cfdMDX26PVL6ZB6FGJATJO3JY7M4A wdgWW6FSOQNBRE2ZFBHX52SYRUBOA" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.setFont(font);
+}
+{
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhMDX26PVL6ZB6FGJATJO3JY7M4A cfdMDX26PVL6ZB6FGJATJO3JY7M4A wdgFFFAWQQH5VEO5ARFSCKBLRLTAM" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.setWordWrapMode(com.trolltech.qt.gui.QTextOption.WrapMode.NoWrap);
+    final </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="451" Path="xsdCLQXH4AV3RFFPKLY4MMD43CXAU" extStr="ImportResultDocument.ImportResult.RejectedFilters"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> rejectedFilters = 
+        </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhMDX26PVL6ZB6FGJATJO3JY7M4A prdX3LAZYTC6BHXPMEEVB6KLMGONQ" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value.ImportResult.RejectedFilters;
+    final </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="21"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> messageWithTable = </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:LocalizedString StringId="mlsWSESJYHANRGAVCFEE2RIWLHDJ4"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>;
+    final </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="21"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> messageWithoutTable = </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:LocalizedString StringId="mlsNXNWLXIBMRAMLA2DC7S7PJYO4U"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>;
+    final </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="21"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> tableDescTemplate = </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:LocalizedString StringId="mlsJAEB6POW5VGLVPQXYGJE7YETOM"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>;
+    final StringBuilder contentBuilder = new StringBuilder();
+    for (</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="451" Path="xsdCLQXH4AV3RFFPKLY4MMD43CXAU" extStr="ImportResultDocument.ImportResult.RejectedFilters.RejectedFilter"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> rejectedFilter: rejectedFilters.RejectedFilterList){
+        if (contentBuilder.length()>0){
+            contentBuilder.append("\n");
+        }
+        if (rejectedFilter.TableId==null){
+            contentBuilder.append(String.format(messageWithoutTable, rejectedFilter.Title, rejectedFilter.Id, rejectedFilter.Reason));
+        }
+        else{
+            final </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="21"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> tableDesc;
+            if (rejectedFilter.TableName==null || rejectedFilter.TableName.isEmpty()){
+                 tableDesc = String.format(tableDescTemplate,"#"+rejectedFilter.TableId);
+            }
+            else{
+                tableDesc = String.format(tableDescTemplate,"'"+rejectedFilter.TableName+"' #"+rejectedFilter.TableId);
+            }
+            contentBuilder.append(String.format(messageWithTable, rejectedFilter.Title, rejectedFilter.Id, tableDesc, rejectedFilter.Reason));
+        }
+    }
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhMDX26PVL6ZB6FGJATJO3JY7M4A cfdMDX26PVL6ZB6FGJATJO3JY7M4A wdgFFFAWQQH5VEO5ARFSCKBLRLTAM" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.setPlainText(contentBuilder.toString());
+}
+{
+    final </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="21"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> footerMessage = </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:LocalizedString StringId="mlsNCFVUHDDH5AHPBIQVNA6PYXEOM"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>;
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhMDX26PVL6ZB6FGJATJO3JY7M4A cfdMDX26PVL6ZB6FGJATJO3JY7M4A wdgXL43KODB2JHN7NQ2QONUH42CZM" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.setText(String.format(footerMessage,</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhMDX26PVL6ZB6FGJATJO3JY7M4A prdX3LAZYTC6BHXPMEEVB6KLMGONQ" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value.ImportResult.ImportedCount));
+}
+{
+    final com.trolltech.qt.gui.QIcon icon = </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="adcCUZTMTWLPFABNGEX6P6X2PHQVA"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcCUZTMTWLPFABNGEX6P6X2PHQVA mthSD5NQFS2A5BYTFUQPK4UAXD26I" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="adcWJZSXKI5X5BTBB5M5HME622ELE"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.EXIT);
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhMDX26PVL6ZB6FGJATJO3JY7M4A cfdMDX26PVL6ZB6FGJATJO3JY7M4A wdgWVC54DRUMVDD7KIL3STGXQJCXI" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.button(com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Close).setIcon(icon);
+}</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+            <Method Id="mthMLR3DGSGIFC55DHK3CJMWDG5PE" Name="buttonBox_clicked" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+              <AccessRules IsPublished="false"/>
+              <Parameters>
+                <Parameter Name="button" Id="mprOG3FO743IRDMFCXOMD3TUE6IDI">
+                  <Type TypeId="400" extStr="com.trolltech.qt.gui.QAbstractButton"/>
+                </Parameter>
+              </Parameters>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhMDX26PVL6ZB6FGJATJO3JY7M4A cfdMDX26PVL6ZB6FGJATJO3JY7M4A wdgL67AXWL3PNAPFPYNMRFCBYUL5M" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.reject();</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+          </Methods>
+        </Model>
+        <EditorPages>
+          <PageOrder/>
+        </EditorPages>
+        <View Id="cfdMDX26PVL6ZB6FGJATJO3JY7M4A" Name="View">
+          <AccessRules IsPublished="false"/>
+          <ui:ui>
+            <ui:widget name="Form" id="wdgL67AXWL3PNAPFPYNMRFCBYUL5M" class="cfdMDX26PVL6ZB6FGJATJO3JY7M4A" weight="0.0">
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>0</ui:x>
+                  <ui:y>0</ui:y>
+                  <ui:width>632</ui:width>
+                  <ui:height>198</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:layout class="QVBoxLayout" name="verticalLayout">
+                <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                  <ui:widget name="lbHeader" id="wdgWW6FSOQNBRE2ZFBHX52SYRUBOA" class="QLabel" weight="0.0" access="2">
+                    <ui:property name="text">
+                      <ui:mlstringid>mlsDAUFDEO2YFANJGWP5TPLWY7BJ4</ui:mlstringid>
+                    </ui:property>
+                    <ui:property name="geometry">
+                      <ui:rect>
+                        <ui:x>325</ui:x>
+                        <ui:y>15</ui:y>
+                        <ui:width>56</ui:width>
+                        <ui:height>16</ui:height>
+                      </ui:rect>
+                    </ui:property>
+                    <ui:property name="alignment">
+                      <ui:set>com.trolltech.qt.core.Qt.AlignmentFlag.AlignHCenter | com.trolltech.qt.core.Qt.AlignmentFlag.AlignVCenter</ui:set>
+                    </ui:property>
+                    <ui:property name="objectName">
+                      <ui:string>lbHeader</ui:string>
+                    </ui:property>
+                  </ui:widget>
+                </ui:item>
+                <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                  <ui:widget name="teErrors" id="wdgFFFAWQQH5VEO5ARFSCKBLRLTAM" class="QTextEdit" weight="0.0" access="2">
+                    <ui:property name="undoRedoEnabled">
+                      <ui:bool>false</ui:bool>
+                    </ui:property>
+                    <ui:property name="readOnly">
+                      <ui:bool>true</ui:bool>
+                    </ui:property>
+                    <ui:property name="acceptRichText">
+                      <ui:bool>true</ui:bool>
+                    </ui:property>
+                    <ui:property name="objectName">
+                      <ui:string>teErrors</ui:string>
+                    </ui:property>
+                  </ui:widget>
+                </ui:item>
+                <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                  <ui:widget name="lbFooter" id="wdgXL43KODB2JHN7NQ2QONUH42CZM" class="QLabel" weight="0.0">
+                    <ui:property name="text">
+                      <ui:mlstringid>mlsJWZLRRJLBZB77M3K23UJCV46BY</ui:mlstringid>
+                    </ui:property>
+                    <ui:property name="geometry">
+                      <ui:rect>
+                        <ui:x>274</ui:x>
+                        <ui:y>267</ui:y>
+                        <ui:width>56</ui:width>
+                        <ui:height>16</ui:height>
+                      </ui:rect>
+                    </ui:property>
+                    <ui:property name="objectName">
+                      <ui:string>lbFooter</ui:string>
+                    </ui:property>
+                  </ui:widget>
+                </ui:item>
+                <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                  <ui:widget name="buttonBox" id="wdgWVC54DRUMVDD7KIL3STGXQJCXI" class="QDialogButtonBox" weight="0.0" access="2">
+                    <ui:property name="standardButtons">
+                      <ui:set>com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Close</ui:set>
+                    </ui:property>
+                    <ui:property name="geometry">
+                      <ui:rect>
+                        <ui:x>9</ui:x>
+                        <ui:y>269</ui:y>
+                        <ui:width>382</ui:width>
+                        <ui:height>23</ui:height>
+                      </ui:rect>
+                    </ui:property>
+                  </ui:widget>
+                </ui:item>
+              </ui:layout>
+            </ui:widget>
+            <ui:connections>
+              <ui:connection>
+                <ui:sender>wdgL67AXWL3PNAPFPYNMRFCBYUL5M</ui:sender>
+                <ui:signal>opened(com.trolltech.qt.gui.QWidget widget)</ui:signal>
+                <ui:slot>mthVIW2S4Y35RBKZIFF62COT4NSAE</ui:slot>
+              </ui:connection>
+              <ui:connection>
+                <ui:sender>wdgWVC54DRUMVDD7KIL3STGXQJCXI</ui:sender>
+                <ui:signal>clicked(com.trolltech.qt.gui.QAbstractButton button)</ui:signal>
+                <ui:slot>mthMLR3DGSGIFC55DHK3CJMWDG5PE</ui:slot>
+              </ui:connection>
+            </ui:connections>
+          </ui:ui>
+        </View>
+      </Form>
+    </Presentations>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc73BWGKQGLJF3RGFI6PSTJVD444" Name="EditorUserFuncLocator" Type="3" Environment="explorer">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc73BWGKQGLJF3RGFI6PSTJVD444"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc73BWGKQGLJF3RGFI6PSTJVD444" Description="fields">
+        <xsc:Item>
+          <xsc:Java>private </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM epr7IKMB24XZHOBDCMTAALOMT5GDM aem7IKMB24XZHOBDCMTAALOMT5GDM"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> model;
+private </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="wdcF3DWBBMGWNCOTAV47IN4UGG25I admF3DWBBMGWNCOTAV47IN4UGG25I"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> editorModel;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmgHQZIQQEEUVADVEVH6EQUECKLPU" Name="Root"/>
+    <PropertyGroup Id="cpgHDP3YQVL6NGV3AA5ITAUDYQUDU" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth5O5R3YIKIFC4PI3KXAAZPPMP7M" Name="enshureObjectIsOpened" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="id" Id="mprCV7Y3Z74TZCDLPGVS3C2ZYOG74">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="currentVersionName" Id="mprR6ASWJTQ4VAKFD7TQNQ3JBFLII">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="showModal" Id="mprOU2MX5CPLBDI3GIAAXYE3LN5GY">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="postOpenHook" Id="mpr6SWQE4AL3NFFNKE6GJV7PNBWFA">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.editors.jmleditor.JmlEditor.IPostOpenAction"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (id == model.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM col6V3CVGAHT5GRXAQ6VRLN3YVQGQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value.longValue()) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcT2XSNOGQ4RERZBE7XNCA7JWLQI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> jmlEditor = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc73BWGKQGLJF3RGFI6PSTJVD444 mth3DPIZMTAQBDC3B7FNNJHV7KCLA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    if (jmlEditor != null) {
+        if (jmlEditor.EditingVersionName == currentVersionName) {
+            return true;
+        } else
+            jmlEditor.openSourceVersion(currentVersionName);
+    }
+    return true;
+} else {
+    return false;
+}
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthPB2665RRAJFRDL6437PHTNSFXE" Name="findUserFunc" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="id" Id="mprFLAZ4DHPQJFS5HRMPVIOQKWDKA">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="currentVersionName" Id="mpr5Z7AMB3YEVDVPH3OBCWZY2N7UQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.defs.ads.userfunc.AdsUserFuncDef"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (id == model.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM col6V3CVGAHT5GRXAQ6VRLN3YVQGQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value) {
+    return model.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM epr7IKMB24XZHOBDCMTAALOMT5GDM aem7IKMB24XZHOBDCMTAALOMT5GDM mthAA7X2XH4XJHGDFGTS5CLKWT3D4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(currentVersionName);
+} else
+    return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYPHY67MOIBFVHARPKVH2TEXKKU" Name="getCurrentVersionName" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return model.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM epr7IKMB24XZHOBDCMTAALOMT5GDM aem7IKMB24XZHOBDCMTAALOMT5GDM prdGWENGPRDMFGRHJFXAG5FYSHVDQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthVEW7SPTBN5FA3KY2WXDD5KHFS4" Name="getUserFuncDisplayName" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="id" Id="mpr3WV4PY5VJZA6DEZKI372WONTFY">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return model.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM prdLKXRGY3PCRBR3ED4HQEB25EODE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthRSAGQPJ7UNFH5AHNFVU54KAGBI" Name="moveCursorToProblem" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="problem" Id="mprAUE6Z5YBJRCHDL7FF47QD6BMLM">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.editors.jmleditor.JmlProblemList.ProblemItem"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcT2XSNOGQ4RERZBE7XNCA7JWLQI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> jmlEditor = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc73BWGKQGLJF3RGFI6PSTJVD444 mth3DPIZMTAQBDC3B7FNNJHV7KCLA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+if (jmlEditor != null) {
+    jmlEditor.moveCursorToProblem(problem);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth3DD4O7MM7ZDUREDV6WWIELX2F4" Name="EditorUserFuncLocator" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="userFuncModel" Id="mprHQT6Y2RQKFADDDX2326V364LA4">
+            <Type TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM epr7IKMB24XZHOBDCMTAALOMT5GDM aem7IKMB24XZHOBDCMTAALOMT5GDM"/>
+          </Parameter>
+          <Parameter Name="editor" Id="mprX6OVJ5KOABE3XO6TVAKVOEFTGI">
+            <Type TypeId="411" Path="wdcF3DWBBMGWNCOTAV47IN4UGG25I admF3DWBBMGWNCOTAV47IN4UGG25I"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this.model = userFuncModel;
+this.editorModel = editor;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthCXNNVUUI5NAPRPWG5NFBJWIIB4" Name="moveCursorToPosition" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="line_col" Id="mprIQVZALJKXNDZ7HNFBSUZRH75WA">
+            <Type TypeId="401" extStr="int" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcT2XSNOGQ4RERZBE7XNCA7JWLQI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> jmlEditor = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc73BWGKQGLJF3RGFI6PSTJVD444 mth3DPIZMTAQBDC3B7FNNJHV7KCLA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+if (jmlEditor != null) {
+    jmlEditor.setPositionAndHighlitAsError(line_col[0], line_col[1]);
+    jmlEditor.TextEditor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthHSHZCZBXZFCUZAJGJ7MSCA4QPE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth3DPIZMTAQBDC3B7FNNJHV7KCLA" Name="getEditorIfAny" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.editors.jmleditor.JmlEditor"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java> return editorModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="wdcF3DWBBMGWNCOTAV47IN4UGG25I admF3DWBBMGWNCOTAV47IN4UGG25I mthGI2OKKTOXRHV5PEVULTERXHAD4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Implements>
+      <Interface TypeId="411" Path="aicN7UKX33XRFEYVMWFD2KV3HKX6A"/>
+    </Implements>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,1443 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcQ46YBRNDL7ORDI2YABIFNQAABA" Name="Timing" Type="3" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcXCLQWZGEFRBPJLE2RRZITULCBI">
+        <xsc:Item>
+          <xsc:Java>import java.util.Calendar;
+import java.util.GregorianCalendar;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcJPEOC4DQFJDOXBKRXGK4OLLSFI">
+        <xsc:Item>
+          <xsc:Java>final public static int MILLIS_IN_DAY=24*3600*1000;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmgKQ7OIRCF75DNXEOOYFZVECCLBQ" Name="Root">
+      <Group Id="cmgSASMZI7QGFCVHMFZAVULIM2NXM" Name="To String" Members="mthQKQNLA6VMXORDNU7ABIFNQAABA mth4B4WDQ5GL7ORDI2YABIFNQAABA mthP27SRNGVMXORDNU7ABIFNQAABA mth5CBO4X6JLZERLON7F74LUIHFJE mthJK3LVQH5MBEWTI4IAZNRNACWJE mthZTDZERY2EFG4BKALU6UDNWC22Y"/>
+      <Group Id="cmgH56VGHITUVALBLEOAPWGZBBHKM" Name="Trunc" Members="mthZLWRDW5DL7ORDI2YABIFNQAABA mthBFSIA7EC53ORDJ2KABIFNQAABA mthFU632E4D53ORDJ2KABIFNQAABA mthYNKD43MD53ORDJ2KABIFNQAABA mthSBJGSF5ZAZCXJIBX6FKN3PV2IQ mthJJHZ45NW7FCENFB2JTREGXF47E"/>
+      <Group Id="cmgURWFPOMGE5FEHGODNF7V2OROCI" Name="Get" Members="mthZDWRDW5DL7ORDI2YABIFNQAABA mthE3FZTFOUB3PBDKVFABIFNQAABA mthZHWRDW5DL7ORDI2YABIFNQAABA mthZXWRDW5DL7ORDI2YABIFNQAABA mthZ3WRDW5DL7ORDI2YABIFNQAABA mthZPWRDW5DL7ORDI2YABIFNQAABA mthZTWRDW5DL7ORDI2YABIFNQAABA mthZXNFDED6MVCYFP7CDFEBKA4SQI mthPQ3JMAP3NVATHCKRERFXYVHSLU mthWD7LAMA53ZANTG7SCS7T6I7OOQ mthYXWRDW5DL7ORDI2YABIFNQAABA mth3SWXDPPAPNBNTA5RHRA7P42HCQ mthTX34O5KFXZEDFEXSXGHQ3XFTUU mthWJJVTSRQBJDAVDIOHAT3AELX4M mthENRPFF4KUZEZFMVSS5KQ62RMBI mthUVNOOM764FCGJBSAR3KHB2E2WA mth6UMKZLXPOVBHJIPUUMTNFMO6IQ mthCNJGZWX5TZHZBJVNYPLPVQ4FZQ mthJDNT5ZJPJBHVDFP65SGV7QVP34 mthBEEIE5RJFBDV5MUQ365KENHYO4"/>
+      <Group Id="cmgUZFHOQZ6SRDEBIZVHSCPXS6T44" Name="Modify" Members="mthQ6SHJVKH5XORDEZDABIFNQAABA mth75INH72H5XORDEZDABIFNQAABA mthY3WRDW5DL7ORDI2YABIFNQAABA mthZ3PSDX56CFAZXET3YHYENOPUSY mthF6F5ATWPFNC6FJ564JCMEVGYAE mthWMIVS2BAONF6NEBCEGNF3LULHQ mthYNONYF7BQRGZRHVEEM53W36TPE mthH24A4FRWLVCAPKRJTN5FIRQWLY mthGQW74WU7BRCG5FXI665CLJ4D3E mthZ5F6A62E5JB3TDR5U3PXO4YXF4"/>
+      <Group Id="cmgKDFHODYW7BDXBEUGUMWZ626HLM" Name="Build" Members="mthAZF5IUVC4PORDBPOABIFNQAABA mthLORZWWHLLPPBDBSSABIFNQAABA mthY7WRDW5DL7ORDI2YABIFNQAABA"/>
+      <Group Id="cmgOU3XJLYJGJCEPMS2VZEW2RCHUA" Name="Convert" Members="mthYWLRUEU3MZECRJSVKLDN2KR6OI mthHNG45WJKVFAZZCOCDMJQFWRIC4"/>
+    </MethodGroup>
+    <PropertyGroup Id="cpgNJCG7QOIEBFLRF3MGXF44PXVWE" Name="Root"/>
+    <Properties>
+      <Property Id="prdFCZ7Y3FEL7ORDI2YABIFNQAABA" Name="timeZone" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Type TypeId="400" extStr="java.util.TimeZone"/>
+        <InitialValue>
+          <ValAsStr>null</ValAsStr>
+        </InitialValue>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth4B4WDQ5GL7ORDI2YABIFNQAABA" Name="dateTimeToString" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="dateTime" Id="mprISROQIKCPBAQHD6J3KKQ77Z4CI">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="pattern" Id="mpr3IXWCCJEIFGABKOGXRBGR6SU5M">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (dateTime==null)
+    return null;
+return new java.text.SimpleDateFormat(pattern).format(dateTime);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth5CBO4X6JLZERLON7F74LUIHFJE" Name="dateToLocalString" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="date" Id="mprMEP6U3PZ7RFIZE5NZDU53B6CVA">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (date==null)
+    return null;
+//uses locale default format
+return java.text.DateFormat.getDateInstance().format(date);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthBFSIA7EC53ORDJ2KABIFNQAABA" Name="truncTimeToMonday" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="time" Id="mprQNDORVFG3ZCNTB74OYDKQYFMNY">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if(time==null)
+   return null;
+   
+Calendar c=new java.util.GregorianCalendar();
+c.setTime(time);
+c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+c.set(Calendar.HOUR_OF_DAY,0);
+c.set(Calendar.MINUTE,0);
+c.set(Calendar.SECOND,0);
+c.set(Calendar.MILLISECOND,0);
+
+return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(c.getTimeInMillis());
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthE3FZTFOUB3PBDKVFABIFNQAABA" Name="getCurrentLocalDate" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>Calendar c=new java.util.GregorianCalendar();
+c.set(Calendar.HOUR_OF_DAY,0);
+c.set(Calendar.MINUTE,0);
+c.set(Calendar.SECOND,0);
+c.set(Calendar.MILLISECOND,0);
+
+return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(c.getTimeInMillis());</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthFU632E4D53ORDJ2KABIFNQAABA" Name="truncTimeToMonth" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="time" Id="mprURCQZKXHGND4TCZCVEQ6NPANHQ">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if(time==null)
+   return null;
+   
+Calendar c=new java.util.GregorianCalendar();
+c.setTime(time);
+c.set(Calendar.DAY_OF_MONTH, 1);
+c.set(Calendar.HOUR_OF_DAY,0);
+c.set(Calendar.MINUTE,0);
+c.set(Calendar.SECOND,0);
+c.set(Calendar.MILLISECOND,0);
+
+return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(c.getTimeInMillis());
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthP27SRNGVMXORDNU7ABIFNQAABA" Name="dateToNormalString" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="date" Id="mprQGFGQNPPWZFMHEMGUAKB2XSVCE">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (date==null)
+    return null;
+return new java.text.SimpleDateFormat("yyyy/MM/dd").format(date);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthQKQNLA6VMXORDNU7ABIFNQAABA" Name="dateTimeToNormalString" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="dateTime" Id="mprFOPDVTONCZHWLAD4JUDOFAUCVU">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (dateTime==null)
+    return null;
+return new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss.S").format(dateTime);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYNKD43MD53ORDJ2KABIFNQAABA" Name="truncTimeToYear" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="time" Id="mprU546EJRMHJBAVC3ZYJBQSXAVQ4">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if(time==null)
+   return null;
+   
+Calendar c=new java.util.GregorianCalendar();
+c.setTime(time);
+c.set(Calendar.MONTH, Calendar.JANUARY);
+c.set(Calendar.DAY_OF_MONTH, 1);
+c.set(Calendar.HOUR_OF_DAY,0);
+c.set(Calendar.MINUTE,0);
+c.set(Calendar.SECOND,0);
+c.set(Calendar.MILLISECOND,0);
+
+return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(c.getTimeInMillis());
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthZ3WRDW5DL7ORDI2YABIFNQAABA" Name="getCurrentLocalTimeMillis" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="401" extStr="long"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return System.currentTimeMillis();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthZDWRDW5DL7ORDI2YABIFNQAABA" Name="getCurrentGreenwichTime" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>long curr=System.currentTimeMillis();
+return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(curr - </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQ46YBRNDL7ORDI2YABIFNQAABA mthZTWRDW5DL7ORDI2YABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(curr));
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthZHWRDW5DL7ORDI2YABIFNQAABA" Name="getCurrentLocalTime" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( System.currentTimeMillis() );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthZLWRDW5DL7ORDI2YABIFNQAABA" Name="truncTimeToDay" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="time" Id="mprFOZ3ZQQKQZFQNNF7L26JORRIYA">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if(time==null)
+   return null;
+   
+Calendar c=new java.util.GregorianCalendar();
+c.setTime(time);
+c.set(Calendar.HOUR_OF_DAY,0);
+c.set(Calendar.MINUTE,0);
+c.set(Calendar.SECOND,0);
+c.set(Calendar.MILLISECOND,0);
+
+return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(c.getTimeInMillis());
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthZPWRDW5DL7ORDI2YABIFNQAABA" Name="getTimeOfDayMin" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="time" Id="mprT5EAX5WRP5B6PCZXGUNR6KL2DE">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if(time==null)
+   return 0;
+Calendar c=new java.util.GregorianCalendar();
+c.setTime(time);
+return  c.get(Calendar.HOUR_OF_DAY)*60+c.get(Calendar.MINUTE); 
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthZTWRDW5DL7ORDI2YABIFNQAABA" Name="getTimeOffset" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="localMillis" Id="mprAFLBA3YYDFAJTA4VKQHPGCCLFM">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQ46YBRNDL7ORDI2YABIFNQAABA prdFCZ7Y3FEL7ORDI2YABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>==null)
+   </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQ46YBRNDL7ORDI2YABIFNQAABA prdFCZ7Y3FEL7ORDI2YABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>=java.util.TimeZone.getDefault();
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQ46YBRNDL7ORDI2YABIFNQAABA prdFCZ7Y3FEL7ORDI2YABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getOffset(localMillis);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthZXWRDW5DL7ORDI2YABIFNQAABA" Name="getCurrentGreenwichTimeMillis" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="401" extStr="long"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>long curr=System.currentTimeMillis();
+return curr - </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQ46YBRNDL7ORDI2YABIFNQAABA mthZTWRDW5DL7ORDI2YABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(curr);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthQ6SHJVKH5XORDEZDABIFNQAABA" Name="addMonth" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="time" Id="mprXZOS7LUZ6JE3DKH2PIXIYIHB34">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="months" Id="mprFHQTRXAIURHKVNGL2EGDJ5DT2A">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (time==null)
+	return null;
+	
+Calendar c=new java.util.GregorianCalendar();
+c.setTime(time);
+c.add(Calendar.MONTH, months);
+
+return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(c.getTimeInMillis());
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthF6F5ATWPFNC6FJ564JCMEVGYAE" Name="setYear" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="datetime" Id="mprK6DL4DVQCNCDZFX4DVQRGDBRPU">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="year" Id="mprOXWVZK33PBG27NHAJFR5ZAE564">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (datetime == null)
+    return null;
+if (year == 0)	
+    return datetime;
+Calendar cDateTime = new java.util.GregorianCalendar();
+cDateTime.setTime(datetime);
+cDateTime.set(Calendar.YEAR, year);
+
+return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(cDateTime.getTimeInMillis());</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth75INH72H5XORDEZDABIFNQAABA" Name="addYear" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="time" Id="mprVDSUNNQKYRCSNHLEY2OKI74RSM">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="years" Id="mprM2Y23ADPWFHGDBLXHVDSLF6WQQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (time==null)
+	return null;
+	
+Calendar c=new java.util.GregorianCalendar();
+c.setTime(time);
+c.add(Calendar.YEAR, years);
+
+return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(c.getTimeInMillis());
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthY3WRDW5DL7ORDI2YABIFNQAABA" Name="addDay" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="time" Id="mprWTZTJPFFBVB2DKCJTFAFCIRSWU">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="days" Id="mprWLNGWXHGEZEUBHEAHTFF4LWNJI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (time==null || days == 0)
+  return time;
+	
+Calendar c=new java.util.GregorianCalendar();
+c.setTime(time);
+c.add(Calendar.DAY_OF_MONTH, days);
+
+return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(c.getTimeInMillis());
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthZ3PSDX56CFAZXET3YHYENOPUSY" Name="setDaytimeInMinutes" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="date" Id="mprVHHJWPM3TFHCPC6ZPT2JLY5XYU">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="daytime" Id="mpr2AED55XQHNCHDP5UQ2MW5O3EHI">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>/* set daytime from "daytime" to "date"
+ * for example
+ * date is 09 Nov 2009 18:03, daytime is 14 Oct 2007 05:22
+ * result is 09 Nov 2009 05:22
+ */
+if (date == null)
+    return null;
+if (daytime == null)	
+    return date;
+Calendar cDate = new java.util.GregorianCalendar();
+Calendar cDaytime = new java.util.GregorianCalendar();
+cDate.setTime(date);
+cDaytime.setTime(daytime);
+cDate.set(Calendar.HOUR_OF_DAY, cDaytime.get(Calendar.HOUR_OF_DAY));
+cDate.set(Calendar.MINUTE, cDaytime.get(Calendar.MINUTE));
+
+return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(cDate.getTimeInMillis());
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthZXNFDED6MVCYFP7CDFEBKA4SQI" Name="getCalendarTruncatedToDay" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="date" Id="mprUA2O74YU6FC2DGMSFIAAFP6QPY">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.Calendar"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if(date == null)
+  return null;
+
+final Calendar javaCalendar = new GregorianCalendar();
+javaCalendar.setTimeInMillis(date.getTime());
+javaCalendar.set(Calendar.MILLISECOND, 0);
+javaCalendar.set(Calendar.SECOND, 0);
+javaCalendar.set(Calendar.MINUTE, 0);
+javaCalendar.set(Calendar.HOUR_OF_DAY, 0);
+
+return javaCalendar;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthPQ3JMAP3NVATHCKRERFXYVHSLU" Name="max" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="dates" Id="mprJPXHFN43MBCUDEVUZPZWNK2TZM">
+            <Type TypeId="12" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> max = null;
+if(dates != null)
+{
+  for(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> d : dates)
+  {
+    if(max == null || (d != null &amp;&amp; d.after(max)))
+      max = d;
+  }
+}
+
+return max;
+  </xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthENRPFF4KUZEZFMVSS5KQ62RMBI" Name="getHours" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="datetime" Id="mprCCXGFNLMW5H67PYAJYBASI3SEM">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>/* return hour of date
+ */
+if (datetime == null)
+    return 0;
+Calendar cDateTime = new java.util.GregorianCalendar();
+cDateTime.setTime(datetime);
+return cDateTime.get(Calendar.HOUR_OF_DAY);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth6UMKZLXPOVBHJIPUUMTNFMO6IQ" Name="getMonth" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="datetime" Id="mprHMJSQ6NSWBHOFORJYVFB2OUZCM">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>/* return month of date
+ */
+if (datetime == null)
+    return 0;
+Calendar cDateTime = new java.util.GregorianCalendar();
+cDateTime.setTime(datetime);
+return cDateTime.get(Calendar.MONTH);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthUVNOOM764FCGJBSAR3KHB2E2WA" Name="getMinutes" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="datetime" Id="mprYUNZRHBCF5BWVCL5F3B2CXEJFA">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>/* return minutes within the hour 
+ */
+if (datetime == null)
+    return 0;
+Calendar cDateTime = new java.util.GregorianCalendar();
+cDateTime.setTime(datetime);
+return cDateTime.get(Calendar.MINUTE);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthTX34O5KFXZEDFEXSXGHQ3XFTUU" Name="getDayOfMonth" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="datetime" Id="mprTMO22SSHYFESPKCKGRPL24O4GM">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>/* return day of month 
+ */
+if (datetime == null)
+    return 0;
+Calendar cDateTime = new java.util.GregorianCalendar();
+cDateTime.setTime(datetime);
+return cDateTime.get(Calendar.DAY_OF_MONTH);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthWJJVTSRQBJDAVDIOHAT3AELX4M" Name="getDayOfYear" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="datetime" Id="mprQVCFFW3N6ZCTDLSZTG6FXJJ22M">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>/* return day of year 
+ */
+if (datetime == null)
+    return 0;
+Calendar cDateTime = new java.util.GregorianCalendar();
+cDateTime.setTime(datetime);
+return cDateTime.get(Calendar.DAY_OF_YEAR);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth3SWXDPPAPNBNTA5RHRA7P42HCQ" Name="getYear" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="datetime" Id="mprPQ3FFM5W7ZEN7CXCYRIOURRXYY">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>/* return year of date
+ */
+if (datetime == null)
+    return 0;
+Calendar cDateTime = new java.util.GregorianCalendar();
+cDateTime.setTime(datetime);
+return cDateTime.get(Calendar.YEAR);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthWD7LAMA53ZANTG7SCS7T6I7OOQ" Name="min" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="dates" Id="mpr4NAS6BZ4XVCCVGQ6CK6Q5ESRAE">
+            <Type TypeId="12" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> min = null;
+if(dates != null)
+{
+  for(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> d : dates)
+  {
+    if(min == null || (d != null &amp;&amp; d.before(min)))
+      min = d;
+  }
+}
+
+return min;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYXWRDW5DL7ORDI2YABIFNQAABA" Name="calcDayDistance" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="newDay" Id="mpr4SGOY33EGJBJRERSAQSN5R5HLU">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="oldDay" Id="mprV2X7A7OKIRAMVOXGTQ7XH3LBWE">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="long"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>//возвращает количество дней между двумя датами: 0 - этот же день, 1 - вчера и т.д.
+		
+GregorianCalendar c=new GregorianCalendar();
+c.setTime(newDay);
+GregorianCalendar cNewDay=new GregorianCalendar(c.get(Calendar.YEAR),c.get(Calendar.MONTH),c.get(Calendar.DAY_OF_MONTH));
+c.setTime(oldDay);
+GregorianCalendar cOldDay=new GregorianCalendar(c.get(Calendar.YEAR),c.get(Calendar.MONTH),c.get(Calendar.DAY_OF_MONTH));
+
+return Math.round(((double)(cNewDay.getTimeInMillis()-cOldDay.getTimeInMillis()))/MILLIS_IN_DAY);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthJK3LVQH5MBEWTI4IAZNRNACWJE" Name="dateTimeToLocalString" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="dateTime" Id="mprI5P5YLQXQZGC5KL4U5YOOC4244">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (dateTime==null)
+    return null;
+//uses locale default format
+return java.text.DateFormat.getDateTimeInstance().format(dateTime);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthSBJGSF5ZAZCXJIBX6FKN3PV2IQ" Name="endTimeOfMonth" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="time" Id="mpr7O7UCS2PTVHTRFNLIWE377I7AY">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if(time==null)
+   return null;
+   
+Calendar c=new java.util.GregorianCalendar();
+c.setTime(time);
+c.add(Calendar.MONTH, 1); //
+c.set(Calendar.DAY_OF_MONTH, 1);
+c.set(Calendar.HOUR_OF_DAY,0);
+c.set(Calendar.MINUTE,0);
+c.set(Calendar.SECOND,0);
+c.set(Calendar.MILLISECOND,0);
+//получили начало следующего месяца
+
+return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(c.getTimeInMillis()-1); //на милисекунду назад
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthJJHZ45NW7FCENFB2JTREGXF47E" Name="endDayOfMonth" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="time" Id="mprSERQQ3AUPBCETMOJTDWNEIFJVY">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if(time==null)
+   return null;
+   
+Calendar c=new java.util.GregorianCalendar();
+c.setTime(time);
+c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+c.set(Calendar.HOUR_OF_DAY,0);
+c.set(Calendar.MINUTE,0);
+c.set(Calendar.SECOND,0);
+c.set(Calendar.MILLISECOND,0);
+
+return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(c.getTimeInMillis());
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthAZF5IUVC4PORDBPOABIFNQAABA" Name="buildDateTime" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="year" Id="mprSRFUHG3GKRHDVBPCR3O5EZ4N4I">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="month" DescriptionId="mlsI3L7J53TVBEDHJNZRBHJEFEVWQ" Id="mpr4BXYOKRNU5DDFAAF5ATU33PV24">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="day" DescriptionId="mlsUJUHG56GJVFKNNN7PCK6VUZ2YI" Id="mprEIISICQZFREGJPZNTOZGAZKEBE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQ46YBRNDL7ORDI2YABIFNQAABA mthY7WRDW5DL7ORDI2YABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(year, month, day, 0, 0, 0);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthLORZWWHLLPPBDBSSABIFNQAABA" Name="buildDateTime" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="year" Id="mpr6RCVEEZRIVG4TOQO6B64MQSOOQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="month" DescriptionId="mlsYGVR5CE42NDPZKLYXZZGYR4DJA" Id="mpr366CF5JICNBOZMQ7ZBBJEJ4OFQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQ46YBRNDL7ORDI2YABIFNQAABA mthY7WRDW5DL7ORDI2YABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(year, month, 1, 0, 0, 0);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthY7WRDW5DL7ORDI2YABIFNQAABA" Name="buildDateTime" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="year" Id="mprG7DLP7WHNVB5DDCJUCS4A2K4WM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="month" DescriptionId="mls5XIR2WOJEVEUHM5LK72PDEF2LY" Id="mprRGYRQ3ZOLBE5ZOGPIVVKPJD2QA">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="day" DescriptionId="mlsWYZFTTYFZBAP3JWNS6NQ54W5SA" Id="mprYJHS2NE7TRDDNC56ZPESUVIGYI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="hour" Id="mprAHTFRZK3WVBOHOFZBPRVHBINTE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="minute" Id="mprXTSFV2BX2ZBQ5NI2OFBTLDTBUM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="second" Id="mprGR7DAVRG75FBZDG7SKI7VN7GLQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>GregorianCalendar c = new GregorianCalendar();   
+c.setLenient(false);// by aemelyanov, eterentiev
+
+if(year&lt;=99) 
+   year+=(c.get(Calendar.YEAR)/100)*100;
+   
+// clear including milliseconds
+c.clear();
+
+c.set(year,month,day,hour,minute,second);/* RADIX-3170
+// month the value used to set the MONTH calendar field. 
+// Month value in Calendar is 0-based. e.g., 0 for January, so we need to decrease for 1.
+c.set(year,month-1,day,hour,minute,second);
+*/
+return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(c.getTimeInMillis());
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthCNJGZWX5TZHZBJVNYPLPVQ4FZQ" Name="min" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="date1" Id="mprDCVLD3P5BZDF5NRXH3BMULHEJU">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="date2" Id="mprRCK3UBK6MVCTJB5EA23RGVMX5I">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQ46YBRNDL7ORDI2YABIFNQAABA mthWD7LAMA53ZANTG7SCS7T6I7OOQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>[]{date1, date2});</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthJDNT5ZJPJBHVDFP65SGV7QVP34" Name="max" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="date1" Id="mprCJF55GE6JRGL5JR3ECQMPI2ZNU">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="date2" Id="mprTMETLGPBZVDJHEFHW3Y5ERRPUU">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQ46YBRNDL7ORDI2YABIFNQAABA mthPQ3JMAP3NVATHCKRERFXYVHSLU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>[]{date1, date2});</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthWMIVS2BAONF6NEBCEGNF3LULHQ" Name="setDaytime" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="date" Id="mprKDMU775FSZE3TLZXDCGHVBCDOU">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="daytime" Id="mprCOK7GLN5ZRBTXBIVA5AU7ROJLM">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>/*
+    * set daytime from "daytime" to "date" for example date is 09 Nov 2009
+    * 18:03, daytime is 14 Oct 2007 05:22 result is 09 Nov 2009 05:22
+    */
+if (date == null)
+    return null;
+if (daytime == null)
+    return date;
+Calendar cDate = new java.util.GregorianCalendar();
+Calendar cDaytime = new java.util.GregorianCalendar();
+cDate.setTime(date);
+cDaytime.setTime(daytime);
+cDate.set(Calendar.HOUR_OF_DAY, cDaytime.get(Calendar.HOUR_OF_DAY));
+cDate.set(Calendar.MINUTE, cDaytime.get(Calendar.MINUTE));
+cDate.set(Calendar.SECOND, cDaytime.get(Calendar.SECOND));
+cDate.set(Calendar.MILLISECOND, cDaytime.get(Calendar.MILLISECOND));
+
+return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(cDate.getTimeInMillis());
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYNONYF7BQRGZRHVEEM53W36TPE" Name="addHour" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="time" Id="mprRWNVO453RVBUXMHEVTE5PDITHU">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="hours" Id="mpr6HQ7BT7BJVD5HDVJRPCFGP2N4M">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (time==null || hours == 0)
+  return time;
+	
+Calendar c=new java.util.GregorianCalendar();
+c.setTime(time);
+c.add(Calendar.HOUR_OF_DAY, hours);
+
+return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(c.getTimeInMillis());
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthH24A4FRWLVCAPKRJTN5FIRQWLY" Name="truncateToMinutes" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="date" Id="mpr5MY5CUJU7BGVNMZBRNIVUYAEAQ">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>/* set daytime from "daytime" to "date"
+ * for example
+ * date is 09 Nov 2009 18:03, daytime is 14 Oct 2007 05:22
+ * result is 09 Nov 2009 05:22
+ */
+if (date == null)
+    return null;
+Calendar cDate = new java.util.GregorianCalendar();
+cDate.setTime(date);
+cDate.set(Calendar.SECOND, 0);
+cDate.set(Calendar.MILLISECOND, 0);
+
+return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(cDate.getTimeInMillis());
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthBEEIE5RJFBDV5MUQ365KENHYO4" Name="calcDistance" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true" IsDeprecated="true"/>
+        <Parameters>
+          <Parameter Name="newTime" Id="mprCRYUM3LHB5C2XHLBJZ3QYQRUXM">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="oldTime" Id="mprZY6WKOOOEBGMNGWP7ZMZL4SZLA">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="long"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>//возвращает количество миллисекунд между двумя датами
+return newTime.Time-oldTime.Time;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthZTDZERY2EFG4BKALU6UDNWC22Y" Name="millisToDurationString" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="millis" Id="mprC2LHOUYM5ZBDROO4P3VPG2AYLQ">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>long totalSeconds = millis / 1000;
+if (totalSeconds &lt; 1) {
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsWG4TG76O2JDRJKVXFQOHJXYXWI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+}
+long totalMinutes = totalSeconds / 60;
+if (totalMinutes == 0) {
+    return String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls65VGT2BV7BA3XJZDMQWDBGMH3U"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, totalSeconds);
+}
+long totalHours = totalSeconds / 3600;
+if (totalHours == 0) {
+    return String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsX5YILLPM6FCHFLRJUJTURYMDAY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, totalMinutes, totalSeconds - totalMinutes * 60);
+}
+
+long totalDays = totalSeconds / (3600 * 24);
+if (totalDays == 0) {
+    return String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsW3KG24XPQVBYPBYJ2GM2CPSXXI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, totalHours, totalMinutes - totalHours * 60, totalSeconds - totalMinutes * 60);
+}
+
+final String dayString;
+switch ((int) totalDays) {
+    case 1:
+        dayString = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsQ3II5WFEB5CUXHZWIMXQHFLZFI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+        break;
+    case 2:
+    case 3:
+    case 4:
+        dayString = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsQICRWXBUKJHZVIQ63NAOPP6KXA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+        break;
+    default:
+        dayString = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsII46MWK2HFGE5MRWHJSLSUPGEU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+}
+
+return String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls53RQITQ23FBDFEOPPXXJKOZJ4A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, totalDays, dayString, totalHours - totalDays * 24, totalMinutes - totalHours * 60, totalSeconds - totalMinutes * 60);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYWLRUEU3MZECRJSVKLDN2KR6OI" Name="getCalendar" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="date" Id="mprHF7ORSAUDJENZBHY3JECEBPDMQ">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.Calendar"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if(date == null)
+  return null;
+
+final Calendar javaCalendar = new GregorianCalendar();
+javaCalendar.setTimeInMillis(date.getTime());
+
+return javaCalendar;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthHNG45WJKVFAZZCOCDMJQFWRIC4" Name="getDateTime" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="calendar" Id="mprSLK3QAG2WBAFRPWFHOMWODCSDE">
+            <Type TypeId="400" extStr="java.util.Calendar"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if(calendar == null)
+  return null;
+
+return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(calendar.getTimeInMillis());</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthGQW74WU7BRCG5FXI665CLJ4D3E" Name="truncateToHours" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="date" Id="mpr5MY5CUJU7BGVNMZBRNIVUYAEAQ">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>/* set daytime from "daytime" to "date"
+ * for example
+ * date is 09 Nov 2009 18:03, daytime is 14 Oct 2007 05:22
+ * result is 09 Nov 2009 05:22
+ */
+if (date == null)
+    return null;
+Calendar cDate = new java.util.GregorianCalendar();
+cDate.setTime(date);
+cDate.set(Calendar.MINUTE, 0);
+cDate.set(Calendar.SECOND, 0);
+cDate.set(Calendar.MILLISECOND, 0);
+
+return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(cDate.getTimeInMillis());
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthZ5F6A62E5JB3TDR5U3PXO4YXF4" Name="truncateToSeconds" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="time" Id="mprJRMRXRNA3FCUPN4HHOJFGULMJQ">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>/* set daytime from "daytime" to "date"
+ * for example
+ * date is 09 Nov 2009 18:03, daytime is 14 Oct 2007 05:22
+ * result is 09 Nov 2009 05:22
+ */
+if (time == null)
+    return null;
+Calendar cDate = new java.util.GregorianCalendar();
+cDate.setTime(time);
+cDate.set(Calendar.MILLISECOND, 0);
+
+return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(cDate.getTimeInMillis());</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

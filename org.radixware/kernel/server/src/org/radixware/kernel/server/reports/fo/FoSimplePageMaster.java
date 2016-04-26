@@ -1,0 +1,46 @@
+/*
+ * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. This Source Code is distributed
+ * WITHOUT ANY WARRANTY; including any implied warranties but not limited to
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * Mozilla Public License, v. 2.0. for more details.
+ */
+
+package org.radixware.kernel.server.reports.fo;
+
+import javax.xml.stream.XMLStreamException;
+
+class FoSimplePageMaster extends FoObject {
+
+    public FoSimplePageMaster(FoLayoutMasterSet owner) {
+        super(owner);
+    }
+
+    @Override
+    protected String getName() {
+        return "simple-page-master";
+    }
+
+    public void setMasterName(String masterName) throws XMLStreamException {
+        writeAttribute("master-name", masterName);
+    }
+
+    public void setPageWidth(double pageWidthMm) throws XMLStreamException {
+        writeMm("page-width", pageWidthMm);
+    }
+
+    public void setPageHeight(double pageHeightMm) throws XMLStreamException {
+        writeMm("page-height", pageHeightMm);
+    }
+
+    public void setPageHeight(String pageHeight) throws XMLStreamException {
+        writeAttribute("page-height", pageHeight);
+    }
+
+    public FoRegionBody addNewRegionBody() {
+        return new FoRegionBody(this);
+    }
+}

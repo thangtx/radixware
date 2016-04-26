@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="sscCQR3HCU4EBB5XCTZMJGIZ4LRPE" Name="OutMessageFailedUpdater" DescriptionId="mlsQTWUIIEY5RHM5KSQLYQVH7WLNI" Type="9">
+    <AccessRules>
+      <Transparence Extendable="true" PublishedName="org.radixware.kernel.server.types.Statement"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeadersscCQR3HCU4EBB5XCTZMJGIZ4LRPE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodysscCQR3HCU4EBB5XCTZMJGIZ4LRPE"/>
+    </Bodies>
+    <MethodGroup Id="cmgX6OR5DBWSBAZJA5E4CA3MUNAAI" Name="Root"/>
+    <PropertyGroup Id="cpgA24ETATWHNHMJFAQ5SUSJVAGRA" Name="Root"/>
+    <Properties>
+      <Property Id="prm535UNCBWGRGJLHJ3TAVRQOIURQ" Name="id" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prm5SJKPR2KLREHHHO3TZPRJPXBDQ" Name="newChannelId" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prmLNZYJUT24NANPMQ6UHA2XD3PNI" Name="newDestinationAddress" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmXMU7Q6SNXRBX3ABGNS3AGHEQDE" Name="newDueTime" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="12"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="execute" Nature="15" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="id" Id="mpr535UNCBWGRGJLHJ3TAVRQOIURQ">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="newChannelId" Id="mpr5SJKPR2KLREHHHO3TZPRJPXBDQ">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="newDestinationAddress" Id="mprLNZYJUT24NANPMQ6UHA2XD3PNI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="newDueTime" Id="mprXMU7Q6SNXRBX3ABGNS3AGHEQDE">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth_stmt_setExecuteBatch_____" Name="setExecuteBatch" Nature="15" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="size" Id="mprSize______________________">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth_stmt_sendBatch___________" Name="sendBatch" Nature="15" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>update </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA">
+            <xsc:TableAlias>OutMsg</xsc:TableAlias>
+          </xsc:TableSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> set </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="colQQY3SX4QUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>OutMsg</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prm5SJKPR2KLREHHHO3TZPRJPXBDQ"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+       </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="colPRIH4IEQUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>OutMsg</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmLNZYJUT24NANPMQ6UHA2XD3PNI"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+       </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="colM2TKV4MPUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>OutMsg</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmXMU7Q6SNXRBX3ABGNS3AGHEQDE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+       </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="colS2LOJTRFBJCDFHYYJEGO5QSN24" Owner="TABLE">
+            <xsc:TableAlias>OutMsg</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = 0 
+       where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="col3YNY224PUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>OutMsg</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prm535UNCBWGRGJLHJ3TAVRQOIURQ"/>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" Alias="OutMsg"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="400" extStr="org.radixware.kernel.server.types.Statement"/>
+  </AdsClassDefinition>
+</AdsDefinition>

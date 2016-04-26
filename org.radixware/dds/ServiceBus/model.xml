@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Model xmlns="http://schemas.radixware.org/ddsdef.xsd" xmlns:com="http://schemas.radixware.org/commondef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" Id="prj5N3LTDN4SBBL3PUGGBRPUACFHQ" DbNamePrefix="RDX_SB">
+  <Tables>
+    <Table Id="tblX6WI554KVVCZPGNLK7CSZLOMTY" Name="Pipeline" DbName="RDX_SB_PIPELINE" UserExtMask="65536">
+      <Columns>
+        <Column Id="colNQ7ACV4LNVHNBGGPWFPOCPH2P4" Name="id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID" SequenceId="sqnHAWTB62FZVELZCBCHIJR23VADA" TemplateId="cdmN4HG25YEYZCLLGEB3KQ2WTP7EU"/>
+        <Column Id="colOE3X3Z3RC5ANFOCA72MDUTOIVQ" Name="classGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="CLASSGUID"/>
+        <Column Id="colA4MWSYIO2JBZPGKY445BVZJZYM" Name="title" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="TITLE" TemplateId="cdmVKEXNOQQ5ZGI3KZWQLOMROTKWE"/>
+        <Column Id="colCGJULBTXSRAFDE2IKCVHFAXWZM" Name="description" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="DESCRIPTION" TemplateId="cdmBTGBYZC5GBAM5PKMEF2HYVPF7U"/>
+        <Column Id="colOBH63TJRIBGKFL77Q4SKEU2SEE" Name="diagramm" ValType="27" Length="0" DbType="CLOB" NotNull="false" DbName="DIAGRAMM"/>
+        <Column Id="col6R52LGN5LVDE7BXSJMDJIFJLRQ" Name="checked" ValType="1" Length="1" DbType="NUMBER(1,0)" NotNull="false" DbName="CHECKED">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>0</com:Value>
+          </DefaultVal>
+        </Column>
+        <Column Id="colJN4CXGS7FVHNDIOXSQGB4FWKDM" Name="traceProfile" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="TRACEPROFILE"/>
+        <Column Id="col74BRHCTUWJBWBNSLTZU6WRQLXM" Name="lastUpdateTime" ValType="12" Length="0" DbType="DATE" NotNull="true" DbName="LASTUPDATETIME"/>
+        <Column Id="col75T5SOB6DRHXXJOJJO3MTTY3JE" Name="lastUpdateUserName" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="false" DbName="LASTUPDATEUSERNAME" TemplateId="cdmBHOWDKCA6FDZVJ35M73O6CZJ6A"/>
+        <Column Id="colIT3FZJ6PFJC6FAK22RGG7PNYWQ" Name="myEntityGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" GenerateInDb="false" DbName="MYENTITYGUID">
+          <Expression>
+            <xsc:Item>
+              <xsc:Id Path="tblX6WI554KVVCZPGNLK7CSZLOMTY"/>
+            </xsc:Item>
+          </Expression>
+        </Column>
+        <Column Id="colNFW3BHI6OJFUHJRXQHDJ77575M" Name="myEntityPid" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="true" GenerateInDb="false" DbName="MYENTITYPID" TemplateId="cdm7256M45ZTRFANMU2Z4OFJJ2WRE">
+          <Expression>
+            <xsc:Item>
+              <xsc:Sql>TO_CHAR(</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tblX6WI554KVVCZPGNLK7CSZLOMTY" PropId="colNQ7ACV4LNVHNBGGPWFPOCPH2P4" Owner="THIS">
+                <xsc:Sql>ID</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>)</xsc:Sql>
+            </xsc:Item>
+          </Expression>
+        </Column>
+        <Column Id="colZIZFJNA77FEKRI4DGSX7CHPXWI" Name="extGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="EXTGUID"/>
+      </Columns>
+      <PrimaryKey Id="idxNQUWDVSTCBC4FLFB6M6FSBSWK4" Name="PrimaryKey" DbName="PK_RDX_SB_PIPELINE" Unique="true">
+        <Columns>
+          <Column ColumnId="colNQ7ACV4LNVHNBGGPWFPOCPH2P4" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqCSSNINPVS5C6VHFUIEPYSPPDZY" DbName="PK_RDX_SB_PIPELINE" Rely="true"/>
+      </PrimaryKey>
+      <Indices>
+        <Index Id="idxV3BNVEBUNFC7NAW7W7PFFXZPQE" Name="Pipeline" DbName="IDX_RDX_SB_PIPELINE_PIPELINE" GenerateInDb="false">
+          <Columns>
+            <Column ColumnId="colIT3FZJ6PFJC6FAK22RGG7PNYWQ" Order="Asc"/>
+            <Column ColumnId="colNFW3BHI6OJFUHJRXQHDJ77575M" Order="Asc"/>
+          </Columns>
+          <UniqueConstraint Id="unqA6OUUXK3SNEGBHTLVICSL74XGU" DbName="UNQ_RDX_SB_PIPELINE_PIPELINE" Rely="true"/>
+        </Index>
+      </Indices>
+      <Placement PosX="240" PosY="163"/>
+    </Table>
+    <Table Id="tblPNJV5QTXIBGJPBHK64RO3LH73A" Name="PipelineNode" DbName="RDX_SB_PIPELINENODE" UserExtMask="65568">
+      <Columns>
+        <Column Id="colQ4QH3CFLQFH4ZENFIHVYOWNBVA" Name="id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID" SequenceId="sqnZYDLA5AB2ZF4DBQKWEJ3VAQMQA" TemplateId="cdmN4HG25YEYZCLLGEB3KQ2WTP7EU"/>
+        <Column Id="colNTDD54Y7UZAB3NVSTGLNNOSN4Y" Name="extGuid" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="true" DbName="EXTGUID"/>
+        <Column Id="col3P3IN2TZVFEGNLC2J5PB5NG5CE" Name="classGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="CLASSGUID"/>
+        <Column Id="colN73KKVWQDVG6XJXW6NBQ3SJ4MQ" Name="pipelineEntityGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="PIPELINEENTITYGUID"/>
+        <Column Id="col42OIA6GTPNDYBOOTAJXXB5JAFY" Name="pipelineEntityPid" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="true" DbName="PIPELINEENTITYPID" TemplateId="cdm7256M45ZTRFANMU2Z4OFJJ2WRE"/>
+        <Column Id="colINHZQ7NTTVDYDATLRAMEPNM55U" Name="title" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="TITLE" TemplateId="cdmVKEXNOQQ5ZGI3KZWQLOMROTKWE"/>
+        <Column Id="colYMNM6EH6LVB4BOBROI66ZOVBCE" Name="description" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="DESCRIPTION" TemplateId="cdmBTGBYZC5GBAM5PKMEF2HYVPF7U"/>
+        <Column Id="colXNDK3TLXSZC2TOKLUPN7Y2MU6Y" Name="lastUpdateTime" ValType="12" Length="0" DbType="DATE" NotNull="true" DbName="LASTUPDATETIME"/>
+        <Column Id="col33JH36QBOZFNLFI5IIRQI4LQ2U" Name="lastUpdateUserName" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="false" DbName="LASTUPDATEUSERNAME" TemplateId="cdmBHOWDKCA6FDZVJ35M73O6CZJ6A"/>
+      </Columns>
+      <PrimaryKey Id="idxGAP3QFAW7ZB37KJQFVPQNOIGTQ" Name="PrimaryKey" DbName="PK_RDX_SB_PIPELINENODE" Unique="true">
+        <Columns>
+          <Column ColumnId="colQ4QH3CFLQFH4ZENFIHVYOWNBVA" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqE3XGDQFCQ5HTTMRNLUTXOBB3V4" DbName="PK_RDX_SB_PIPELINENODE" Rely="true"/>
+      </PrimaryKey>
+      <Indices>
+        <Index Id="idxD6K4FBHGQZGINON7M4FKY2A3BM" Name="Pipeline" DbName="IDX_RDX_SB_PIPELINENODE_PIPE" AutoDbName="false">
+          <Columns>
+            <Column ColumnId="colN73KKVWQDVG6XJXW6NBQ3SJ4MQ" Order="Asc"/>
+            <Column ColumnId="col42OIA6GTPNDYBOOTAJXXB5JAFY" Order="Asc"/>
+            <Column ColumnId="colQ4QH3CFLQFH4ZENFIHVYOWNBVA" Order="Asc"/>
+          </Columns>
+        </Index>
+      </Indices>
+      <Triggers>
+        <Trigger Id="trgS4GDLYOOKVGPDGFZFXMKEMCF64" Name="UserPropOwn" DbName="UPO_PNJV5QTXIBGJPBHK64RO3LH73A" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+   RDX_ENTITY.UserPropOnDelOwner('tblPNJV5QTXIBGJPBHK64RO3LH73A', :old.ID);
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+      </Triggers>
+      <Placement PosX="651" PosY="181"/>
+    </Table>
+    <Table Id="tblPRLADV4SK5HD5AXGJNL7NC5DIE" Name="PipelineConnector" DbName="RDX_SB_PIPELINECONNECTOR">
+      <Columns>
+        <Column Id="colZD5OA7UKC5BXVJQO5XA2ZOBNII" Name="nodeId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="NODEID" TemplateId="cdmN4HG25YEYZCLLGEB3KQ2WTP7EU"/>
+        <Column Id="col6MYWN4YK25AZJADSKWAVE4YT3Q" Name="role" ValType="21" Length="200" DbType="VARCHAR2(200 char)" NotNull="true" DbName="ROLE"/>
+        <Column Id="colTSNTMOTE55BTRGMGJNMM3BI7T4" Name="title" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="TITLE" TemplateId="cdmVKEXNOQQ5ZGI3KZWQLOMROTKWE"/>
+        <Column Id="colTRIXHAXT3RBV3OSHN7YYKXNURQ" Name="rqType" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="true" DbName="RQTYPE"/>
+        <Column Id="colFLIOQMWGFRFNJIOCJCGZQFLMN4" Name="rsType" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="true" DbName="RSTYPE"/>
+      </Columns>
+      <PrimaryKey Id="idxYKEFA6VARNDXLLCO6TCZ2447II" Name="PrimaryKey" DbName="PK_RDX_SB_PIPELINECONNECTOR" Unique="true">
+        <Columns>
+          <Column ColumnId="col6MYWN4YK25AZJADSKWAVE4YT3Q" Order="Asc"/>
+          <Column ColumnId="colZD5OA7UKC5BXVJQO5XA2ZOBNII" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqJ2V4EC6XKZHJVA5E66EDQ4ZSTU" DbName="PK_RDX_SB_PIPELINECONNECTOR" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="806" PosY="442"/>
+    </Table>
+    <Table Id="tblPYSASPASJBD3BDXH3LHM7N3UJY" Name="PipelineNodeParam" DbName="RDX_SB_PIPELINENODEPARAM">
+      <Columns>
+        <Column Id="colUYB6X37IQVERJFRMS3QOZEYC7Q" Name="nodeId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="NODEID" TemplateId="cdmN4HG25YEYZCLLGEB3KQ2WTP7EU"/>
+        <Column Id="colUH74BTCXD5BMRCUJ45L5WEKLME" Name="name" ValType="21" Length="200" DbType="VARCHAR2(200 char)" NotNull="true" DbName="NAME"/>
+        <Column Id="colFVO25IUI7NGUFGPBX2256X2A5Q" Name="val" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="VAL"/>
+      </Columns>
+      <PrimaryKey Id="idxFRYEACJCQRD4NLOKOTCEQSWVX4" Name="PrimaryKey" DbName="PK_RDX_SB_PIPELINENODEPARAM" Unique="true">
+        <Columns>
+          <Column ColumnId="colUYB6X37IQVERJFRMS3QOZEYC7Q" Order="Asc"/>
+          <Column ColumnId="colUH74BTCXD5BMRCUJ45L5WEKLME" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqN5EVALYAPFELFLQD22KOO22OPY" DbName="PK_RDX_SB_PIPELINENODEPARAM" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="617" PosY="439"/>
+    </Table>
+    <Table Id="tblTDP5BP5ZXBEOTJX74NH43PEPJA" Name="TransformStage" DbName="RDX_SB_TRANSFORMSTAGE" UserExtMask="65568">
+      <Columns>
+        <Column Id="colJWAYYLLONZGTRFXXTJQY2KEXMQ" Name="id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID" SequenceId="sqnSUR4HLF36JA4RK3UD6HNZXILOE" TemplateId="cdmN4HG25YEYZCLLGEB3KQ2WTP7EU"/>
+        <Column Id="colV7CXSBHFG5DGNDYQPB4K5HKU5A" Name="classGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="CLASSGUID"/>
+        <Column Id="col6CTW3KWSH5AGFMCCXA6UG5CGBY" Name="nodeId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="NODEID" TemplateId="cdmN4HG25YEYZCLLGEB3KQ2WTP7EU"/>
+        <Column Id="col6VRRNROUN5EPBGG2O4VMSKLCVQ" Name="seq" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="SEQ" TemplateId="cdmN4HG25YEYZCLLGEB3KQ2WTP7EU"/>
+        <Column Id="colZ6M23IG4FBFQNNWLXZAFK3XBAU" Name="title" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="TITLE" TemplateId="cdmVKEXNOQQ5ZGI3KZWQLOMROTKWE"/>
+      </Columns>
+      <PrimaryKey Id="idxQH7Z3LSU2JFJBIEI35FHQCJMKI" Name="PrimaryKey" DbName="PK_RDX_SB_TRANSFORMSTAGE" Unique="true">
+        <Columns>
+          <Column ColumnId="colJWAYYLLONZGTRFXXTJQY2KEXMQ" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqO3E7TGA6V5GUZJTHKBL2B25OPM" DbName="PK_RDX_SB_TRANSFORMSTAGE" Rely="true"/>
+      </PrimaryKey>
+      <Triggers>
+        <Trigger Id="trgV77BELZGURHZNHCASPVHJ3HIJI" Name="UserPropOwn" DbName="UPO_TDP5BP5ZXBEOTJX74NH43PEPJA" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+   RDX_ENTITY.UserPropOnDelOwner('tblTDP5BP5ZXBEOTJX74NH43PEPJA', :old.ID);
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+      </Triggers>
+      <Placement PosX="888" PosY="181"/>
+    </Table>
+    <Table Id="tblJYQWYL3FYJF4JABENJGEI4KJ6Y" Name="DataScheme" DbName="RDX_SB_DATASCHEME">
+      <Columns>
+        <Column Id="colR7TMX2J72ZDF7PJMLUDXHHWNV4" Name="uri" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="true" DbName="URI"/>
+        <Column Id="colBQYGLCK26FB55JONW3UQQCL3IU" Name="type" ValType="21" Length="30" DbType="VARCHAR2(30 char)" NotNull="true" DbName="TYPE"/>
+        <Column Id="colGAU6BWQLNBEUXIFQONDJFEFYUY" Name="title" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="TITLE" TemplateId="cdmVKEXNOQQ5ZGI3KZWQLOMROTKWE"/>
+        <Column Id="colHG7MW2OSSZH2RBSTPLVOEKOQ2Q" Name="description" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="DESCRIPTION" TemplateId="cdmBTGBYZC5GBAM5PKMEF2HYVPF7U"/>
+        <Column Id="colFDCJLG47J5G6FAJTBU6ML7FSKI" Name="scheme" ValType="27" Length="0" DbType="CLOB" NotNull="false" DbName="SCHEME"/>
+        <Column Id="colDUMEG6G7C5GG7CS7ULGQ4LV2ZY" Name="lastUpdateTime" ValType="12" Length="0" DbType="DATE" NotNull="true" DbName="LASTUPDATETIME"/>
+        <Column Id="colJT4X3PEPLJHSDL4EXCGTM3OW7I" Name="lastUpdateUserName" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="false" DbName="LASTUPDATEUSERNAME" TemplateId="cdmBHOWDKCA6FDZVJ35M73O6CZJ6A"/>
+      </Columns>
+      <PrimaryKey Id="idxGQVG5KJ2OBFMTIM43MIQG6WBSI" Name="PrimaryKey" DbName="PK_RDX_SB_DATASCHEME" Unique="true">
+        <Columns>
+          <Column ColumnId="colR7TMX2J72ZDF7PJMLUDXHHWNV4" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqGPA57MNGOZAEBKHBBFTGOHEQIU" DbName="PK_RDX_SB_DATASCHEME" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="442" PosY="443"/>
+    </Table>
+    <Table Id="tbl6LBVOFKHB5DPNDOESAUHN6SLNY" Name="PipelineParam" DbName="RDX_SB_PIPELINEPARAM">
+      <Columns>
+        <Column Id="colE2NQBVE7HJDIPMEGIASR5N2EE4" Name="pipelineId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="PIPELINEID" TemplateId="cdmN4HG25YEYZCLLGEB3KQ2WTP7EU"/>
+        <Column Id="col7J26VLCPQRBWBHRMATOWCLYE2I" Name="name" ValType="21" Length="200" DbType="VARCHAR2(200 char)" NotNull="true" DbName="NAME"/>
+        <Column Id="colDGXTZBCV4BF2NNYOTIEMSYNTTU" Name="val" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="VAL"/>
+      </Columns>
+      <PrimaryKey Id="idxNQAANLGPOJC7VJLM2SNL52AKM4" Name="PrimaryKey" DbName="PK_RDX_SB_PIPELINEPARAM" Unique="true">
+        <Columns>
+          <Column ColumnId="colE2NQBVE7HJDIPMEGIASR5N2EE4" Order="Asc"/>
+          <Column ColumnId="col7J26VLCPQRBWBHRMATOWCLYE2I" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unq5WQ4QRU5JNHVNDBXFYREZ5EANM" DbName="PK_RDX_SB_PIPELINEPARAM" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="455" PosY="136"/>
+    </Table>
+    <Table Id="tblXY3G2ORDXFB5RGSPZGZQFILZEY" Name="XPathTable" DbName="RDX_SB_XPATHTABLE">
+      <Columns>
+        <Column Id="col22NTN4PXXZDRZHGC5KLOAWCQ54" Name="id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID" SequenceId="sqnBC744UAWYJD63HOWYVWPAJAZ2M" TemplateId="cdmN4HG25YEYZCLLGEB3KQ2WTP7EU"/>
+        <Column Id="colNZZOSHKGNRG5RB2OTA5BV7Z3FA" Name="stageId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="STAGEID" TemplateId="cdmN4HG25YEYZCLLGEB3KQ2WTP7EU"/>
+        <Column Id="colT7WLWVPNYJAPVL5UYDAXCCKP44" Name="seq" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="SEQ" TemplateId="cdmN4HG25YEYZCLLGEB3KQ2WTP7EU"/>
+        <Column Id="col3QAXANRK6VBG7CX4WD4YNLQGAQ" Name="title" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="TITLE" TemplateId="cdmVKEXNOQQ5ZGI3KZWQLOMROTKWE"/>
+        <Column Id="colY2G4TGCINVGNPBTHJLMN4HWYSI" Name="srcXPath" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="SRCXPATH"/>
+        <Column Id="colV7IFUURJJVCOZKDAN4JTUKDA54" Name="dstXPath" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="DSTXPATH"/>
+        <Column Id="colBA5XFHVNOZES7O4M6DQ5FCLHVU" Name="isRequest" ValType="1" Length="1" DbType="NUMBER(1,0)" NotNull="true" DbName="ISREQUEST"/>
+      </Columns>
+      <PrimaryKey Id="idxZQK2PELLRZHJZPWD45PFZ6WK3M" Name="PrimaryKey" DbName="PK_RDX_SB_XPATHTABLE" Unique="true">
+        <Columns>
+          <Column ColumnId="col22NTN4PXXZDRZHGC5KLOAWCQ54" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqCQJPWRSHHFDM5DKZN7YJA4UGLM" DbName="PK_RDX_SB_XPATHTABLE" Rely="true"/>
+      </PrimaryKey>
+      <Indices>
+        <Index Id="idxWMXIL2OBZJEGHDNPFWLSJLMJQQ" Name="Stage" DbName="IDX_RDX_SB_XPATHTABLE_STAGE">
+          <Columns>
+            <Column ColumnId="colNZZOSHKGNRG5RB2OTA5BV7Z3FA" Order="Asc"/>
+            <Column ColumnId="colBA5XFHVNOZES7O4M6DQ5FCLHVU" Order="Asc"/>
+            <Column ColumnId="colT7WLWVPNYJAPVL5UYDAXCCKP44" Order="Asc"/>
+          </Columns>
+        </Index>
+      </Indices>
+      <Placement PosX="1112" PosY="293"/>
+    </Table>
+    <Table Id="tblLHHBNT3LOBHEBF7ZW5C43D5COM" Name="PipelineVer" DbName="RDX_SB_PIPELINEVER">
+      <Columns>
+        <Column Id="colCRZQNMXG75GMVC5ZLOQAHULD3U" Name="pipelineId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="PIPELINEID" SequenceId="sqnHAWTB62FZVELZCBCHIJR23VADA" TemplateId="cdmN4HG25YEYZCLLGEB3KQ2WTP7EU"/>
+        <Column Id="colNKWNF3GTMVGJ7LF2FVP3PI3PNE" Name="createTime" ValType="12" Length="0" DbType="DATE" NotNull="true" DbName="CREATETIME"/>
+        <Column Id="colXI62V5BNINBQVOSENZVQG6PHDQ" Name="creatorUserName" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="false" DbName="CREATORUSERNAME" TemplateId="cdmBHOWDKCA6FDZVJ35M73O6CZJ6A"/>
+        <Column Id="colQXC5LHXJKVEX3PY4SAZVFV2R5E" Name="notes" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="NOTES" TemplateId="cdmBTGBYZC5GBAM5PKMEF2HYVPF7U"/>
+        <Column Id="colIREOYRR4QBE2TJLMSQUD4UGANY" Name="settings" ValType="27" Length="0" DbType="CLOB" NotNull="false" DbName="SETTINGS"/>
+      </Columns>
+      <PrimaryKey Id="idx2LA4FREDBRGL3KXFWEFV4TP5IE" Name="PrimaryKey" DbName="PK_RDX_SB_PIPELINEVER" Unique="true">
+        <Columns>
+          <Column ColumnId="colCRZQNMXG75GMVC5ZLOQAHULD3U" Order="Asc"/>
+          <Column ColumnId="colNKWNF3GTMVGJ7LF2FVP3PI3PNE" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unq7AXJEEOMOBCLNC7DKUUJCNZV5M" DbName="PK_RDX_SB_PIPELINEVER" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="249" PosY="446"/>
+    </Table>
+  </Tables>
+  <ExtTables>
+    <ExtTable Id="tbeHZMNLOEBH5DWTBXXVPESBX6P5A" TableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4">
+      <Placement PosX="485" PosY="304"/>
+    </ExtTable>
+  </ExtTables>
+  <References>
+    <Reference Id="ref3QADUGWZLNGYHNQ7SBIEACTOG4" DbName="FK_RDX_SB_PIPELINE_USER" Type="LINK" ChildTableId="tblX6WI554KVVCZPGNLK7CSZLOMTY" ParentTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ExtParentTableId="tbeHZMNLOEBH5DWTBXXVPESBX6P5A" ConfirmDelete="false" DeleteMode="SET_NULL" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqSY4KIOLTGLNRDHRZABQAQH3XQ4">
+      <Columns>
+        <Item ChildColumnId="col75T5SOB6DRHXXJOJJO3MTTY3JE" ParentColumnId="colEF6ODCYWY3NBDGMCABQAQH3XQ4"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refFOYDY6LZLFDYJBV2TBADLXQDVE" DbName="FK_RDX_SB_PIPELINENODE_USER" Type="LINK" ChildTableId="tblPNJV5QTXIBGJPBHK64RO3LH73A" ParentTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ExtParentTableId="tbeHZMNLOEBH5DWTBXXVPESBX6P5A" ConfirmDelete="false" DeleteMode="SET_NULL" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqSY4KIOLTGLNRDHRZABQAQH3XQ4">
+      <Columns>
+        <Item ChildColumnId="col33JH36QBOZFNLFI5IIRQI4LQ2U" ParentColumnId="colEF6ODCYWY3NBDGMCABQAQH3XQ4"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refYZSYKGJUNRER3C2RG5Q4B6HPQM" AutoDbName="false" DbName="FK_RDX_SB_PIPELNCCTR_PIPELNND" Type="LINK" ChildTableId="tblPRLADV4SK5HD5AXGJNL7NC5DIE" ParentTableId="tblPNJV5QTXIBGJPBHK64RO3LH73A" ConfirmDelete="false" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqE3XGDQFCQ5HTTMRNLUTXOBB3V4">
+      <Columns>
+        <Item ChildColumnId="colZD5OA7UKC5BXVJQO5XA2ZOBNII" ParentColumnId="colQ4QH3CFLQFH4ZENFIHVYOWNBVA"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refNTXEXGQSIND53LNMA65SQD23NE" AutoDbName="false" DbName="FK_RDX_SB_PIPELNENDPRM_PIPLNND" Type="LINK" ChildTableId="tblPYSASPASJBD3BDXH3LHM7N3UJY" ParentTableId="tblPNJV5QTXIBGJPBHK64RO3LH73A" ConfirmDelete="false" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqE3XGDQFCQ5HTTMRNLUTXOBB3V4">
+      <Columns>
+        <Item ChildColumnId="colUYB6X37IQVERJFRMS3QOZEYC7Q" ParentColumnId="colQ4QH3CFLQFH4ZENFIHVYOWNBVA"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refBKB542Q7NBGFHK3ZY4GPQI5C2U" AutoDbName="false" DbName="FK_RDX_SB_TRANSFRMSTG_PIPELNND" Type="LINK" ChildTableId="tblTDP5BP5ZXBEOTJX74NH43PEPJA" ParentTableId="tblPNJV5QTXIBGJPBHK64RO3LH73A" ConfirmDelete="false" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqE3XGDQFCQ5HTTMRNLUTXOBB3V4">
+      <Columns>
+        <Item ChildColumnId="col6CTW3KWSH5AGFMCCXA6UG5CGBY" ParentColumnId="colQ4QH3CFLQFH4ZENFIHVYOWNBVA"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refZQUKRWNNQNAKDB65OZX5L5AYME" DbName="FK_RDX_SB_DATASCHEME_USER" Type="LINK" ChildTableId="tblJYQWYL3FYJF4JABENJGEI4KJ6Y" ParentTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ExtParentTableId="tbeHZMNLOEBH5DWTBXXVPESBX6P5A" ConfirmDelete="false" DeleteMode="SET_NULL" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqSY4KIOLTGLNRDHRZABQAQH3XQ4">
+      <Columns>
+        <Item ChildColumnId="colJT4X3PEPLJHSDL4EXCGTM3OW7I" ParentColumnId="colEF6ODCYWY3NBDGMCABQAQH3XQ4"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refLRQ6Q2GMEBHEJD3MPQWKFNFYX4" AutoDbName="false" DbName="FK_RDX_SB_PIPELNEPARAM_PIPELN" Type="LINK" ChildTableId="tbl6LBVOFKHB5DPNDOESAUHN6SLNY" ParentTableId="tblX6WI554KVVCZPGNLK7CSZLOMTY" ConfirmDelete="false" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqCSSNINPVS5C6VHFUIEPYSPPDZY">
+      <Columns>
+        <Item ChildColumnId="colE2NQBVE7HJDIPMEGIASR5N2EE4" ParentColumnId="colNQ7ACV4LNVHNBGGPWFPOCPH2P4"/>
+      </Columns>
+    </Reference>
+    <Reference Id="ref6OPHEDHOENHZ7EBY5XD3R3LFIU" DbName="FK_RDX_SB_XPATHTABLE_TRANSFORM" Type="LINK" ChildTableId="tblXY3G2ORDXFB5RGSPZGZQFILZEY" ParentTableId="tblTDP5BP5ZXBEOTJX74NH43PEPJA" ConfirmDelete="false" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqO3E7TGA6V5GUZJTHKBL2B25OPM">
+      <Columns>
+        <Item ChildColumnId="colNZZOSHKGNRG5RB2OTA5BV7Z3FA" ParentColumnId="colJWAYYLLONZGTRFXXTJQY2KEXMQ"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refLYP33RARYJCPDAJQAIFROUIFM4" DbName="FK_RDX_SB_PIPELINEVER_PIPELINE" Type="LINK" ChildTableId="tblLHHBNT3LOBHEBF7ZW5C43D5COM" ParentTableId="tblX6WI554KVVCZPGNLK7CSZLOMTY" ConfirmDelete="false" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqCSSNINPVS5C6VHFUIEPYSPPDZY">
+      <Columns>
+        <Item ChildColumnId="colCRZQNMXG75GMVC5ZLOQAHULD3U" ParentColumnId="colNQ7ACV4LNVHNBGGPWFPOCPH2P4"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refM2DBWKTJIVANHH4J7RKZMSQXDI" DbName="FK_RDX_SB_PIPELINEVER_USER" Type="LINK" ChildTableId="tblLHHBNT3LOBHEBF7ZW5C43D5COM" ParentTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ExtParentTableId="tbeHZMNLOEBH5DWTBXXVPESBX6P5A" ConfirmDelete="false" DeleteMode="SET_NULL" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqSY4KIOLTGLNRDHRZABQAQH3XQ4">
+      <Columns>
+        <Item ChildColumnId="colXI62V5BNINBQVOSENZVQG6PHDQ" ParentColumnId="colEF6ODCYWY3NBDGMCABQAQH3XQ4"/>
+      </Columns>
+    </Reference>
+  </References>
+  <Sequences>
+    <Sequence Id="sqnHAWTB62FZVELZCBCHIJR23VADA" Name="PipelineId" DbName="SQN_RDX_SB_PIPELINEID" StartWith="1" Cycle="false" MinValue="1" Order="true" Cache="20">
+      <Placement PosX="267" PosY="96"/>
+    </Sequence>
+    <Sequence Id="sqnZYDLA5AB2ZF4DBQKWEJ3VAQMQA" Name="PipelineNodeId" DbName="SQN_RDX_SB_PIPELINENODEID" StartWith="1" Cycle="false" MinValue="1" Order="true" Cache="20">
+      <Placement PosX="663" PosY="111"/>
+    </Sequence>
+    <Sequence Id="sqnSUR4HLF36JA4RK3UD6HNZXILOE" Name="TransformStageId" DbName="SQN_RDX_SB_TRANSFORMSTAGEID" StartWith="1" Cycle="false" MinValue="1" Order="true" Cache="20">
+      <Placement PosX="883" PosY="112"/>
+    </Sequence>
+    <Sequence Id="sqnBC744UAWYJD63HOWYVWPAJAZ2M" Name="XPathTableId" DbName="SQN_RDX_SB_XPATHTABLEID" StartWith="1" Cycle="false" MinValue="1" Order="true" Cache="20">
+      <Placement PosX="1109" PosY="220"/>
+    </Sequence>
+  </Sequences>
+</Model>

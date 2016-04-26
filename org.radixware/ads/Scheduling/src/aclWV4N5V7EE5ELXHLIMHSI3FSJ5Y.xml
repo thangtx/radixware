@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y" Name="CalendarItem.Absolute" Type="2">
+    <AccessRules Access="4" IsPublished="false" IsAbstract="true"/>
+    <Headers>
+      <Src Name="HeaderadcJ6KNZM6INJASXGE6ABY4UIB75M"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcVNUY5NYSZ5DZ7CJLVD4643EZZE"/>
+    </Bodies>
+    <MethodGroup Id="cmgGM5PXX5JJ5DRDDYILBJVHS54WU" Name="Root"/>
+    <PropertyGroup Id="cpg3AZYADD55FAOPFEU2LYHHU7SQE" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth3RZGBJY3Y5BRVG3OSU2XUDFG6E" Name="isExcluded" Nature="0" IsOverride="false">
+        <AccessRules Access="4" IsPublished="false" IsAbstract="true"/>
+        <Parameters>
+          <Parameter Name="date" Id="mprRX3EHCAL3VH25KLHVMX6CFGDOM">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="dayOfWeek" Id="mprEA7ZZCMAWNG7VGQ3XWCLVTFAM4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="daysInMonth" Id="mprBQ4G6C5PAVHPFGSLIGMEYDLUAA">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="dayOfMonth" Id="mprV37EBNAUHZHXXBN65755HLLM4M">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="daysInQuarter" Id="mprYNLYFPEXVJBEHHZNWAG2VUSLT4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="dayOfQuarter" Id="mpr2QBMVOPTCVA7RGFAYTN5F7ZEX4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return false;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthNRY5VTMUCVHDRMNW7MJIA7UQX4" Name="isIncluded" Nature="0" IsOverride="false">
+        <AccessRules Access="4" IsPublished="false" IsAbstract="true"/>
+        <Parameters>
+          <Parameter Name="date" Id="mpr3Y67Q3J2N5H43FAPSEQUJSB6QI">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="dayOfWeek" Id="mprYL4QYHZ6H5FGHB7AZHY45QEF7Q">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="daysInMonth" Id="mprON5SFWRLJJG4DMDFWD67QP6JXE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="dayOfMonth" Id="mprASJO2QJ6AVDYDP6MWN7MEJFHVE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="daysInQuarter" Id="mpr64AICPZ6TVB4JD4RUKY5DOMFR4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="dayOfQuarter" Id="mprPZ6XOJKED5DB5OEWKRUEAFV4SE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return false;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblCRD53OZ5I3OBDCIOAALOMT5GDM"/>
+    <Presentations/>
+    <Extends TypeId="411" Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM"/>
+  </AdsClassDefinition>
+</AdsDefinition>

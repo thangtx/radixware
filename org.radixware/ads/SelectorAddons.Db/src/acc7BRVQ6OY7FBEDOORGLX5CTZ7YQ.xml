@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="acc7BRVQ6OY7FBEDOORGLX5CTZ7YQ" Name="FindNeighboringAddonCursor" Type="4">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderadcOQ3I76AMOZCM5AK7I3OX5YXNWQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcJRKB7CTUZJETDOYABBLYWK225U"/>
+    </Bodies>
+    <MethodGroup Id="cmgSQYLB5YF6FD3XJVTRFMYUSH3BI" Name="Root"/>
+    <PropertyGroup Id="cpgX33CSXHFRVHWPBTWMLRC4YWJHY" Name="Root"/>
+    <Properties>
+      <Property Id="prmAVT7EHH25BA3JPMSXXS77MFQXI" Name="parTableGuid" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmKVUIMBN4GZD7PGRBMHOFMNWZKU" Name="parClassGuid" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmAZJEUBRHDBHQTAQSURLMPKQ7IM" Name="parSeq" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prmX7RVQIXCSNDDRETD5YM6QQ5KQQ" Name="parPrev" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="1"/>
+      </Property>
+      <Property Id="prfF23C5HPZHFCMDCZUMZQUOJLNTA" Name="guid" Nature="3" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="open" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="parTableGuid" Id="mprAVT7EHH25BA3JPMSXXS77MFQXI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="parClassGuid" Id="mprKVUIMBN4GZD7PGRBMHOFMNWZKU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="parSeq" Id="mprAZJEUBRHDBHQTAQSURLMPKQ7IM">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="parPrev" Id="mprX7RVQIXCSNDDRETD5YM6QQ5KQQ">
+            <Type TypeId="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="acc7BRVQ6OY7FBEDOORGLX5CTZ7YQ"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="true" IsUniDirect="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>select </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colTOTOEP36JFH35MA7BJYRU67GKU" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>  as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="acc7BRVQ6OY7FBEDOORGLX5CTZ7YQ" PropId="prfF23C5HPZHFCMDCZUMZQUOJLNTA" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+from
+(
+    select </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colTOTOEP36JFH35MA7BJYRU67GKU" Owner="TABLE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+    from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:TableSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+    where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colYNFESMLQLBCGDCKG7FGDPYNPR4" Owner="TABLE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IfParam ParamId="prmX7RVQIXCSNDDRETD5YM6QQ5KQQ" Operation="Equal">
+            <xsc:Value>1</xsc:Value>
+          </xsc:IfParam>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+    &lt;
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:ElseIf/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+    >
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:EndIf/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmAZJEUBRHDBHQTAQSURLMPKQ7IM"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+    and
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colDCQEQLHEC5F6VO633LHAE6BDMQ" Owner="TABLE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmAVT7EHH25BA3JPMSXXS77MFQXI"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+    and
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="col36K2MUPKPRGPPAGLVPAUJ52PQE" Owner="TABLE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmKVUIMBN4GZD7PGRBMHOFMNWZKU"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+    order by </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colYNFESMLQLBCGDCKG7FGDPYNPR4" Owner="TABLE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IfParam ParamId="prmX7RVQIXCSNDDRETD5YM6QQ5KQQ" Operation="Equal">
+            <xsc:Value>1</xsc:Value>
+          </xsc:IfParam>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+    desc
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:EndIf/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+)
+where ROWNUM = 1</xsc:Sql>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" Alias="addons"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="411" Path="pdcCursor____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

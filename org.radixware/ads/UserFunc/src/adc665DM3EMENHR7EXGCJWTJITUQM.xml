@@ -1,0 +1,687 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc665DM3EMENHR7EXGCJWTJITUQM" Name="UserFuncBindingValidator" DescriptionId="mlsU2Q4OKTKKVEBPMZSV2QUNDI65M" Type="3" Environment="common">
+    <AccessRules IsPublished="false" IsAbstract="true">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc665DM3EMENHR7EXGCJWTJITUQM">
+        <xsc:Item>
+          <xsc:Java>import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
+import org.radixware.kernel.common.defs.ads.clazz.AdsClassDef;
+import org.radixware.kernel.common.defs.SearchResult;
+import org.radixware.kernel.common.defs.ExtendableDefinitions;
+import org.radixware.schemas.reports.ParametersBindingType.ParameterBinding;
+import org.radixware.kernel.common.defs.ads.AdsDefinition;
+import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
+import org.radixware.kernel.common.client.utils.ValueConverter;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc665DM3EMENHR7EXGCJWTJITUQM"/>
+    </Bodies>
+    <MethodGroup Id="cmgC6OTSBVATVBVZKVMH2DEIZRNJM" Name="Root"/>
+    <PropertyGroup Id="cpgVB3UBS5KIFGQZPT4GHGZWF4ILE" Name="Root"/>
+    <Properties>
+      <Property Id="prdI2CETQQHNRF3XEHHDTTZF26IOY" Name="testProp" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthQ5MWXZPTPFCJDAISMPYR2VUPCI" Name="validateLinkedFuncParams" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="uf" Id="mprCIYNUCCFTFCQNDCDX7LR25BQFY">
+            <Type TypeId="411" Path="adcEWGZMSHL3BFCFFIJVRGAJSRPEY"/>
+          </Parameter>
+          <Parameter Name="targetUf" Id="mprWCLEAH2Y4NAEBKOKVYV33RXW5I">
+            <Type TypeId="411" Path="adcEWGZMSHL3BFCFFIJVRGAJSRPEY"/>
+          </Parameter>
+          <Parameter Name="pid" Id="mprU5S4K2MLWNFDXBKY5B2H7WZBSU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="targetPid" Id="mprL7PORXY6EJESHG6XULXPCDFZTM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="problemPacker" Id="mprTQWNADOWVVEW3KZZSV7VSVFJSU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.check.IProblemHandler"/>
+          </Parameter>
+          <Parameter Name="paramBinding" Id="mprLYIH53P5WRFX3AR25OQAKRNZWU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>org.radixware.kernel.common.defs.ads.clazz.members.AdsMethodDef.Profile targetProfile = null;
+if (targetUf != null) {
+    targetProfile = targetUf.findProfile();
+} else {
+    String message = "Referenced library function not found";
+    try {
+        problemPacker.accept(org.radixware.kernel.common.check.RadixProblem.Factory.newError(uf, message));
+    } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java><![CDATA[ e) {
+    }
+    return;
+}
+/*if (pid == targetPid) {
+ String message = "Infinite recursion: an attempt to bind function with itself";
+ problemPacker.accept(org.radixware.kernel.common.check.RadixProblem.Factory.newError(uf, message));
+ return;
+ }*/
+
+if (targetProfile != null) {
+    org.radixware.kernel.common.defs.ads.clazz.members.AdsMethodDef.Profile curFuncProfile = uf.findProfile();
+    if (curFuncProfile != null && (curFuncProfile.ReturnValue != null) && (curFuncProfile.ReturnValue.Type != AdsTypeDeclaration.UNDEFINED) && (curFuncProfile.ReturnValue.Type != AdsTypeDeclaration.VOID)) {
+        AdsTypeDeclaration returnType = targetProfile.ReturnValue.Type;
+        AdsTypeDeclaration curReturnType = curFuncProfile.ReturnValue.Type;
+
+
+        if (!AdsTypeDeclaration.isAssignable(curReturnType, returnType, uf)) {
+            String message = "Wrong return type: " + returnType.getQualifiedName(uf) + (returnType.toString()) + ", should be " + curReturnType.getQualifiedName(uf) + (curReturnType.toString());
+            try {
+                problemPacker.accept(org.radixware.kernel.common.check.RadixProblem.Factory.newError(uf, message));
+            } catch (]]></xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+            }
+        }
+    }
+
+    for (org.radixware.kernel.common.defs.ads.clazz.members.AdsMethodThrowsList.ThrowsListItem item : targetProfile.ThrowsList) {
+        boolean handled = false;
+        for (org.radixware.kernel.common.defs.ads.clazz.members.AdsMethodThrowsList.ThrowsListItem curItem : curFuncProfile.ThrowsList) {
+            if (AdsTypeDeclaration.isAssignable(curItem.Exception, item.Exception, uf)) {
+                handled = true;
+                break;
+            }
+        }
+        if (!handled) {
+            String message = "Exception " + item.Exception.getQualifiedName(uf) + ", declared in profile of linked library function is not present in thrown exceptions list. This may cause in lost of exception details at runtime";
+            try {
+                problemPacker.accept(org.radixware.kernel.common.check.RadixProblem.Factory.newError(uf, message));
+            } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+            }
+        }
+    }
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> parametersBindingDoc = null;
+    if (paramBinding != null) {
+        try {
+            parametersBindingDoc = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingDocument.Factory"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.parse(paramBinding);
+        } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcCOEVNNRGS5DITM72ZNKZFX6EIU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+            //ignore exception
+        }
+    }
+
+    for (org.radixware.kernel.common.defs.ads.clazz.members.MethodParameter p : targetProfile.ParametersList) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType.ParameterBinding"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> binding = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc665DM3EMENHR7EXGCJWTJITUQM mthPJ56OKHKE5DA7FL4JUTCZ3HT7A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(parametersBindingDoc, p.Id);
+        if (binding != null) {
+            AdsTypeDeclaration paramType = p.Type;
+            if (binding.isSetParameter()) {
+                org.radixware.kernel.common.defs.ads.clazz.members.MethodParameter curUfParam = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc665DM3EMENHR7EXGCJWTJITUQM mthGGZUGKSEMNAYHDCIR6OFNWBEZY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(uf, binding.Parameter);
+                if (curUfParam == null) {
+                    String message = "Unknown parameter #" + binding.Parameter;
+                    try {
+                        problemPacker.accept(org.radixware.kernel.common.check.RadixProblem.Factory.newError(uf, message));
+                    } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+                    }
+                    continue;
+                }
+                AdsTypeDeclaration bindingParamType = curUfParam.Type;
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc665DM3EMENHR7EXGCJWTJITUQM mthQIUVQKGBIVG7HCQ3J43HDKQ4RE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(uf, p.Id, p.Name, paramType, bindingParamType, problemPacker);
+            } else if (binding.isSetExternalValue()) {
+                ParameterBinding.ExternalValue extVal = binding.ExternalValue;
+                if (extVal.isSetOwnerClassId()) {
+                    if (extVal.isSetOwnerPID()) {
+                        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> tableId = extVal.OwnerClassId;
+                        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc665DM3EMENHR7EXGCJWTJITUQM mthVUVAPJDFSZCTLMMO4M47L2S4SQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(uf, tableId, extVal.OwnerPID, problemPacker);
+
+                        if (extVal.isSetValue() &amp;&amp; extVal.Value.Id != null) {
+                            AdsDefinition def = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcEWGZMSHL3BFCFFIJVRGAJSRPEY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Lookup.findTopLevelDefinition(uf, extVal.OwnerClassId);
+                            if ((def instanceof AdsClassDef) &amp;&amp; ((AdsClassDef) def).getProperties() != null) {
+                                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> propId = extVal.Value.Id;
+                                SearchResult&lt;AdsPropertyDef> props = ((AdsClassDef) def).getProperties().findById(propId, ExtendableDefinitions.EScope.LOCAL_AND_OVERWRITE);
+                                if (props != null &amp;&amp; !props.isEmpty() &amp;&amp; props.get() != null) {
+                                    AdsTypeDeclaration bindingParamType = props.get().Value.Type;
+                                    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc665DM3EMENHR7EXGCJWTJITUQM mthQIUVQKGBIVG7HCQ3J43HDKQ4RE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(uf, p.Id, p.Name, paramType, bindingParamType, problemPacker);
+                                } else {
+                                    problemPacker.accept(org.radixware.kernel.common.check.RadixProblem.Factory.newError(uf, "Unknown property #" + propId + " at parameter " + p.Name));
+                                }
+                            } else {
+                            }
+                        } else {
+                            AdsTypeDeclaration bindType = AdsTypeDeclaration.Factory.newInstance(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciUF7UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, extVal.OwnerClassId);
+                            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc665DM3EMENHR7EXGCJWTJITUQM mthQIUVQKGBIVG7HCQ3J43HDKQ4RE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(uf, p.Id, p.Name, paramType, bindType, problemPacker);
+                        }
+                    } else {
+                        if (extVal.OwnerClassId.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcELH54EKVCJAATNTLFHHCSVHPZU mthC7F2QKANMFBQTB24S6XOYKQHEY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsHL2QKDVQX5FARACANDWKNIZ5OU aciIYSCWSDZRZAIDMLKPAG6N3IOSQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> &amp;&amp; extVal.isSetValue()) {
+                            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2" Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> itemType = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc665DM3EMENHR7EXGCJWTJITUQM mthLB6ZGNHTTJAUJDZLDYOCHEQQZ4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(extVal.OwnerClassId);
+                            if (itemType != null) {
+                                boolean isArray = false;
+                                if (paramType.TypeId != null &amp;&amp; paramType.TypeId.isArrayType()) {
+                                    isArray = true;
+                                }
+                                AdsTypeDeclaration bindType = AdsTypeDeclaration.Factory.newInstance(isArray ? itemType.ArrayType : itemType, extVal.OwnerClassId);
+                                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc665DM3EMENHR7EXGCJWTJITUQM mthQIUVQKGBIVG7HCQ3J43HDKQ4RE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(uf, p.Id, p.Name, paramType, bindType, problemPacker);
+                            } else {
+                                problemPacker.accept(org.radixware.kernel.common.check.RadixProblem.Factory.newError(uf, "Unknown enumeration #" + extVal.OwnerClassId + " at parameter " + p.Name));
+                            }
+                        } else {
+                        }
+                    }
+                } else if (extVal.isSetValue()) {
+                    org.radixware.schemas.eas.Property val = extVal.Value;
+                    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc665DM3EMENHR7EXGCJWTJITUQM mthXCHLO45CCFAK3B5WAHMQ2VPGSE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(uf, val, p, problemPacker);
+                }
+            } else if (binding.isSetValue()) {
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc665DM3EMENHR7EXGCJWTJITUQM mthXCHLO45CCFAK3B5WAHMQ2VPGSE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(uf, binding.Value, p, problemPacker);
+            }
+        } else {
+            String message = "Unbounded parameter " + p.Name;
+            try {
+                problemPacker.accept(org.radixware.kernel.common.check.RadixProblem.Factory.newWarning(uf, message));
+            } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+            }
+        }
+
+
+    }
+}
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthPJ56OKHKE5DA7FL4JUTCZ3HT7A" Name="findParameterBindingById" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="parametersBindingDoc" Id="mprXNQBUNPM6RE7ZACIFGBGIHI7SU">
+            <Type TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingDocument"/>
+          </Parameter>
+          <Parameter Name="paramId" Id="mprSIHCZKHHZNFS3A4YH2AXXDQ7BQ">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType.ParameterBinding"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (parametersBindingDoc!=null){
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> parametersBinding = parametersBindingDoc.getParametersBinding();
+    if (parametersBinding!=null){
+        final java.util.List&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType.ParameterBinding"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> bindingList = parametersBinding.ParameterBindingList;
+        if (bindingList!=null){
+            for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType.ParameterBinding"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> binding : bindingList){
+                if (paramId.equals(binding.ParameterId)){
+                    return binding;
+                }
+            }
+        }
+    }
+}
+return null;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthQIUVQKGBIVG7HCQ3J43HDKQ4RE" Name="checkTypes" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="uf" Id="mpr67NMVYMIJZEQ7OXIAIY6D44SOE">
+            <Type TypeId="411" Path="adcEWGZMSHL3BFCFFIJVRGAJSRPEY"/>
+          </Parameter>
+          <Parameter Name="paramId" Id="mprP764F35AM5EPXIFWR3TWFYQ7P4">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="paramName" Id="mprSXQPD36WTRAKRNV3Q27BBLDD3I">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="paramType" Id="mprJXBLT5BOOVDSBFOUP4WSH2O3XE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration"/>
+          </Parameter>
+          <Parameter Name="bindingParamType" Id="mprEAPNSLUDNNGSPK7WLVEJ2T4IUI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration"/>
+          </Parameter>
+          <Parameter Name="problemPacker" Id="mprB22EHH4TGNEKJDADGHNR667ZPA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.check.IProblemHandler"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>
+if (!</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcEWGZMSHL3BFCFFIJVRGAJSRPEY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.areTypesBindable(uf, paramType, bindingParamType)) {
+    String message = "Incorrect type of parameter " + paramName + ". Expected " + paramType.getQualifiedName(uf) + " got " + bindingParamType.getQualifiedName(uf);
+    try {
+        problemPacker.accept(org.radixware.kernel.common.check.RadixProblem.Factory.newError(uf, message));
+    } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+    }
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthVUVAPJDFSZCTLMMO4M47L2S4SQ" Name="checkEntityExistance" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsPublished="false" IsAbstract="true"/>
+        <Parameters>
+          <Parameter Name="uf" Id="mprNQIDY7YSKRGMBAERTMBIMMB62Q">
+            <Type TypeId="411" Path="adcEWGZMSHL3BFCFFIJVRGAJSRPEY"/>
+          </Parameter>
+          <Parameter Name="entityId" Id="mprTRX565MFURG6XAU2IJ5HFOE2KU">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="entityPid" Id="mprIGZHLAJHOREBRHIKEDS4COC5V4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="problemHandler" Id="mprM425AVBSXRFNNCCIF6W3L6FLVU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.check.IProblemHandler"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthLB6ZGNHTTJAUJDZLDYOCHEQQZ4" Name="getEnumItemType" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsPublished="false" IsAbstract="true"/>
+        <Parameters>
+          <Parameter Name="id" Id="mprOMGJQIT5UZDZNFBRYHMQIK7BUY">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="2" Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4"/>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthXCHLO45CCFAK3B5WAHMQ2VPGSE" Name="validateXmlValue" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="uf" Id="mprPON6Y372BRCT3PRL2K7M66TA34">
+            <Type TypeId="411" Path="adcEWGZMSHL3BFCFFIJVRGAJSRPEY"/>
+          </Parameter>
+          <Parameter Name="value" Id="mpr5MOJTTEXYVFYHLLIM7ZPGNTZUY">
+            <Type TypeId="451" Path="xsd6JHHAUMDPXORDBMMABIFNQAABA" extStr="Property"/>
+          </Parameter>
+          <Parameter Name="p" Id="mprN4G4JBB6IBE7VP7RWQBAWUIQZM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.defs.ads.clazz.members.MethodParameter"/>
+          </Parameter>
+          <Parameter Name="problemPacker" Id="mprJVOWXSKP4BGXJCK6RDVHP2IKXM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.check.IProblemHandler"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>org.radixware.kernel.common.enums.EValType valType = p.Type.TypeId;
+
+if ((valType == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciUB7UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> || valType == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciRV7UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) &amp;&amp; (p.Type.getExtStr() != null)) {
+    String strType = p.Type.getExtStr();
+    boolean b = false;
+    if (strType.equals("char") || strType.equals("java.lang.String")) {
+        b = value.isSetStr();
+    } else if (strType.equals("byte") || strType.equals("java.lang.Byte")) {
+        b = value.isSetBin();
+    } else if (strType.equals("int") || strType.equals("java.lang.Integer")
+            || strType.equals("long") || strType.equals("java.lang.Long")
+            || strType.equals("short") || strType.equals("java.lang.Short")) {
+        b = value.isSetInt();
+    } else if (strType.equals("float") || strType.equals("java.lang.Float")
+            || strType.equals("double") || strType.equals("java.lang.Double")) {
+        b = value.isSetNum();
+    } else if (strType.equals("boolean") || strType.equals("java.lang.Boolean")) {
+        b = value.isSetBool();
+    }
+    if (!b) {
+        String message = "Incorrect type of parameter" + p.Name;
+        try {
+            problemPacker.accept(org.radixware.kernel.common.check.RadixProblem.Factory.newError(uf, message));
+        } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+        }
+
+    }
+} else if (valType == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciS57UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> || valType == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciTB7UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>
+        || valType == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciTF7UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> || valType == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciTJ7UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>
+        || valType == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciTN7UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> || valType == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciTR7UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>
+        || valType == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciTV7UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> || valType == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciT57UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> || valType == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciUJ7UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+    try {
+        ValueConverter.easPropXmlVal2ObjVal(value, valType, null);
+    } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+        String message = "Incorrect type of parameter " + p.Name;
+        try {
+            problemPacker.accept(org.radixware.kernel.common.check.RadixProblem.Factory.newError(uf, message));
+        } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+        }
+
+    }
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthGGZUGKSEMNAYHDCIR6OFNWBEZY" Name="findParamById" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="userFunc" Id="mprFBTDRUNGX5F5DPCQPGDCRCUM3I">
+            <Type TypeId="411" Path="adcEWGZMSHL3BFCFFIJVRGAJSRPEY"/>
+          </Parameter>
+          <Parameter Name="paramId" Id="mprFZJOJVXOSNAZJPAYDUDM47UKPQ">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.defs.ads.clazz.members.MethodParameter"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>for (org.radixware.kernel.common.defs.ads.clazz.members.MethodParameter p : userFunc.findProfile().ParametersList) {
+    if (p.Id == paramId) {
+        return p;
+    }
+}
+return null;
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthOHABFRJPBZH7JLZWYHFGM754U4" Name="reportEntityNotExist" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="uf" Id="mprC2JIZF2IZBD7LIDHBVDNPKXNME">
+            <Type TypeId="411" Path="adcEWGZMSHL3BFCFFIJVRGAJSRPEY"/>
+          </Parameter>
+          <Parameter Name="entityId" Id="mprTRX565MFURG6XAU2IJ5HFOE2KU">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="entityPid" Id="mprIGZHLAJHOREBRHIKEDS4COC5V4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="problemHandler" Id="mprM425AVBSXRFNNCCIF6W3L6FLVU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.check.IProblemHandler"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+    problemHandler.accept(org.radixware.kernel.common.check.RadixProblem.Factory.newError(uf,"Referenced entity object '" + entityPid + "' does not exists"));
+} catch (Throwable e) {
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

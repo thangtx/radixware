@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="afhD73WO3VRV5AGLFUVJVMBWYTK4Q" Name="CfgExportForm.UserFuncLibSingle" Type="19" ClientEnvironment="explorer">
+    <AccessRules Access="4" IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderafhD73WO3VRV5AGLFUVJVMBWYTK4Q"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyafhD73WO3VRV5AGLFUVJVMBWYTK4Q"/>
+    </Bodies>
+    <MethodGroup Id="cmgZULQK6W4TBEKPCK5GYEYZQOGOI" Name="Root"/>
+    <PropertyGroup Id="cpgKATXG3OV3RFILPCCUKPH2ZIZPY" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthBYHKXLVLX5DKDMRNN57QOYLWVM" Name="extractExportData" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="cfgObject" Id="mprQ3DVN6FV2NDN5CD5N3W7H5YEDI">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="data" Id="mprZ7KKJQK3ARHSJCCVIVLXGSZGKE">
+            <Type TypeId="411" Path="adcE2YCRKQL7JE7HBMJ7SVQTSLQRA"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>((</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecAM6HEX43SFCQTMG23G7JHOBCMA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)cfgObject).</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecAM6HEX43SFCQTMG23G7JHOBCMA mthLGFXS7QLWJEOZDE44IVDO2U3ZE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(data);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthGQ2UW3DSLNCAXHZKKOTJMYCC6E" Name="storeExportOptions" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="item" Id="mprR7RZLPYEKNDS7IWRQ5JMKW22H4">
+            <Type TypeId="411" Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Presentations>
+      <Form InheritanceMask="4114">
+        <Model Id="afmD73WO3VRV5AGLFUVJVMBWYTK4Q" Name="CfgExportForm.UserFuncLibSingle:Model" Type="18">
+          <AccessRules IsPublished="false"/>
+          <Headers>
+            <Src Name="HeaderafmD73WO3VRV5AGLFUVJVMBWYTK4Q"/>
+          </Headers>
+          <Bodies>
+            <Src Name="BodyafmD73WO3VRV5AGLFUVJVMBWYTK4Q"/>
+          </Bodies>
+          <MethodGroup Id="cmg4QGFP76RRRD5DPUI2B47OMSZ2I" Name="Root"/>
+          <PropertyGroup Id="cpgZFCIZJM45RDD3DUZT6LCN5TWEE" Name="Root"/>
+          <Properties/>
+          <Methods/>
+        </Model>
+      </Form>
+    </Presentations>
+    <Extends TypeId="411" Path="afhYDJYUPWFIZHFNGSWQKRNNSINCE"/>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0" language="jambi">
+ <class>ArrayEditor</class>
+ <widget class="QWidget" name="ArrayEditor">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>315</width>
+    <height>239</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="contextMenuPolicy">
+   <enum>com.trolltech.qt.core.Qt.ContextMenuPolicy.NoContextMenu</enum>
+  </property>
+  <widget class="QWidget" name="contentWidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>297</width>
+     <height>220</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout">
+    <property name="margin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="QFrame" name="frameArray">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="frameShape">
+       <enum>com.trolltech.qt.gui.QFrame.Shape.Panel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>com.trolltech.qt.gui.QFrame.Shadow.Plain</enum>
+      </property>
+      <property name="lineWidth">
+       <number>0</number>
+      </property>
+      <layout class="QHBoxLayout">
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QStackedWidget" name="stackedWidget">
+         <property name="currentIndex">
+          <number>1</number>
+         </property>
+         <widget class="QWidget" name="page">
+          <layout class="QVBoxLayout">
+           <property name="margin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QTableWidget" name="valuesTable">
+             <property name="focusPolicy">
+              <enum>com.trolltech.qt.core.Qt.FocusPolicy.WheelFocus</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+             <widget class="QWidget" name="errorArea">
+               <property name="visible">
+                 false  
+               </property>  
+               <layout class="QHBoxLayout">    
+                 <item>
+                    <widget class="QLabel" name="errorIcon">
+                    </widget>
+                 </item>
+                 <item>
+                   <widget class="QLabel" name="errorMessage">
+                   </widget>
+                 </item>  
+               </layout>
+             </widget>    
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="page_2">
+          <layout class="QVBoxLayout">
+           <property name="margin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="notDefinedLabel">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="frameShape">
+              <enum>com.trolltech.qt.gui.QFrame.Shape.StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>com.trolltech.qt.gui.QFrame.Shadow.Sunken</enum>
+             </property>
+             <property name="text">
+              <string>&lt;Not defined&gt;</string>
+             </property>
+             <property name="alignment">
+              <set>com.trolltech.qt.core.Qt.AlignmentFlag.AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="buttonsWidged" native="true">
+         <layout class="QVBoxLayout">
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QToolButton" name="addBtn">
+            <property name="focusPolicy">
+             <enum>com.trolltech.qt.core.Qt.FocusPolicy.TabFocus</enum>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="delBtn">
+            <property name="focusPolicy">
+             <enum>com.trolltech.qt.core.Qt.FocusPolicy.TabFocus</enum>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="clearBtn">
+            <property name="focusPolicy">
+             <enum>com.trolltech.qt.core.Qt.FocusPolicy.TabFocus</enum>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="defineBtn">
+            <property name="focusPolicy">
+             <enum>com.trolltech.qt.core.Qt.FocusPolicy.TabFocus</enum>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QWidget" name="deviderWidget" native="true">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>35</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="upBtn">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="downBtn">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>com.trolltech.qt.core.Qt.Orientation.Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns="http://schemas.radixware.org/utils.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:this="http://schemas.radixware.org/utils.xsd" xmlns:types="http://schemas.radixware.org/types.xsd" targetNamespace="http://schemas.radixware.org/utils.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:simpleType name="SuppressedWarnings">
+        <xs:list itemType="xs:int"/>
+    </xs:simpleType>
+    
+    <xs:complexType name="RadixTypeTestType">
+        <xs:sequence>
+            <xs:element name="AAA" type="types:MapStrStr" minOccurs="0"/>            
+        </xs:sequence>
+        <xs:attribute name="TestStrList" >            
+            <xs:simpleType>
+                <xs:list itemType="types:Str"/>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>     
+    
+    <xs:complexType name="RPCRequestType">
+        <xs:sequence>
+            <xs:element name="Arg" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="ValAsStr" type="xs:string"/>
+                    </xs:sequence>
+                    <xs:attribute name="Type">
+                        <xs:simpleType>
+                            <xs:annotation>
+                                <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                    <types:class>org.radixware.kernel.common.enums.EValType</types:class>
+                                </xs:appinfo>
+                            </xs:annotation>
+                            <xs:restriction base="types:IntEnum"/>
+                        </xs:simpleType>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="RPCResponseType">
+        <xs:sequence>
+            <xs:element name="Result" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="ValAsStr" type="xs:string"/>
+                    </xs:sequence>
+                    <xs:attribute name="Type">
+                        <xs:simpleType>
+                            <xs:annotation>
+                                <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                    <types:class>org.radixware.kernel.common.enums.EValType</types:class>
+                                </xs:appinfo>
+                            </xs:annotation>
+                            <xs:restriction base="types:IntEnum"/>
+                        </xs:simpleType>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="RPCRequest" type="this:RPCRequestType"/>
+    <xs:element name="RPCResponse" type="this:RPCResponseType"/>
+    
+    
+    <xs:complexType name="Type">
+        <xs:simpleContent>
+            <xs:extension base="types:BinHex"> 
+                <xs:attribute name="AAA" type="types:Bool"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    
+    
+    
+    <xs:element name="Instance" type="Type"/>
+
+
+    <xs:complexType name="Type2">
+           <xs:attribute name="Optional" type="types:Int" use="optional"/>
+    </xs:complexType>
+    
+    
+    <xs:element name="Instance2" type="Type2"/>
+</xs:schema>
+

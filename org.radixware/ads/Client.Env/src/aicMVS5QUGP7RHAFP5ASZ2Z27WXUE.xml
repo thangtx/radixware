@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicMVS5QUGP7RHAFP5ASZ2Z27WXUE" Name="DialogFactory" DescriptionId="mls6OIOX6E4FNBQNF6RI3X2B5FEJQ" Type="5" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.dialogs.DialogFactory"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderaicMVS5QUGP7RHAFP5ASZ2Z27WXUE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaicMVS5QUGP7RHAFP5ASZ2Z27WXUE"/>
+    </Bodies>
+    <MethodGroup Id="cmgFIZZY6GQWJG5VDJJ3PY7JV5LKQ" Name="Root"/>
+    <PropertyGroup Id="cpgUGRBEFGDSRAIFD3QCFU2JI7EWE" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthRCWYKPSEDJD6TEKQ2PVUXMHDJI" Name="newArrayEditorDialog" DescriptionId="mlsFPU6I3SELVBTZBYS4GNOIUYKPE" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="newArrayEditorDialog(Lorg.radixware.kernel.common.client.models.items.properties.Property;Lorg.radixware.kernel.common.client.widgets.IWidget;)Lorg.radixware.kernel.common.client.views.IArrayEditorDialog;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="property" DescriptionId="mlsU7BPMBRXPVCZ5FXTZF5S76JBGU" Id="mpr3QQNER57NNDTRKTHBRTSLASKHM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
+          </Parameter>
+          <Parameter Name="parentWidget" DescriptionId="mlsX66ON7O32ZGOTCKYBOO6GB4FAA" Id="mprPUQC3WXG4VBTXFI4SWYULRHHJY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IWidget"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.views.IArrayEditorDialog" DescriptionId="mlsTANYXVCRCNDALGWOASLRXMKG7I"/>
+      </Method>
+      <Method Id="mthU4RLF65KU5GGHJ2GLGJ7UKH6ZQ" Name="newEnterPasswordDialog" DescriptionId="mlsOLNXXJKOMVCGTFAENCUSXA5YOE" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="newEnterPasswordDialog(Lorg.radixware.kernel.common.client.IClientEnvironment;)Lorg.radixware.kernel.common.client.dialogs.IEnterPasswordDialog;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" DescriptionId="mls7RAWCVQRIJHMJGHQT5TZEGY4NE" Id="mprXXV7ZB5U25ASLLUOAVJDFE2PUI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.dialogs.IEnterPasswordDialog" DescriptionId="mlsBJT4JMO5YNG23BMWU2COJY75LY"/>
+      </Method>
+      <Method Id="mth3KYGDCYDPZBYJPVCGQVRV7JF7I" Name="newInstantiatableClassDialog" DescriptionId="mlsFBZ43IHYBBCJVOPCK46QYCPKVA" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="newInstantiatableClassDialog(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.client.widgets.IWidget;Ljava.util.List&lt;Lorg.radixware.kernel.common.client.types.InstantiatableClass;>;Ljava.lang.String;Z)Lorg.radixware.kernel.common.client.dialogs.ISelectInstantiatableClassDialog;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprQJMG6Q2KGJGQDHB45UKPYE3ZMU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parentWidget" Id="mprRJMNVSQWWZFMNG5YT4FUOV5XVU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IWidget"/>
+          </Parameter>
+          <Parameter Name="instantiatableClasses" Id="mprELJP26VDQVA25DIE3XZYZMVWAA">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.types.InstantiatableClass"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="configPrefix" Id="mprTTZY3M5LZBGIBOADJ6XEO7WDYU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="sortByTitles" Id="mprFH7HGJBSKVDDJCOS2VNTBTKSAQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.dialogs.ISelectInstantiatableClassDialog" DescriptionId="mlsYWKOKJPFGBGN5L5YOYZTEBLLIM"/>
+      </Method>
+      <Method Id="mthJYXZORWIZNFW7OB627BFB3YGWQ" Name="newArrayEditorDialog" DescriptionId="mlsJORW3LIYOVDDJDP7J3J442PJ5A" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="newArrayEditorDialog(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.client.meta.RadSelectorPresentationDef;ZLorg.radixware.kernel.common.client.widgets.IWidget;)Lorg.radixware.kernel.common.client.views.IArrayEditorDialog;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" DescriptionId="mlsHZ5ENC2GYVHDRN2PQF7Y4ZEPKE" Id="mprA7G5ILI6VZENBKTWOJD4HDOHWY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="presentation" DescriptionId="mlsQ2CPW4QS65FC3BUV6YO4LHYKAY" Id="mprF4ZX36XITBBE5E2B5HHHSNANKM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.RadSelectorPresentationDef"/>
+          </Parameter>
+          <Parameter Name="isReadOnly" DescriptionId="mlsRFUCXVPXC5AZ7AXAOV5WI5RH7Q" Id="mpr7KTTSIVYDBGRFIELMOEVUCJILI">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="parentWidget" DescriptionId="mlsM6LCMT5AQBDGHEDPXBNBB42JAU" Id="mpr6VS2V7EWLJCY5ALTHUOSAVHNZA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IWidget"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.views.IArrayEditorDialog" DescriptionId="mlsWETCLBKVYJCRVDCHUWECVF7CLQ"/>
+      </Method>
+      <Method Id="mth63MXF5KQYZGSNBFGQ65O3NUZK4" Name="newArrayEditorDialog" DescriptionId="mlsQI67RKDOIBC4RG4G2BW3SDKIHI" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="newArrayEditorDialog(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.enums.EValType;Ljava.lang.Class&lt;*>;ZLorg.radixware.kernel.common.client.widgets.IWidget;)Lorg.radixware.kernel.common.client.views.IArrayEditorDialog;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" DescriptionId="mlsE6BSJ5PU7FCBVC5PMBAE7CR4FU" Id="mprH3M4UPRQTVG6ZALWAGKTQIUHVI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="valType" DescriptionId="mls6ADGKIVJHVCSJAXEN4IVKJAO5A" Id="mprWX7M5XHVGFBWVHU3DPGPAZVJSM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+          </Parameter>
+          <Parameter Name="valClass" DescriptionId="mlsT5EPJ3LXYJH7VP4PKW7UTD7AFE" Id="mprU56ZLBUANJA3LARNBW4XAJPD5U">
+            <Type TypeId="400" extStr="java.lang.Class">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?"/>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="isReadOnly" DescriptionId="mlsTSDNDQU26BBLTHELJQT43FSI4Q" Id="mprHT425FUWYRFLRCRV3QN6WT74YY">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="parentWidget" DescriptionId="mlsSRTERTSKQVGH3LJDLZ4LVIAWCA" Id="mpr72UJMRPEEJGE7FSLUN32MZZGNI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IWidget"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.views.IArrayEditorDialog" DescriptionId="mlsYWPSFM7FLVGWPLFASOZQ4Q44VE"/>
+      </Method>
+      <Method Id="mth6SVZNTPSLRHTHLTFRPRBFDIPJQ" Name="newDateTimeDialog" DescriptionId="mlsD4NA4AJWHBAEVJ6B75EYBBTXEE" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="newDateTimeDialog(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.client.widgets.IWidget;Lorg.radixware.kernel.common.client.meta.mask.EditMaskDateTime;Ljava.sql.Timestamp;)Lorg.radixware.kernel.common.client.dialogs.IDateTimeDialog;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" DescriptionId="mlsVGEIGR7BIBFSBHZLTEJ2NKARFY" Id="mpr37PD42FQUVCJTNQ246HTQFLHFA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parentWidget" DescriptionId="mlsM6423OKSYVFABOSKSI6RRUWIAA" Id="mprW6GSWQD2RRAMRG5DSTDQ3NHLS4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IWidget"/>
+          </Parameter>
+          <Parameter Name="mask" DescriptionId="mlsU2P4BKTJE5EUVN2ILXHQ2HUIEU" Id="mprZJAW3R7ZK5CBPEC5DYOAQMOHT4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMaskDateTime"/>
+          </Parameter>
+          <Parameter Name="initialValue" DescriptionId="mlsLDTIS7NDIFBW7C6VKFAWKFTXRE" Id="mprWMJS3ZUA5BEJ3AFE7HASJECV44">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.dialogs.IDateTimeDialog" DescriptionId="mls46ETAGEEXZFHZJQ35QEMMFRSYI"/>
+      </Method>
+      <Method Id="mthKP2RDQFUHBFVTA3BZVCKB7YAY4" Name="newDateTimeDialog" DescriptionId="mlsWHVMWXSE5FGSBHRMXF7UFFKFEY" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="newDateTimeDialog(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.client.widgets.IWidget;Ljava.lang.String;Ljava.sql.Timestamp;)Lorg.radixware.kernel.common.client.dialogs.IDateTimeDialog;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" DescriptionId="mls6DIBQXSWABHSNFGFQJUMBXCLTQ" Id="mprUO3DZDL7ZNF6HAN7Q5FGEDJ7LI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parentWidget" DescriptionId="mlsKUJCALXMVJHAJLTJMPTBCAYU5E" Id="mprSZL7VG4EONCQHK6J6SL5BEFLUY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IWidget"/>
+          </Parameter>
+          <Parameter Name="timeFormat" DescriptionId="mlsH7JJEOCG3JEH3G7AMKVZSH73QI" Id="mprZSQVEF2I2RC5FHL3AWN7FEUJ7U">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="initialValue" DescriptionId="mlsBBWVU4WL7BFJZGTMMYP2S3LB5A" Id="mprMAGGXX5XEFEELMCMPBFYI4O6C4">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.dialogs.IDateTimeDialog" DescriptionId="mlsR4XJQETZPRDZJF2SGUFYVBTWGA"/>
+      </Method>
+      <Method Id="mthJHRD56U36JCZ5AFMMVMPO3PAMA" Name="newChangePasswordDialog" DescriptionId="mls7DWI2TFPRVAZRCCVVS5XQ2Z3II" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="newChangePasswordDialog(Lorg.radixware.kernel.common.client.IClientEnvironment;)Lorg.radixware.kernel.common.client.dialogs.IChangePasswordDialog;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprGPSR6IM5EVBM5OH4RIVQ7ZUZUM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.dialogs.IChangePasswordDialog" DescriptionId="mlsSU5MCKYIVRDATKGRP2Y77ZRBSI"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

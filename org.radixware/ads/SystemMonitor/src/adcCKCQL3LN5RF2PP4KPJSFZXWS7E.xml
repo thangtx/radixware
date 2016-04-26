@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcCKCQL3LN5RF2PP4KPJSFZXWS7E" Name="AlertLog" Type="3" Environment="common-client" IsDual="true">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcCKCQL3LN5RF2PP4KPJSFZXWS7E"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcCKCQL3LN5RF2PP4KPJSFZXWS7E"/>
+    </Bodies>
+    <MethodGroup Id="cmgXPQ6VYKQOFEFVIP4KUOKYEVRY4" Name="Root"/>
+    <PropertyGroup Id="cpgZOYZTWEF3FDVRAR5YQDS6XPR7E" Name="Root"/>
+    <Properties>
+      <Property Id="prdFJMKO5V4VRCG7G2LO2XTNKE3AA" Name="traceBuffer" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="400" extStr="org.radixware.kernel.common.client.trace.AbstractTraceBuffer">
+          <xsc:GenericArguments>
+            <xsc:Argument DerivationRule="extends" Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.trace.IClientTraceItem"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </Type>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthEXEO2DD75NABPDBRFQPQVKB2JQ" Name="AlertLog" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="environment" Id="mprI7NGRQHOXVDVBBBNEZFXVGS324">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcCKCQL3LN5RF2PP4KPJSFZXWS7E prdFJMKO5V4VRCG7G2LO2XTNKE3AA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = environment.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthLUUYWKLT5FCADGRMSBQMZYWYGE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().createTraceBuffer();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthVLKPTNMB5BGS7K2SA4DBAKDNCI" Name="addAlert" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="alert" Id="mprH5KSG2VCANGW7HGKZU45FHPBNU">
+            <Type TypeId="411" Path="adcGISEEZ725BDHDGY6XMEKDKBRG4"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcCKCQL3LN5RF2PP4KPJSFZXWS7E prdFJMKO5V4VRCG7G2LO2XTNKE3AA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.put(alert.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcGISEEZ725BDHDGY6XMEKDKBRG4 prdJRWPU3MOD5G5VAHAFW7UJTBUGM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getSeverity(),alert.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcGISEEZ725BDHDGY6XMEKDKBRG4 prdJRWPU3MOD5G5VAHAFW7UJTBUGM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getMessageText(),alert.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcGISEEZ725BDHDGY6XMEKDKBRG4 prdJRWPU3MOD5G5VAHAFW7UJTBUGM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getSource());</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsContextlessCommandDefinition Id="clcVDVF6AR3JNDF5B2M3DBXBKVMCU" Name="CheckPipelineCmd" TitleId="mlsJK7R5MYCFFDIZNULRGQJXOVSTI" Nature="2" IsVisible="false" IsConfirmationRequired="false">
+    <AccessRules IsPublished="false"/>
+    <InType TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="PipelineRqDocument"/>
+    <OutType TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="PipelineCheckRsDocument"/>
+    <Source>
+      <xsc:Item>
+        <xsc:Java>final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="21"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> entityId = input.PipelineRq.EntityId;
+final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="21"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> entityPid = input.PipelineRq.EntityPid;
+
+try {
+    final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aicYOBV2IFRZ5D25C2WMZBEIOWPWY"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> pipeline = (</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aicYOBV2IFRZ5D25C2WMZBEIOWPWY"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>)</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mthF4KAIAW2C5ARPNQ2HKC3OLGBTE" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(new </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcPid_______________________ mthKCMJGSZYFREVLCWPBDG5YROTDE" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(), </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(entityId), entityPid));
+    pipeline.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aicYOBV2IFRZ5D25C2WMZBEIOWPWY mthLLZWWOAPHBF5LBB42K7W646TN4" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>();
+} catch (</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="axcEHBXU243BZDWFAGTAG3IW7YH5Q"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> e) {
+    final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="PipelineCheckRsDocument"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> xDoc = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="PipelineCheckRsDocument.Factory"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.newInstance();
+    final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="PipelineCheckRsDocument.PipelineCheckRs"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> xRs = xDoc.addNewPipelineCheckRs();
+    xRs.Mess = e.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>();
+    if (e.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="axcEHBXU243BZDWFAGTAG3IW7YH5Q mthNONHXY4T7NHK7PKMBJ4P2NVULY" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>() != null) {
+        xRs.EntityId = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="21"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.valueOf(e.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="axcEHBXU243BZDWFAGTAG3IW7YH5Q mthNONHXY4T7NHK7PKMBJ4P2NVULY" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>().</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aicC6PFHABKKZBO3N6RNZ66DMI5O4 mth4Y335FOB6VF3JHZ5WI7UI5TCHM" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>().EntityId);
+        xRs.EntityPid = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="21"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.valueOf(e.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="axcEHBXU243BZDWFAGTAG3IW7YH5Q mthNONHXY4T7NHK7PKMBJ4P2NVULY" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>().</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aicC6PFHABKKZBO3N6RNZ66DMI5O4 mth4Y335FOB6VF3JHZ5WI7UI5TCHM" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>());
+        xRs.Mess += " (" + </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:LocalizedString StringId="mlsTSXTRRZ6IJBTBK3W6A56FQV3Q4"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> + " \"" + e.</xsc:Java></xsc:Item><xsc:Item><xsc:IdReference Path="axcEHBXU243BZDWFAGTAG3IW7YH5Q mthNONHXY4T7NHK7PKMBJ4P2NVULY" Invoke="true"/></xsc:Item><xsc:Item><xsc:Java>().</xsc:Java></xsc:Item><xsc:Item><xsc:IdReference Path="aicC6PFHABKKZBO3N6RNZ66DMI5O4 mthRGPLXVTN4BB5LNLYHDLSL3K444" Invoke="true"/></xsc:Item><xsc:Item><xsc:Java>() + "\")";
+    }
+    if (e.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="axcEHBXU243BZDWFAGTAG3IW7YH5Q mthJTLUSAG6G5HM3GRDCTGC4KEXGA" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>() != null)
+        xRs.ConnectionId = e.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="axcEHBXU243BZDWFAGTAG3IW7YH5Q mthJTLUSAG6G5HM3GRDCTGC4KEXGA" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>();
+    return xDoc;
+}
+
+return null;</xsc:Java>
+      </xsc:Item>
+    </Source>
+  </AdsContextlessCommandDefinition>
+</AdsDefinition>

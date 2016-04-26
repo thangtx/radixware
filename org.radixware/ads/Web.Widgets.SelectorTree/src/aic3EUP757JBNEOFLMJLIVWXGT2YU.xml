@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aic3EUP757JBNEOFLMJLIVWXGT2YU" Name="IChildGroupModelSettingsProvider" Type="5" Environment="web">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.wps.views.selector.tree.IChildGroupModelSettingsProvider"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeraic3EUP757JBNEOFLMJLIVWXGT2YU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyaic3EUP757JBNEOFLMJLIVWXGT2YU"/>
+    </Bodies>
+    <MethodGroup Id="cmgH2RXVWOHXJEKHJIL46VCJWMIYU" Name="Root"/>
+    <PropertyGroup Id="cpgTYWP3LE6EZBDLKEGDJ256FHKNU" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthQQXLYOOOI5EYBCKDVVPSFMO2LM" Name="getChildGroupModelSettings" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getChildGroupModelSettings(Lorg.radixware.kernel.common.types.Id;Lorg.radixware.wps.views.selector.tree.SelectorTreeNode;Lorg.radixware.kernel.common.client.models.EntityModel;)Ljava.util.List&lt;Lorg.radixware.wps.views.selector.tree.ChildGroupModelSettings;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="selectorPresentationId" Id="mprKOXLTSJL4ZGALCBJU46FIZUV7Q">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+          <Parameter Name="parentNode" Id="mprYAAZIGUF75F7DC6BYL6QYTGSHM">
+            <Type TypeId="400" extStr="org.radixware.wps.views.selector.tree.SelectorTreeNode"/>
+          </Parameter>
+          <Parameter Name="nearestEntityModel" Id="mprQV3IN27JKVGJTIGLQPJBGUCX4I">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.wps.views.selector.tree.ChildGroupModelSettings"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

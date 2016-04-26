@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicKIOQOEA2S5GZBMYVJ5QPH5RG3M" Name="IResponseListener" Type="5" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.eas.IResponseListener"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcEHGDD2SKAVCELBWV7WH2QKCCF4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcAW66EDEOFBDFXHHQ47POVHONRM"/>
+    </Bodies>
+    <MethodGroup Id="cmg6MCSPZTFV5EQ7C7VPGRUFWGJPU" Name="Root"/>
+    <PropertyGroup Id="cpgF24T2WPCWBAJRA3IPTEUM37HSM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthO3BWHX3IMNHSDFYRTFFI7LW4Y4" Name="onResponseReceived" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="onResponseReceived(Lorg.apache.xmlbeans.XmlObject;Lorg.radixware.kernel.common.client.eas.RequestHandle;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="response" Id="mpr3DQTUN2GAFATTAV7O5YB7QTMFU">
+            <Type TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+          </Parameter>
+          <Parameter Name="handle" Id="mprEIRT4JXPTRGLDBAH77YEHEEVC4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.eas.RequestHandle"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthCOUORW6GRBBOVH4VQG6H7NPNEI" Name="onServiceClientException" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="onServiceClientException(Lorg.radixware.kernel.common.exceptions.ServiceClientException;Lorg.radixware.kernel.common.client.eas.RequestHandle;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="exception" Id="mprKEQ3KL5SJVHHDMKX4O25DGGOGI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+          </Parameter>
+          <Parameter Name="handle" Id="mprUCWPE4E6INBTVLKLWIKKV5PYOE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.eas.RequestHandle"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthZ44CVY7E3RFCLFPPDRRPRM44DI" Name="onRequestCancelled" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="onRequestCancelled(Lorg.apache.xmlbeans.XmlObject;Lorg.radixware.kernel.common.client.eas.RequestHandle;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="request" Id="mprW3RHIGMRIJGMBNDLKDKVBI6PWE">
+            <Type TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+          </Parameter>
+          <Parameter Name="handle" Id="mprRLQFEFNQUFA7BKRGOLBCO6YSUU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.eas.RequestHandle"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthLD4JGBO2YNALDER2RUGGFCROCI" Name="registerRequestHandle" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="registerRequestHandle(Lorg.radixware.kernel.common.client.eas.RequestHandle;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="handle" Id="mprJJWZ2FH24JAUJEDS3WBB32NIAU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.eas.RequestHandle"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthRJDTRDC6M5ANVB6YWXRUBKKYTE" Name="unregisterRequestHandle" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="unregisterRequestHandle(Lorg.radixware.kernel.common.client.eas.RequestHandle;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="handle" Id="mprTMNDAPAKHRG67C2FBSZ6TTV3LI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.eas.RequestHandle"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

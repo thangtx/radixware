@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- You may freely edit this file. See commented blocks below for -->
+<!-- some examples of how to customize the build. -->
+<!-- (If you delete it and reopen the project it will be recreated.) -->
+<project name="org.radixware-kernel-starter" default="default" basedir=".">
+    <description>Builds, tests, and runs the project org.radixware-kernel-starter.</description>
+
+    <import file="nbproject/build-impl.xml"/>
+
+    <!--
+
+    There exist several targets which are by default empty and which can be
+    used for execution of your tasks. These targets are usually executed
+    before and after some main targets. They are:
+
+      -pre-init:                 called before initialization of project properties
+      -post-init:                called after initialization of project properties
+      -pre-compile:              called before javac compilation
+      -post-compile:             called after javac compilation
+      -pre-compile-single:       called before javac compilation of single file
+      -post-compile-single:      called after javac compilation of single file
+      -pre-compile-test:         called before javac compilation of JUnit tests
+      -post-compile-test:        called after javac compilation of JUnit tests
+      -pre-compile-test-single:  called before javac compilation of single JUnit test
+      -post-compile-test-single: called after javac compilation of single JUunit test
+      -pre-jar:                  called before JAR building
+      -post-jar:                 called after JAR building
+      -post-clean:               called after cleaning build products
+
+    (Targets beginning with '-' are not intended to be called on their own.)
+
+    Example of inserting an obfuscator after compilation could look like this:
+
+        <target name="-post-compile">
+            <obfuscate>
+                <fileset dir="${build.classes.dir}"/>
+            </obfuscate>
+        </target>
+
+    For list of available properties check the imported
+    nbproject/build-impl.xml file.
+
+
+    Another way to customize the build is by overriding existing main targets.
+    The targets of interest are:
+
+      -init-macrodef-javac:     defines macro for javac compilation
+      -init-macrodef-junit:     defines macro for junit execution
+      -init-macrodef-debug:     defines macro for class debugging
+      -init-macrodef-java:      defines macro for class execution
+      -do-jar-with-manifest:    JAR building (if you are using a manifest)
+      -do-jar-without-manifest: JAR building (if you are not using a manifest)
+      run:                      execution of project
+      -javadoc-build:           Javadoc generation
+      test-report:              JUnit report generation
+
+    An example of overriding the target for project execution could look like this:
+
+        <target name="run" depends="org.radixware-kernel-starter-impl.jar">
+            <exec dir="bin" executable="launcher.exe">
+                <arg file="${dist.jar}"/>
+            </exec>
+        </target>
+
+    Notice that the overridden target depends on the jar target and not only on
+    the compile target as the regular run target does. Again, for a list of available
+    properties which you can use, check the target you are overriding in the
+    nbproject/build-impl.xml file.
+
+    -->
+    
+    
+    <target name="-build-directory">
+        <echo message="BUILD directory.xml"/>
+        <java classname="org.radixware.kernel.common.build.directory.DirectoryFileBuilder"
+              classpath="${build_directory.classpath}"
+              fork="true">
+            <!-- Command line must be: DirectoryFile excludeRegexp group1 regexp1  group2 regexp2 ... -->
+            <arg value="../directory.xml"/>
+            <arg value=".*/(\.svn||src||xsd||doc||project||build)/.*" />
+            <arg value="KernelCommon"/>
+            <arg value="bin/starter.jar" />
+            <classpath>
+                <fileset dir="${dist.dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+                <pathelement path="${build.classes.dir}"/>
+                <pathelement path="${javac.classpath}"/>
+            </classpath>
+        </java>
+        <echo message="BUILD directory-dist.xml"/>
+        <java classname="org.radixware.kernel.common.build.directory.DirectoryFileBuilder"
+              classpath="${build_directory.classpath}"
+              fork="true">
+            <!-- Command line must be: DirectoryFile excludeRegexp group1 regexp1  group2 regexp2 ... -->
+            <arg value="../directory-dist.xml"/>
+            <arg value="-compact" />
+            <arg value=".*/(\.svn||src||xsd||doc||project||build)/.*" />
+            <arg value="KernelCommon"/>
+            <arg value="bin/dist/starter.jar" />
+            <classpath>
+                <fileset dir="${dist.dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+                <pathelement path="${build.classes.dir}"/>
+                <pathelement path="${javac.classpath}"/>
+            </classpath>
+        </java>
+        <echo message="SIGN directory.xml"/>
+        <java classname="org.radixware.kernel.common.build.directory.DirectoryFileSigner"
+              classpath="${build_directory.classpath}"
+              fork="true">
+            <arg value="../directory.xml"/>
+            <classpath>
+                <fileset dir="${dist.dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+                <pathelement path="${build.classes.dir}"/>
+                <pathelement path="${javac.classpath}"/>
+            </classpath>
+        </java>
+        <echo message="SIGN directory-dist.xml"/>
+        <java classname="org.radixware.kernel.common.build.directory.DirectoryFileSigner"
+              classpath="${build_directory.classpath}"
+              fork="true">
+            <arg value="../directory-dist.xml"/>
+            <classpath>
+                <fileset dir="${dist.dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+                <pathelement path="${build.classes.dir}"/>
+                <pathelement path="${javac.classpath}"/>
+            </classpath>
+        </java>
+    </target>
+
+
+    <target name="-post-jar">
+        <loadfile srcfile="addjars.txt" property="starter.add.files">
+            <filterchain>
+                <striplinecomments>
+                    <comment value="#"/>
+                </striplinecomments>
+            </filterchain>
+        </loadfile>
+        <echo message="Additional jars to add to starter distributable file: ${starter.add.files}"/>
+        <unjar dest="${single_build.classes.dir}">
+            <filelist id="starter.add.files" dir="." files="${starter.add.files}"/> 
+        </unjar>
+        <unjar src="${file.reference.trilead.jar}" dest="${single_build.classes.dir}"/>
+        <unjar src="${file.reference.commons-logging-1.1.1.jar}" dest="${single_build.classes.dir}"/>
+        <unjar src="${reference.org_radixware_kernel-common-svnclient.jar}" dest="${single_build.classes.dir}"/>
+        <unjar src="${dist.jar}" dest="${single_build.classes.dir}"/>
+        <mkdir dir="${single_dist.dir}"/>
+        <jar compress="${jar.compress}" jarfile="${single_dist.jar}" manifest="${manifest.file}">
+            <fileset dir="${single_build.classes.dir}"/>
+        </jar>
+        <jar update="true" file="${single_dist.jar}">
+            <manifest>
+                <attribute name="Permissions" value="all-permissions"/>
+            </manifest>
+        </jar>
+    </target>
+    
+    <target depends="init,compile,-pre-jar,-do-jar,-post-jar,-build-directory" description="Build JAR." name="jar"/>
+    <target name="distributive" depends="jar"/>
+
+</project>
+

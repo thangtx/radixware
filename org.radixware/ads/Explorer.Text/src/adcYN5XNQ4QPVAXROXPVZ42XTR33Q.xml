@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcYN5XNQ4QPVAXROXPVZ42XTR33Q" Name="DefaultTextOptionsProvider" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.explorer.text.DefaultTextOptionsProvider"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcYN5XNQ4QPVAXROXPVZ42XTR33Q"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcYN5XNQ4QPVAXROXPVZ42XTR33Q"/>
+    </Bodies>
+    <MethodGroup Id="cmgNC6XA4M3DFB6HAZTTDLTW3XPKM" Name="Root"/>
+    <PropertyGroup Id="cpgZBNHD7HWKRAMNLOYF4KEQHPDZI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthW2PWWMFS7VCIDOIYDGOBCHA25M" Name="getOptions" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getOptions(Ljava.util.EnumSet&lt;Lorg.radixware.kernel.common.client.enums.ETextOptionsMarker;>;)Lorg.radixware.kernel.explorer.text.ExplorerTextOptions;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="marker" Id="mpr7SC33FD2S5FTFOXTINSLMXF3DE">
+            <Type TypeId="400" extStr="java.util.EnumSet">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.ETextOptionsMarker"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.text.ExplorerTextOptions"/>
+      </Method>
+      <Method Id="mthZDJSJV3PSBB45OSHXQKRTDE7IE" Name="getOptions" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getOptions([Lorg.radixware.kernel.common.client.enums.ETextOptionsMarker;)Lorg.radixware.kernel.explorer.text.ExplorerTextOptions;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="markers" Id="mpr5KD2LQOAHNGNTISPYEM3XPTWKQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.ETextOptionsMarker" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.text.ExplorerTextOptions"/>
+      </Method>
+      <Method Id="mth4IRMUNFGKFFMPFPXEJ4X6K3MHY" Name="getOptions" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getOptions(Lorg.radixware.kernel.common.enums.ESelectorRowStyle;[Lorg.radixware.kernel.common.client.enums.ETextOptionsMarker;)Lorg.radixware.kernel.explorer.text.ExplorerTextOptions;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="rowStyle" Id="mprU43LFVZVWFEQ7J76ZKFYS5RGQQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.ESelectorRowStyle"/>
+          </Parameter>
+          <Parameter Name="markers" Id="mprCSSHA2XE45G6HOQQFU23I4OTI4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.ETextOptionsMarker" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.text.ExplorerTextOptions"/>
+      </Method>
+      <Method Id="mthC5O2HAXMYNFMLLKFPE7VXLLPFU" Name="getOptions" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getOptions(Ljava.util.EnumSet&lt;Lorg.radixware.kernel.common.client.enums.ETextOptionsMarker;>;Lorg.radixware.kernel.common.enums.ESelectorRowStyle;)Lorg.radixware.kernel.explorer.text.ExplorerTextOptions;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="markers" Id="mprPYKHZQ7XGZDXFIXYPSSI2YQ4EQ">
+            <Type TypeId="400" extStr="java.util.EnumSet">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.ETextOptionsMarker"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="rowStyle" Id="mprXDQJBRITMNG7TIXIYOXEI5AURM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.ESelectorRowStyle"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.text.ExplorerTextOptions"/>
+      </Method>
+      <Method Id="mthXNC5DQCW6RH2XH2LYG2IQ3YBXA" Name="getInstance" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getInstance()Lorg.radixware.kernel.explorer.text.DefaultTextOptionsProvider;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.text.DefaultTextOptionsProvider"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="axcWYWATQSPTFGLVAJPCFEERQFAFY" Name="UserFuncError" Type="8" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcR7MBHTNR5VHHTOB6XRXTHFSRLM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcIXMVDUGMONHM7BFNQXYCPK63BI">
+        <xsc:Item>
+          <xsc:Java>public final static long serialVersionUID = 24242385462424L;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmgDYF2OPETOBB27CEW6JI2VGX5VI" Name="Root"/>
+    <PropertyGroup Id="cpgDLJVRDAUQBBYBGAGENCF7YZEVU" Name="Root"/>
+    <Properties>
+      <Property Id="prdGFBVKXECC5E4PKVL47O6MPRRJ4" Name="func" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthK6TEO2MVP5CT3HHV4VRQI7ITWM" Name="UserFuncError" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="uf" Id="mprJXRJE6MNB5BYLAM6UVGIPMT3BE">
+            <Type TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+          </Parameter>
+          <Parameter Name="mess" Id="mprB6INZWLAVNCGHLTVCMCVIMVOSA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcWYWATQSPTFGLVAJPCFEERQFAFY mthUFUUYNGS3VHBPO346BIAMQOTFE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(uf, mess, null));
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcWYWATQSPTFGLVAJPCFEERQFAFY prdGFBVKXECC5E4PKVL47O6MPRRJ4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = uf;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthUFUUYNGS3VHBPO346BIAMQOTFE" Name="prepareMess" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="uf" Id="mprQRWLDH3TJNEH3PFKDD4C5GDM3A">
+            <Type TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+          </Parameter>
+          <Parameter Name="mess" Id="mprBREIVOLRQRHONA5R2R4HI2KETY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="e" Id="mpr7DMT2CRKCFBFVCIJQOLCY2M75U">
+            <Type TypeId="400" extStr="java.lang.Throwable"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (e!=null &amp;&amp; e instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcWYWATQSPTFGLVAJPCFEERQFAFY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)
+    return mess;
+else
+    return "User function '" + uf.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM prdYLLJTXZ45NHMLOCQFZSHR4PHOQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + "' raises error: "+mess;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth2WATDQIFTFEU3KUT2DYGDYORUA" Name="UserFuncError" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="uf" Id="mprC64PY3LSFJFXZG5DJM6MO4HG3E">
+            <Type TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+          </Parameter>
+          <Parameter Name="mess" Id="mprOTUEDTX74NDA7JMPPDRWBCTXVI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="e" Id="mprU62OFRHX2BAA7C46VZMKYAJYCE">
+            <Type TypeId="400" extStr="java.lang.Throwable"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcWYWATQSPTFGLVAJPCFEERQFAFY mthUFUUYNGS3VHBPO346BIAMQOTFE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(uf, mess, e), e);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcWYWATQSPTFGLVAJPCFEERQFAFY prdGFBVKXECC5E4PKVL47O6MPRRJ4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = uf;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ"/>
+  </AdsClassDefinition>
+</AdsDefinition>

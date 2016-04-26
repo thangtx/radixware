@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdGVYAU63UXJD2FJUYRDFP5U32OU" Name="DashboardXsd" TargetNamespace="http://schemas.radixware.org/dashboard.xsd" Environment="common"><xs:schema targetNamespace="http://schemas.radixware.org/dashboard.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:this="http://schemas.radixware.org/dashboard.xsd">
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:simpleType name="PropSource">
+        <xs:restriction base="types:Str">
+            <xs:enumeration value="OWN"/>
+            <xs:enumeration value="DASHBOARD"/>
+            <xs:enumeration value="COMMON_REF"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="InheritableProp">
+        <xs:sequence>
+            <xs:element name="PropSource" type="this:PropSource" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TimeRangeProp">
+        <xs:complexContent>
+            <xs:extension base="this:InheritableProp">
+                <xs:attribute name="Period" type="types:Int" use="required"/>
+                <xs:attribute name="PeriodUnit" type="types:Int" use="required"/>
+                <xs:attribute name="TimeRange" type="types:Str" use="required"/>
+                <xs:attribute name="TimeFrom" type="types:DateTime"/>
+                <xs:attribute name="TimeTo" type="types:DateTime"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="MetricStateInfo">
+        <xs:attribute name="MetricStatePid" type="types:Str"/>
+        <xs:attribute name="MetricStateClassId" type="types:Str"/>
+        <xs:attribute name="MetricStatePresentId" type="types:Str"/>
+        <xs:attribute name="NormColor" type="types:Int"/>
+        <xs:attribute name="WarningColor" type="types:Int"/>
+        <xs:attribute name="ErrorColor" type="types:Int"/>
+        <xs:attribute name="MetricName" type="types:Str"/>
+        <xs:attribute name="StateId" type="types:Int" use="required"/>
+        <xs:attribute name="Title" type="types:Str" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="ColumnType">
+        <xs:sequence>
+            <xs:element name="Title" type="types:Str" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="Type" type="types:Str"/>
+        <xs:attribute name="IsHidden" type="types:Bool"/>
+        <xs:attribute name="ShowAsDiagramBar" type="types:Bool"/>
+        <xs:attribute name="MinVal" type="types:Int"/>
+        <xs:attribute name="MaxVal" type="types:Int"/>
+        <xs:attribute name="Precision" type="types:Int"/>
+    </xs:complexType>
+    <xs:complexType name="ColumnModel">
+        <xs:sequence>
+            <xs:element name="Column" type="this:ColumnType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="DiagramSettings">
+        <xs:choice>
+            <xs:element name="HistSettings">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="StateInfo" type="this:MetricStateInfo" minOccurs="1" maxOccurs="1"/>
+                        <xs:element name="TimeRangeProp" type="this:TimeRangeProp" minOccurs="0" maxOccurs="1"/>
+                    </xs:sequence>
+                    <xs:attribute name="MinVal" type="types:Num"/>
+                    <xs:attribute name="MaxVal" type="types:Num"/>
+                    <xs:attribute name="IsAutoRange" type="types:Bool"/>
+                    <xs:attribute name="IsHistogram" type="types:Bool"/>
+                    <xs:attribute name="IsShowChangeRange" type="types:Bool"/>
+                    <xs:attribute name="Period" type="types:Int" use="required"/>
+                    <xs:attribute name="PeriodUnit" type="types:Int" use="required"/>
+                    <xs:attribute name="TimeRange" type="types:Str" use="required"/>
+                    <xs:attribute name="TimeFrom" type="types:DateTime"/>
+                    <xs:attribute name="TimeTo" type="types:DateTime"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="CorrSettings">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="ChildMetric" type="this:MetricStateInfo" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                    <xs:attribute name="IsShowValues" type="types:Bool" use="required"/>
+                    <xs:attribute name="IsPercent" type="types:Bool" use="required"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="UnitsTreeExpandedItem">
+        <xs:sequence>
+            <xs:element name="ChildItem" type="this:UnitsTreeExpandedItem" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="ItemId" type="types:Int"/>
+    </xs:complexType>
+    <xs:complexType name="WidgetReferenceSettings">
+        <xs:sequence>
+            <xs:element name="TimeRangeProp" type="this:TimeRangeProp" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="Guid" type="types:Str"/>
+    </xs:complexType>
+    <xs:complexType name="TabReferenceSettings">
+        <xs:sequence>
+            <xs:element name="DashReference" type="this:DashReference" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="WidgetReferenceSettings" type="this:WidgetReferenceSettings" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="TabGuid" type="types:Str"/>
+    </xs:complexType>
+    <xs:complexType name="Widget" abstract="true">
+        <xs:choice>
+            <xs:element name="Container">
+                <xs:complexType>
+                    <xs:sequence>
+                            <xs:element name="Tab" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="Child" type="this:Widget" minOccurs="0" maxOccurs="unbounded"/>
+                                        <xs:element name="TabReferenceSettings" type="this:TabReferenceSettings" minOccurs="0" maxOccurs="1"/>
+                                    </xs:sequence>
+                                    <xs:attribute name="Title" type="types:Str"/>
+                                    <xs:attribute name="TabGuid" type="types:Str"/>
+                                </xs:complexType>
+                            </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="CurrentTab" type="types:Num"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Table">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="ColumnModel" type="this:ColumnModel" minOccurs="0" maxOccurs="1"/>
+                    </xs:sequence>
+                    <xs:attribute name="MetricKind" type="types:Str" use="required"/>
+                    <xs:attribute name="IsShowDate" type="types:Bool" default="true"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Diagram" type="this:DiagramSettings"/>
+            <xs:element name="SysUnits">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="ExpandedItems" type="this:UnitsTreeExpandedItem" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="EventLog">
+                <xs:complexType>
+                    <xs:attribute name="UpdateTimeLagMillis" type="types:Int" use="optional"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+        <xs:attribute name="Guid" type="types:Str"/>
+        <xs:attribute name="Title" type="types:Str"/>
+        <xs:attribute name="LocationX" type="types:Int"/>
+        <xs:attribute name="LocationY" type="types:Int"/>
+        <xs:attribute name="Width" type="types:Int"/>
+        <xs:attribute name="Height" type="types:Int"/>
+        <xs:attribute name="IsUpdateEnabled" type="types:Bool"/>
+        <xs:attribute name="IsAlertsSuppressed" type="types:Bool"/>
+    </xs:complexType>
+    <xs:complexType name="DiagramDialogSettings">             
+        <xs:attribute name="TimeRange" type="types:Str" use="required"/>
+        <xs:attribute name="TimeFrom" type="types:DateTime" use="required"/>
+        <xs:attribute name="TimeTo" type="types:DateTime" use="required"/>
+        <xs:attribute name="Period" type="types:Int" use="required"/>
+        <xs:attribute name="PeriodUnit" type="types:Int" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="DialogSettingsContainer">
+        <xs:sequence>
+            <xs:element name="DiagramSettings" type="this:DiagramDialogSettings"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="Dashboard">
+        <xs:sequence>
+            <xs:element name="RootContainer" type="this:Widget" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="DialogContainer" type="this:DialogSettingsContainer" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="DashReferenceSettings" type="this:DashReferenceSettings" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="TimeRangeProp" type="this:TimeRangeProp" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="Title" type="types:Str" use="optional"/>
+        <xs:attribute name="DashConfigGuid" type="types:Str" use="optional"/>
+        <xs:attribute name="EventUserSound" type="types:Str"/>
+        <xs:attribute name="EventSoundHEX" type="types:Str"/>
+        <xs:attribute name="EventStandardSound" type="types:Str"/>
+        <xs:attribute name="WarningUserSound" type="types:Str"/>
+        <xs:attribute name="WarningSoundHEX" type="types:Str"/>
+        <xs:attribute name="WarningStandardSound" type="types:Str"/>
+        <xs:attribute name="ErrorUserSound" type="types:Str"/>
+        <xs:attribute name="ErrorSoundHEX" type="types:Str"/>
+        <xs:attribute name="ErrorStandardSound" type="types:Str"/>
+        <xs:attribute name="PlaySoundIntervalSec" type="types:Int"/>
+        <xs:attribute name="UpdateIntervalSec" type="types:Int"/>
+    </xs:complexType>
+    <xs:complexType name="DashReference">
+        <xs:attribute name="DashGuid" type="types:Str"/>
+        <xs:attribute name="Title" type="types:Str" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="DashReferenceSettings">
+        <xs:sequence>
+            <xs:element name="DashReference" type="this:DashReference" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="InheritUpdateTime" type="types:Bool"/>
+    </xs:complexType>   
+    <xs:complexType name="Dashboards">
+        <xs:sequence>
+            <xs:element name="Dashboard" type="this:Dashboard" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="CurrentDashConfig" type="this:DashReference" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>     
+    
+    <xs:element name="Dashboard" type="this:Dashboard"/>
+    <xs:element name="Dashboards" type="this:Dashboards"/>
+</xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

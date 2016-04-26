@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcZLCYFYVFIJBYTG6CZMO2BWPI7Q" Name="InteractiveReportFileController" Type="3" Environment="server">
+    <AccessRules Access="4" IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcZLCYFYVFIJBYTG6CZMO2BWPI7Q"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcZLCYFYVFIJBYTG6CZMO2BWPI7Q">
+        <xsc:Item>
+          <xsc:Java>private final String directory;
+private java.io.File tempDir = org.radixware.kernel.server.reports.DefaultReportFileController.createTmpDir();
+private final </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> format;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmgZPYKUDCVKBFPJCORXEAK4ALN3Y" Name="Root"/>
+    <PropertyGroup Id="cpgYXZQRJS7QZCPDFSA7GPYHZNVC4" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthMMHPPAI5T5EFHOO5OTAQN4DSWI" Name="adjustFileName" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="report" Id="mprCQMPQYYB4JC6VGLDTCB3WRTJN4">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Report"/>
+          </Parameter>
+          <Parameter Name="fileName" Id="mprVXP55YM2SJF7XFKIB2HFJN4BK4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return fileName;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthHCFFTVMPBFBMVJOMMDZMTW4LWU" Name="afterCloseFile" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="report" Id="mprISVG2PPZSJDQLCR75SJMEZXPVE">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Report"/>
+          </Parameter>
+          <Parameter Name="file" Id="mpr3JYAPCXELBCDTHPCOVYZ5ZDCFM">
+            <Type TypeId="400" extStr="java.io.File"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+    java.io.OutputStream out = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcD6JQG2D5NBDCZN3T6Q3OY5G56Q"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcD6JQG2D5NBDCZN3T6Q3OY5G56Q mthUE47P4422JHNJBMWVV6AOE6AME" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(new java.io.File(directory, file.getName()).getPath());
+    final java.io.FileInputStream in = new java.io.FileInputStream(file);
+    org.radixware.kernel.common.utils.FileUtils.copyStream(in, out);        
+    out.flush();
+    out.close();
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthD6XIGP2SRPNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthBXQY2BN2DVEUNP7D645ZOVXZM4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ex),</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciA5UFXOQYZVGD3HR3MME5ZDOC5U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthPQ6T4E3WPFELTDJAEYHOVJIXMU" Name="afterCreateFile" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="report" Id="mprB6C7WKR5WFE2NKW64WIJXTF5ZQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Report"/>
+          </Parameter>
+          <Parameter Name="file" Id="mprXQI5VPZV75A75CLY3OPTB32RXU">
+            <Type TypeId="400" extStr="java.io.File"/>
+          </Parameter>
+          <Parameter Name="outputStream" Id="mpr3LHWL2WPWBCHDIFYCHZZVBDUIU">
+            <Type TypeId="400" extStr="java.io.OutputStream"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthEQWZZHVBAZGUTNKSUVXAIQ4ZPI" Name="beforeCloseFile" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="report" Id="mprR3I6K4XNY5ENTDBUZKDNFKKEMY">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Report"/>
+          </Parameter>
+          <Parameter Name="file" Id="mprCLHTBWIHOJAXFOOFBQG4NDMCDY">
+            <Type TypeId="400" extStr="java.io.File"/>
+          </Parameter>
+          <Parameter Name="outputStream" Id="mprODRHGSJKIVHXJFNFRPJ5E5EDQ4">
+            <Type TypeId="400" extStr="java.io.OutputStream"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthENOMTP7QJVA4HIADRTVA5QKQEA" Name="InteractiveReportFileController" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="directory" Id="mpr33NOMZBKSNCU3D2DSHNBUA4ZYU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="format" Id="mpr7IFFO5A6INGVJDEMGV5FMEBGKQ">
+            <Type TypeId="21" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this.directory = directory;
+this.format = format;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthNMVOW6LIMVH3LA5FQV52TIFPOI" Name="getDirectory" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="400" extStr="java.io.File"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return tempDir;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Implements>
+      <Interface TypeId="411" Path="aicJMKRUZ3AI5HQLJTVZYWCM6NVKM"/>
+    </Implements>
+  </AdsClassDefinition>
+</AdsDefinition>

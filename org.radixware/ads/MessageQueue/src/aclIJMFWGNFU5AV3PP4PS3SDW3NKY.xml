@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclIJMFWGNFU5AV3PP4PS3SDW3NKY" Name="MessageQueue.Producer" Type="2">
+    <AccessRules/>
+    <Headers>
+      <Src Name="HeaderaclIJMFWGNFU5AV3PP4PS3SDW3NKY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaclIJMFWGNFU5AV3PP4PS3SDW3NKY"/>
+    </Bodies>
+    <MethodGroup Id="cmgAEI6RGA7KFBRVG2LDW3E7G2BZ4" Name="Root">
+      <Group Id="cmgICHUT3EGPVH4RPCE4OEAJ2SHEU" Name="Producer API" Members="mthOFF2757GTBGVPBA3ZZEID7HWUY mthWXVEL5SYNRBVVP2ICAI7TF6DLI"/>
+    </MethodGroup>
+    <PropertyGroup Id="cpgJD6LLPRRMZDAZEIEKYCILDO2TM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthOFF2757GTBGVPBA3ZZEID7HWUY" Name="post" Nature="0" IsReflectiveCallable="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="xMessage" Id="mprGWUP5LGZBVGTHB66YT4RPMWOIU">
+            <Type TypeId="451" Path="xsdQN5ZI6MAN5E7PAGWAOW77WV2YM" extStr="MqMessage"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+          <Exception TypeId="411" Path="axc7PXEO3TYR5CCFH7362MPE6KFAY"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>class CachedProducer implements </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicXXJAMYMIXNAB5GVEZKDMHKLT7M"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> {
+    private final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicGNS47MFCS5E6LLDQ7E2I42BJCM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> producer;
+    
+    public CachedProducer(final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicGNS47MFCS5E6LLDQ7E2I42BJCM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> producer) {
+        this.producer = producer;
+    }
+    
+    public </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicGNS47MFCS5E6LLDQ7E2I42BJCM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> getProducer() {
+        return producer;
+    }
+    public void </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicXXJAMYMIXNAB5GVEZKDMHKLT7M mthPVPRWFCHNNAQ3DIGR6QDW642FE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() {
+        try{producer.close();
+        } catch (Exception exc) {
+            exc.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthTYHVS55NE5GDRMRI4PKSCB6CDY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+        }
+    }
+};
+
+final String cacheItemId = getClass().getName() + "/" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colZDZ4CALBLBGEJCZMA5VSTVPUGQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+CachedProducer producer = (CachedProducer)</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthLE3IKXC2DBCVJCBDMCMLDUJAMQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcB2AD534UJJCC7HGTB7H5MKRYAA mthSRJPA73DRRDQBJXAVYSNMCCGE4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(cacheItemId);
+
+if (producer == null) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthLE3IKXC2DBCVJCBDMCMLDUJAMQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcB2AD534UJJCC7HGTB7H5MKRYAA mthAWZOKNLOKFHA7NNLYAWFFNFXBM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(cacheItemId,producer = new CachedProducer(this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclIJMFWGNFU5AV3PP4PS3SDW3NKY mthWXVEL5SYNRBVVP2ICAI7TF6DLI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()), 24 * 60 * 1000);
+}
+
+producer.getProducer().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicGNS47MFCS5E6LLDQ7E2I42BJCM mth2A7YYGSVUJD3ZOE2VXLBURYUVY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(xMessage.Meta,xMessage.Body);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthWXVEL5SYNRBVVP2ICAI7TF6DLI" Name="getSender" DescriptionId="mlsRHXIXSYCPJHATCNAHUJMKMZNKI" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <ReturnType TypeId="411" Path="aicGNS47MFCS5E6LLDQ7E2I42BJCM"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+          <Exception TypeId="411" Path="axc7PXEO3TYR5CCFH7362MPE6KFAY"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblQZ2AJHN3PFDWXC5BT6I66OS5PQ" AllowedDetailReferences="ref4UQQFX76UVA7HCT442UGW52U2A"/>
+    <Presentations ObjectTitleId="mlsBNA6VERIFRF7HL26GGJ5RSGT6U">
+      <ClassCatalogs>
+        <ClassCatalog Id="ecc5NBNQ63LAFHETGGWPERIR4Y6GI" Name="Producers"/>
+      </ClassCatalogs>
+      <SelectorPresentations>
+        <SelectorPresentation Id="sprMW66X772GNBUNIZYRLKPK6XGWU" Name="ProducersDefault" TitleId="mlsE2IQCG4XAVCK5J6DSE5OABNMZQ" BasePresentationId="sprLUQDA4NYBVG3JJNRMRPBRXLBBU" IconId="imgFO6542RCHNDJVL4KXMQLTVZNJE" InheritanceMask="106" Restrictions="32" EnabledCommandIds="" CreationEditorPresentationIds="eprKFF4CT7VDRE53FMW76LHR7EL4M" CreationClassCatalogId="ecc5NBNQ63LAFHETGGWPERIR4Y6GI" EditorPresentationIds="eprWEEVKI2IT5DQJAS5RJFI4FFDS4">
+          <Condition>
+            <ConditionWhere>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn3OXAHT4FYLORDBBJABIFNQAABA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblQZ2AJHN3PFDWXC5BT6I66OS5PQ" PropId="colLVCKVHLVHBDFDG7LREI4IXZPTM" Owner="NONE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Id Path="aclIJMFWGNFU5AV3PP4PS3SDW3NKY"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>) > 0</xsc:Sql>
+              </xsc:Item>
+            </ConditionWhere>
+            <ConditionFrom/>
+          </Condition>
+          <Addons AnyBaseFilterEnabled="false" AnyBaseSortingEnabled="false" CustomFilterEnabled="false" CustomSortingEnabled="false" FilterIsObligatory="false">
+            <DefaultHint/>
+          </Addons>
+        </SelectorPresentation>
+      </SelectorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ"/>
+  </AdsClassDefinition>
+</AdsDefinition>

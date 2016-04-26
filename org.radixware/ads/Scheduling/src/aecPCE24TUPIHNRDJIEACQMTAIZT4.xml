@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:edit="http://schemas.radixware.org/editmask.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aecPCE24TUPIHNRDJIEACQMTAIZT4" Name="JobExecutorUnitBoost" Type="1">
+    <AccessRules IsFinal="true"/>
+    <Headers>
+      <Src Name="HeaderadcMDCT6CHDFJCYVM4LYOYRWTFCZE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcQU6IYIGMYFBJTBMMJWT6Z3REZ4"/>
+    </Bodies>
+    <MethodGroup Id="cmgN4WOHCGNUVDDZOACMMX2F7EBME" Name="Root"/>
+    <PropertyGroup Id="cpg3JAWXZ234BH4FLVYLMQPEAM27M" Name="Root"/>
+    <Properties>
+      <Property Id="col2SZPQ7UPIHNRDJIEACQMTAIZT4" Name="delay" Nature="0" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <Presentation TitleId="mlsVDBVKUK4OXOBDFKUAAMPGXUWTQ" InheritanceMask="0">
+          <Editing NotNull="true" IsDuplicatesEnabled="true">
+            <EditMask>
+              <edit:Int MinValue="1" NumberBase="10" StepSize="1"/>
+            </EditMask>
+          </Editing>
+        </Presentation>
+      </Property>
+      <Property Id="col33CWYGOTI3NRDJIIACQMTAIZT4" Name="maxIncrement" Nature="0" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <Presentation TitleId="mlsU7BVKUK4OXOBDFKUAAMPGXUWTQ" InheritanceMask="0">
+          <Editing NotNull="true" IsDuplicatesEnabled="true">
+            <EditMask>
+              <edit:Int MaxValue="9" MinLength="0" MinValue="0" NumberBase="10" PadChar="0" StepSize="1"/>
+            </EditMask>
+          </Editing>
+        </Presentation>
+      </Property>
+      <Property Id="colATBS4XMPIHNRDJIEACQMTAIZT4" Name="speed" Nature="0" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <Presentation TitleId="mlsU3BVKUK4OXOBDFKUAAMPGXUWTQ" InheritanceMask="28">
+          <Editing NotNull="true" EditPossibility="2" IsDuplicatesEnabled="true">
+            <EditMask>
+              <edit:Int MaxValue="9" MinLength="0" MinValue="1" NumberBase="10" PadChar="0" StepSize="1"/>
+            </EditMask>
+          </Editing>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods/>
+    <Entity EntityId="tblPCE24TUPIHNRDJIEACQMTAIZT4">
+      <AccessAreas Type="None"/>
+    </Entity>
+    <Presentations ObjectTitleId="mlsUPBVKUK4OXOBDFKUAAMPGXUWTQ" EntityTitleId="mlsUTBVKUK4OXOBDFKUAAMPGXUWTQ" DefaultSelectorPresentationId="sprASXNPKNDZPNRDB65AALOMT5GDM" IconId="imgMCFMXDM4TSLV4SDDPACLZCEOI2CPPDKR" Restrictions="0">
+      <ObjectTitleFormat Id="etfQNJAFN5CZPNRDB65AALOMT5GDM" NullTitleId="mlsVHBVKUK4OXOBDFKUAAMPGXUWTQ">
+        <TitleItem PropId="colATBS4XMPIHNRDJIEACQMTAIZT4">
+          <Pattern xsi:nil="true"/>
+        </TitleItem>
+      </ObjectTitleFormat>
+      <Sortings>
+        <Sorting Id="srtYKJIRJSOD7PBDMRRABIFNQAABA" Name="Speed" TitleId="mlsYOJIRJSOD7PBDMRRABIFNQAABA">
+          <OrderBy Desc="false" PropId="colATBS4XMPIHNRDJIEACQMTAIZT4"/>
+          <Hint>
+            <xsc:Item>
+              <xsc:Sql>index(</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:ThisTableSqlName/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IndexDbName TableId="tblPCE24TUPIHNRDJIEACQMTAIZT4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>) </xsc:Sql>
+            </xsc:Item>
+          </Hint>
+        </Sorting>
+      </Sortings>
+      <EditorPresentations>
+        <EditorPresentation Id="eprEBTYJPVDZPNRDB65AALOMT5GDM" Name="Common" IconId="imgMCFMXDM4TSLV4SDDPACLZCEOI2CPPDKR" InheritanceMask="2192" Restrictions="0" EnabledCommandIds="" RightsInheritanceMode="0">
+          <ChildExplorerItems/>
+          <EditorPages>
+            <Page Id="epgU5Z3GX6TBXOBDNTPAAMPGXSZKU" Name="Main page" Type="1">
+              <Properties>
+                <Property Id="colATBS4XMPIHNRDJIEACQMTAIZT4" Row="0" Column="0"/>
+                <Property Id="col2SZPQ7UPIHNRDJIEACQMTAIZT4" Row="1" Column="0"/>
+                <Property Id="col33CWYGOTI3NRDJIIACQMTAIZT4" Row="2" Column="0"/>
+              </Properties>
+            </Page>
+            <PageOrder>
+              <Item PageId="epgU5Z3GX6TBXOBDNTPAAMPGXSZKU" Level="1"/>
+            </PageOrder>
+          </EditorPages>
+          <ObjectTitleFormat Id="etfQMA3P4GOMNF2PFA6ZYLI3IBL2A"/>
+        </EditorPresentation>
+      </EditorPresentations>
+      <SelectorPresentations>
+        <SelectorPresentation Id="sprASXNPKNDZPNRDB65AALOMT5GDM" Name="Common" IconId="imgMCFMXDM4TSLV4SDDPACLZCEOI2CPPDKR" InheritanceMask="2192" Restrictions="263112" EnabledCommandIds="" CreationEditorPresentationIds="eprEBTYJPVDZPNRDB65AALOMT5GDM" TransferSelectorPresentationId="sprASXNPKNDZPNRDB65AALOMT5GDM" EditorPresentationIds="eprEBTYJPVDZPNRDB65AALOMT5GDM">
+          <Condition>
+            <ConditionWhere/>
+            <ConditionFrom/>
+          </Condition>
+          <Addons AnyBaseFilterEnabled="true" AnyBaseSortingEnabled="true" CustomFilterEnabled="true" CustomSortingEnabled="true" FilterIsObligatory="false" DefaultSortingId="srtYKJIRJSOD7PBDMRRABIFNQAABA">
+            <DefaultHint/>
+          </Addons>
+          <SelectorColumns>
+            <Column Align="-1" PropId="colATBS4XMPIHNRDJIEACQMTAIZT4" Visibility="1"/>
+            <Column Align="-1" PropId="col2SZPQ7UPIHNRDJIEACQMTAIZT4" Visibility="1"/>
+            <Column Align="-1" PropId="col33CWYGOTI3NRDJIIACQMTAIZT4" Visibility="1"/>
+          </SelectorColumns>
+        </SelectorPresentation>
+      </SelectorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="pdcEntity____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

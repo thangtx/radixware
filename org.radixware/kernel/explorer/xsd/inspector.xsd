@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+           targetNamespace="http://schemas.compassplus.com/inspector.xsd">
+    <xs:complexType name="ObjectInfoRq">
+        <xs:choice>
+            <xs:element name="Position">
+                <xs:complexType>
+                    <xs:attribute name="AbsoluteX" type="xs:integer" use="required"/>
+                    <xs:attribute name="AbsoluteY" type="xs:integer" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Match">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Id" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+    </xs:complexType>
+    
+    <xs:complexType name="ObjectInfo">
+        <xs:sequence>
+            <xs:element name="Id" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="AbsoluteTopLeftX" type="xs:integer" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="AbsoluteTopLeftY" type="xs:integer" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Width" type="xs:integer" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Height" type="xs:integer" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Attributes"  minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Attribute">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="ValAsStr" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                                </xs:sequence>
+                                <xs:attribute name="Name" type="xs:string" use="required"/>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+        
+
+</xs:schema>

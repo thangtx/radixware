@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc53I3RNOVINED3OSTSDLTK27KCE" Name="GroupRestrictions" Type="3" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.types.GroupRestrictions"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcJJQWGPIDP5AJJAOM7OHGU5SKGQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcDYOABE7HZZH2BKVRK62HYVKHF4"/>
+    </Bodies>
+    <MethodGroup Id="cmgSMT5QCUGWNGOLHOYLM5QYVPJPQ" Name="Root"/>
+    <PropertyGroup Id="cpgGIYY47ITPRBMFNTOGNZZQGDN2Q" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthUNQ6O67UCRCS5LDXF66ODKKQPA" Name="GroupRestrictions" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.models.GroupModel;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="model" Id="mprYPESFJOQQVDRDPDINBB7RYLQVA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth65V5O7Z3DJF7PKRZCUIHTTHU4Y" Name="getIsCreateRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getIsCreateRestricted()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth5RVNL3VH3RECJIJZ5OTDZWZSLM" Name="getIsEntityRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getIsEntityRestricted(Lorg.radixware.kernel.common.client.types.Pid;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="pid" Id="mprVY2U63OJ6RC2PHLBSVWTJR76CM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.types.Pid"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth57VVVOGSIJENBBIU4SYPJ3LQOU" Name="getRestrictedEntities" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getRestrictedEntities()Ljava.util.List&lt;Lorg.radixware.kernel.common.client.types.Pid;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.types.Pid"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthAO3QHIBI4JFEXBNWV3EVVOXSGI" Name="setChangePositionRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setChangePositionRestricted(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="flag" Id="mpr666FDKETFNFPHDEFSAJXWFLKBM">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth6PHOVWFLBRCA3OMOSOFHHG6N6U" Name="setCreateRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setCreateRestricted(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="flag" Id="mprAVPQP3ZUXBCQZAKAACPCE4ETV4">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthFCVLOFJ5GFHOLNIMBZGBC2A25E" Name="setDeleteAllRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setDeleteAllRestricted(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="flag" Id="mprYQIQASRKZZGJ3CLNOC76KSN7R4">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthUYLYQM6LTVG4LJXIL7KVR65FDM" Name="setDeleteRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setDeleteRestricted(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="flag" Id="mprA64QZI4OS5F7VJL4YKFB5KFA3Y">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthIOVLIOZQNJBI5FYEWFHYWGDVKA" Name="setEditorRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setEditorRestricted(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="flag" Id="mprGRSVEWJ5EZHWPH57P7I4Z4JS5M">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthYXNI6SPBDVC2PDOVR73BF4QQSY" Name="setEntityRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setEntityRestricted(Lorg.radixware.kernel.common.client.types.Pid;Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="pid" Id="mprECZXKYXVOBFOFCWWINVBHF5JFI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.types.Pid"/>
+          </Parameter>
+          <Parameter Name="flag" Id="mprFGYTCKQP6ZEZFC4BKPNQNI7EQE">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthJUNEGD4ELVCUDHZDJILQ4DMAVI" Name="setInsertAllIntoTreeRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setInsertAllIntoTreeRestricted(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="flag" Id="mprMV6SAW6QQJHUHB5J4AJNFR7U7E">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthPQ3JTJL3PNEE5BJER4232SOFXE" Name="setInsertIntoTreeRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setInsertIntoTreeRestricted(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="flag" Id="mprJHZFQBIW7ZFZFKKHJI5H4Z6BXA">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth23O4WNZHVFBD3KT22MBAGXF6LQ" Name="setMask" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="setMask(Lorg.radixware.kernel.common.enums.ERestriction;Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="restriction" Id="mprHEGO5FGPB5CIPEYFKVOGAA7EFI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.ERestriction"/>
+          </Parameter>
+          <Parameter Name="flag" Id="mpr6EAUOXLR2BCHRDOFT5MNXDB6JY">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthMPIDPP4WK5CPPOJLOGIOLNZPTU" Name="setMultipleCopyRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setMultipleCopyRestricted(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="flag" Id="mprABSYIBF2QFF7XCAGDAF2LFLURI">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthSUA3LPTEKVCLNC2RVMACZHTTZI" Name="setRunEditorRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setRunEditorRestricted(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="flag" Id="mpr5TRC7A5GFFALXKGDOTWADX4TTU">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthO3EKFRKT2ZBCDC2I7SPLDWRV7I" Name="setTransferInRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setTransferInRestricted(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="flag" Id="mpr55LWT4HW25EJDIEVDXTVLEWK4E">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth6FXAGC2R5ZHZPJIITN4HHA7A5M" Name="setTransferOutAllRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setTransferOutAllRestricted(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="flag" Id="mprXGSHBRBYI5BHLAU7JFEGXZOXCI">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthKGB73GJIZVGB7A3GXBKNLS6MXE" Name="setTransferOutRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setTransferOutRestricted(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="flag" Id="mprUYL7K25NFBGYNHOECWJ6OX25BE">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthDQL7CMPQENE47LQJCTXIHMF4ZE" Name="setUpdateRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setUpdateRestricted(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="flag" Id="mprU6N3TZHF3FFZRJ2UABVUCGRFO4">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthBGPIKTPM6VAPJGDHFGJA2RXEZE" Name="add" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="add(Lorg.radixware.kernel.common.client.types.Restrictions;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="restriction" Id="mprJ46QLWKXBZES3AR476DDNR4AGQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.types.Restrictions"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth2JRX7VP4YNEDJFIB7KWPHYXHB4" Name="canBeAllowed" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="canBeAllowed(Lorg.radixware.kernel.common.enums.ERestriction;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="restriction" Id="mpr4CNRI3ZIBJBATFMLGGX26BQ7I4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.ERestriction"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth5XHDK3QFO5C3TNNFN72IWLAYKE" Name="getEnabledCommandIDs" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getEnabledCommandIDs()Ljava.util.List&lt;Lorg.radixware.kernel.common.types.Id;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mth2CODMC6UV5HMZLD5F6ZBNKQH7Y" Name="getIsChangePositionRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getIsChangePositionRestricted()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthNRLOQ6YMTNAUHLVYESMLWOQF4A" Name="getIsCommandRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getIsCommandRestricted(Lorg.radixware.kernel.common.types.Id;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="commandId" Id="mpr6GGDRS54VJEWHL6PUJWGTNC5OA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthWD72TKWD2ZD3BDUPH7BXGZ2OBM" Name="getIsContextlessUsageRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getIsContextlessUsageRestricted()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthCHUDCYYVCVCXVOWDXTPZL5MCCE" Name="getIsCopyRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getIsCopyRestricted()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthKEENW7N4BNHKZG3VZZZ36LCCBA" Name="getIsDeleteAllRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getIsDeleteAllRestricted()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth7LVWTXPWKRAN3PEP2BWNUN2UEM" Name="getIsDeleteRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getIsDeleteRestricted()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthETEX2OVY4VEI5DTMRNIOUNRLHI" Name="getIsEditorRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getIsEditorRestricted()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthTKV44OIS2JDTDEMALR2WHECYOA" Name="getIsInsertAllIntoTreeRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getIsInsertAllIntoTreeRestricted()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthLNPEXJS6NZELBINQWX2DW5QQPI" Name="getIsInsertIntoTreeRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getIsInsertIntoTreeRestricted()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthAV33V4HIMFDJ7EK3ZLBLVSVTXI" Name="getIsMoveRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getIsMoveRestricted()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthBIYWTVPMYJBFRCJPBXGX7YU3RE" Name="getIsMultipleCopyRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getIsMultipleCopyRestricted()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthKULNY25PF5HJZLKB5GIV5MC7IA" Name="getIsRunEditorRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getIsRunEditorRestricted()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthZVJZPRSHSJDM3N7JEWK5GWPDRI" Name="getIsUpdateRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getIsUpdateRestricted()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthGWVFZPWAZZFCJGFNAOT5SVIQLY" Name="setEntityRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setEntityRestricted(Ljava.util.List&lt;Lorg.radixware.kernel.common.client.types.Pid;>;Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="pids" Id="mpr4HVQZ2UB3ZEKHABI3T3GKRBLX4">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.types.Pid"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="flag" Id="mpr4Y3733AI6RBGNLD26LNBPGMHMI">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthMDDO5D6MSFDQHOWH4NRZO5AMVI" Name="setMultipleDeleteRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setMultipleDeleteRestricted(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="flag" Id="mprMYQV4RD7Y5HLTF4D5QTTVKEIKM">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthB72DXD2GRNGA7EQQDRUX5LL7FE" Name="setMultipleSelectionRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setMultipleSelectionRestricted(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="flag" Id="mprONIRA3ZXPJG4XM2ITSQNKL6F6Y">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthXSILCPC42FAXDIWBITMU44O2LI" Name="setSelectAllRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setSelectAllRestricted(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="flag" Id="mprU6AJNUBV45DUNCEMZOE3NGT5AY">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcRSTQTIIGVJG4LKFDYWYCVQX4OI" Name="EntityModelNode" Type="3" Environment="web">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.wps.views.selector.tree.SelectorTreeEntityModelNode"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcRSTQTIIGVJG4LKFDYWYCVQX4OI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcRSTQTIIGVJG4LKFDYWYCVQX4OI"/>
+    </Bodies>
+    <MethodGroup Id="cmg7N7AVQYV4JB2ZEH2KDAJNEFYH4" Name="Root"/>
+    <PropertyGroup Id="cpg4KQ7RY7MC5FSJGUQJSIJSV7U6E" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth6CILTENUF5CK7KLC3HCTFG2X5M" Name="createChildGroupModels" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="createChildGroupModels()Ljava.util.List&lt;Lorg.radixware.kernel.common.client.models.GroupModel;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mth5BFZHN2CMBEX3MD4MC4XZTOLSM" Name="findChildNodes" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="findChildNodes(Lorg.radixware.kernel.common.client.types.Pid;)Ljava.util.List&lt;Lorg.radixware.wps.rwt.tree.Node;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="pid" Id="mprMOXWXDANAFAFXMOK2735SMAB2I">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.types.Pid"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.wps.rwt.tree.Node"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthHEJ4XWIXYNAXZOYILJDCYCLTOU" Name="getEntityModel" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getEntityModel()Lorg.radixware.kernel.common.client.models.EntityModel;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+      </Method>
+      <Method Id="mth5FJNVYA5XRGAFBUWTHO7UJFF3U" Name="getGroupModel" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getGroupModel()Lorg.radixware.kernel.common.client.models.GroupModel;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+      </Method>
+      <Method Id="mthDVBATJDQARGIRHN6QGR2SZHDSQ" Name="getPropertyForColumn" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getPropertyForColumn(Lorg.radixware.kernel.common.client.models.items.SelectorColumnModelItem;)Lorg.radixware.kernel.common.client.models.items.properties.Property;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="column" Id="mprULKO4FKO35A47AEZFW7CMPMXZU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.SelectorColumnModelItem"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
+      </Method>
+      <Method Id="mthF2GYD57BGBDRVMEFZVJX4U66CI" Name="mapSelectorColumnToChildProperty" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="mapSelectorColumnToChildProperty(Lorg.radixware.kernel.common.client.models.EntityModel;Lorg.radixware.kernel.common.client.models.items.SelectorColumnModelItem;)Lorg.radixware.kernel.common.types.Id;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="childEntityModel" Id="mprZWXHA7LF7FAYBJFNMZQGRPW4KI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+          <Parameter Name="column" Id="mpr6ZPC3MN5DFHHJADXUGAB33T72M">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.SelectorColumnModelItem"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+      </Method>
+      <Method Id="mthY2PWJYJJ7ZGCFGLXF7XTUCHUFU" Name="EntityModelNode" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.models.EntityModel;Lorg.radixware.wps.views.selector.tree.IRwtSelectorTree;Ljava.util.Map&lt;Lorg.radixware.kernel.common.types.Id;Lorg.radixware.kernel.common.types.Id;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="entityModel" Id="mpr4RHSEDKTVJAUZGQ4CI55XMUEXY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+          <Parameter Name="tree" Id="mpr74FHDUOWIFG5ZMITKFQ22PRNGA">
+            <Type TypeId="400" extStr="org.radixware.wps.views.selector.tree.IRwtSelectorTree"/>
+          </Parameter>
+          <Parameter Name="propertyIdByColumnId" Id="mprQRTRXMKJLRAWLJWKQZMJAYI5YE">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

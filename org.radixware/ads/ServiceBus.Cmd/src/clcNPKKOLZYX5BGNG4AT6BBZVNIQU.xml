@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsContextlessCommandDefinition Id="clcNPKKOLZYX5BGNG4AT6BBZVNIQU" Name="GetNodeInfoListCmd" TitleId="mlsRGQBFBGVSBFCZLBAIMQDNNUNJY" Nature="2" IsVisible="false" IsConfirmationRequired="false">
+    <AccessRules IsPublished="false"/>
+    <InType TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="IntDocument"/>
+    <OutType TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeInfoListRsDocument"/>
+    <Source>
+      <xsc:Item>
+        <xsc:Java>
+final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeInfoListRsDocument"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> xRs = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeInfoListRsDocument.Factory"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.newInstance();
+final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeInfoListRsDocument.NodeInfoListRs"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> xNodes = xRs.addNewNodeInfoListRs();
+
+</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aecX6WI554KVVCZPGNLK7CSZLOMTY"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> pipeline = null;
+
+if (input != null &amp;&amp; input.Int != null) {
+    try {
+        pipeline = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aecX6WI554KVVCZPGNLK7CSZLOMTY"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aecX6WI554KVVCZPGNLK7CSZLOMTY mth_loadByPK_________________" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(input.Int, true);
+    } catch (Throwable ex) {
+    }
+}
+
+final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="400" extStr="java.util.Collection">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="adcB72UJA5VUBF67BJLQSMCSA6L7Y"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </xsc:TypeDeclaration>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> classes = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>().getDefManager().getClassAndItsDescenders(</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aicC6PFHABKKZBO3N6RNZ66DMI5O4"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>);
+for (</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcB72UJA5VUBF67BJLQSMCSA6L7Y"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> def : classes) {
+    
+    </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adc6HO4C4BH2RCYPP7RFT3SFIGHEU"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="adc6HO4C4BH2RCYPP7RFT3SFIGHEU mth2UJY7VT5ZFF2VKU3F772VL7LYQ" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>("Class " + def.getId() + " title " + def.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="adcB72UJA5VUBF67BJLQSMCSA6L7Y mthA7MSYHCKMBEFNBGCRW4F57LAZI" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>());
+    
+    if (def.getId() == </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>("aclASDVUU5IOJBFLHENNRCBIS5ZSY")) // exclude old NetHub
+        continue;
+
+    Class&lt;?> cl;
+    try {
+        cl = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcArte______________________ mth5ASSCJP3DXPBDFHQABIFNQAABA" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(def.getId());
+    } catch (</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="axcUKJZUDCC3NGXJMLCNT7H2KELIY"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> e) {
+        continue;
+    }
+    if (java.lang.reflect.Modifier.isAbstract(cl.getModifiers()) || java.lang.reflect.Modifier.isInterface(cl.getModifiers()))
+        continue;
+
+    final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcEntity____________________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> entity = (</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcEntity____________________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>) </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>().newObject(def.getId());
+    if (!(entity instanceof </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aicC6PFHABKKZBO3N6RNZ66DMI5O4"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>))
+        continue;
+
+    if (pipeline == null || ((</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aicC6PFHABKKZBO3N6RNZ66DMI5O4"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>) entity).</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aicC6PFHABKKZBO3N6RNZ66DMI5O4 mthNSQ7CEKCGFFWRLVESA72LZ7DEM" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(pipeline)) {
+
+        final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aicC6PFHABKKZBO3N6RNZ66DMI5O4"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> node = (</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aicC6PFHABKKZBO3N6RNZ66DMI5O4"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>) entity;
+        final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeInfo"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> xNode = xNodes.addNewNodeInfo();
+        xNode.ClassId = String.valueOf(def.getId());
+        xNode.CreatingPresentationId = String.valueOf(node.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aicC6PFHABKKZBO3N6RNZ66DMI5O4 mthLILYOANG5RBVTHLQIJLYCSDJM4" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>());
+        xNode.EditingPresentationId = String.valueOf(node.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aicC6PFHABKKZBO3N6RNZ66DMI5O4 mthIOMPW3QBZ5ASTPONSTPGMH5ZHQ" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>());
+        xNode.Title = def.Title;
+
+        final String title = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcKXBE5RCT2DNRDISQAAAAAAAAAA"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="adcKXBE5RCT2DNRDISQAAAAAAAAAA mth7PRV5TBPAXOBDA26AAMPGXSZKU" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(def.getId());
+        if (title != null &amp;&amp; !title.isEmpty()) {
+            xNode.Title = def.Title;
+        }
+
+        xNode.Icon = String.valueOf(node.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aicC6PFHABKKZBO3N6RNZ66DMI5O4 mthOK5OVIZTJ5CUTKASBMH6PUUWGQ" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>());
+        try {
+            final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="400" extStr="java.lang.reflect.Method"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> m = cl.getMethod(</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="acsCOJHFL3GQNDOBHODWT4TFRXVXM aciYFIH22FE3RBTRJSEU5RI36AMTI" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.Value, new Class&lt;?>[]{});
+            final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcZBRC7VIAWRDDDBWONX7AHSRNEQ"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> p = (</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcZBRC7VIAWRDDDBWONX7AHSRNEQ"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>) m.invoke(null, new Object[]{});
+            xNode.OrderPosX = p.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="adcZBRC7VIAWRDDDBWONX7AHSRNEQ prdWZIDFSEE4VFRVHN2F43SPDNMJM" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>;
+            xNode.OrderPosY = p.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="adcZBRC7VIAWRDDDBWONX7AHSRNEQ prdJXTQS52OVVEW3B2QA2ZN5H762M" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>;
+        } catch (Exception e) {
+            throw new </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ mth3IJGQPORMVEO7HQLJ7TDK2VWME" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:LocalizedString StringId="mlsCWDN44LDPRFB7LIO4GYLGC22YQ"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> + e.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>() + ", " + cl.Name);
+        }
+    }
+    entity.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcEntity____________________ mth4WCFC7ABDRBJTDPVIKETNLSXHM" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>();
+
+}
+
+return xRs;</xsc:Java>
+      </xsc:Item>
+    </Source>
+  </AdsContextlessCommandDefinition>
+</AdsDefinition>

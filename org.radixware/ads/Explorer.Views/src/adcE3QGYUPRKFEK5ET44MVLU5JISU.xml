@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcE3QGYUPRKFEK5ET44MVLU5JISU" Name="Editor" Type="3" Environment="explorer">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.explorer.views.Editor"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcR5EDEVD7T5BQXCRBI5AKW3HLBQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc35VFOP7Q35AGBOWO7ERVAJLBKE"/>
+    </Bodies>
+    <MethodGroup Id="cmgAQR5DJKRABGAPH32MBTYCR3CRE" Name="Root"/>
+    <PropertyGroup Id="cpgECXDXIKAPFFL3DIX2TKTIPPALE" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthFIQOKTUGNFC6RKLFJ5EAP2PZFI" Name="applyChanges" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="applyChanges()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.client.exceptions.ModelException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth74D7QA6IFVFAZIV5THGX7ZHDJM" Name="applySettings" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="applySettings()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth5NMKTZKJEJB73I24DEDCWDOPGE" Name="cancelChanges" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="cancelChanges()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthSDSJIPGQ65A5LO4A5TREEFWFAI" Name="close" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="close(Z)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="forced" Id="mprVDIVXX45FVDVRLOOLSFJH6ZGDM">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthT6YI7VGGHJFQZISNFSQRXTAJ4I" Name="Editor" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;)V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthUTYEUNVDGVFWXN76JZ4JEDXMBY" Name="copy" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="copy()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthDC2P3UVKJNACDPUYMFKD4YO52Y" Name="delete" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="delete()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthNVPJOLZD2JHTDJGRQNPO4PPV3Q" Name="finishEdit" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="finishEdit()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth4XLVMYAO65DB3DJKKUKN4BIQ6Q" Name="getEntityModel" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getEntityModel()Lorg.radixware.kernel.common.client.models.EntityModel;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+      </Method>
+      <Method Id="mthVE54LVFA6VFOTACJX6ZUWIZMUI" Name="getModel" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getModel()Lorg.radixware.kernel.common.client.models.Model;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.Model"/>
+      </Method>
+      <Method Id="mth74KZZB3LP5COFENYLOCQ3TSM74" Name="getToolButtonsSize" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getToolButtonsSize()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthYGIFIZAKIZF5LBO6TXCMWO4EB4" Name="open" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="open(Lorg.radixware.kernel.common.client.models.Model;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="model" Id="mprC27GSNTNVRC2ZJUO37IPKQAZPA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.Model"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth3DI2ZPW3FJDBZC6F34WFFZJPPE" Name="reread" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="reread()V"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthZAHFHU54Y5HLTOG7BBWF7FQWBU" Name="setCommandBarHidden" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setCommandBarHidden(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="hidden" Id="mprFMEOGC4UFFB3HBYAEWLVEEWZ2Y">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthLGU3VEAPZ5AL3KRNCQRWVHWAXA" Name="setFocusedProperty" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setFocusedProperty(Lorg.radixware.kernel.common.types.Id;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="propertyId" Id="mprRR3GYRB4WJHAFKYSGGVXTMO32M">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthTVDLIGV5HBA6HEKRGV6AD3AY4E" Name="setMenuHidden" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setMenuHidden(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="hidden" Id="mprLN6DVUDTIBG3FMYMWZ4YTK4JMA">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthCGWR7D5PMBGI5BISGTM2KRSZYM" Name="setToolBarHidden" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setToolBarHidden(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="hidden" Id="mpr44QFH2CLI5ANHNVIT226YAZK7U">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth6FAANK5EY5A2JJXHCU4YQ3Z37Y" Name="setToolButtonsSize" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setToolButtonsSize(I)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="size" Id="mprMM66FVG4XRDATAVPLK4B3YBBU4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthR4YKQPMFZNGVNOXEHHWWQC5DJI" Name="getCommandBar" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getCommandBar()Lcom.trolltech.qt.gui.QToolBar;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QToolBar"/>
+      </Method>
+      <Method Id="mthZNT3RJHRUBC57J7N2EDTPUVY74" Name="getToolBar" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getToolBar()Lcom.trolltech.qt.gui.QToolBar;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QToolBar"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

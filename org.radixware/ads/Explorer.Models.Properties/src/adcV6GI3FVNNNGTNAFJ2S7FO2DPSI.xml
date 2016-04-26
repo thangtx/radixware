@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcV6GI3FVNNNGTNAFJ2S7FO2DPSI" Name="PropertyArr" Type="3" Environment="common-client">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.models.items.properties.PropertyArr"/>
+    </AccessRules>
+    <TypeArguments>
+      <xsc:Argument DerivationRule="extends" Alias="T">
+        <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.types.Arr"/>
+      </xsc:Argument>
+    </TypeArguments>
+    <Headers>
+      <Src Name="HeaderadcL7SRDII23ZD5JA56SSMSELKTFI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcPXY42PJPBBDIDNIOG5TN6GIV3E"/>
+    </Bodies>
+    <MethodGroup Id="cmgBGB5AHOIWVA33CXRKHKE6N3IFY" Name="Root"/>
+    <PropertyGroup Id="cpgCNW4TQDHMRARPCO7USJXNDTEOE" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthWMBHYDFHAJBEHB4TBQVYVAAWMQ" Name="getEditorDialog" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getEditorDialog(Lorg.radixware.kernel.common.client.widgets.IWidget;Lorg.radixware.kernel.common.types.Arr;)Lorg.radixware.kernel.common.client.views.IArrayEditorDialog;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parent" Id="mprRAS4DPVWQNGHVHMCRKYRFM6WVU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IWidget"/>
+          </Parameter>
+          <Parameter Name="values" Id="mprDWASE2VY2FHDJFOOKYHD4ZIWFY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Arr"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.views.IArrayEditorDialog"/>
+      </Method>
+      <Method Id="mthDK2WKIRHIVC3XD2BJ36LZ6ZYEY" Name="setArrayItemMandatory" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setArrayItemMandatory(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isMandatory" Id="mpr5EKDPMOGMBCL7MTDVUJIISBQMY">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthD3HMQMV5ANGU7MR6IBPSBSILV4" Name="getEditorDialog" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getEditorDialog(Lorg.radixware.kernel.common.client.widgets.IWidget;)Lorg.radixware.kernel.common.client.views.IArrayEditorDialog;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parent" Id="mprAHCG4Y4CYJF53LOHUNVY5R7FE4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IWidget"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.views.IArrayEditorDialog"/>
+      </Method>
+      <Method Id="mthYT2EWOX3AJGM5IJJOUGLEXKZSY" Name="isArrayItemMandatory" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isArrayItemMandatory()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthIPVAES36JBCM3IPICQ4OCRX6TM" Name="getPredefinedValuesForArrayItem" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getPredefinedValuesForArrayItem()Ljava.util.List&lt;Ljava.lang.Object;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthN73ABGYCMZFIZNQFVMSISVOXE4" Name="setPredefinedValuesForArrayItem" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setPredefinedValuesForArrayItem(Ljava.util.List&lt;Ljava.lang.Object;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="values" Id="mpr7Z4BCN32TJBJBA4X77IUMOOH6U">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

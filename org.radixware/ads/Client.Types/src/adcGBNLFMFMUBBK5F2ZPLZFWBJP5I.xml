@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcGBNLFMFMUBBK5F2ZPLZFWBJP5I" Name="IProblemHandler.Problem" Type="3" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.exceptions.IProblemHandler.Problem"/>
+    </AccessRules>
+    <TypeArguments>
+      <xsc:Argument DerivationRule="extends" Alias="T">
+        <xsc:Type TypeId="400" extStr="java.lang.Exception"/>
+      </xsc:Argument>
+    </TypeArguments>
+    <Headers>
+      <Src Name="HeaderadcGBNLFMFMUBBK5F2ZPLZFWBJP5I"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcGBNLFMFMUBBK5F2ZPLZFWBJP5I"/>
+    </Bodies>
+    <MethodGroup Id="cmgNBWJYY4UGZGVZG2QFCM77ZW23A" Name="Root"/>
+    <PropertyGroup Id="cpg73VUDGFER5DMLHN6XWGO7VDEVE" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthJISJ3FLYCNHL7I7S5JOOPZ6YEA" Name="goToProblem" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="goToProblem()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth7RD2JKR2JJH6TAQZ5NQLZ3Q6UA" Name="getSeverity" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getSeverity()Lorg.radixware.kernel.common.enums.EEventSeverity;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.enums.EEventSeverity"/>
+      </Method>
+      <Method Id="mthBDPBI4XJSRCFPP6UTUC6RR2CXU" Name="getDescription" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getDescription()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthQIRVOIE4BREQRPNAOZGLH7QJFI" Name="IProblemHandler.Problem" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(TT;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="exception" Id="mprO4GZZLOZBJCATJLTZIMLVYUWAM">
+            <Type TypeId="400" extStr="T" IsArgumentType="true"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthXIJEXNTXYZDZXL6AVBJZXAZIV4" Name="getException" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getException()TT;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="T" IsArgumentType="true"/>
+      </Method>
+      <Method Id="mthOSI42OTZ5VBCNGKWB465EJBTHA" Name="IProblemHandler.Problem" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.String;TT;Lorg.radixware.kernel.common.enums.EEventSeverity;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="description" Id="mprQX5SS6GTLZBTNEDMPSZLXOWXJ4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="exception" Id="mpr3OYGGM4YRFBZBD7SXH6EU3KPNU">
+            <Type TypeId="400" extStr="T" IsArgumentType="true"/>
+          </Parameter>
+          <Parameter Name="severity" Id="mprH4A2ZHTVWJDXFLSM27V3DOXJL4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EEventSeverity"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

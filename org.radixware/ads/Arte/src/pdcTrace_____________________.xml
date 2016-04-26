@@ -1,0 +1,641 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="pdcTrace_____________________" Name="Trace" DescriptionId="mlsPERMV4S3MNC2FLYUTBRZCL3G2M" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcI2SA6WSOT5BPXAS7JPG2QF32FQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcOUCMKZ6TUBEZVCCCEICEDPMVUU">
+        <xsc:Item>
+          <xsc:Java>private static final org.radixware.kernel.server.arte.Trace $trace$ = </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>().getTrace();</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmgAGBP5UQCIFAD7AHW64QTKGHHMI" Name="Root">
+      <Group Id="cmgV6ML2SVAVVFXXLRZ6O6MGEUW24" Name="Puts" Members="mthS7A5F7KSRPNRDCISABIFNQAABA mthD6XIGP2SRPNRDCISABIFNQAABA mthQ63BL22SRPNRDCISABIFNQAABA mthUALS3BVVSTNRDDXBABIFNQAAAE mthXVQVCB5YSTNRDDXBABIFNQAAAE mthP66N3O2SRPNRDCISABIFNQAABA mthUVXH2WARWLOBDLJLAAMPGXSZKU mth4LIUO5IRWLOBDLJLAAMPGXSZKU mthPB2YHBYRWLOBDLJLAAMPGXSZKU mthP6MDTEKFYDOBDPM5AAN7YHKUNI mthNBTTEVVYKFBCJHWEKSM7ZA4NQI mthGE2TROLTCFEZVJT2IVTMEHBWFE mthV3PTWJBEIVFCXOHTDIMKUBSTKE mthBTHKZVV325D7JIHRVZHPM3JGME mthHHZF2VURANARLA6CHIWQO4QMHI mthY3JQETPD45AFFMO4PDVM2PT4KA"/>
+      <Group Id="cmgJBOOSKQHI5DQFFYVZFDPWRMNW4" Name="Context" Members="mth3MY3U3VYSTNRDDXBABIFNQAAAE mth65IS54NZSTNRDDXBABIFNQAAAE mthA2VYUFF2STNRDDXBABIFNQAAAE mth6QHX4XF2STNRDDXBABIFNQAAAE mthHEJCEHKN6LNRDA2JAAMPGXSZKU mthRLY3WC2M6LNRDA2JAAMPGXSZKU"/>
+      <Group Id="cmgLEXOH4VVBNFSHO4DXSBEC43OQI" Name="Utils" Members="mthI2EAXRIFRTNRDCISABIFNQAABA mth437JREGOQPORDMNEABIFNQAABA mthFT5KSJQYDLPBDFHQABIFNQAABA mthTY5OZ6WJOVETBO7TD5XVEWALEQ mthUYRFE2NUMBGLVEZAALXQRL7QJU"/>
+    </MethodGroup>
+    <PropertyGroup Id="cpgM4Z2MN3N65HVNCCHPD45FXVIQM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth3MY3U3VYSTNRDDXBABIFNQAAAE" Name="enterContext" DescriptionId="mlsC2DMQZRCCFBQRO5PFWZRD5VESY" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="type" DescriptionId="mlsFOM65Q2K7FGZ5APKZE7WD3MSAA" Id="mprRYEB3VXM5RF5HDZ42SPXIBSXL4">
+            <Type TypeId="21" Path="acsPVLIUELSKTNRDAQSABIFNQAAAE"/>
+          </Parameter>
+          <Parameter Name="id" DescriptionId="mlsBT7MWFHTZJBUNGUTJRKVWWF4Z4" Id="mprGKIK5FAKPRH6FCRWR45UAIPK7Y">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>$trace$.enterContext(type.getValue(), id);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth437JREGOQPORDMNEABIFNQAABA" Name="getMinSeverity" DescriptionId="mlsYFASWYKG5BBD3PLFVYPLP24PFA" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="401" extStr="long" DescriptionId="mlsVT6I2Q5CPBFRXE2K5INCPPOJ5Y"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return $trace$.getMinSeverity();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth4LIUO5IRWLOBDLJLAAMPGXSZKU" Name="put" DescriptionId="mlsQRFIRZ3TGVAVJKGWA2CV2GZXPA" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="code" DescriptionId="mlsV6QB764RERC7PLC7D5ZZYWFOZI" Id="mpr66R2QKB7R5B6HLTXCHBLRD4YZQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="word1" DescriptionId="mls7UX5SHU5VBGYFPDV2RSFW7B64A" Id="mprWRG7JVS4BBEAXM3IEQ3QHXZSIU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="word2" DescriptionId="mlsUSYQ43XPEZD23IM6FNKL7IL52U" Id="mprWJAIFBBD2RCDTOB2YGLWHOLJNM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>$trace$.put(code, new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(word1, word2));</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth65IS54NZSTNRDDXBABIFNQAAAE" Name="enterContext" DescriptionId="mlsMSGUDILZYFBCFF4YSFDX24HQ7E" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="type" DescriptionId="mlsE6CELXTNNBDXLIDJCMUBHJASAA" Id="mpr32OMMWYFIJGYVFZMYCOGE3N55I">
+            <Type TypeId="21" Path="acsPVLIUELSKTNRDAQSABIFNQAAAE"/>
+          </Parameter>
+          <Parameter Name="id" DescriptionId="mlsLCUVC2PCRZD5RA222WM3NYTMEI" Id="mpr4VHV5TBRZFCAJCIG4KIEOXEKVM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>$trace$.enterContext(type.getValue(), id);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth6QHX4XF2STNRDDXBABIFNQAAAE" Name="leaveContext" DescriptionId="mls7DOOUSQRLZDKRLAT34QDKKOUUQ" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="type" DescriptionId="mls24EOIWXIUBGMLDOLGFC3IYOWRM" Id="mprV632UW62LZAWNIPJWFVJJVOUNE">
+            <Type TypeId="21" Path="acsPVLIUELSKTNRDAQSABIFNQAAAE"/>
+          </Parameter>
+          <Parameter Name="id" DescriptionId="mlsFXMGUYBZUNEUFJILNGQTWZOJHM" Id="mpr4NMX22X46FCSHK7P4KGHORBOYU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>$trace$.leaveContext(type.getValue(), id);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthA2VYUFF2STNRDDXBABIFNQAAAE" Name="leaveContext" DescriptionId="mlsVPQVVCOINBESBH5VUW4GDMW4V4" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="type" DescriptionId="mls2ALH7NX7UVEY3ORSQKKRCEQCUE" Id="mprIHZTDAVYBBE2TMLEYBD4NBX4MQ">
+            <Type TypeId="21" Path="acsPVLIUELSKTNRDAQSABIFNQAAAE"/>
+          </Parameter>
+          <Parameter Name="id" DescriptionId="mlsIY3OEO5N6JFXPCADAVZ3UTHCSE" Id="mpr4JT7SX2EIRBP5AWVJGLLGJHHJI">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>$trace$.leaveContext(type.getValue(), id);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthC3JLOYL54HORDOFEABIFNQAABA" Name="flush" DescriptionId="mlsKGAR2LBD25FFHOJGGCY372K6RU" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>$trace$.flush();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthD6XIGP2SRPNRDCISABIFNQAABA" Name="error" DescriptionId="mls6QWBOAG5VNEORCIIE5LVIGR4RQ" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="mess" DescriptionId="mlsRYIU27W2CFD53H2WG4EM5DP2WY" Id="mprRWT2FLDO6FFZFHOVP3FD5NT4JY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="eventSource" DescriptionId="mls4A3A4IIXJNBF3KJ7I6JH54NAMY" Id="mprQ7BZI346SNFMBH4ODGN3M4DL7Y">
+            <Type TypeId="21" Path="acsTNLJBZADHTNRDIPGABQAQNO6EY"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>$trace$.put(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, mess, eventSource.getValue() );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthFT5KSJQYDLPBDFHQABIFNQAABA" Name="isMinSeverityDebug" DescriptionId="mlsAK2L425KZJB5JPSFVSFFL6T3KQ" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mls4Q64VAJZHZANHNACNTCEGFRM3E"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return $trace$.getMinSeverity()&lt;=</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getValue().longValue();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthHEJCEHKN6LNRDA2JAAMPGXSZKU" Name="delContextProfile" DescriptionId="mlsXWED4567RNEHPEKFLFLXC4QLDQ" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="contextHandler" DescriptionId="mlsKSUO3T2QYJGTTPR72UCBBDOJEE" Id="mprXXGAKWFPSNDBZNI35JLJD3DPWI">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>$trace$.delTarget(contextHandler);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthI2EAXRIFRTNRDCISABIFNQAABA" Name="exceptionStackToString" DescriptionId="mls3QUCZECGEFCUHDVQ4PPLJVJMII" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="e" DescriptionId="mlsEGP7JOP3NNH23OIOF2BPBFFE3A" Id="mprYPQ2JCZNLVFWJBRURYOCSQLMNA">
+            <Type TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21" DescriptionId="mlsUTSEZEHDCBHDTAR7DE7UQ4EZIM"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthBXQY2BN2DVEUNP7D645ZOVXZM4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthP66N3O2SRPNRDCISABIFNQAABA" Name="warning" DescriptionId="mlsK26V57VFOZBQXN6OY622DKM3CA" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="mess" DescriptionId="mlsVWJAWFI6ZZALPPRJNMN3CCB2DI" Id="mprL6AF7EINHZGI7PWG2YYCRAF5XA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="eventSource" DescriptionId="mls2N55Q3DXUVGP7B5DLORSUYFQCM" Id="mprZM3X56VGPZCMVBYKLLBZ2VB6GQ">
+            <Type TypeId="21" Path="acsTNLJBZADHTNRDIPGABQAQNO6EY"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>$trace$.put(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci6CAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> , 
+          mess, 
+          eventSource.getValue() );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthP6MDTEKFYDOBDPM5AAN7YHKUNI" Name="put" DescriptionId="mlsGJV5JMQHFBHC3MW7ZBKNEBB4MA" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="code" DescriptionId="mlsYHVPI77NNRGT7IHT3X5WGF3VWY" Id="mprX2CKAZ5SL5HCXDLSUH2CA6UJPY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>$trace$.put(code, new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthPB2YHBYRWLOBDLJLAAMPGXSZKU" Name="put" DescriptionId="mlsHPTPA5QAGBED7GY7IW4NSECD3E" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="code" DescriptionId="mlsOAYUAQIENJB3DPED3TP52UR4HI" Id="mprY6RT26RFGNHSROHEL6G6IJUM2M">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="word1" DescriptionId="mls4NFUNCYDJVCINIVQC3GEFZWVBE" Id="mprCT57RDMLQVGU5HRABUMD6USOCY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="word2" DescriptionId="mlsM5MRWSFQUBFELAQCZPM5F2DE6Y" Id="mprRDFGC7I6ARA3VIHLDGDRSRHGTA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="word3" DescriptionId="mlsDHPWLEXWYRDY3FL2NKYV4DBD5I" Id="mpr2OV355CERRCMPOMTXM5C7YZFFU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>$trace$.put(code, new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(word1, word2, word3));</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthQ63BL22SRPNRDCISABIFNQAABA" Name="event" DescriptionId="mlsNBDANPGAFBGRNFHNA5HHTNEODI" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="mess" DescriptionId="mls7WXQ2JI2ERFQTDYTEY23YENTO4" Id="mpr37PZVFTCRZGA5JDY3CVGIXAP7E">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="eventSource" DescriptionId="mls4QICCST5AZCU5OR4EOBUFEKAHQ" Id="mprQPCCI4EHJFBGDDKWGPC65Z73XI">
+            <Type TypeId="21" Path="acsTNLJBZADHTNRDIPGABQAQNO6EY"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>$trace$.put(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci52AUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+          mess, 
+          eventSource.getValue() );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthRLY3WC2M6LNRDA2JAAMPGXSZKU" Name="addContextProfile" DescriptionId="mls45BFUTGL3VEQ7O3GCRJPCMKXCM" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="extraProfile" DescriptionId="mls6A5ZF3BRKVEZLKM7GO4FZTEPPU" Id="mprDNEUV756E5F3DHCSSBSVFBRXQA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object" DescriptionId="mlsQLNAEYQPKRGZXDUK67ZJOQMCFU"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return $trace$.addTargetLog(extraProfile);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthS7A5F7KSRPNRDCISABIFNQAABA" Name="debug" DescriptionId="mlsQHAW7RVKNBFLNA2AGTXBBYDKY4" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="mess" DescriptionId="mlsD6TU4DPNFFBNPDBW72NHFVSIAM" Id="mprYMM6EFXMPBBZ7CNCREFEWSSU6U">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="eventSource" DescriptionId="mlsX2FHXQ5PUFBNRFDRP4DC44AMIE" Id="mpr34G3QFM2QJAUDI24UEFZN4KVMA">
+            <Type TypeId="21" Path="acsTNLJBZADHTNRDIPGABQAQNO6EY"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>$trace$.put(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, mess, eventSource.getValue());</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthUALS3BVVSTNRDDXBABIFNQAAAE" Name="put" DescriptionId="mlsSKWBVTVASVEOLCSWFDEM34GQ7Q" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="code" DescriptionId="mlsV2AUG2TWSFBKZEZJDDTSJX3NVU" Id="mprLR736U5YZVBQRMKFVL342ET77M">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="words" DescriptionId="mls7KF4SSBDEBDQVMQLB7Q5AUGN4I" Id="mprQGL5QIHLMFE5LCV3BSAURF7FVY">
+            <Type TypeId="221"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>$trace$.put(code, words);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthUVXH2WARWLOBDLJLAAMPGXSZKU" Name="put" DescriptionId="mlsY5E75JXQG5HRZPYBBKJZ2L7CIM" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="code" DescriptionId="mlsIATNJGZGKJCZ3CDYDJBAIJ2DRY" Id="mprUFMMH6ITYVDYDN3EQMO5E2QOMY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="word1" DescriptionId="mls2ZOMPXLRDNCZPPS3O3W2OOXDZI" Id="mpr4N2OOR4NDVC5XF7PW55AB5JICA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>$trace$.put(code, new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(word1));</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthXVQVCB5YSTNRDDXBABIFNQAAAE" Name="put" DescriptionId="mlsXIRCBGW24RDW5DRJLAKHW5XASQ" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="severity" DescriptionId="mlsVOBOMKHBMNBODPZHNCVSKLYDAY" Id="mprNMPSAI4CZFD7VO6CRNYUK63EME">
+            <Type TypeId="2" Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4"/>
+          </Parameter>
+          <Parameter Name="mess" DescriptionId="mlsFIXUJDSCNJDJTLDOKF4HS2J55M" Id="mprTEL5YF6KLNF2TA3CUT47GHEQ4E">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="eventSource" DescriptionId="mlsDK7OFC62SNAOTH5YVYSBOTBTB4" Id="mprZCFCMBBTJBGLDHJJEXGIKDVWCU">
+            <Type TypeId="21" Path="acsTNLJBZADHTNRDIPGABQAQNO6EY"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>$trace$.put(severity,mess,eventSource.getValue());</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthTY5OZ6WJOVETBO7TD5XVEWALEQ" Name="getMinSeverity" DescriptionId="mlsT3KXMN4V6JDCRELO6JWI4NKWVU" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="eventSource" DescriptionId="mlsWSIO3T6J2ZEQVMQ5HY4UH5KK44" Id="mprGP5OIADIJJBUZGOLDFV7BHNUD4">
+            <Type TypeId="21" Path="acsTNLJBZADHTNRDIPGABQAQNO6EY"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="long" DescriptionId="mlsY44DKHZGAJADXESXUSG3PA6Y4M"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return $trace$.getMinSeverity(eventSource.getValue());</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthUYRFE2NUMBGLVEZAALXQRL7QJU" Name="isMinSeverityDebug" DescriptionId="mlsGJPMX2DITNBMHI5KYMZVSAGDD4" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="eventSource" DescriptionId="mlsII4SYNLSAVFBVFQIMKT5EIT5ME" Id="mprFQVXDS7ZEVB37NH2UKBNZSIUAE">
+            <Type TypeId="21" Path="acsTNLJBZADHTNRDIPGABQAQNO6EY"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsTP3CL54PSFD47PYYR2N6ZF4EJY"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return $trace$.getMinSeverity(eventSource.getValue())&lt;=</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getValue().longValue();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthNBTTEVVYKFBCJHWEKSM7ZA4NQI" Name="putSensitive" DescriptionId="mlsSSXKNIA5SBG2TLGIQHRUPBK4QU" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="code" DescriptionId="mlsXWXYHZ7INFD6ZCBXT4OTW3FWFY" Id="mprLS4PXSZFNJA5NN5Y3UYCK6SMJA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="words" DescriptionId="mlsTPVSSHYHVNFUJGPQDFBPPWF4PQ" Id="mprVCHNRJQG5RCSZJ2I2PKKPTRQXM">
+            <Type TypeId="221"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>$trace$.put(code, words, true);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthGE2TROLTCFEZVJT2IVTMEHBWFE" Name="putSensitive" DescriptionId="mls7DP4NQRVMVDENH2ZEAH6CSTHUA" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="severity" DescriptionId="mls4KPPRGWAINGEXMADWYMGX54YTY" Id="mprURLYMRUQNVBBXEILE4SICRQFSE">
+            <Type TypeId="2" Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4"/>
+          </Parameter>
+          <Parameter Name="mess" DescriptionId="mlsATU2DN4P3RBV7EKFY3BNQP5RMQ" Id="mprZYRWGWIK4RHBZOM3XIWNOP7AX4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="eventSource" DescriptionId="mlsDDTWBLAX5VGPTGF6YHGMNVIOUU" Id="mpr5YGZMUMDTZBXHCEFKUFTZ7CHCM">
+            <Type TypeId="21" Path="acsTNLJBZADHTNRDIPGABQAQNO6EY"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>$trace$.put(severity,mess,eventSource.getValue(), true);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthV3PTWJBEIVFCXOHTDIMKUBSTKE" Name="put" DescriptionId="mls4OOTH26F2FCATIRX43G7M5AFVU" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="code" DescriptionId="mlsRUGNPOMS4VB2HPQ3YYAEMX2DLM" Id="mprELSRWIBAWFEAPBHQ42CMDNJNQA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="words" DescriptionId="mlsC3BRUEDOFZAINM3B3TRSFCC5ZQ" Id="mprAARCBOQOIREFHPFTP7URRM236Y">
+            <Type TypeId="221"/>
+          </Parameter>
+          <Parameter Name="timeMillis" DescriptionId="mlsGUB2R4PVRFEWDPVYE7HG3YIM6Y" Id="mprQIXTOXOSV5B6VF2C7TT5PJBFD4">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>$trace$.put(code, words, timeMillis == null ? -1 : timeMillis.longValue());</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthBTHKZVV325D7JIHRVZHPM3JGME" Name="put" DescriptionId="mlsAIIGUV4YRVGIRDPFBSC6PA3PNM" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="code" DescriptionId="mlsSOSJS52XKZFFDAGIKVHV7Z4LG4" Id="mpr47QED5QW5FAJFNHHWRSKI6YZFY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="word1" DescriptionId="mlsTDAPGKI6UJFB3BDGUODQ6FIRGI" Id="mprW3BNPXUCEJF7LE5XW6BHKZKNDA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="timeMillis" DescriptionId="mlsLOVFFKRWP5F6POY4YU4OCOVMZQ" Id="mprK7OLHHRNCJH3JIKEO4FU4EN5NQ">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>$trace$.put(code, new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(word1), timeMillis == null ? -1 : timeMillis.longValue());</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthHHZF2VURANARLA6CHIWQO4QMHI" Name="put" DescriptionId="mlsXA6AMR5V2FDAXFJAN2J42ZREUM" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="code" DescriptionId="mlsVXGRH5QEYZA5BLIBRBTVD6IH2U" Id="mprFXB4X5BBNNDFJHMHO7LOCRBDMQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="timeMillis" DescriptionId="mlsELNVRMKEKFACFNZSGJPAAVJ4LI" Id="mprIYSZV72BFFH3FPN7CMCYDYK2X4">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>$trace$.put(code, new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), timeMillis == null ? -1 : timeMillis.longValue());</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthY3JQETPD45AFFMO4PDVM2PT4KA" Name="putAndFlush" DescriptionId="mlsSZLNQLWHCVHERHCUAORP24EA4Q" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="severity" DescriptionId="mlsFTFUJFROLRAKLOHPJLWE4LQ6MY" Id="mpr2ABAPUHA7NABVAWUX7D4F5IO54">
+            <Type TypeId="2" Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4"/>
+          </Parameter>
+          <Parameter Name="mess" DescriptionId="mlsC72JDQ7RDVAOFK5SWYGTONJ5LQ" Id="mpr5QTLPVU2I5G35B74FVUX43HSAI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="eventSource" DescriptionId="mlsP5W3IHRYG5BVZKMVFMCMSJEAY4" Id="mprP4P4UKE34ZHVVNYQXKUK5SVNTU">
+            <Type TypeId="21" Path="acsTNLJBZADHTNRDIPGABQAQNO6EY"/>
+          </Parameter>
+          <Parameter Name="timeMillis" DescriptionId="mlsYKARS32MZNG2ZFE5I5M4GJ63XU" Id="mpr2YE43DIUVRGVNJDX3FXQJERM34">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="2" DescriptionId="mlsBON23H5T3FAOXL7YHVP36TVOGA"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>$trace$.put(severity, null, new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(mess), eventSource.getValue(), false, timeMillis == null ? -1 : timeMillis.longValue(), true);
+return $trace$.getDbLog().getLastEventId();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYRVI6VDXD5AYRJHI5NZ6UJRQJM" Name="getDbLog" DescriptionId="mlsDN2N2TSD7BARNIWGHZYLE5HQZ4" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.trace.DbLog" DescriptionId="mls762NOCOQZJDMDBNVU5HXNRF5SA"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return $trace$.getDbLog();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

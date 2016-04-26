@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcH6L42U7FGRCQFM5VQG5YCMM6FY" Name="StandardProblemHandler" Type="3" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.exceptions.StandardProblemHandler"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcH6L42U7FGRCQFM5VQG5YCMM6FY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcH6L42U7FGRCQFM5VQG5YCMM6FY"/>
+    </Bodies>
+    <MethodGroup Id="cmgRUQL4SBRR5AVXDMJDAD7O7JUYU" Name="Root"/>
+    <PropertyGroup Id="cpgG3GIJF7DQJFADCIFNDARZATSGI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthMV3B7RBJMVH2PB3ZFXVFTXTOO4" Name="iterator" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="iterator()Ljava.util.Iterator&lt;Lorg.radixware.kernel.common.client.exceptions.IProblemHandler.Problem;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.Iterator">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.exceptions.IProblemHandler.Problem"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthBV3WNMV3DNE33L2ZJGTWHZVX7A" Name="getProblems" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getProblems()Ljava.util.List&lt;Lorg.radixware.kernel.common.client.exceptions.IProblemHandler.Problem;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.exceptions.IProblemHandler.Problem"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthRFFMTZDMYJB3FG4VTJC65UGRKQ" Name="StandardProblemHandler" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth2ZIIUEMLTVBVBG2IJPQWOPHH7A" Name="wasProblems" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="wasProblems()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth74ODRO7WBRFM5J4Z76RTNF5KH4" Name="handle" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="handle(Lorg.radixware.kernel.common.client.exceptions.IProblemHandler.ProblemSource;Lorg.radixware.kernel.common.client.exceptions.IProblemHandler.Problem;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="source" Id="mprGCFUGXSFOZBPJD6SHNHJI25OTY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.exceptions.IProblemHandler.ProblemSource"/>
+          </Parameter>
+          <Parameter Name="problem" Id="mprPKJSIVYM5VBLJHFGN7C2YABWFU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.exceptions.IProblemHandler.Problem"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthKK4GPDBHZRF33JKUNCAVBX5DVE" Name="clear" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="clear()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthBQFQ6MWL3RHFVFZVAP3V567EBI" Name="showProblems" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="showProblems(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.client.widgets.IWidget;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprFRMSUHMIU5AHZPA7ZVSK7V6UFY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parentWidget" Id="mprGJONXI35FFC65AC7A4THRWQ4A4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IWidget"/>
+          </Parameter>
+          <Parameter Name="messageTitle" Id="mprWGHXXHRTYRDCPELJRESVKII5JY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthNCVQ56EMSJBVFF765RGTB5MPMY" Name="showProblem" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="showProblem(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.client.exceptions.IProblemHandler.Problem;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprQEG5GQ2VAFGKBMHKFQ4KIO33BQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="problem" Id="mprVIFMM6XEB5ARNGJUNQQYHW6L5A">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.exceptions.IProblemHandler.Problem"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth5SEW6EIJPZBORDQQXBWJ5SUQS4" Name="getProblemSource" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getProblemSource(Lorg.radixware.kernel.common.client.exceptions.IProblemHandler.Problem;)Lorg.radixware.kernel.common.client.exceptions.IProblemHandler.ProblemSource;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="problem" Id="mpr3U3LFEQ46VF2XHUQLYQSSACW4M">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.exceptions.IProblemHandler.Problem"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.exceptions.IProblemHandler.ProblemSource"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

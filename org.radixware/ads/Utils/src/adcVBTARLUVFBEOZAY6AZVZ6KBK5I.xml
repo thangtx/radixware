@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcVBTARLUVFBEOZAY6AZVZ6KBK5I" Name="Xslt" Type="3" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcOG22BZN7RJCFXK7ZZEERRSX4ZA">
+        <xsc:Item>
+          <xsc:Java>import java.io.InputStream;
+import java.io.ByteArrayOutputStream;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerConfigurationException;
+import java.io.StringReader;
+</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc5H43FBUFWVBPTABHREBZWNLBAU"/>
+    </Bodies>
+    <MethodGroup Id="cmgCC23E5GVF5FLPIWQ57UGVWBPEE" Name="Root"/>
+    <PropertyGroup Id="cpgLRYY5OPECJALBIYUFY4I4AXIXM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthMDUP6NZONRAH3KKRP2QW7UTQGY" Name="performTransformation" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="in" Id="mprC3AOLI4I2RFI7GPHK2ICDGM7BM">
+            <Type TypeId="400" extStr="java.io.InputStream"/>
+          </Parameter>
+          <Parameter Name="out" Id="mprXVKEBYDD3RFNDJTYZMWLAG3NII">
+            <Type TypeId="400" extStr="java.io.OutputStream"/>
+          </Parameter>
+          <Parameter Name="xslt" Id="mprAXSOVT2WGNHNFHSSQVQ2WLB7VY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+//    System.setProperty("javax.xml.parsers.SAXParserFactory", "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl");
+    final StringReader xsltStringReader = new java.io.StringReader(xslt);
+    final StreamSource xsltStreamSource = new StreamSource(xsltStringReader);
+    final TransformerFactory factory = TransformerFactory.newInstance();
+    //without listener errors are printed to stderr. We will suppress them,
+    //because there will be exception anyway.
+    javax.xml.transform.ErrorListener errorListener = new javax.xml.transform.ErrorListener() {
+        public void warning(TransformerException exception)
+                throws TransformerException {
+        }
+
+        public void error(TransformerException exception)
+                throws TransformerException {
+        }
+
+        public void fatalError(TransformerException exception)
+                throws TransformerException {
+        }
+    };
+    factory.setErrorListener(errorListener);
+    final Transformer transformer = factory.newTransformer(xsltStreamSource);
+    transformer.setErrorListener(errorListener);
+    final StreamSource srcStreamSource = new StreamSource(in);
+    final StreamResult streamResult = new StreamResult(out);
+    transformer.transform(srcStreamSource, streamResult);
+} catch (TransformerConfigurationException e) {
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ mthHK7LPCQHYFD4RPXCEYXA5HD2MY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e.getMessage(), e);
+} catch (TransformerException e) {
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ mthHK7LPCQHYFD4RPXCEYXA5HD2MY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e.getMessage(), e);
+}
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthVAE3AZL6NBF7NE4RCJ53PTVGHA" Name="performTransformation" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="src" Id="mprBF5W33DZJVELBFKTWWX7CLV4PY">
+            <Type TypeId="451"/>
+          </Parameter>
+          <Parameter Name="xslt" Id="mprO5XLFNML6JGX3KO5E5PU3TBMXQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final ByteArrayOutputStream resStream = new ByteArrayOutputStream();
+final InputStream xmlStream = src.newInputStream();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcVBTARLUVFBEOZAY6AZVZ6KBK5I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcVBTARLUVFBEOZAY6AZVZ6KBK5I mthMDUP6NZONRAH3KKRP2QW7UTQGY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(xmlStream, resStream, xslt);
+try {
+    return resStream.toString("UTF-8");
+}catch(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcRY54WWJPFFHMNF6SOH5KQIXBJU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e){
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ mthHK7LPCQHYFD4RPXCEYXA5HD2MY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e.getMessage(), e);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

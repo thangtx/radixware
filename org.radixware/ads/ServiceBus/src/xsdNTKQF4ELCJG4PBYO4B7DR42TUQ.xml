@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" Name="SbXsd" TargetNamespace="http://schemas.radixware.org/sb.xsd" Environment="common"><xs:schema targetNamespace="http://schemas.radixware.org/sb.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://schemas.radixware.org/eas.xsd" xmlns:this="http://schemas.radixware.org/sb.xsd" xmlns:t="http://schemas.radixware.org/types.xsd" xmlns:mq="http://schemas.radixware.org/messagequeue.xsd">
+	<xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+	<xs:import namespace="http://schemas.radixware.org/eas.xsd" schemaLocation="eas.xsd"/>
+        <xs:import namespace="http://schemas.radixware.org/messagequeue.xsd" schemaLocation="messagequeue.xsd"/>
+	<!--****************** Requests - Responses ************************-->
+	<xs:simpleType name="PipeEvent">
+		<xs:annotation>
+			<xs:documentation>Enum PipeEvent</xs:documentation>
+			<xs:appinfo source="http://schemas.radixware.org/types.xsd">
+				<t:class classId="acsRFE5WRGZLRGVJORJQUY3DO3Z5Y">org.radixware.ads.mdlDMZCEJZKPJELNN35SF3PKQPPQE.common.acsRFE5WRGZLRGVJORJQUY3DO3Z5Y</t:class>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="t:StrEnum"/>
+	</xs:simpleType>
+	<xs:complexType name="Stage">
+		<xs:sequence>
+			<xs:element name="Data" type="xs:anyType" minOccurs="0"/>
+			<xs:element name="Vars">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Var" minOccurs="0" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:all>
+									<xs:element name="Name" type="t:Str"/>
+									<xs:element name="Val" type="xs:anyType"/>
+								</xs:all>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="NodeParams" type="t:MapStrStr"/>
+			<xs:element name="Timestamp" type="t:DateTime"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PipelineMessage">
+		<xs:sequence>
+			<xs:element name="InExtHeader" type="this:ExtHeader"/>
+			<xs:element name="OutExtHeader" type="this:ExtHeader"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PipelineMessageRq">
+		<xs:complexContent>
+			<xs:extension base="this:PipelineMessage">
+				<xs:sequence>
+					<xs:element name="Event" type="this:PipeEvent"/>
+					<xs:element name="ErrorMess" type="t:Str" minOccurs="0"/>
+					<xs:element name="CurStage" type="this:StageRq"/>
+					<xs:element name="PrevStage" type="this:StageRq" minOccurs="0"/>
+					<xs:element name="PrevStages">
+						<xs:complexType>
+							<xs:sequence minOccurs="0" maxOccurs="unbounded">
+								<xs:element name="Stage" type="this:StageRq"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PipelineMessageRs">
+		<xs:complexContent>
+			<xs:extension base="this:PipelineMessage">
+				<xs:sequence>
+					<xs:element name="CurStage" type="this:StageRs"/>
+					<xs:element name="PrevStage" type="this:StageRs" minOccurs="0"/>
+					<xs:element name="PrevStages">
+						<xs:complexType>
+							<xs:sequence minOccurs="0" maxOccurs="unbounded">
+								<xs:element name="Stage" type="this:StageRs"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="StageRq">
+		<xs:complexContent>
+			<xs:extension base="this:Stage">
+				<xs:sequence>
+					<xs:element name="Number" type="t:Int" minOccurs="0"/>
+					<xs:element name="NodeEntityId" type="t:Str"/>
+					<xs:element name="NodeEntityPid" type="t:Str"/>
+					<xs:element name="InConnector " type="t:Str" minOccurs="0"/>
+					<xs:element name="OutConnector " type="t:Str" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="StageRs">
+		<xs:complexContent>
+			<xs:extension base="this:Stage">
+				<xs:sequence>
+					<xs:element name="CorrespondentRq" type="this:StageRq"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ExtHeader">
+		<xs:all>
+			<xs:element name="Net" minOccurs="0">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="ServerAddress" type="t:Str" minOccurs="0"/>
+						<xs:element name="ClientAddress" type="t:Str" minOccurs="0"/>
+						<xs:element name="ClientCertCn" type="t:Str" minOccurs="0"/>
+						<xs:element name="IsMessage" type="t:Bool" minOccurs="0"/>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="HttpHeader" type="t:MapStrStr" minOccurs="0"/>
+			<xs:element name="JmsHeader" minOccurs="0">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="CorrelationId" type="t:Str" minOccurs="0"/>
+						<xs:element name="DeliveryMode" type="t:Int" minOccurs="0"/>
+						<xs:element name="Destination" type="t:Str" minOccurs="0"/>
+						<xs:element name="Expiration" type="t:Int" minOccurs="0"/>
+						<xs:element name="MessageId" type="t:Str" minOccurs="0"/>
+						<xs:element name="Priority" type="t:Int" minOccurs="0"/>
+						<xs:element name="Redelivered" type="t:Bool" minOccurs="0"/>
+						<xs:element name="Timestamp" type="t:Int" minOccurs="0"/>
+						<xs:element name="Type" type="t:Str" minOccurs="0"/>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="JmsProps" type="t:MapStrStr" minOccurs="0"/>
+			<xs:element name="SoapHeader" type="xs:anyType" minOccurs="0"/>
+			<xs:element name="BatchParams" type="t:MapStrStr" minOccurs="0"/>
+			<xs:element name="ExtAttachements" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Attachement" type="t:BinBase64" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Stan" type="t:Int" minOccurs="0"/>
+			<xs:element name="NodeEntityId" type="t:Str" minOccurs="0"/>
+			<xs:element name="NodeEntityPid" type="t:Str" minOccurs="0"/>
+                        <xs:element name="MqMeta" type="mq:MqMessageMeta" minOccurs="0"/>
+		</xs:all>
+	</xs:complexType>
+</xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

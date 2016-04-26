@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdL6YN6OJDTBHMPLJWIV3F6VGQCQ" Name="DiagramXsd" TargetNamespace="http://schemas.radixware.org/sb-diagram.xsd" Environment="common"><xs:schema targetNamespace="http://schemas.radixware.org/sb-diagram.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:this="http://schemas.radixware.org/sb-diagram.xsd" xmlns:ns1="http://schemas.radixware.org/eas.xsd" xmlns:t="http://schemas.radixware.org/types.xsd">
+  <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+  <xs:import namespace="http://schemas.radixware.org/eas.xsd" schemaLocation="eas.xsd"/>
+  <xs:complexType name="Diagram">
+    <xs:all>
+      <xs:element name="Edges">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Edge" type="this:Edge" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Nodes">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Node" type="this:Node" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Comments">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Comment" type="this:Comment" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:all>
+  </xs:complexType>
+  <xs:complexType name="Node">
+    <xs:attribute name="EntityId" type="t:Str" use="required"/>
+    <xs:attribute name="EntityPid" type="t:Str" use="required"/>
+    <xs:attribute name="Inversed" type="t:Bool"/>
+    <xs:attribute name="PosX" type="t:Num" use="required"/>
+    <xs:attribute name="PosY" type="t:Num" use="required"/>
+    <xs:attribute name="Virtual" type="xs:boolean" use="optional" default="false"/>
+    <xs:attribute name="VirtualNodeType" type="t:Str" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="Comment">
+    <xs:sequence>
+      <xs:element name="Text" type="t:Str" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="PosX" type="t:Num" use="required"/>
+    <xs:attribute name="PosY" type="t:Num" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="Edge">
+    <xs:sequence>
+      <xs:element name="InConnectorId" type="t:Str"/>
+      <xs:element name="OutConnectorId" type="t:Str"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Diagram" type="this:Diagram"/>
+</xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcFEQPOGK6MNFC7GJDYJUTTZFNT4" Name="ValueConverter" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.explorer.utils.ValueConverter"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcFTZQBA5P7RBXPPWRJZTGUZOYMY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc2CSZPYN6KZAFPKK766G5FVMIUQ"/>
+    </Bodies>
+    <MethodGroup Id="cmg7YVIFS3GR5CPJMH3HPAGQPRVJU" Name="Root"/>
+    <PropertyGroup Id="cpg5Z6ZS27VBRFXHA6B6T443FGHPI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth2AWOCHAHCBADVOGKJ2OVA3BN2A" Name="timestamp2QtTime" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="timestamp2QtTime(Ljava.sql.Timestamp;)Lcom.trolltech.qt.core.QDateTime;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="javaTime" Id="mpr6Q7PVVMQLNBINHIW3HCDRRK6QQ">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.core.QDateTime"/>
+      </Method>
+      <Method Id="mthX45Y6NTOGRGGXHHQRNOOCEOHZU" Name="arrByte2Str" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="arrByte2Str([BLjava.lang.String;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="b" Id="mprH6HYO4YVIVCMFKM3I4U476TGEU">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="s" Id="mprAOWLJKCG5JETRIKI7UP3QKBCL4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mth6YQHUUE2KVFJBE2ADWPAM26N4E" Name="dialogButtonEnum2QtStandardButton" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="dialogButtonEnum2QtStandardButton(Lorg.radixware.kernel.common.enums.EDialogButtonType;)Lcom.trolltech.qt.gui.QMessageBox.StandardButton;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="buttonKind" Id="mprGBKNEP56PZBEHOJ6O274EHDABM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EDialogButtonType"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QMessageBox.StandardButton"/>
+      </Method>
+      <Method Id="mthW2IXYT75SVDXLKCC4O3NWU2UTQ" Name="floraValueOf" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true">
+          <Transparence Extendable="false" PublishedName="floraValueOf(Ljava.util.Date;)D"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="val" Id="mprS7ZE6KG5RNE75JBQA2JDJ5B2FU">
+            <Type TypeId="400" extStr="java.util.Date"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="double"/>
+      </Method>
+      <Method Id="mthDD3T27K2SJG6XOJK2ZKO3BG7JU" Name="getQtDialogTypeByDialogTypeEnum" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getQtDialogTypeByDialogTypeEnum(Lorg.radixware.kernel.common.enums.EDialogType;)Lcom.trolltech.qt.gui.QMessageBox.Icon;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="dialogType" Id="mprKKMVS2VLJZDX3OIHEUSRFEQDIY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EDialogType"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QMessageBox.Icon"/>
+      </Method>
+      <Method Id="mth5LCIA2HW4ZBUTH6VGR3N7YXL3I" Name="objVal2SqlLiteral" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true">
+          <Transparence Extendable="false" PublishedName="objVal2SqlLiteral(Ljava.lang.Object;Lorg.radixware.kernel.common.enums.EValType;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="val" Id="mpr774HFZPRE5CUPHCTWV4RJPDKPM">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+          <Parameter Name="valType" Id="mprD2JZMV7NWNAKBIP5ECYD4WCVKE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthIWZE6KSST5EA3LU7XXQPPAAX5A" Name="qtTime2Timestamp" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="qtTime2Timestamp(Lcom.trolltech.qt.core.QDateTime;)Ljava.sql.Timestamp;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="time" Id="mpr5CA46O7TUZDUHOSNJAA5ENZEKI">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QDateTime"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+      </Method>
+      <Method Id="mthEDZIKBH7QZARNCUU7IXJVAADJE" Name="str2ArrByte" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="str2ArrByte(Ljava.lang.String;Ljava.lang.String;)[B"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="str" Id="mpr52RGAOTT7ZANTFPS4WV22VU6CM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="devider" Id="mprPNTQ4PWQJZELFIG2BVX64CQVXM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="byte" Dimension="1"/>
+      </Method>
+      <Method Id="mthTDXLISQEFRH43P5L3PUCKZVNMI" Name="easPropXmlVal2ObjVal" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="easPropXmlVal2ObjVal(Lorg.radixware.schemas.eas.Property;Lorg.radixware.kernel.common.enums.EValType;Lorg.radixware.kernel.common.types.Id;)Ljava.lang.Object;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="property" Id="mprQYLDV4XDINBTTEA3GJQYM4WZSM">
+            <Type TypeId="400" extStr="org.radixware.schemas.eas.Property"/>
+          </Parameter>
+          <Parameter Name="valType" Id="mprCVYWA6O2PBEZVI66LBLHZ7DPAQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+          </Parameter>
+          <Parameter Name="entityId" Id="mprU52MHOMFDFE3LBMKQ6JPSZLGBQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+      </Method>
+      <Method Id="mth5GQIACOXBFBB5FTRVXPYLV2M2Y" Name="objVal2EasPropXmlVal" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="objVal2EasPropXmlVal(Ljava.lang.Object;Lorg.radixware.kernel.common.enums.EValType;Lorg.radixware.schemas.eas.Property;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="val" Id="mprHENWXYJPS5FH7MITO7FPOITRPY">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+          <Parameter Name="valType" Id="mprEL7G6EFX6BFFFBIU535ZME5FSU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+          </Parameter>
+          <Parameter Name="property" Id="mpr3W5FKNH3MJCLHB767FB4MNIY7M">
+            <Type TypeId="400" extStr="org.radixware.schemas.eas.Property"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthB7BH6QOTVZDYZM7SEDTO3N2AQQ" Name="qtDate2Timestamp" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="qtDate2Timestamp(Lcom.trolltech.qt.core.QDate;)Ljava.sql.Timestamp;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="date" Id="mprLMCDCOQNZZFBZGI2JMXVZ6XYQA">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QDate"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+      </Method>
+      <Method Id="mthXNKF56STUZC6VBSZUF7WQM2T7A" Name="timestamp2QtDate" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="timestamp2QtDate(Ljava.sql.Timestamp;)Lcom.trolltech.qt.core.QDate;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="dateTime" Id="mpr253CCXIDJ5D33IQC3HGOO4Y4QU">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.core.QDate"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

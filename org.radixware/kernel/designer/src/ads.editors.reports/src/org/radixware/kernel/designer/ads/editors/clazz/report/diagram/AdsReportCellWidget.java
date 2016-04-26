@@ -1,0 +1,399 @@
+/*
+ * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. This Source Code is distributed
+ * WITHOUT ANY WARRANTY; including any implied warranties but not limited to
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * Mozilla Public License, v. 2.0. for more details.
+ */
+package org.radixware.kernel.designer.ads.editors.clazz.report.diagram;
+
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Image;
+import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportAbstractAppearance;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportCell;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportChartCell;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportDbImageCell;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportForm;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportGroup;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportImageCell;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportPropertyCell;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportSpecialCell;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportSummaryCell;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportTextCell;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportWidget;
+import org.radixware.kernel.common.defs.ads.localization.AdsMultilingualStringDef;
+import org.radixware.kernel.common.defs.ads.module.AdsImageDef;
+import org.radixware.kernel.common.enums.EIsoLanguage;
+import org.radixware.kernel.common.enums.EReportSummaryCellType;
+import org.radixware.kernel.common.types.Id;
+
+public class AdsReportCellWidget extends AdsReportSelectableWidget {
+
+    private final AdsImageDef imageDef;
+            
+    public AdsReportCellWidget(final AdsReportFormDiagram diagram, final AdsReportWidget cell) {
+        super(diagram, cell);
+        
+        if (cell instanceof AdsReportImageCell) {
+            final AdsReportImageCell imageCell = (AdsReportImageCell) cell;
+            imageDef = imageCell.findImage();
+        } else {
+            imageDef = null;
+        }
+    }
+    /*public static final int EDGE_SIZE_PX = 5;
+     private static final Color SNAP_COLOR = Color.RED.darker();
+     private final AdsReportWidget reportWidget;
+     private boolean selected = false;
+     private final CellMouseListener mouseListener;
+     private int row;
+     private int column;
+    
+     public int getRow(){
+     return row;
+     }
+    
+     public int getColumn(){
+     return column;
+     }
+    
+     public void setRow(int row){
+     this.row=row;
+     }
+    
+     public void setColumn(int column){
+     this.column=column;
+     }
+
+     public AdsReportCellWidget(AdsReportWidget cell) {
+     super(cell);
+     this.reportWidget = cell;
+     setOpaque(true);
+     mouseListener = new CellMouseListener(this);
+     addMouseListener(mouseListener);
+     addMouseMotionListener(mouseListener);
+     }
+
+     public boolean isSelected() {
+     return selected;
+     }
+
+     public void setSelected(boolean selected) {
+     if (this.selected != selected) {
+     this.selected = selected;
+     if (selected) {
+     requestFocus();
+     }
+     repaint();
+     fireSelectionChanged();
+     }        
+        
+     final AdsReportBandSubWidget ownerBandSubWidget = (AdsReportBandSubWidget) getParent();
+     if (ownerBandSubWidget != null) {
+     ownerBandSubWidget.setComponentZOrder(this, 0);
+     System.out.println(this.getColumn());
+     }
+     }
+
+     @Override
+     public void update() {
+     final int leftPx = MmUtils.mm2px(reportWidget.getLeftMm());
+     final int topPx = MmUtils.mm2px(reportWidget.getTopMm());
+     setLocation(leftPx, topPx);
+
+     final int widthPx = MmUtils.mm2px(reportWidget.getWidthMm());
+     final int heightPx = MmUtils.mm2px(reportWidget.getHeightMm());
+     setSize(widthPx, heightPx);
+     }
+
+     protected void paintBackground(Graphics g) {
+     final int width = getWidth();
+     final int height = getHeight();
+
+     g.setColor(reportWidget.getBgColor());
+     g.fillRect(0, 0, width, height);
+     }
+
+     private static void drawEdge(Graphics g, int x, int y, boolean snap) {
+     g.setColor(snap ? SNAP_COLOR : Color.GRAY);
+     g.drawRect(x, y, EDGE_SIZE_PX, EDGE_SIZE_PX);
+     g.setColor(Color.WHITE);
+     g.fillRect(x + 1, y + 1, EDGE_SIZE_PX - 1, EDGE_SIZE_PX - 1);
+     }
+
+     private void paintEdges(Graphics g) {
+     final int width = getWidth() - 1;
+     final int height = getHeight() - 1;
+
+     if (selected) {
+     g.setColor(Color.GRAY);
+     g.drawRect(EDGE_SIZE_PX / 2, EDGE_SIZE_PX / 2, width - EDGE_SIZE_PX + 1, height - EDGE_SIZE_PX + 1);
+     //g.drawRect(0, 0, width, height);
+
+     // top
+     drawEdge(g, (width - EDGE_SIZE_PX) / 2, 0, reportWidget.isSnapTopEdge());
+     // right
+     drawEdge(g, width - EDGE_SIZE_PX, (height - EDGE_SIZE_PX) / 2, false);
+     // bottom
+     drawEdge(g, (width - EDGE_SIZE_PX) / 2, height - EDGE_SIZE_PX,reportWidget.isSnapBottomEdge());
+     // left
+     drawEdge(g, 0, (height - EDGE_SIZE_PX) / 2, false);
+     // top left
+     drawEdge(g, 0, 0, reportWidget.isSnapTopEdge());
+     // top right
+     drawEdge(g, width - EDGE_SIZE_PX, 0, reportWidget.isSnapTopEdge());
+     // bottom left
+     drawEdge(g, 0, height - EDGE_SIZE_PX, reportWidget.isSnapBottomEdge());
+     // bottom right
+     drawEdge(g, width - EDGE_SIZE_PX, height - EDGE_SIZE_PX,reportWidget.isSnapBottomEdge());
+     } else {
+     g.setColor(reportWidget.isSnapTopEdge() ? SNAP_COLOR : Color.GRAY);
+
+     // top left
+     g.drawLine(0, 0, EDGE_SIZE_PX, 0);
+     g.drawLine(0, 0, 0, EDGE_SIZE_PX);
+
+     // top right
+     g.drawLine(width - EDGE_SIZE_PX, 0, width, 0);
+     g.drawLine(width, 0, width, EDGE_SIZE_PX);
+
+     g.setColor(reportWidget.isSnapBottomEdge() ? SNAP_COLOR : Color.GRAY);
+
+     // bottom left
+     g.drawLine(0, height, EDGE_SIZE_PX, height);
+     g.drawLine(0, height - EDGE_SIZE_PX, 0, height);
+
+     // bottom right
+     g.drawLine(width - EDGE_SIZE_PX, height, width, height);
+     g.drawLine(width, height - EDGE_SIZE_PX, width, height);
+     }
+     }*/
+
+    private static String getCellDisplayName(final AdsReportCell cell, final EIsoLanguage lng) {
+        switch (cell.getCellType()) {
+            case EXPRESSION:
+                return cell.getName();
+            case IMAGE:
+                final AdsReportImageCell imageCell = (AdsReportImageCell) cell;
+                final AdsImageDef image = imageCell.findImage();
+                final Id imageId = imageCell.getImageId();
+                final String imageName = (image != null ? image.getName() : "#" + imageId);
+                return "<" + imageName + ">";
+            case DB_IMAGE:
+                final AdsReportDbImageCell dbImageCell = (AdsReportDbImageCell) cell;
+                final AdsPropertyDef dataProperty = dbImageCell.findDataProperty();
+                final Id dataPropertyId = dbImageCell.getDataPropertyId();
+                final String dataPropertyName = (dataProperty != null ? dataProperty.getName() : "#" + dataPropertyId);
+                return "<" + dataPropertyName + ">";
+            case PROPERTY:
+                final AdsReportPropertyCell propertyCell = (AdsReportPropertyCell) cell;
+                final AdsPropertyDef property = propertyCell.findProperty();
+                final Id propertyId = propertyCell.getPropertyId();
+                return "[" + (property != null ? property.getName() : "#" + propertyId) + "]";
+            case SPECIAL:
+                final AdsReportSpecialCell specialCell = (AdsReportSpecialCell) cell;
+                switch (specialCell.getSpecialType()) {
+                    case CURRENT_GROUP_RECORD_COUNT:
+                    case TOTAL_RECORD_COUNT:
+                        return "<COUNT>";
+                    case GENERATION_TIME:
+                        return "<TIME>";
+                    case PAGE_NUMBER:
+                        return "<PAGE>";
+                    case FILE_PAGE_COUNT:
+                        return "<FILE PAGE COUNT>";
+                    case TOTAL_PAGE_COUNT:
+                        return "<TOTAL PAGE COUNT>";
+                    case FILE_COUNT:
+                        return "<FILE COUNT>";
+                    case FILE_NUMBER:
+                        return "<FILE NUMBER>";
+                    case SUB_ITEM_COUNT:
+                        return "<INDEX>";
+                    case TOTAL_PAGE_NUMBER:
+                        return "<OVERALL FILE NUMBER>";
+
+                    default:
+                        throw new IllegalStateException("Unsupportet special cell type: " + specialCell.getSpecialType());
+                }
+            case SUMMARY:
+                final AdsReportSummaryCell summaryCell = (AdsReportSummaryCell) cell;
+                final AdsPropertyDef prop = summaryCell.findProperty();
+                final String propName = (prop != null ? prop.getName() : "#" + summaryCell.getPropertyId());
+                final EReportSummaryCellType summaryType = summaryCell.getSummaryType();
+                final String prefix = (summaryType == EReportSummaryCellType.SUM ? "Σ" : summaryType.getValue());
+                final AdsReportGroup group = summaryCell.findSummaryGroup();
+                final int groupCount = summaryCell.getGroupCount();
+                final String postfix = (group != null ? ", " + group.getName() : (groupCount > 0 ? ", " + groupCount : ""));
+                return prefix + "(" + propName + postfix + ")";
+            case TEXT:
+                final AdsReportTextCell textCell = (AdsReportTextCell) cell;
+                if (textCell.getTextId() != null) {
+                    final AdsMultilingualStringDef mls = textCell.findText();
+                    if (mls == null) {
+                        return "#" + textCell.getTextId();
+                    } else {
+                        final String value = mls.getValue(lng);
+                        if (value != null && !value.isEmpty()) {
+                            return mls.getValue(lng);
+                        }
+                    }
+                }
+                return "<Empty>";
+            case CHART:
+                final AdsReportChartCell chartCell = (AdsReportChartCell) cell;
+                final String str3D = chartCell.getChartSeries() != null
+                        && !chartCell.getChartSeries().isEmpty()
+                        && chartCell.getChartSeries().is3D() ? "3D" : "";
+                return "<" + str3D + chartCell.getChartType().getValue() + "Chart>";
+            default:
+                throw new IllegalStateException("Unsupportet cell type: " + cell.getCellType());
+        }
+    }
+
+    protected void paintName(final Graphics g) {
+        if (!(reportWidget instanceof AdsReportCell)) {
+            return;
+        }
+
+        final AdsReportCell cell = (AdsReportCell) reportWidget;
+        if (imageDef != null) {
+            final int width = getWidth() - 1;
+            final int height = getHeight() - 1;
+            final Image image = imageDef.getIcon().getImage(width, height);
+            g.drawImage(image, 0, 0, null);
+            return;
+        }
+
+        final AdsReportAbstractAppearance.Font cellFont = cell.getFont();
+        final Font font = getDiagramMode() == AdsReportForm.Mode.GRAPHICS ? AdsReportWidgetUtils.reportFont2JavaFont(cellFont, this) : TxtUtils.getFont();
+        g.setFont(font);
+        final FontMetrics fontMetrics = getFontMetrics(font);
+
+        final EIsoLanguage lng = getOwnerBandWidget().getOwnerFormDiagram().getLanguage();
+        final String name;
+        if (cell instanceof AdsReportImageCell) {
+            //npopov: imageDef is null, we don't need to call getCellDisplayName() 
+            //and search for imageDef to calculate name. Searching for definition in this paint
+            //method causes infinite recursion in processing request for loading module images.
+            //So I moved searching for imageDef to constructor
+            final String imageName = "#" + ((AdsReportImageCell) cell).getImageId();
+            name = "<" + imageName + ">";
+        } else {
+            name = getCellDisplayName(cell, lng);
+        }
+        final int textWidth = fontMetrics.stringWidth(name);
+
+        final int left;
+
+        final int baseLine;
+        if (getDiagramMode() == AdsReportForm.Mode.GRAPHICS) {
+            switch (cell.getHAlign()) {
+                case CENTER:
+                    left = (MmUtils.mm2px(cell.getWidthMm() - cell.getMarginTopMm() - cell.getMarginBottomMm()/*reportWidget.getMarginMm() * 2*/) - textWidth) / 2;
+                    break;
+                case RIGHT:
+                    left = MmUtils.mm2px(cell.getWidthMm() - cell.getMarginRightMm()) - textWidth;
+                    break;
+                default:
+                    left = MmUtils.mm2px(cell.getMarginLeftMm());
+                    break;
+            }
+            switch (cell.getVAlign()) {
+                case MIDDLE:
+                    baseLine = MmUtils.mm2px(cell.getHeightMm()) / 2
+                            + (fontMetrics.getAscent() + fontMetrics.getDescent()) / 2 - fontMetrics.getDescent();
+                    break;
+                case BOTTOM:
+                    baseLine = MmUtils.mm2px(cell.getHeightMm() - cell.getMarginBottomMm()) - fontMetrics.getDescent();
+                    break;
+                default:
+                    baseLine = MmUtils.mm2px(cell.getMarginTopMm()) + fontMetrics.getAscent();
+                    break;
+
+            }
+        } else {
+            switch (cell.getHAlign()) {
+                case CENTER:
+                    left = (TxtUtils.columns2Px(cell.getWidthCols() - cell.getMarginLeftCols() - cell.getMarginRightCols()/*reportWidget.getMarginMm() * 2*/) - textWidth) / 2;
+                    break;
+                case RIGHT:
+                    left = TxtUtils.columns2Px(cell.getWidthCols() - cell.getMarginRightCols()) - textWidth;
+                    break;
+                default:
+                    left = TxtUtils.columns2Px(cell.getMarginLeftCols());
+                    break;
+            }
+
+            switch (cell.getVAlign()) {
+                case MIDDLE:
+                    baseLine = TxtUtils.rows2Px(cell.getHeightRows()) / 2
+                            + (fontMetrics.getAscent() + fontMetrics.getDescent()) / 2 - fontMetrics.getDescent();
+                    break;
+                case BOTTOM:
+                    baseLine = TxtUtils.rows2Px(cell.getHeightRows() - cell.getMarginBottomRows()) - fontMetrics.getDescent();
+                    break;
+                default:
+                    baseLine = TxtUtils.rows2Px(cell.getMarginTopRows()) + fontMetrics.getAscent();
+                    break;
+
+            }
+
+        }
+        cell.getHAlign();
+
+        g.setColor(cell.getFgColor());
+        g.drawString(name, left, baseLine);
+    }
+
+    @Override
+    protected void paintComponent(final Graphics g) {
+        super.paintComponent(g);
+        paintBackground(g);
+        paintName(g);
+        paintEdges(g);
+        paintBorder(reportWidget.getBorder(), g, getWidth(), getHeight());
+    }
+
+    @Override
+    public boolean isVisible() {
+        if (((AdsReportCell) reportWidget).isDiagramModeSupported(getDiagramMode())) {
+            return super.isVisible();
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    protected void paintBackground(final Graphics g) {
+        if (reportWidget != null) {
+
+            final int width = getWidth();
+            final int height = getHeight();
+
+            g.setColor(reportWidget.getBgColor());
+            g.fillRect(0, 0, width, height);
+        }
+    }
+
+    /*public AdsReportBandWidget getOwnerBandWidget() {
+     final AdsReportBandSubWidget ownerBandSubWidget = (AdsReportBandSubWidget) getParent();
+     if (ownerBandSubWidget != null) {
+     return ownerBandSubWidget.getOwnerBandWidget();
+     } else {
+     return null;
+     }
+     }
+
+     public AdsReportWidget getCell() {
+     return reportWidget;
+     }
+     }
+     }*/
+}

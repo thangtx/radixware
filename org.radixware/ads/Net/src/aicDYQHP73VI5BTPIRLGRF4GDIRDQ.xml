@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicDYQHP73VI5BTPIRLGRF4GDIRDQ" Name="INetProtocolHandler" Type="5" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.server.net.NetProtocolHandler"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc6IHLOXBH4NCNHM7QU5DSPMDL64"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcTI3PXC2XQ5FJVDZGXE7XPJ6T7Y"/>
+    </Bodies>
+    <MethodGroup Id="cmg4AF5N4ZKPBGWVMI2QP2OOVHUHI" Name="Root"/>
+    <PropertyGroup Id="cpgKVA66HYOTJEONB7V3XR43LCTOQ" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthGUAPALQ5DJBAFAWDIAXWPKXUNY" Name="onConnect" DescriptionId="mlsCJL2QEOSPZHVFLJKRELX4QKPLA" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="onConnect(Ljava.lang.Long;Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;)Lorg.radixware.schemas.netporthandler.OnConnectReadyRsDocument;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="channelId" DescriptionId="mlsCLT4OYR6HFCONKRL63AN3VYSSQ" Id="mprUJCBLI66DBEZ3P2JXLAKOUCGW4">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="serverAddr" DescriptionId="mls5GVVQKHMEZCYLGJBSU2G6HBVUM" Id="mprS4WCCQT7BVF2LJQX7L35IDW7TE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="clientAddr" DescriptionId="mlsDLHG3BGRJNBMRIWXWPPIAONI4I" Id="mpr5VWHC5DMKJFGDLUSJBD3SA5EOY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="clientCertCn" DescriptionId="mlsTBZ35CPTC5HHFEFNHTAN55NGAY" Id="mprURIVJV5LQNGXZC36AK7ZEPHLQ4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="sid" DescriptionId="mls4SCAT5QP55GGFKFL4K2TUZIHBY" Id="mpr57NUSAPKMVG2ZEJACDMJXEURQ4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.schemas.netporthandler.OnConnectRsDocument" DescriptionId="mlsIWXF7ESEUJDURODS5VB7CVHGUE"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.AppException" DescriptionId="mlsZYILKKKK3ZBIVG6RBSEJBE66CU"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthO6EBWEP46VFXTAYRWGTHPX35WI" Name="onDisconnect" DescriptionId="mls5RCFT74GVJCKDONMJTLSTF4NZ4" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="onDisconnect(Ljava.lang.Long;Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;Ljava.lang.Long;Ljava.lang.Long;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="channelId" DescriptionId="mlsKYHR4KBG4NHAPEE25KDDWRDLWU" Id="mprNKDLTTF3CRBGJJYQ7K73XCSICM">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="serverAddr" DescriptionId="mlsUQ3X3ZXGSBC7LOCA7CY4FIP4XQ" Id="mprZSXTL64VDRC4RLW7P77KNZ6JAU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="clientAddr" DescriptionId="mlsQ6O3LOJ2LJEAVHODC5IFM474NA" Id="mprUAQ5SL5Y4VAFDM3HJSRIU43ZQM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="clientCertCn" DescriptionId="mlsTHYC72AAMFAQJE42PFEOA4IE3I" Id="mpr2EU5XQH2IJENZAKUE5NMYOUQCQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="sid" DescriptionId="mlsBHUTL27MNFA2FG5YYH2A3JROZM" Id="mprCNWLE6LTOBAU5BUIBQ5RPLC7MA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="callbackPid" DescriptionId="mls63DOL7ZMZRDNPBHWJ7VOZU4TPA" Id="mprCAJ43FBCSNDI5HUIQ5RSDUDZOA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="callbackWid" DescriptionId="mls4WB76PXNOJDVRMSVWHMRFBKNFM" Id="mprWA4HJDDFUJFZBBTYAHWCZLOMBQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthBZAATQUT4BAS7MPBI3VBZ6QNEI" Name="onRecv" DescriptionId="mls46TFU4GYLFELDJ7G37NXVIZV4A" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="onRecv(Ljava.lang.Long;Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;Ljava.lang.Long;Ljava.lang.Long;Lorg.radixware.kernel.common.types.Bin;Ljava.util.Map&lt;Ljava.lang.String;Ljava.lang.String;>;Ljava.lang.Boolean;)Lorg.radixware.schemas.netporthandler.OnRecvRsDocument;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="channelId" DescriptionId="mlsAPD2IQYWGVGRJCACU2LJUR65KE" Id="mpr4UD2J2WI4ZANHO5QR2YD7PJ4BQ">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="serverAddr" DescriptionId="mlsAQURAXGF2BHQLCDT3YO3KNSJYE" Id="mprTA4ZB2OLCZHAXNPCDIUJOALX6I">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="clientAddr" DescriptionId="mls4RYT7XCNGRGSLCNSWBTQW6NQAQ" Id="mprKDYMN5WBPFFWLMJGJQJU6E4OFQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="clientCertCn" DescriptionId="mlsY4NTKZWMONF6DHO2GTFKXVYFA4" Id="mpr6H4HCAF2NVBIDCH7XT4MSM577I">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="sid" DescriptionId="mlsNCZOIPAQCVBU5KC3UOW7JQG7LY" Id="mprUZQKCRTTUFAOLJOFNXY55PPUKM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="callbackPid" DescriptionId="mlsB4BU3IUOJFAUZDYLTO5QDXAQLI" Id="mpr4ZXSSAW5CNF65CMSUHXZYMHK2I">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="callbaclWid" DescriptionId="mlsDC4TNRNIFJGPXE7YAGHWX44Y54" Id="mprFYCOCJIX6NCPHDCVJMB3IJRV3M">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="recvPacketHeaders" DescriptionId="mlsTKSN2JNGPRECTFLQATFWG45CSQ" Id="mprZCJYFXR5KNDGLINXQZ5VVX2LCE">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="recvPacket" DescriptionId="mls3UV47MFBPNBUNBS25AJNEXOULI" Id="mprUKZZPCFTUJD5JJFLF2T2SQRJZE">
+            <Type TypeId="22"/>
+          </Parameter>
+          <Parameter Name="connected" DescriptionId="mlsCH2XKVZFA5HFJDSL342UN5TKCI" Id="mprZTIVGVBWERBE5COSFVD3OV3KH4">
+            <Type TypeId="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.schemas.netporthandler.OnRecvRsDocument" DescriptionId="mlsB44KCN3DTZBN3KHQ6DAH34JKPQ"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.AppException" DescriptionId="mlsIRF76OVT4NHDTGHBSCN6XVPRB4"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthSC2RWSPCHVHJZL6TN5L5ZPUXBY" Name="onRecvTimeout" DescriptionId="mlsKIB725LP4RE23FQIEFF4MC3WV4" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="onRecvTimeout(Ljava.lang.Long;Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;Ljava.lang.Long;Ljava.lang.Long;)Lorg.radixware.schemas.netporthandler.OnRecvTimeoutRsDocument;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="channelId" DescriptionId="mlsCHJAI3DHR5AGPJEYWTFPIMPUW4" Id="mprYHIIQDPUMJFDDHQYX2EUFB4ABQ">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="serverAddr" DescriptionId="mlsZRR3MGP66FEEPBQKONHPL5VHPY" Id="mpr6SZGC5YOHJGUREONXP7F3KLZFA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="clientAddr" DescriptionId="mlsPS6YZCDGLRA3FPERNCOUQQY7LE" Id="mprTXHPVZMX55EYVO563LCBEU7EJ4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="clientCertCn" DescriptionId="mlsESAHYJQJMVCRTHN3DZ74G5GPSE" Id="mpr4K2Z3FEWKNE6XNNP52XAOWIFHM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="sid" DescriptionId="mlsOUCM35J6FJFUJKJTJXJIBCV6I4" Id="mprY4URIPO6WJBKDAY2UPHB7COPGU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="callbackPid" DescriptionId="mls4X7AMEPCRZHRTNHGD2FSJSP46Q" Id="mprLNF6OBIH3BD3PFWIR3KZBGWFUM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="callbackWid" DescriptionId="mlsCQ342WNI2ZAVHL4H2IZ7F23XQY" Id="mprEX5JSLX5TFGXBOZ7IOEUKDOGDI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.schemas.netporthandler.OnRecvTimeoutRsDocument" DescriptionId="mlsDMKDFQWAIFC6JKEN3WWZBNAHUE"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.AppException" DescriptionId="mlsXN74B4O34RFZDLOQFVU6VZYXFA"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthPGZZ43N6ZJBBFBXOPUQKOYSBLQ" Name="onConnectTimeout" DescriptionId="mlsNVAJYVNFPNHATMUK6IFLFRBR54" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="onConnectTimeout(Ljava.lang.Long;Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;)Lorg.radixware.schemas.netporthandler.OnConnectTimeoutRsDocument;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="channelId" DescriptionId="mlsUOSS74PGJVC33BT3KONPUC622Q" Id="mprB6V6FHQZDRAAPIA2FJHD6BFBYM">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="serverAddr" DescriptionId="mls3IDHYJS6QFGWRBGHMUI44JP4ME" Id="mprYAMFHR7QDFC77HAQMT5VPEYT5Q">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="clientAddr" DescriptionId="mlsWFMT6GT6UFFJZJ57BW5KOYMPUM" Id="mprLVBAGQP44JDAHHMTLGAVKTXTDY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="clientCertCn" DescriptionId="mlsNRWDXCQT6NCCXJJFM3C3DHVPGY" Id="mprOPTBAXGQU5E7TFXZICUFQ5JZ5U">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="sid" DescriptionId="mlsS36BKVGGJRB2PF5HT3ULWYQ7LA" Id="mprI4Q27ROSKVCBNJH4ENKS7P4T7I">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="callbackPid" DescriptionId="mlsUJBBGLXHY5DSXEW6653JOFPTOU" Id="mprP5CGVX6WOVG3TK3FTGEECQLCE4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="callbackWid" DescriptionId="mlsYCCQQFYVYJEL3MCJDG5EPMXAEM" Id="mprDO5VM7XRP5AXHD73PCVV2IPXPU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.schemas.netporthandler.OnConnectTimeoutRsDocument" DescriptionId="mlsYNT7OD3AGBHMRD7HP4A5ZZVYQ4"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.AppException" DescriptionId="mlsWWPZD3LTA5DSZGZUTZAO3F3BTU"/>
+        </ThrownExceptions>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

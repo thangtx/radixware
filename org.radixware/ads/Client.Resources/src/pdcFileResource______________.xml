@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="pdcFileResource______________" Name="FileResource" DescriptionId="mlsPG246GSUHJBB5ATYV5RZFZK2IA" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.server.arte.resources.FileResource"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc233ZRKAM3RBQDDMY5FHHKQKAD4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcM22IFKJ6QNASFPPFZ4IEEBQCAE"/>
+    </Bodies>
+    <MethodGroup Id="cmg5MNBY27C3ZBKZKB7IOV443XOX4" Name="Root"/>
+    <PropertyGroup Id="cpgXGKHBON64FDAFELKFOJZH32DBI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthNE2DDFF6BRFDFEKXRWL4UUAZ3M" Name="checkAccess" DescriptionId="mlsAQHLNZFKJFDBFATW4DC5SOQEN4" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="checkAccess(Lorg.radixware.kernel.server.arte.Arte;Ljava.lang.String;Lorg.radixware.kernel.common.enums.EFileAccessType;I)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arte" DescriptionId="mls3EGZPNP6DVD5FIVMNERYYRAQUE" Id="mprK3P2IPCOPZHHBL7NW7NYMJUGKU">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.arte.Arte"/>
+          </Parameter>
+          <Parameter Name="fileName" DescriptionId="mlsR4RBF2Y4P5BJ3AOP2HXIXOYIGM" Id="mprD3QXEY4KCVCCTPCRZID3HWXXFQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="access" DescriptionId="mlsWX2QRPB4YVHQVNG4L2KAVFKDHI" Id="mprTHHPZDOY7ZCKVNVVAIOFXXYQT4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EFileAccessType"/>
+          </Parameter>
+          <Parameter Name="timeout" DescriptionId="mlsJ2M36WYMBZHZXLL7V4MOULZJOY" Id="mprAGAWUA2GYJDDHIDX5J6AO4MCNI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsJMVC46HZORAPFBHVZMS44Y4RRA"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException" DescriptionId="mls7VRD5EL7FNGK3H6NTKPZ7MRQBA"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageException" DescriptionId="mlsHL7GA2IM4FE47JIFYPP67CNBIU"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageTimeout" DescriptionId="mls3TSXS5BBVRFC7A5444PPQJ2MQI"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthLHTXR6NGCNDOBOBQLU7UGRCG7M" Name="close" DescriptionId="mlsVIRWCZMY6JCSBF7FDKSAEFUCDU" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsStatic="true">
+          <Transparence Extendable="false" PublishedName="close(Lorg.radixware.kernel.server.arte.Arte;Ljava.lang.String;I)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arte" DescriptionId="mlsDKOJKRQ7O5HQPKC5KO5JFDQGLY" Id="mpr7C5AU346JJAH3GQEBHIPBOEHTA">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.arte.Arte"/>
+          </Parameter>
+          <Parameter Name="fileId" DescriptionId="mlsIHFMNABCTRC77CA5W6YVH5EWDQ" Id="mprIUZS43SESVFZFMXLWTQVS4ARYM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="timeout" DescriptionId="mlsNQIH36KTIRH4BOI5LVC4ANKWF4" Id="mprJ3UB7CDTN5EUFDI5WUHRJOGCPE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException" DescriptionId="mlsSEXW4N33MBAPLJUDAJZ3EMMFFA"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageException" DescriptionId="mlsZMHNMMXQERG5VHTGTSAVL2TCAA"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageTimeout" DescriptionId="mlsKQ62IY5LXRCUXGDWW5FZAIAPO4"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthRHAQKG33T5A7HNCJCLKC57FIDY" Name="FileResource" DescriptionId="mlsTT5ZAL32CRFOFGTRSNOHC2DV44" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthXRZX3AZSDJEZHDBS25UCY3W2PQ" Name="copy" DescriptionId="mlsQDRHWHVOOZBDBPLTLVTGHKVZ3E" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="copy(Lorg.radixware.kernel.server.arte.Arte;Ljava.lang.String;Ljava.lang.String;ZI)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arte" DescriptionId="mlsMGGQKHD3OFGWTGRJYF4AV5SIFE" Id="mprOQJO7NLLEZFMTO5646GTPRVKB4">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.arte.Arte"/>
+          </Parameter>
+          <Parameter Name="from" DescriptionId="mlsDUOE7VVKGVEC3FV3YWFSEIWJ5Q" Id="mprLUGF7V3XGZESNIOODQJ6Y57LOU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="to" DescriptionId="mlsEGXC2DK75VBT3JFVU3ZUZZJIGA" Id="mprNYTJTEDMPVHITOJ5TO3J2357QY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="ovewrite" DescriptionId="mlsRKMEPYTNPZGN7LEZQ2VGN7W3ZQ" Id="mprB2HTN5AIJ5A5NKMU3OPDDRBZDQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="timout" DescriptionId="mls7OAVLYSNNVGU5IIVPINMVL6BHA" Id="mprMQHROCOWWNHFJHPSOQ7FZRJPCQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException" DescriptionId="mlsM5TLXI4QKJBQNNI6TU7QWVQ4NI"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageException" DescriptionId="mlsG322FMF3PVDBZM3QMQMIQ4F56E"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageTimeout" DescriptionId="mlsKX6KHLSBTBFVLJWF7XTH2ATYJU"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthW7NWKQVC2ZBOFFN74QMGQWSMZM" Name="delete" DescriptionId="mlsDWJQ4MSDX5FIDHRWMU2TK7YHO4" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="delete(Lorg.radixware.kernel.server.arte.Arte;Ljava.lang.String;I)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arte" DescriptionId="mlsDU6V72TKEBGPJIQ6SANEEBBZEM" Id="mpr6BXEMKAB5BBUJC6MLLMDISKVJY">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.arte.Arte"/>
+          </Parameter>
+          <Parameter Name="fileName" DescriptionId="mlsCINXOYCXQZEYPOM6JURB2HBIS4" Id="mprEKFDHIM7C5E4DAVTEAMCPKB74A">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="timeout" DescriptionId="mlsCIFX4ISYGJFUHMKD7ET7PMZSYE" Id="mpr7MPNJVSUM5FW3MXUQ76YL6BX5Y">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageTimeout"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthHKMKGHHRTRHLFE3R6K2UDA7H64" Name="getSize" DescriptionId="mlsD5TLOBHX3BG6PBMZB4B4Y5PFYA" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getSize(Lorg.radixware.kernel.server.arte.Arte;Ljava.lang.String;I)J"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arte" DescriptionId="mls6U5PDPEL6ZAQRJNSKDQHD26IVI" Id="mprT2V55ZDIHNHTBIRB6XVAJVSIHI">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.arte.Arte"/>
+          </Parameter>
+          <Parameter Name="fileName" DescriptionId="mlsYVGWDNEHJRFU3E4D56HUC4KIDQ" Id="mprSNLYAR6GURCT5ATFPTZJBN46TU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="timeout" DescriptionId="mlsK2WCU4C5TRCGFO6LNULG75PFNM" Id="mpr7V25NQIAQRHNBNH7UALZ4MV33I">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="long" DescriptionId="mlsKMDM5Z6PS5HIXIEYOV723RI3TE"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException" DescriptionId="mlsPSBL6APLYNAIFKY3RUV3CZNPJM"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageException" DescriptionId="mlsYYXZS5BIX5BA7ISQ6CR2XT6SZY"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageTimeout" DescriptionId="mlsPNKRLLHMYRGXBMBMVB5H72YXMY"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthNEOVLPLM2BBCJMDMGYCUVP5K3Y" Name="move" DescriptionId="mlsX2UANCU7Q5FLHCNHSASCLRPZFQ" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="move(Lorg.radixware.kernel.server.arte.Arte;Ljava.lang.String;Ljava.lang.String;ZI)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arte" DescriptionId="mlsE6PN2UA7ZZGBFEXOKX2N5RNCVE" Id="mprIXUOB745NNA3RANRM7HYIEZU34">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.arte.Arte"/>
+          </Parameter>
+          <Parameter Name="from" DescriptionId="mlsVWFGV43QSRAFPGZMGFTK3Q7NZE" Id="mprZUMB2MNQ6FEELDWTAD5VYJKOGI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="to" DescriptionId="mlsBTC3MG7J4ZHRVEBNYEJ2XIAYJ4" Id="mprI7Z6ZWV3XBHTDLHCDXEQ6QYD5Q">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="overwrite" DescriptionId="mlsM2Q2ZTKY7VDVHIUQXPGL2DPCRA" Id="mprCXRWN6V3TVEMTEQLO5SCILFVRQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="timeout" DescriptionId="mlsQBEXLGLLSRAGTCV57PBKOV7MNE" Id="mprO2TQ64FOP5FFTOHJGA5V2UI354">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageTimeout"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthDURBZIENEBG7VBSFMSZ45N2OT4" Name="open" DescriptionId="mlsCUNXPMIP7FC5BFNI44ZCOXDFII" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsStatic="true">
+          <Transparence Extendable="false" PublishedName="open(Lorg.radixware.kernel.server.arte.Arte;Ljava.lang.String;Lorg.radixware.kernel.common.enums.EFileOpenMode;Lorg.radixware.kernel.common.enums.EFileOpenShareMode;I)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arte" DescriptionId="mlsBT5LPT3LRVD2VBI2STECFCKDIA" Id="mprJHE4P2JJJRFQFCNPKAODUMKY4A">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.arte.Arte"/>
+          </Parameter>
+          <Parameter Name="name" DescriptionId="mlsUFONEFGV25HHVOWCGWQXZO6QTA" Id="mpr3N7QBNIGMNF4BC74ABXBYLJPFU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="openMode" DescriptionId="mlsQ6CHPYL3SFBQXOHH4YAKLZGUEU" Id="mprOJPCYOE3WVEMPGXJNYOT7FDAEE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EFileOpenMode"/>
+          </Parameter>
+          <Parameter Name="shareMode" DescriptionId="mlsOJEUMQCOZJHMFKEOLM2U6BLV7U" Id="mprNJTHJ4ZDWVC63LOZ5QTIAENSAQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EFileOpenShareMode"/>
+          </Parameter>
+          <Parameter Name="timeout" DescriptionId="mlsDZZNDQHIEZFAJGSFGIOFNZ6EN4" Id="mprMTXZYT6X25DYXHIDF3TRREKXEY">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21" DescriptionId="mlsQ2A457ZEJJEEPOG5VQL6R237GA"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException" DescriptionId="mls4EBOW5D5AJER7FLCOVJUF5OWSE"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageException" DescriptionId="mlsRP433YJFJJCMPMPSCFFLYBOVAI"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageTimeout" DescriptionId="mlsRDSOPBZABVBRDOG5OR5WH6UGEA"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthNAVAU6G2WNH2XA76K73MUJ6BIE" Name="read" DescriptionId="mlsTHINBNNX6RETPDOGRCI5SRX65Q" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsStatic="true">
+          <Transparence Extendable="false" PublishedName="read(Lorg.radixware.kernel.server.arte.Arte;Ljava.lang.String;Ljava.nio.ByteBuffer;II)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arte" DescriptionId="mlsNY6DCS3AF5HHXEK2J4AWXVPP7E" Id="mprYWL5VI757JFR3BPYCFEW4F3FDY">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.arte.Arte"/>
+          </Parameter>
+          <Parameter Name="fileId" DescriptionId="mlsDXJDOXTITJEB5DU645762HCHQA" Id="mprMQEZ5G6QSNFSNM5DE5ON65PM24">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="buffer" DescriptionId="mlsT324OS7J75BKRKZOUVOHX2ANLQ" Id="mpr3PFH642USNGB3IH2QNCOGXGQIY">
+            <Type TypeId="400" extStr="java.nio.ByteBuffer"/>
+          </Parameter>
+          <Parameter Name="len" DescriptionId="mlsPQTVK5LOPJFFVG6QX7GTZOXNVI" Id="mprLR7G2FGPOVAC5F3IPAQZURJ2OE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="timeout" DescriptionId="mls66F3UKYRMRDH5EBK4LTPAVMIGQ" Id="mprBSXECHEMR5FOHAX4LBL2DSSE4U">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsXFBU22NW7ZERVIJNQNAZQGGPIE"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException" DescriptionId="mlsW5BMMK2JJVF5DOJP3HDF5OVZUY"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageException" DescriptionId="mlsZVCDHSSZZZDVPKIY2EK4C7IGCI"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageTimeout" DescriptionId="mlsVGDXA5S7SJHG7B3G2ARNNMOOHE"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth7A5EC537XRCFHDKYJL43TX5AYM" Name="select" DescriptionId="mlsRDJI565J5RHXHIIDKPH6G7C2QU" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="select(Lorg.radixware.kernel.server.arte.Arte;Ljava.lang.String;Ljava.lang.String;[Lorg.radixware.schemas.eas.FileMask;I)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arte" DescriptionId="mlsXCQQXWF2PZHT3ADGZZ5LUKSKTQ" Id="mprV7BIUIDK6NH7ZCW6A6Z7QA47RA">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.arte.Arte"/>
+          </Parameter>
+          <Parameter Name="title" DescriptionId="mls3VJG3W7ISZED7EH2YPORR7HGGM" Id="mprHMANTDXQNFC5FAD3L4QRYETOK4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="fileName" DescriptionId="mlsQOZ42NDJDRABHPK3ILKA2SVJFI" Id="mprVAFIBP5RBBC3LIIDSTDQELXQYM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="fileMasks" DescriptionId="mlsU6N2OD7KDNGOXI7PZKTRFZQ7PE" Id="mprVH642BOTBRG53B3QBBPTSQEFDQ">
+            <Type TypeId="400" extStr="org.radixware.schemas.eas.FileMask" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="timeout" DescriptionId="mls7HEKRBVLBBAK5KHZEY6GTE3FXE" Id="mpr6ZKIDQYAOBF2FBVBMYOFF72REM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21" DescriptionId="mlsH3VTJFEMUVELFIJNGAFWDLZ3PA"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException" DescriptionId="mlsP5PH6ZE5O5CQVGWSLGK5G5CDKI"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageException" DescriptionId="mls5GKWDLT7TVHTRKEZPV42IR6W44"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageTimeout" DescriptionId="mlsGWAZMWSBPNA63HCNBVCQQIFO5E"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthHYUGAUPXGVF7NFGKCFP6ZLCWRY" Name="write" DescriptionId="mlsNMEG77IUWVAZPBNXODR7SX5UPE" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsStatic="true">
+          <Transparence Extendable="false" PublishedName="write(Lorg.radixware.kernel.server.arte.Arte;Ljava.lang.String;[BI)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arte" DescriptionId="mlsVI2FTIZDFFDP3CTTHD2P6NTH3U" Id="mprZVYMBL2SFZGNXH73WLSVPW3CD4">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.arte.Arte"/>
+          </Parameter>
+          <Parameter Name="fileId" DescriptionId="mls5BMBOBE6XNECDIJRDLKPHVQVMI" Id="mpr7DAWIHNTYJFTLNSUD3DO6FM5UM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="data" DescriptionId="mls4JM5VPW3XNBFPEIWDT6FP4HEM4" Id="mprUEFZSUELINETBPWME6AZGNMSPY">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="timeout" DescriptionId="mlsOM74FA3WT5BVLHENTIQIDHVZNQ" Id="mprIMBN2M7TPJA6TPKDJ47232ZV5I">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException" DescriptionId="mlsDOP6FWZQWNHUPHIIH546F7HIQM"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageException" DescriptionId="mls6S4Q2R3WSZHDBOSDA7FTA37IDY"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageTimeout" DescriptionId="mlsX7JZJY3NXNBJLMPBLUSHC2BNVA"/>
+        </ThrownExceptions>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

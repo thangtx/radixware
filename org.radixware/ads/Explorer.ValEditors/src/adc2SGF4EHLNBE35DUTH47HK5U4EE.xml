@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc2SGF4EHLNBE35DUTH47HK5U4EE" Name="MultiValEditor" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.explorer.editors.valeditors.MultiValEditor"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc4XEF2P3KURFG7LH42SLGRQOCZU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcVAANG6HVBRCF3GJS3R3LV7ZBLA"/>
+    </Bodies>
+    <MethodGroup Id="cmgC5GZEFIKOFEFPHUI4HRIDNL2TU" Name="Root"/>
+    <PropertyGroup Id="cpgUFVANU2SONHBXA7IXJOLOWOD2M" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthULJMVBC3MBBVRDFBIYNF4FXQVA" Name="getCurrentValEditor" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getCurrentValEditor()Lorg.radixware.kernel.explorer.editors.valeditors.ValEditor;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.editors.valeditors.ValEditor"/>
+      </Method>
+      <Method Id="mthEAVBSILLGZAALPTHVMI4R6TPOQ" Name="getValue" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getValue()Lorg.radixware.kernel.common.defs.value.ValAsStr;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.defs.value.ValAsStr"/>
+      </Method>
+      <Method Id="mthBM74DHMAVNHW5LSMMXDEKJPG2A" Name="showValEditor" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="showValEditor(Lorg.radixware.kernel.common.enums.EValType;Lorg.radixware.kernel.common.client.meta.mask.EditMask;ZZ)Lorg.radixware.kernel.explorer.editors.valeditors.ValEditor;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="type" Id="mprCEOXIUM43BDM3PQE7JIQWFXBZ4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+          </Parameter>
+          <Parameter Name="editMask" Id="mprJYQFRJUJOBE2XJOVKJT5SDK26M">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
+          </Parameter>
+          <Parameter Name="isMandatory" Id="mprFGEMN4ABVNBGNFMRRDG4WZ766A">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="isReadonly" Id="mprRDMSTV4PMZGCZDXZ6QDF7TNKIM">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.editors.valeditors.ValEditor"/>
+      </Method>
+      <Method Id="mthYMEDET2JLFEBJGGLGF2LPU4KHE" Name="MultiValEditor" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Lcom.trolltech.qt.gui.QWidget;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprGR5EFZP4XRCB7JP5WQJ32C6ZAU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parent" Id="mpr7Q75OHLCQRDVNIEMKXEOFRSVLE">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthJFQVXCJWMBCRJAZ4PIKGF4CZDM" Name="setValue" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setValue(Lorg.radixware.kernel.common.defs.value.ValAsStr;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="value" Id="mprO6KOBTL5ENEBTM5WPV5J6EBY4I">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.defs.value.ValAsStr"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth537I5YK4LZCUDKNVLLKZRP7YUQ" Name="getCurrentValType" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getCurrentValType()Lorg.radixware.kernel.common.enums.EValType;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

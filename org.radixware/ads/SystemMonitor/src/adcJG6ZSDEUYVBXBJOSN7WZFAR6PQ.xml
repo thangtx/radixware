@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcJG6ZSDEUYVBXBJOSN7WZFAR6PQ" Name="DashTableWebView" Type="3" Environment="web">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcJG6ZSDEUYVBXBJOSN7WZFAR6PQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcJG6ZSDEUYVBXBJOSN7WZFAR6PQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgVD7YROKHY5EIBPNDJMEAFMWZ5E" Name="Root"/>
+    <PropertyGroup Id="cpgI7R3KRFZYRHTFNDCRUP4IT2EYE" Name="Root"/>
+    <Properties>
+      <Property Id="prdNYCXJ7EPD5BBVALFMKX3FQVVBE" Name="model" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="411" Path="adcMOX3YQ4D7NFJBK6TD5OGER6SRI"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthYCH3ACC7GREPVDVH3DVU7PELRM" Name="getInnerContent" DescriptionId="mlsGCOWVI4F4BCU5LCUQNSVNSH2I4" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="411" Path="adcP2R7IHUBPFDGFNCMJF7KXYRMLM"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcJJ54I75RORAP7BMOIJLLCZKFP4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> errorView = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcGG5DDHVS65ENRN2JLAKSJ4VUD4 mthVCQZRTOY5FAY5MYGEWFGT6BIJI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+errorView.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcJJ54I75RORAP7BMOIJLLCZKFP4 mthKTOQWAU4YRFK5OCQV7JXQJOUEM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Not supported in web.", new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI mthIK66EW67JBAOLGFNV2E5P7BNRY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+return errorView;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthABJESAPBTVEQJPZYLCYQXRMCAI" Name="getWidget" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="411" Path="adc2Y5H7GMDM5DFZHINXHEGWFVWGE"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcJG6ZSDEUYVBXBJOSN7WZFAR6PQ prdNYCXJ7EPD5BBVALFMKX3FQVVBE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth7TIOODTJFBA2THP5EWIBWKUCDY" Name="updateInnerView" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>//throw new UnsupportedOperationException("Not supported yet.");</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthCQA7Z7JTIFE6HDAWU2DBUZY3ZM" Name="DashTableWebView" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="model" Id="mprTSGSCTL4EFC4BOVIDDAFGYC33Y">
+            <Type TypeId="411" Path="adcMOX3YQ4D7NFJBK6TD5OGER6SRI"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(model);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcJG6ZSDEUYVBXBJOSN7WZFAR6PQ prdNYCXJ7EPD5BBVALFMKX3FQVVBE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = model;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="adcGG5DDHVS65ENRN2JLAKSJ4VUD4"/>
+  </AdsClassDefinition>
+</AdsDefinition>

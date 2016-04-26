@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclAPQMCEE7LJD5BJR2BJQWYGKJNE" Name="UserFunc.CalcPointUserMetric" Type="2" ClientEnvironment="explorer">
+    <AccessRules/>
+    <Headers>
+      <Src Name="HeaderaclAPQMCEE7LJD5BJR2BJQWYGKJNE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaclAPQMCEE7LJD5BJR2BJQWYGKJNE"/>
+    </Bodies>
+    <MethodGroup Id="cmgKHAJP3PPDNBT5OJ3VA7XM6VICU" Name="Root"/>
+    <PropertyGroup Id="cpg27NENNZ74VGHZHEYGH5UBRJWPI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth7XSYJBRK6JEF5BBSV4TU6BILFM" Name="calcPointValue" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="metricType" Id="mprXCPLHUORUVCHFHUKWLPNE33FIU">
+            <Type TypeId="411" Path="aclGRHDCPLEO5DIDM2N4MFEDHESLM"/>
+          </Parameter>
+          <Parameter Name="prevControlTime" Id="mprQOPHHRIKKJHOHNZUWYEEEEODK4">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="currentControlTime" Id="mprGKNJCXII3FGA5ISVOSNJUFMPPQ">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="double"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+    final double result = ((Double) </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM mthTPAFKDKW4TOBDIECAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(new Object[]{metricType, prevControlTime, currentControlTime})).doubleValue();
+    return result;
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+    if (ex instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcXJP5J6GEPZCERMRA74CCVXC3HI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+        throw (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcXJP5J6GEPZCERMRA74CCVXC3HI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) ex;
+    }
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcWYWATQSPTFGLVAJPCFEERQFAFY mthK6TEO2MVP5CT3HHV4VRQI7ITWM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(this, "error in calcEventValue(...) user function", ex);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthFOOX7DTCW5GA5CUK2VYOOVAC3Q" Name="getMethodId" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <ReturnType TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclAPQMCEE7LJD5BJR2BJQWYGKJNE mth7XSYJBRK6JEF5BBSV4TU6BILFM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+    <Presentations ObjectTitleId="mlsY7APHU6RTVGILIB2D24AP657BY"/>
+    <Extends TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsContextlessCommandDefinition Id="clcYY47JI5FPBGBDDY5GZBITEIFLQ" Name="GetDiagramCmd" TitleId="mlsXB7JDDE5SVF63KK47JQNPID3J4" Nature="2" IsVisible="false" IsConfirmationRequired="false">
+    <AccessRules IsPublished="false"/>
+    <InType TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="DiagramRqDocument"/>
+    <OutType TypeId="451" Path="xsdL6YN6OJDTBHMPLJWIV3F6VGQCQ" extStr="DiagramDocument"/>
+    <Source>
+      <xsc:Item>
+        <xsc:Java>final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="21"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> entityId = input.DiagramRq.EntityId;
+final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="21"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> entityPid = input.DiagramRq.EntityPid;
+
+final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcPid_______________________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> pid = new </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcPid_______________________ mthKCMJGSZYFREVLCWPBDG5YROTDE" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(), </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(entityId), entityPid);
+final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aicYOBV2IFRZ5D25C2WMZBEIOWPWY"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> pipeline = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mthF4KAIAW2C5ARPNQ2HKC3OLGBTE" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(pid);
+if (pipeline != null)
+    return pipeline.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aicYOBV2IFRZ5D25C2WMZBEIOWPWY mthHJSQTQ2KVBHVFJSQM74VNQWF3A" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>();
+return null;</xsc:Java>
+      </xsc:Item>
+    </Source>
+  </AdsContextlessCommandDefinition>
+</AdsDefinition>

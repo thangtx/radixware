@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclIOGGBYAJ2ZCRNAXHT5WMZAF5XA" Name="UserFunc.Check.Bin" Type="2" ClientEnvironment="explorer">
+    <AccessRules/>
+    <Headers>
+      <Src Name="HeaderadcY53B4MPE6RASNJPEY5HMWRVFKU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcO3ZIMSWIDBH23JNS7KJAUBYG64"/>
+    </Bodies>
+    <MethodGroup Id="cmgAMDWIMIBDVCXDMA3DGGJLELPXI" Name="Root"/>
+    <PropertyGroup Id="cpgFGLFGTSLS5AX3B3NLOW5SADS5A" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthFOOX7DTCW5GA5CUK2VYOOVAC3Q" Name="getMethodId" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <ReturnType TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclIOGGBYAJ2ZCRNAXHT5WMZAF5XA mth6OGDY6IPXZAH3JPPLQHGIAFYOY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth6OGDY6IPXZAH3JPPLQHGIAFYOY" Name="check" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="router" Id="mprPVUXNOFNURHTNP4CE7JM26F66I">
+            <Type TypeId="411" Path="aclXL4IP5OEDFAXRMDKNVVVBOXHWU"/>
+          </Parameter>
+          <Parameter Name="m" Id="mprZ4PI2B3P6ZGT5OI7GR5PSWO5RM">
+            <Type TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="PipelineMessageRq"/>
+          </Parameter>
+          <Parameter Name="rq" Id="mprS44Z23PZCJHOFG2VZN7NGY7XP4">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcJUFSBLVXVZEYDIHHN4G3GICTXI"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="1"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> b = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="1"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM mthTPAFKDKW4TOBDIECAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(new Object[] {router, m, rq});
+    return (b == null) ? false : b.booleanValue();
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcJUFSBLVXVZEYDIHHN4G3GICTXI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+    router.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A mthQ7MQNDFPEVCSZM46CIFMM4ISAI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Route exception: " + e.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() + "\n\n" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e));
+    throw e;
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+    router.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A mthQ7MQNDFPEVCSZM46CIFMM4ISAI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Route error: " + e.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() + "\n\n" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e));
+    if (e instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcXJP5J6GEPZCERMRA74CCVXC3HI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)
+        throw (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcXJP5J6GEPZCERMRA74CCVXC3HI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) e;
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcWYWATQSPTFGLVAJPCFEERQFAFY mth2WATDQIFTFEU3KUT2DYGDYORUA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(this, "Route user function error", e);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+    <Presentations ObjectTitleId="mlsP5SKR7RTWJEQPGN2NUN25BAIM4">
+      <ClassCatalogs>
+        <ClassCatalog Id="eccZMCDFRDL4DOBDIEAAALOMT5GDM" Name="All">
+          <ClassRef Order="820.0"/>
+        </ClassCatalog>
+      </ClassCatalogs>
+    </Presentations>
+    <Extends TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+  </AdsClassDefinition>
+</AdsDefinition>

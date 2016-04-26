@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcROWD3FJGTFBK7LDZ7IINXGZFZQ" Name="StrKeyValueEditorModel" CompilerWarnings="16777748" Type="3" Environment="explorer">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcROWD3FJGTFBK7LDZ7IINXGZFZQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcROWD3FJGTFBK7LDZ7IINXGZFZQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgAPQBW5AWNBB5BJOAS4CYGFVRWA" Name="Root"/>
+    <PropertyGroup Id="cpgUK5WISL2XJG7XAVNAAYV7HK4QQ" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthDYWXCPXB3FHONAWVHZ2QIL2DFU" Name="createEditorForKey" CompilerWarnings="16777747" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="key" Id="mprQIKSA64LFJFUZOHMEHOJVFREMU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="currentValue" Id="mpr5TQTENG66FANLCCQXCUYDJ74LE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="clientEnvironment" Id="mprHVKYAMK7PZBNTNXH7PIFZQ7OJA">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
+          <Parameter Name="parent" Id="mpr2EEHGSKM7VDTZH2P35E3ZFMMRI">
+            <Type TypeId="411" Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> valuesForKey = null;
+if (key != null) {
+    valuesForKey = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcROWD3FJGTFBK7LDZ7IINXGZFZQ mth42P5K42LDVBABOSQIOW2WE2WC4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(key.toString());        
+}
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc577BIS4VOZF6LHBG5OV7JJ5SVY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>&lt;?> editor;
+
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcROWD3FJGTFBK7LDZ7IINXGZFZQ mthXGEHOZW2EJASTLKHHFKCOBXGXY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(key)) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcEDCAWL5I2NCQTFEHRO7ZGUHFGQ mthFQN7DLIM4FG2ZOSAJ3Q5HJYT6Q" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> arrEditor =new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcEDCAWL5I2NCQTFEHRO7ZGUHFGQ mthFQN7DLIM4FG2ZOSAJ3Q5HJYT6Q" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(clientEnvironment, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciT57UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, null, parent);
+    editor = arrEditor;
+    arrEditor.setValue(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcROWD3FJGTFBK7LDZ7IINXGZFZQ mthCMDS73SCLZD4RGSTBEID27LV6M" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(currentValue));
+    arrEditor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcEDCAWL5I2NCQTFEHRO7ZGUHFGQ mthKHEREDTQIVESFDTNKMGFONPJP4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(valuesForKey == null ? null : new java.util.ArrayList&lt;Object>(valuesForKey));
+} else {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcN4R32FFJGJBATPHMG5SHO2SUVI mthAAA7RY44UVC3PPQDOJ5I6K54Y4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> strEditor = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcN4R32FFJGJBATPHMG5SHO2SUVI mthAAA7RY44UVC3PPQDOJ5I6K54Y4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(clientEnvironment, parent);    
+    strEditor.setValue(currentValue);
+    strEditor.setPredefinedValues(valuesForKey == null ? null : new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(valuesForKey) );
+    editor = strEditor;
+}
+
+
+return editor;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthGP6YEMGNTJDIPGZH2NI3R5XGTE" Name="getEditedValue" CompilerWarnings="16777748" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="editorWidget" Id="mprGSAOVLOMRNFDBD6HGCC2EVVUEI">
+            <Type TypeId="411" Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (editorWidget instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcEDCAWL5I2NCQTFEHRO7ZGUHFGQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {  
+    org.radixware.kernel.common.types.Arr&lt;Object> value = (org.radixware.kernel.common.types.Arr&lt;Object>) ((</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcEDCAWL5I2NCQTFEHRO7ZGUHFGQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) editorWidget).getValue();
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcROWD3FJGTFBK7LDZ7IINXGZFZQ mthXZFGGHQPQVCSDA55BO626DE6RE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(value);
+}
+return ((</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcN4R32FFJGJBATPHMG5SHO2SUVI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) editorWidget).getValue();
+
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth42P5K42LDVBABOSQIOW2WE2WC4" Name="getValuesForKey" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true"/>
+        <Parameters>
+          <Parameter Name="key" Id="mpr57US2J4KWZH6XC56SUXUFQVBBU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="221"/>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthXGEHOZW2EJASTLKHHFKCOBXGXY" Name="isArray" Nature="0" IsOverride="false">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="key" Id="mprZN7GYNZMKFDP3IKR23NWBRSRCE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return false;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthXZFGGHQPQVCSDA55BO626DE6RE" Name="arrToString" Nature="0" IsOverride="false">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="arr" Id="mprSN7GZIDWHBHQLGGUMX3LEBDIIY">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (arr == null) {
+    return null;
+}
+return arr.toString();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthCMDS73SCLZD4RGSTBEID27LV6M" Name="arrFromString" Nature="0" IsOverride="false">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="value" Id="mprAJRJ5EDTYBBAPOVN756V7ANQCE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="221"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.fromValAsStr(value);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthB4LCOKXWARC3HAIRBFXX4VNL7U" Name="getValueDisplayText" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="key" Id="mprXGXGCNCQJRAZ3AFBQNN22TWESM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="value" Id="mprJWUDT5UBW5E33DUVU4N2JDV7IE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (key == null || value == null) {
+    return null;
+}
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcROWD3FJGTFBK7LDZ7IINXGZFZQ mthXGEHOZW2EJASTLKHHFKCOBXGXY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(key)) {
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcROWD3FJGTFBK7LDZ7IINXGZFZQ mth6TBGXG6SARF5FE536GHYYD6Y2I" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(new java.util.ArrayList&lt;Object>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.fromValAsStr(value)));
+}
+return value;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth6TBGXG6SARF5FE536GHYYD6Y2I" Name="arrToDisplayText" Nature="0" IsOverride="false">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="value" Id="mprL24VPDRKARGDJN4SLFJSRECB2M">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>StringBuilder displayValue = new StringBuilder();
+if (value != null) {
+    boolean first = true;
+    for (Object val : value) {
+        if (first) {
+            first = false;
+        } else {
+            displayValue.append("; ");
+        }
+        displayValue.append(val.toString());
+    }
+}
+return displayValue.toString();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Implements>
+      <Interface TypeId="411" Path="aicICZO36TGLBEGBLOVOH2N3DSWJU"/>
+    </Implements>
+  </AdsClassDefinition>
+</AdsDefinition>

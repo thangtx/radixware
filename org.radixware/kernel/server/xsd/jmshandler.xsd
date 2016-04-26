@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 sp2 U (http://www.altova.com) by pc (pc) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:jms="http://schemas.radixware.org/jmshandler.xsd" targetNamespace="http://schemas.radixware.org/jmshandler.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+	<xs:simpleType name="ExceptionEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="FormatError"/>
+			<xs:enumeration value="InvalidRequest"/>
+			<xs:enumeration value="ServerException"/>
+			<xs:enumeration value="ApplicationError"/>
+			<xs:enumeration value="OutRqLimitExeeded"/>
+			<xs:enumeration value="ExtSysCallTimeout"/>
+			<xs:enumeration value="UncorrelatedRecv"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="ProcessTextRq">
+		<xs:complexContent>
+			<xs:extension base="jms:Base">
+				<xs:sequence>
+					<xs:element name="Message" type="types:Str"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ProcessTextRs">
+		<xs:complexContent>
+			<xs:extension base="jms:Base">
+				<xs:sequence>
+					<xs:element name="Message" type="types:Str" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ProcessBinRq">
+		<xs:complexContent>
+			<xs:extension base="jms:Base">
+				<xs:sequence>
+					<xs:element name="Message" type="types:BinBase64"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ProcessBinRs">
+		<xs:complexContent>
+			<xs:extension base="jms:Base">
+				<xs:sequence>
+					<xs:element name="Message" type="types:BinBase64" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ProcessText">
+		<xs:choice>
+			<xs:element name="ProcessTextRq" type="jms:ProcessTextRq"/>
+			<xs:element name="ProcessTextRs" type="jms:ProcessTextRs"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="ProcessBin">
+		<xs:choice>
+			<xs:element name="ProcessBinRq" type="jms:ProcessBinRq"/>
+			<xs:element name="ProcessBinRs" type="jms:ProcessBinRs"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="Base">
+		<xs:sequence>
+			<xs:element name="CorrelationId" type="types:Str" minOccurs="0"/>
+			<xs:element name="DeliveryMode" type="types:Int" minOccurs="0"/>
+			<xs:element name="Destination" type="types:Str" minOccurs="0"/>
+			<xs:element name="Expiration" type="types:Int" minOccurs="0"/>
+			<xs:element name="MessageId" type="types:Str" minOccurs="0"/>
+			<xs:element name="Priority" type="types:Int" minOccurs="0"/>
+			<xs:element name="Redelivered" type="types:Bool" minOccurs="0"/>
+			<xs:element name="Timestamp" type="types:Int" minOccurs="0"/>
+			<xs:element name="Type" type="types:Str" minOccurs="0"/>
+			<xs:element name="Props" type="types:MapStrStr"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Message">
+		<xs:complexContent>
+			<xs:extension base="jms:Base">
+				<xs:sequence>
+                                    <xs:element name="Data" type="types:BinBase64" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="Message">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="jms:Message"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>        
+</xs:schema>

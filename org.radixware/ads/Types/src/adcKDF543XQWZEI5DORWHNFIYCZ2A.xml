@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcKDF543XQWZEI5DORWHNFIYCZ2A" Name="Id.Factory" Type="3" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.types.Id.Factory"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc5GTN3UU5SNFLZLTZKUAZ6PN4DQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcESCEYW6LDZCORA6VVDV7FQVIFM"/>
+    </Bodies>
+    <MethodGroup Id="cmg653SJJX3T5FB7IXNYUE3SWGDNM" Name="Root"/>
+    <PropertyGroup Id="cpgFBZZPCCZN5ENBJ65AQ5WVRUB5Q" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthZCNI2JK4DFGNLEBCLZZCIM34TA" Name="loadFrom" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="loadFrom(Ljava.util.List&lt;Ljava.lang.String;>;)Ljava.util.List&lt;Lorg.radixware.kernel.common.types.Id;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="idsAsStr" Id="mprCSNT6OJICJFDVIPVORS4ZY5AFA">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthRYDSIBOGWFEI7C7Z5R6TIUROUA" Name="newInstance" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="newInstance(Lorg.radixware.kernel.common.enums.EDefinitionIdPrefix;)Lorg.radixware.kernel.common.types.Id;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="idPrefix" Id="mprEOXVY3IT6ZHCHKR3GWK7ZE2PNI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EDefinitionIdPrefix"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+      </Method>
+      <Method Id="mthGFAPI2TPWZEJHN436UQMWZIPZM" Name="loadFrom" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="loadFrom(Ljava.lang.String;)Lorg.radixware.kernel.common.types.Id;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mpr7KZ242TD3VDF3JBUH362WJK7VY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,702 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclQJOOGROVWNEOFKMJTQLOEE4KKY" Name="Task.Sequence" Type="2" ClientEnvironment="explorer">
+    <AccessRules/>
+    <Headers>
+      <Src Name="HeaderaclQJOOGROVWNEOFKMJTQLOEE4KKY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaclQJOOGROVWNEOFKMJTQLOEE4KKY"/>
+    </Bodies>
+    <MethodGroup Id="cmg2E73Y6CBTFFUZIYIISQF6TMWPE" Name="Root"/>
+    <PropertyGroup Id="cpgZU6OSWYIINA7ZL2YBIXDSZ2PP4" Name="Root"/>
+    <Properties>
+      <Property Id="pru5UPCLAW2FFDTJKEFXS6UFDEV64" Name="lastFinishedChildId" Nature="1" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthZBBPKW3Z6RAUTC3LR3FVNCTIXY" Name="afterChildExecFinish" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="childTask" Id="mprQA2SVYNM7ZAY7DDPXLLFJYPWZY">
+            <Type TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+          </Parameter>
+          <Parameter Name="explicitNextTask" Id="mpr4V4TVNXIIRFGBB4SQNS3RUU7NA">
+            <Type TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+          </Parameter>
+          <Parameter Name="explicitGroupReturnStatus" Id="mpr7LASSS56I5CY3OT7WEM5YC6NK4">
+            <Type TypeId="21" Path="acsEIXEKC5YG5CVBEOCLYU33L3WGI"/>
+          </Parameter>
+          <Parameter Name="childExecToken" Id="mpr6AFBGTUX7BCIHEYB7ZY2EIYEHE">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mthEOFZDHPPRVB5HGKVAZFWRZLIEQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+try {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mthKUZMCX37LBCMPKENNSVZQVBVSI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+
+    if (this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colSPQ7GFBANJFXBJRZTRXETWZFG4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != childExecToken) {
+        return;
+    }
+
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mth4LIUO5IRWLOBDLJLAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aclAISPQSDGNNF47CEMHOVHTK6G5U"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclAISPQSDGNNF47CEMHOVHTK6G5U prdNE2MYEHK7VH3NAXJ4LU22OSN4U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM prdYMED5YPMPFGKBIZ4CLBYRTJ4VQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, childTask.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM prdYMED5YPMPFGKBIZ4CLBYRTJ4VQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclQJOOGROVWNEOFKMJTQLOEE4KKY pru5UPCLAW2FFDTJKEFXS6UFDEV64" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = childTask.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPU65PF7LJPOBDCIUAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+
+    if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPT5IWXJ4O5AIPIYP3NSPZTDK54" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEIXEKC5YG5CVBEOCLYU33L3WGI aci5CWTKFG3ABGV5IYKAYZDDBGGWU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2YO4JA7JKJGGBLTARIEQHUSHGI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2YO4JA7JKJGGBLTARIEQHUSHGI mth3XTY3XAUDBAHJEEM6OMP7N35QA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(this, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colSPQ7GFBANJFXBJRZTRXETWZFG4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    } else {
+        if (explicitGroupReturnStatus != null) {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2YO4JA7JKJGGBLTARIEQHUSHGI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2YO4JA7JKJGGBLTARIEQHUSHGI mthAETX36QP5BC3BPAGGZXT64VPQI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(this, explicitGroupReturnStatus, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colSPQ7GFBANJFXBJRZTRXETWZFG4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+            return;
+        }
+
+        if (explicitNextTask != null) {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mth4LIUO5IRWLOBDLJLAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:EventCode StringId="mlsMUFQEFQUWNGXBNC3RFNS3IP2VM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM prdYMED5YPMPFGKBIZ4CLBYRTJ4VQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, explicitNextTask.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM prdYMED5YPMPFGKBIZ4CLBYRTJ4VQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2YO4JA7JKJGGBLTARIEQHUSHGI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2YO4JA7JKJGGBLTARIEQHUSHGI mthTQQPHJF7JBF4PIQR3VFYAR2FBA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(explicitNextTask, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM prdYMED5YPMPFGKBIZ4CLBYRTJ4VQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colITNAQ6PMJPOBDCIUAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colSPQ7GFBANJFXBJRZTRXETWZFG4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        } else {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="accILBHICALDNB2ZMVMXQQ5LEEK4E"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> childsCursor = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="accILBHICALDNB2ZMVMXQQ5LEEK4E"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accILBHICALDNB2ZMVMXQQ5LEEK4E mth_stmt_execute_____________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPU65PF7LJPOBDCIUAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, childTask.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colWDY2TRTHU5CBNOYBLCQRTQSCZM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, true);
+            try {
+                while (childsCursor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+                    if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclAISPQSDGNNF47CEMHOVHTK6G5U mthTFLOALU7KBHFHK3HIMW26EK7AM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(childsCursor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accILBHICALDNB2ZMVMXQQ5LEEK4E prf6YK3FLZ2IBCSLA2EN4B7L5WBSA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colITNAQ6PMJPOBDCIUAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)) {
+                        return;
+                    }
+                }
+
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthUVXH2WARWLOBDLJLAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:EventCode StringId="mlsCKSMZSDQ55FYBE6TDVLYXZQIWA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM prdYMED5YPMPFGKBIZ4CLBYRTJ4VQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2YO4JA7JKJGGBLTARIEQHUSHGI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2YO4JA7JKJGGBLTARIEQHUSHGI mth3XTY3XAUDBAHJEEM6OMP7N35QA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(this, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colSPQ7GFBANJFXBJRZTRXETWZFG4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+
+            } finally {
+                childsCursor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mth_stmt_close_______________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+            }
+        }
+    }
+} finally {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mth534JXQYRSZESXK7WP4A5KG5TUM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthTHJHLFF7GJE45MGPI5TEEFNPYY" Name="getPrevChild" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="child" Id="mprJLQM5SVUAJGP7OSNJETQFNFSBE">
+            <Type TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclQJOOGROVWNEOFKMJTQLOEE4KKY pru5UPCLAW2FFDTJKEFXS6UFDEV64" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null) {
+    return null;
+}
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mth_loadByPK_________________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclQJOOGROVWNEOFKMJTQLOEE4KKY pru5UPCLAW2FFDTJKEFXS6UFDEV64" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, true);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthN36NOGMSW5EGZIX2JAVCBWM2RU" Name="execute" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="prevExecTime" Id="mprJJ2Q7OFJ6JBVVJE735WPEM6R6U">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="curExecTime" Id="mpr4ZO2IBGM5BA3DBSRRXWDQLJWGU">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="aclAISPQSDGNNF47CEMHOVHTK6G5U prd6SIS7FJ3TFE3TAA4T3VL7MXQVQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = true;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="accILBHICALDNB2ZMVMXQQ5LEEK4E"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> childsCursor = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="accILBHICALDNB2ZMVMXQQ5LEEK4E"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accILBHICALDNB2ZMVMXQQ5LEEK4E mth_stmt_execute_____________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPU65PF7LJPOBDCIUAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, 0, true);
+try {
+    while (childsCursor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+        if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclAISPQSDGNNF47CEMHOVHTK6G5U mthTFLOALU7KBHFHK3HIMW26EK7AM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(childsCursor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accILBHICALDNB2ZMVMXQQ5LEEK4E prf6YK3FLZ2IBCSLA2EN4B7L5WBSA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, curExecTime)) {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclAISPQSDGNNF47CEMHOVHTK6G5U prd6SIS7FJ3TFE3TAA4T3VL7MXQVQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = false;
+            return;
+        }
+    }
+} finally {
+    childsCursor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mth_stmt_close_______________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth6KS7LCP4W5AW5OCCJHH5KGO4YQ" Name="afterCreate" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="src" Id="mpr24RPHHVJ3NCHVO4VQDXPESQ5SE">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclAISPQSDGNNF47CEMHOVHTK6G5U mth6KS7LCP4W5AW5OCCJHH5KGO4YQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(src);
+if (src != null) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclQJOOGROVWNEOFKMJTQLOEE4KKY mthM3US6PQ3XNCDHBST7O2XW6HGMU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(null);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthC4YB3FDESBG7ZPHVFVPL7EMHWA" Name="afterImport" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="xTask" Id="mprRMXBRRTJPZF5TP5QTXACFBZTGU">
+            <Type TypeId="451" Path="xsdRBK6FQVUEZG7NDZEERZZ34YGQI" extStr="Task"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mthC4YB3FDESBG7ZPHVFVPL7EMHWA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(xTask);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclQJOOGROVWNEOFKMJTQLOEE4KKY mthM3US6PQ3XNCDHBST7O2XW6HGMU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(xTask);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthM3US6PQ3XNCDHBST7O2XW6HGMU" Name="updateGoToReferences" Nature="0" IsOverride="false">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="xTask" Id="mpr2BNNDYGU6NFOHPQ6DFJWCI5A4Q">
+            <Type TypeId="451" Path="xsdRBK6FQVUEZG7NDZEERZZ34YGQI" extStr="Task"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>for (int i = 0; i &lt; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclAISPQSDGNNF47CEMHOVHTK6G5U mthCMOZTIRUORE4FDJG67MVTWQCQE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().size(); i++) {
+    if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclAISPQSDGNNF47CEMHOVHTK6G5U mthCMOZTIRUORE4FDJG67MVTWQCQE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().get(i) instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="acl3R7XYOSM25GRBFXG2SUUSQCZ4I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="acl3R7XYOSM25GRBFXG2SUUSQCZ4I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> child = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="acl3R7XYOSM25GRBFXG2SUUSQCZ4I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclAISPQSDGNNF47CEMHOVHTK6G5U mthCMOZTIRUORE4FDJG67MVTWQCQE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().get(i);
+        if (child.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl3R7XYOSM25GRBFXG2SUUSQCZ4I pruBPNZFBTI4BGKNEXOJBP26Q4WKY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFM3CYAC365CGHDRL5USB36CH4Q aci6JW5JFY25BDGBHPPHFI3542F6A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> taskToJumpIndex;
+            if (xTask != null) {
+                taskToJumpIndex = xTask.ChildTasks.getChildTaskArray(i).TaskToJumpIndex;
+            } else {
+                taskToJumpIndex = child.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl3R7XYOSM25GRBFXG2SUUSQCZ4I pruY3KDUFW4U5EGBKLQ26CAD3HHLU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null ? null : child.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl3R7XYOSM25GRBFXG2SUUSQCZ4I pruY3KDUFW4U5EGBKLQ26CAD3HHLU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colWDY2TRTHU5CBNOYBLCQRTQSCZM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.longValue() - 1;
+            }
+            child.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl3R7XYOSM25GRBFXG2SUUSQCZ4I pruY3KDUFW4U5EGBKLQ26CAD3HHLU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = taskToJumpIndex == null ? null : </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclAISPQSDGNNF47CEMHOVHTK6G5U mthCMOZTIRUORE4FDJG67MVTWQCQE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().get(taskToJumpIndex.intValue());
+        }
+    }
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthOFXDILMIP5BNVCHAN33NERN2SE" Name="prepareForExecution" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclAISPQSDGNNF47CEMHOVHTK6G5U mthOFXDILMIP5BNVCHAN33NERN2SE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclQJOOGROVWNEOFKMJTQLOEE4KKY pru5UPCLAW2FFDTJKEFXS6UFDEV64" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = 0;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+    <Presentations ObjectTitleId="mlsYRFOAWBDIRAQBCIF3HUGUMY3CE">
+      <ClassCatalogs>
+        <ClassCatalog Id="eccVXWRKQLYJTOBDCIVAALOMT5GDM" Name="Default">
+          <AccessRules IsPublished="false"/>
+          <ClassRef TopicId="cctKWLFFJ24KVGHXD5FOCWSR27WJM" Order="100.0"/>
+        </ClassCatalog>
+      </ClassCatalogs>
+    </Presentations>
+    <Extends TypeId="411" Path="aclAISPQSDGNNF47CEMHOVHTK6G5U"/>
+  </AdsClassDefinition>
+</AdsDefinition>

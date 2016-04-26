@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="pdcMessageDialogResource_____" Name="MessageDialogResource" DescriptionId="mlsRTBT7UN4G5CNJDLRZVRTRUWZJ4" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.server.arte.resources.MessageDialogResource"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcDLM5COEBFBAD7CRHWGH5WXSAAY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcNFMOCPDRXZA7XCUEUDQR3TZJ4E"/>
+    </Bodies>
+    <MethodGroup Id="cmgJT2ALLUEP5HY7IZQZQAOYKSXCA" Name="Root"/>
+    <PropertyGroup Id="cpgXPZRQFFV5BGJJMIB7WR6WF2ZGY" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthA75WX3EPLJGLNGLVF4V5RWCZFQ" Name="MessageDialogResource" DescriptionId="mlsWGWLEOH3MBBBTL5B2F2UMHFUBU" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth4C5WVL4T2RF3DCSOBMQJ2TS6PM" Name="confirmation" DescriptionId="mlsSYQGNVPY2FFXNJWTO6O6UHMQZA" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="confirmation(Lorg.radixware.kernel.server.arte.Arte;Ljava.lang.String;Ljava.lang.String;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arte" DescriptionId="mlsHA7GOTPXRNHSTAQZMYXXIARC5A" Id="mprJJVC2NMOSJGPFHLB5YPAOTAL2Y">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.arte.Arte"/>
+          </Parameter>
+          <Parameter Name="caption" DescriptionId="mlsNC2VHDQCNBAYBKLKN5BJFDSIBE" Id="mprGMQRBSQIHFHKRA72AXOHUMZA3Q">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="text" DescriptionId="mlsTMFNTXD2RJB6VHQIOS2GTTIU3I" Id="mprP3LEX32GK5E3LJZ6UQNGMJCJCY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsUUBSRHVBYFASXLXCXQGGBDJMSQ"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException" DescriptionId="mlsHLXFRMIZGNH23H2HDXYZTYWVZE"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageException" DescriptionId="mlsDWVDPSTF3JBM5GNG5PCEWNPRPQ"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageTimeout" DescriptionId="mls4JVVT5KJNBCP5IYTYGSMJNC2BE"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthKD3DUNIPCBHKVEDEHSUHQHJ77E" Name="error" DescriptionId="mlsQBY4B2HMB5HGJK53X5KPSNGCF4" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="error(Lorg.radixware.kernel.server.arte.Arte;Ljava.lang.String;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arte" DescriptionId="mlsUMY74NEX4NAQZJDJAHZUQGZCSM" Id="mprH7NIBNVH5JD57H2YQXMNCZPJIA">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.arte.Arte"/>
+          </Parameter>
+          <Parameter Name="caption" DescriptionId="mls33M7WTOJ5NGHFEKSBD5VWHF4ZM" Id="mprM6QLVLKSKBA4BKX3QR7P6MLYXU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="text" DescriptionId="mls4S3WVCOGMRGDLPBAGZVWGMOCDM" Id="mprTB3MUNHCBZACPKNCHZEOQOLUXU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException" DescriptionId="mlsHCN3THQTCJCWFKB32LRSUMCOXI"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageException" DescriptionId="mls5RBCKL2ULBGNTICJHXNJYX67TE"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageTimeout" DescriptionId="mls6GODH4FYDNBTVAZVZPQ46HKLNA"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthMEU3KZI4OZEDBFXIQH6M3PRIPA" Name="information" DescriptionId="mlsKXCWDL4N7VBKBKYXGRK6OLGGSY" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="information(Lorg.radixware.kernel.server.arte.Arte;Ljava.lang.String;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arte" DescriptionId="mlsJFTQPGXZC5AONMQJCOEORAE6BE" Id="mprA527NBA2WNAG3EFDA75WFWOQWE">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.arte.Arte"/>
+          </Parameter>
+          <Parameter Name="caption" DescriptionId="mlsW3DP4MJL3FGJLLJG6MLSYQGKXE" Id="mprFUGYTAP4EBERNL6CDHLKOHZ7CI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="text" DescriptionId="mlsLCHWKRSQVREUVACYRYZU4PHG24" Id="mprYEFO5AUVSFEUNLT7RCIXEDE6I4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException" DescriptionId="mlsGS4PGB2VT5AJDPFZIGBGDHAXEA"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageException" DescriptionId="mlsUNOY7LCEKNHETDGFPRVTKQPHS4"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageTimeout" DescriptionId="mlsTBJUKFHRA5CPZCDKKB6VMRYBHU"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthK4VEYCZOCFF5FDCVIBXNUOYQHA" Name="warning" DescriptionId="mlsDY7RN4JWEJDCDCEQDJ5KIIYKTI" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="warning(Lorg.radixware.kernel.server.arte.Arte;Ljava.lang.String;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arte" DescriptionId="mlsU5X6JPI4XBBZ3NIKHQXVZOERLM" Id="mprNXD6HW5SQRH3HNYPBDGZGJWEJQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.arte.Arte"/>
+          </Parameter>
+          <Parameter Name="caption" DescriptionId="mlsWRTRUH56PJBVVAYIREBBACZFS4" Id="mprRGWFEREQUJAXXARMZ3ZXYG4LZM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="text" DescriptionId="mlsJHTA7SZOO5GLTMUMSALQ5SYGOA" Id="mpr7TY7LIFZEBAAVB6RKK4UFVZCJ4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException" DescriptionId="mls5PVJLDHCTZB57BO4W2RJIISB5A"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageException" DescriptionId="mls5GS4WBBIGJA4FJGPX3G7JKNLRE"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageTimeout" DescriptionId="mlsWHB5TK45YBB3JIOGK2TWT34OYA"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthS6CGQH6ZQ5FYBOEEJQPRIYPMME" Name="show" DescriptionId="mlsLROMEP3GIZH5XL4IDXAYCC4EPI" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="show(Lorg.radixware.kernel.server.arte.Arte;Lorg.radixware.kernel.common.enums.EDialogType;Ljava.lang.String;Ljava.util.List&lt;Lorg.radixware.kernel.common.enums.EDialogButtonType;>;Ljava.lang.String;)Lorg.radixware.kernel.common.enums.EDialogButtonType;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arte" DescriptionId="mlsXJOCWYRJCRDILOBHWLAPBFZMAM" Id="mpr4ZCMJHAHD5G45PSA44BY2AOJUQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.arte.Arte"/>
+          </Parameter>
+          <Parameter Name="type" DescriptionId="mlsFJTPEBSWPFAULNX5Q5RGLQ4C24" Id="mprESMV3JLMZBF75ADR4RRJLS3QMY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EDialogType"/>
+          </Parameter>
+          <Parameter Name="caption" DescriptionId="mlsPACX22VLDBAKJPCPGLLV2VSKC4" Id="mprSIB3DMARVZGJVLFFLAFK7D2YV4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="buttons" DescriptionId="mlsLSIXAU5FLFE5TCEVDEU4ZSQLXU" Id="mprQLB5NRFZSBANNPT4G23SHG4DC4">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.enums.EDialogButtonType"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="text" DescriptionId="mls7EICTMQHEBFLPMEMT46QXWX3Z4" Id="mprVBX6LXNXDRGILEKIMG65VOBNSY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.enums.EDialogButtonType" DescriptionId="mlsOJ6SHZP5DZERRCK7ESQ3Q62ZQY"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException" DescriptionId="mlsEESBZGOHZ5C6PBMEO6FXKSXIVA"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageException" DescriptionId="mlsSNOLHDVH35HHPDEQA3VFNHMMZA"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageTimeout" DescriptionId="mls47QMINMC7FFC7PZEGBNTKDVRGU"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthUOPWC6BAH5DWLNWGUFW47YS2HY" Name="show" DescriptionId="mlsMFT2BQ3JEBHYJHRULOWADBROYE" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="show(Lorg.radixware.kernel.server.arte.Arte;Lorg.radixware.kernel.common.enums.EDialogType;Ljava.lang.String;Ljava.util.LinkedHashSet&lt;Lorg.radixware.kernel.server.arte.resources.MessageDialogResource.MessageDialogButton;>;Ljava.lang.String;)Lorg.radixware.kernel.server.arte.resources.MessageDialogResource.MessageDialogButton;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arte" DescriptionId="mlsEQ7PWCCOFFHENKWWVVTKM5UF2U" Id="mprUHEBVMJJKBAGLNPGEK5SSQXMSE">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.arte.Arte"/>
+          </Parameter>
+          <Parameter Name="dialogType" DescriptionId="mlsVI3C2RPWJJEQHK5VSAK74VBRVE" Id="mprKBLBAXDV75DYPBWGQURJK2LG6A">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EDialogType"/>
+          </Parameter>
+          <Parameter Name="caption" DescriptionId="mlsTX37ILZHCBHWHDR7Y5S5SKSMYU" Id="mprH7NAEX3BFZB2FAVMN3ISE7EH3E">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="buttons" DescriptionId="mlsLPRY76MOXBGOZCQSJCDXFLUGJE" Id="mprZDSKUPUIOBBC3MDFIEB6VJO5WA">
+            <Type TypeId="400" extStr="java.util.LinkedHashSet">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.server.arte.resources.MessageDialogResource.MessageDialogButton"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="text" DescriptionId="mlsJFEAQUZV6VFQND5TPI3QMNQVWU" Id="mprTJG4M4WTGJDTXPKDJHUCYNTVRI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.arte.resources.MessageDialogResource.MessageDialogButton" DescriptionId="mlsMU6T3CY3S5FR3ED5RCS2WKSGG4"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException" DescriptionId="mlsF4XBBAA32RGDJBCRO3MNBGD72E"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageException" DescriptionId="mlsS4ZHGOGCFJH4XBMGYVSD6PCVZY"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageTimeout" DescriptionId="mlsYSF7KISRVJDCFN3F5UGYW7PDWI"/>
+        </ThrownExceptions>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

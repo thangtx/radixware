@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcZBEAXO5FKRHD7NPWEKHFXPUIRA" Name="PropertiesGrid" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.explorer.widgets.PropertiesGrid"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcZBEAXO5FKRHD7NPWEKHFXPUIRA"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcZBEAXO5FKRHD7NPWEKHFXPUIRA"/>
+    </Bodies>
+    <MethodGroup Id="cmgJZ2FLU2G5NAQNF6KGEFYIDIEVU" Name="Root"/>
+    <PropertyGroup Id="cpgD5XGLKZ7Z5GHDNHHBBQFLMEX3Y" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthGMCHTZDEXJCA7PCVCYILJUYDWY" Name="addProperties" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="addProperties(Ljava.util.Collection&lt;Lorg.radixware.kernel.common.client.models.items.properties.Property;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="properties" Id="mprYA2XADM3TNHLBENEJM3RVY7ANE">
+            <Type TypeId="400" extStr="java.util.Collection">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthLWCXYIVNO5BSDDVODIKWD2HDVM" Name="addProperty" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="addProperty(Lorg.radixware.kernel.common.client.models.items.properties.Property;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="property" Id="mprFJQBQNSSGNA4NDCQDTY2E7653E">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthZ3W45OLBAVFYNOUWEBAY3NAAEQ" Name="addProperty" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="addProperty(Lorg.radixware.kernel.common.client.models.items.properties.Property;II)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="property" Id="mprUU6PGJX3PRFRFAUU5FKBELYD6A">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
+          </Parameter>
+          <Parameter Name="column" Id="mprWFNDV5CK3JBKPB3UEWHAQCVJTA">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="row" Id="mprNF66VFD43NFIHMYRL7VLBYWXNM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthSXSJRUFX6BAAFOOQTD5LBC6YVY" Name="clear" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="clear()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth6YFQXVXVFFAPLKVZFYB77NLUZQ" Name="finishEdit" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="finishEdit()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthKOBYEMHTVNCL3NJCMZLTDDKUCE" Name="getColumnsCount" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getColumnsCount()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthKUZKCFBJSBEFPGVVHKY2AUKKXE" Name="getCurrentPropEditor" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getCurrentPropEditor()Lorg.radixware.kernel.explorer.widgets.propeditors.AbstractPropEditor;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.widgets.propeditors.AbstractPropEditor"/>
+      </Method>
+      <Method Id="mthUZSR64CLJ5BVJG4CI6Y2PLTDCI" Name="getHorizontalSpacing" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getHorizontalSpacing()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthJ4E65YSWLNAY5AEOPDKHK6OIP4" Name="getProperties" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getProperties()Ljava.util.List&lt;Lorg.radixware.kernel.common.client.models.items.properties.Property;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mth5O3LOEGQUJG2VP4I5ZLZCM6HAE" Name="getVerticalSpacing" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getVerticalSpacing()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthUGX3NRAONNEFZCLJ5KJKKA4NR4" Name="PropertiesGrid" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mpr5MMNVUEVMND3FK35TTUOSFXJN4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth46Q3P67MBVARJKFDY4INLPFZIM" Name="PropertiesGrid" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lcom.trolltech.qt.gui.QWidget;Lorg.radixware.kernel.common.client.IClientEnvironment;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parent" Id="mprZUZL6VEZSVF6BFUQ7LXPWRMYC4">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+          <Parameter Name="environment" Id="mprZD7NXPRH2FD2PNTC5JYM27M6J4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthQBI2UZ34ANGP5LEAQDREJC75BE" Name="PropertiesGrid" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.explorer.views.EditorPageView;Lorg.radixware.kernel.common.client.IClientEnvironment;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="page" Id="mprHBIXPXYAVBCRJJO342RAQ6XLAY">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.views.EditorPageView"/>
+          </Parameter>
+          <Parameter Name="environment" Id="mprR2SLCBSIAVE3RPBYQSJI34EZ3Q">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthEEJZ5H5IOVGEBGFMH64J7EOI7U" Name="PropertiesGrid" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lcom.trolltech.qt.gui.QWidget;Ljava.util.List&lt;Lorg.radixware.kernel.common.client.models.items.properties.Property;>;Lorg.radixware.kernel.common.client.IClientEnvironment;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parent" Id="mpr7GFH4PGPFJB2JFX2BKCUHMUQRM">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+          <Parameter Name="properties" Id="mprGFBRBNRMLVGGRKPGFYNGNT5KFU">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="environment" Id="mpr53NTXCEZIZDT5BC3BDDIWCLPG4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth6CVGZS26KBGGJAHIXVZOPFNRDI" Name="PropertiesGrid" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lcom.trolltech.qt.gui.QWidget;Ljava.util.List&lt;Lorg.radixware.kernel.common.client.models.items.properties.Property;>;Lorg.radixware.kernel.explorer.views.EditorPageView;Lorg.radixware.kernel.common.client.IClientEnvironment;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parent" Id="mprRA57CEVVRRC3HKPWRLX3442PNU">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+          <Parameter Name="properties" Id="mprZXYRXEQVXZEB7G7MERCXAAO4DI">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="page" Id="mprGI3OBEKGIZDD7ABUEXMECUFH7I">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.views.EditorPageView"/>
+          </Parameter>
+          <Parameter Name="environment" Id="mprXMT2XTGFQJF7ZPZUIGIKV3INKA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthGMNUMFZDMRFAHO4LM5JYW7FBRA" Name="removeProperty" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="removeProperty(Lorg.radixware.kernel.common.client.models.items.properties.Property;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="property" Id="mprKCUEUUGYINEHJELQ6FBGP7LVGQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthGYYGVUHZCRHVFCIQ74F36EOBMA" Name="setHorizontalSpacing" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setHorizontalSpacing(I)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="space" Id="mprIYC2SAMDAVDKDJRP5XNWCP5NGU">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthSGUJCCZWFJCWZH34S42HCPNCHI" Name="setVerticalSpacing" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setVerticalSpacing(I)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="space" Id="mprQZ7U6EKTEBBURL7EPXAXZHXWRU">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcDPWIEUAJCZFBVBVPISSSHC7E7M" Name="EditorPageDef" Type="3" Environment="common-client">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.meta.editorpages.RadEditorPageDef"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcY4TEXRUBFFC2BMJLMV26WXLGLQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcQVTSYKAFN5EORNHX67EWO6M2FM"/>
+    </Bodies>
+    <MethodGroup Id="cmg4CQ5D2M6ZVE7VNWRSGKXLKY4WE" Name="Root"/>
+    <PropertyGroup Id="cpgKU3JIOYWYNCQPGGETJIDQCTC6U" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthANE75V23LJFSRCRHS5TWH56LGY" Name="EditorPageDef" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.types.Id;Ljava.lang.String;Lorg.radixware.kernel.common.types.Id;Lorg.radixware.kernel.common.types.Id;Lorg.radixware.kernel.common.types.Id;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="pageId" Id="mprGCC23VXVYNBOLHKMOYD37BNGFE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+          <Parameter Name="pageName" Id="mprUXGODJCXCVA43EPN6AJFDE6XMM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="titleOwnerId" Id="mprDGQS42ZYZVHRDMLUTVETKJXRKU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+          <Parameter Name="titleId" Id="mprXN66IFL4BBHYZFMXYDL4CZI6VE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+          <Parameter Name="iconId" Id="mprJ7ZWPRDJ7ZES3NULDP76CXIMBE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthLKVUZ5GT2NB45MCJZ2JC2PSOFY" Name="getIcon" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getIcon()Lorg.radixware.kernel.common.client.types.Icon;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.types.Icon"/>
+      </Method>
+      <Method Id="mthDDDSLLSOTBEQ7PYF3ZEJSINQBU" Name="newModelItem" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="newModelItem(Lorg.radixware.kernel.common.client.models.ModelWithPages;)Lorg.radixware.kernel.common.client.models.items.EditorPageModelItem;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="model" Id="mprMTK7CBTW4FC5ZHN3BPWAKV6BM4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.ModelWithPages"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.items.EditorPageModelItem"/>
+      </Method>
+      <Method Id="mthSE7XKACBQNGJHJ4I37SQVULC2M" Name="getSubPages" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getSubPages()Ljava.util.List&lt;Lorg.radixware.kernel.common.client.meta.editorpages.RadEditorPageDef;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.editorpages.RadEditorPageDef"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthWTGXXQY4MNF4BOD3UAQ5BTCXIQ" Name="hasSubPages" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="hasSubPages()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsContextlessCommandDefinition Id="clcPYOHQ5AECZBBHAOZWF74OQQ6SE" Name="Sync" CompilerWarnings="16777748" Nature="2" IsVisible="false" IsConfirmationRequired="false">
+    <AccessRules IsPublished="false"/>
+    <InType TypeId="451" Path="xsdYB4O27MMC5HEBIAT53H7MOXG34" extStr="SettingsDocument"/>
+    <OutType TypeId="451" Path="xsdYB4O27MMC5HEBIAT53H7MOXG34" extStr="SettingsDocument"/>
+    <Source>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="12"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> oldLastChangeTime = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcQ46YBRNDL7ORDI2YABIFNQAABA"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="adcQ46YBRNDL7ORDI2YABIFNQAABA mthH24A4FRWLVCAPKRJTN5FIRQWLY" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(input.Settings.LastChangeTime);
+
+</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="12"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> newLastChangeTime = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcQ46YBRNDL7ORDI2YABIFNQAABA"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="adcQ46YBRNDL7ORDI2YABIFNQAABA mthH24A4FRWLVCAPKRJTN5FIRQWLY" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcArte______________________ mthH5UTIPGXTPNRDISQABIFNQAABA" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>());
+
+</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="21"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> userName = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcArte______________________ mthJQUPUAH4RPNRDCISABIFNQAABA" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>() + "_" + </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcArte______________________ mthSBMW6GP4RPNRDCISABIFNQAABA" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>();
+java.util.Set&lt;</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aecMYFYZVDDZVEETIS5G37ML4DHTM"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>> props = new java.util.HashSet&lt;</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aecMYFYZVDDZVEETIS5G37ML4DHTM"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>>();
+for (org.radixware.schemas.settings.Prop xProp : input.Settings.PropList) {
+    </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aecMYFYZVDDZVEETIS5G37ML4DHTM"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> prop = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aecMYFYZVDDZVEETIS5G37ML4DHTM"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aecMYFYZVDDZVEETIS5G37ML4DHTM mth_loadByPK_________________" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(userName, xProp.Name, true);
+    if (prop == null) {
+        if (xProp.isSetValue()) {
+            prop = new </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aecMYFYZVDDZVEETIS5G37ML4DHTM"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>();
+            prop.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcEntity____________________ mthMUQ4NQFMSTNRDDXBABIFNQAAAE" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>();
+            prop.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aecMYFYZVDDZVEETIS5G37ML4DHTM colTA72MRNKZJHSLFQCIPZ67M4FBU" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> = userName;
+            prop.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aecMYFYZVDDZVEETIS5G37ML4DHTM colGIUGZTE2XZB7BHV2ZKWWIRHGMI" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> = xProp.Name;
+            prop.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aecMYFYZVDDZVEETIS5G37ML4DHTM colA3EZESD3YJG23D2NQOO4H2YDTU" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> = xProp.Value;
+            prop.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aecMYFYZVDDZVEETIS5G37ML4DHTM colKQVLOJ4ZNBDBJF7BK6YQMHMVDA" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> = newLastChangeTime;
+            prop.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcEntity____________________ mth7X446DFQSTNRDDXBABIFNQAAAE" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>();
+            props.add(prop);
+        }
+    } else {
+        if (xProp.isSetValue()) {
+            prop.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aecMYFYZVDDZVEETIS5G37ML4DHTM colA3EZESD3YJG23D2NQOO4H2YDTU" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> = xProp.Value;
+            prop.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aecMYFYZVDDZVEETIS5G37ML4DHTM colKQVLOJ4ZNBDBJF7BK6YQMHMVDA" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> = newLastChangeTime;
+            prop.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcEntity____________________ mth5A5TVHUCNVHFXIT7FDJ75MILHE" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>();
+            props.add(prop);
+        } else
+            prop.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcEntity____________________ mth4WCFC7ABDRBJTDPVIKETNLSXHM" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>();
+    }
+}
+
+org.radixware.schemas.settings.SettingsDocument xDoc = 
+    org.radixware.schemas.settings.SettingsDocument.Factory.newInstance();
+xDoc.addNewSettings().LastChangeTime = newLastChangeTime;
+
+</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="accUIMJ2UOD7NEW7PHIPYYVWNK7OI"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> cur = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="accUIMJ2UOD7NEW7PHIPYYVWNK7OI"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="accUIMJ2UOD7NEW7PHIPYYVWNK7OI mth_stmt_execute_____________" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(userName, oldLastChangeTime, newLastChangeTime);
+try {
+    while (cur.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>()) {
+        </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aecMYFYZVDDZVEETIS5G37ML4DHTM"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> prop = cur.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="accUIMJ2UOD7NEW7PHIPYYVWNK7OI prfWMP25IHN5VGHZKHTZNUDNNV5KQ" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>;
+        org.radixware.schemas.settings.Prop xProp = xDoc.Settings.addNewProp();
+        xProp.Name = prop.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aecMYFYZVDDZVEETIS5G37ML4DHTM colGIUGZTE2XZB7BHV2ZKWWIRHGMI" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>;
+        xProp.Value = prop.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aecMYFYZVDDZVEETIS5G37ML4DHTM colA3EZESD3YJG23D2NQOO4H2YDTU" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>;
+    }
+} finally {
+    cur.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcCursor____________________ mth_stmt_close_______________" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>();
+}
+
+return xDoc;</xsc:Java>
+      </xsc:Item>
+    </Source>
+  </AdsContextlessCommandDefinition>
+</AdsDefinition>

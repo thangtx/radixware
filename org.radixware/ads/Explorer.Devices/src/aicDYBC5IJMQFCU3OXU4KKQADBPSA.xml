@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicDYBC5IJMQFCU3OXU4KKQADBPSA" Name="ISmartCardReader" Type="5" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.devices.ISmartCardReader"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcECQLY77A3BGCZKT46FUTWFRIHY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcXYZBKA6JYJHMNM5I4PEPQ2CNC4"/>
+    </Bodies>
+    <MethodGroup Id="cmgLWFE4B6DEJESJIKH77JGTV7XDA" Name="Root"/>
+    <PropertyGroup Id="cpg3LZJCGNQAJFUNANKEUDNUSEGAE" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthM3FIDS4ZQNEB5BABAGAOZTD6SQ" Name="waitForCardPresent" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="waitForCardPresent(J)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="timeout" Id="mprW4XQZFYI2FDUXKJEWVVG2WW2SA">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.devices.CardException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthSDKQYFXKQNEDLBOYVLDIG6OZHU" Name="getAtr" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getAtr()[B"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="byte" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.devices.CardException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthSOWF6IPFJFELJER7ZDH3RSW25E" Name="isCardPresent" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isCardPresent()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.devices.CardException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthMJQ7WKUPBBBWPHOG75X7IFV2AY" Name="waitForCardAbsent" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="waitForCardAbsent(J)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="timeout" Id="mprQNM6WSZNJVA3JMX5IJGEW6G5PM">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.devices.CardException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthIQX6B2QAPRFVVN4A2ACREA36X4" Name="beginExclusive" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="beginExclusive()V"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.devices.CardException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth7ID4P5HIHRDPBIEQKVIWDT6V3M" Name="endExclusive" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="endExclusive()V"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.devices.CardException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthSTJOQKLUZ5EOBMGX6NXMJFQXWE" Name="disconnect" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="disconnect(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="reset" Id="mpr6PIAF3SHARH5NGJ47CVU73YPCQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.devices.CardException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth4CBLN7VHU5D77MJWEJ4QDH6RCU" Name="close" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="close()V"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.devices.CardException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthOEQOBJTN2VDU7IFHBB336DHSDE" Name="transmit" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="transmit([B)[B"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="command" Id="mprKDKATOTR45HAJOKVKXH6FRKLBM">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="byte" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.devices.CardException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth74K6GZO7Q5B5LAXKVGGS3FLGFA" Name="connect" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="connect(Ljava.lang.String;Ljava.lang.String;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="name" Id="mprZY3TSX44WJHRNNDFLNWRVHDO54">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="protocol" Id="mprV3ADY6RUMFEXZPJMWCU32KUK6A">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.devices.CardException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth6LPKWWV66JDATNG5II3CDQQMIA" Name="open" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="open(Ljava.lang.String;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="name" Id="mprMYH4R4DVZFF7VEPRQEQWASTEB4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.devices.CardException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthQGRXFZIUMJCX7DJODXKBYM6DUA" Name="getNames" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getNames()Ljava.util.List&lt;Ljava.lang.String;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="21"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.devices.CardException"/>
+        </ThrownExceptions>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

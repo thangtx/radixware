@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclZSPRDRISTJDSHAEQ7HWUORIYIQ" Name="ReportPubList.Contextless" Type="2">
+    <AccessRules/>
+    <Domains>
+      <Domain Path="dmnR6GOFNTVF5C3LKNFUORHUZ54DI dmnYUAZKI36YJCYPHDKMA6WOLMQPE dmnUY5L2NXYGRF2VIRZESPN7DOLLQ"/>
+    </Domains>
+    <Headers>
+      <Src Name="HeaderadcAGLUX7HPCFEJPM65XH5PKFKN3Y"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcY62YET3AGVBK7HTY5754XCXJKI"/>
+    </Bodies>
+    <MethodGroup Id="cmgAV3ZWUNWCVH3FF2UFNEQEXUMPE" Name="Root"/>
+    <PropertyGroup Id="cpgGRIFUSNTLFCIVF5M53D4AJB4FA" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthXF6J24NDWFH4DDXG4YMPQRFBWQ" Name="getContextObject" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="contextId" Id="mpr2DCKE4JZSJFWDMAEZR7OOKWCWY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="pdcEntity____________________"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return null; // contextless</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblQ5T72ARKKBHHNBHOH3LPATQA6M"/>
+    <Presentations ObjectTitleId="mlsLGBXLIW76BAP7IH23NYH6LS4G4">
+      <EditorPresentations>
+        <EditorPresentation Id="eprIIWRXZ6A5JFWTFMRXIM37QZGLQ" Name="Common" TitleId="mlsX7CGGBWQARFLHP7XGH26E3FNJM" BasePresentationId="eprSMKGLY4AKBDWRB4XEFTYEFZKUA" IconId="imgHJGHAR6FB5BKTJMV45OAZ4W3NI" InheritanceMask="7346" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprSMKGLY4AKBDWRB4XEFTYEFZKUA">
+          <ChildExplorerItems>
+            <Item>
+              <ChildRef Id="xpiT5VMZMVDNNCK3OTTBHF726ZNTI" Name="ReportPub" InheritanceMask="176" IsVisibleInTree="true" ClassId="acl2P77ROPWFRD2PAYS4F6HKRJDAA" CreationClassCatalogId="ecc3RVGTAHLYVFYNLXVNXJQYIGNPE" SelectorPresentationId="sprYYUTYV7EYRF4TEAHGYK5SWGV6E" Restrictions="65535" EnabledCommands="" ChildReferenceId="refJLB3T4LDYNGENHZH4FUXEMEU7E">
+                <Condition>
+                  <ConditionWhere/>
+                  <ConditionFrom/>
+                </Condition>
+              </ChildRef>
+            </Item>
+          </ChildExplorerItems>
+          <ObjectTitleFormat Id="etfBLFZAYSWSBC2LIX6MY4NMCDAFM"/>
+        </EditorPresentation>
+      </EditorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M"/>
+  </AdsClassDefinition>
+</AdsDefinition>

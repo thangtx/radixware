@@ -1,0 +1,558 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicKHRATBBJWBDMXKUCDE7IDPVFOM" Name="ICfgImportHelper" DescriptionId="mlsJ6CKIBPRE5FXPNZP7QIN4WEY34" Type="5" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderaicKHRATBBJWBDMXKUCDE7IDPVFOM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaicKHRATBBJWBDMXKUCDE7IDPVFOM"/>
+    </Bodies>
+    <MethodGroup Id="cmgMQWHZGUSI5B57KYFCHED3MSNA4" Name="Root"/>
+    <PropertyGroup Id="cpgHF5MHPOA3NB77PNNL6MBDRZ2Q4" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthGBDESRFMDVDBTKDCYKFCVV6QWE" Name="getActionIfObjExists" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="objectTitle" Id="mpr4RNRLVWL5JFTJF2TJJSTAOZICU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aicKHRATBBJWBDMXKUCDE7IDPVFOM aet7VLOHHAMS5F6DPWK7WVYL4E2YY"/>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthJ7M4FMHWZJDNFCKCSYDSXJSHYQ" Name="reportObjectCreated" DescriptionId="mlsPTORP4DG3FBFDCUAF7OYQXZLYA" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="objectTitle" Id="mprLVQYCUBCRVBOPIDMLE47WRLRQE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthCXFA6PYRJBDGLKBGMQHXM37NEI" Name="reportPropsNotSet" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="objectTitle" Id="mprXYLVPMTNEFBT7MFNQ67MM266IE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="props" Variable="true" Id="mprDI3TOCKGWZDCJCIFUHYL7YQALQ">
+            <Type TypeId="21" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (listNotImportedPropTitles != null &amp;&amp; warningMessage != null) {
+    String props = "";
+    for (String prop : listNotImportedPropTitles) {   
+        props += " • " + prop + "\n";
+    }
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcRSOIQEOHVNH4TEF7VSIALMFPJU prdPOZNNZ3SSJFRZDRX7PWY4VV5TA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = warningMessage + props; 
+} else 
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcRSOIQEOHVNH4TEF7VSIALMFPJU prdPOZNNZ3SSJFRZDRX7PWY4VV5TA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthUTLZYDZIKJDPZOQBQ6BJ773X4Y" Name="reportObjectCancelled" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="objectTitle" Id="mprJDYY7NHS3FBKVN2T5WLJ6CL4HA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthAOYAWV4KE5FVVGDLXQB42QFURM" Name="reportObjectUpdated" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="objectTitle" Id="mprU3JDTLQZQRAUDNXUQNQLFXHRBI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthGFBWZF6UKBAN5A7ZZIMPGOQUDU" Name="reportWarnings" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="objectTitle" Id="mprXYLVPMTNEFBT7MFNQ67MM266IE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="warnings" Variable="true" Id="mprDI3TOCKGWZDCJCIFUHYL7YQALQ">
+            <Type TypeId="21" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (listNotImportedPropTitles != null &amp;&amp; warningMessage != null) {
+    String props = "";
+    for (String prop : listNotImportedPropTitles) {   
+        props += " • " + prop + "\n";
+    }
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcRSOIQEOHVNH4TEF7VSIALMFPJU prdPOZNNZ3SSJFRZDRX7PWY4VV5TA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = warningMessage + props; 
+} else 
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcRSOIQEOHVNH4TEF7VSIALMFPJU prdPOZNNZ3SSJFRZDRX7PWY4VV5TA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthVHPOUV7Y4ZAQDLNT3S7A6GZWQU" Name="createOrUpdateAndReport" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="obj" Id="mprPCTPM2TAUJHYFLXL5VYGMO3OYQ">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthXV5F5YZDGFCLJDD2VVOMGMNGUI" Name="reportObjectDeleted" DescriptionId="mlsZYM65CMLZZFETM2ZE7I7FF5UXY" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="objectTitle" Id="mprLVQYCUBCRVBOPIDMLE47WRLRQE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mth4BCVYDCWENDZVJXEC6VKPDJ4OY" Name="reportNewExtIdGenerated" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthFATUBWO3Y5GGFJXF4TWGIGFTIE" Name="reportObjectCancelled" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="object" Id="mprJDYY7NHS3FBKVN2T5WLJ6CL4HA">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthZ3NETH2TUNAODBTD7YKIAWZNYI" Name="reportObjectCreated" DescriptionId="mls5DUGDKHLYNGI3IRUZT5LIMRXHM" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="object" Id="mprLVQYCUBCRVBOPIDMLE47WRLRQE">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthPS4GTDD6XZBRXDUFNLC5ZFTZCQ" Name="reportObjectDeleted" DescriptionId="mlsGSBGT5VPURBXBGLMSDJ56MKXXQ" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="object" Id="mprLVQYCUBCRVBOPIDMLE47WRLRQE">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthUSPSKJ2SHRBA7AJSHBW6RTU6X4" Name="reportObjectUpdated" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="object" Id="mprU3JDTLQZQRAUDNXUQNQLFXHRBI">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthYREB6CKPZZAQHEBTVDPGCOMFUU" Name="reportPropsNotSet" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="object" Id="mprXYLVPMTNEFBT7MFNQ67MM266IE">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="props" Variable="true" Id="mprDI3TOCKGWZDCJCIFUHYL7YQALQ">
+            <Type TypeId="21" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (listNotImportedPropTitles != null &amp;&amp; warningMessage != null) {
+    String props = "";
+    for (String prop : listNotImportedPropTitles) {   
+        props += " • " + prop + "\n";
+    }
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcRSOIQEOHVNH4TEF7VSIALMFPJU prdPOZNNZ3SSJFRZDRX7PWY4VV5TA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = warningMessage + props; 
+} else 
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcRSOIQEOHVNH4TEF7VSIALMFPJU prdPOZNNZ3SSJFRZDRX7PWY4VV5TA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth6COBQOSWOVGU7LUO3PIKETNRXE" Name="reportWarnings" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="object" Id="mprXYLVPMTNEFBT7MFNQ67MM266IE">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="warnings" Variable="true" Id="mprDI3TOCKGWZDCJCIFUHYL7YQALQ">
+            <Type TypeId="21" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (listNotImportedPropTitles != null &amp;&amp; warningMessage != null) {
+    String props = "";
+    for (String prop : listNotImportedPropTitles) {   
+        props += " • " + prop + "\n";
+    }
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcRSOIQEOHVNH4TEF7VSIALMFPJU prdPOZNNZ3SSJFRZDRX7PWY4VV5TA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = warningMessage + props; 
+} else 
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcRSOIQEOHVNH4TEF7VSIALMFPJU prdPOZNNZ3SSJFRZDRX7PWY4VV5TA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthQZTXWZJKAZHILBSEQIWTHOSMUA" Name="getActionIfObjExists" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="object" Id="mpr4RNRLVWL5JFTJF2TJJSTAOZICU">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aicKHRATBBJWBDMXKUCDE7IDPVFOM aet7VLOHHAMS5F6DPWK7WVYL4E2YY"/>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthE76WDLOGARH35AMA6ESRFHVKTA" Name="reportIfRefNotFound" DescriptionId="mlsOBQ7FY46GJAFJLYDEJDVXNLC6I" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="object" Id="mprG2AQXVFVYVDRBDONQC24PQCH4E">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="propId" Id="mprI7MLKYWSONCBFODNBXBRJF6VDY">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="extRef" Id="mprYGZY6NLZBBDTVAR5YCE7G7I7BI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthZBXGDJSPTVBD5EK4FTRY24KYSQ" Name="clearUnsupportedImportedRef" DescriptionId="mlsUSUWIRT43VFC7LYZTBWZDZVB2E" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="object" Id="mprKEVFMUFF5NATBKEFWDCWJL2KFM">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="propId" Id="mprI7MLKYWSONCBFODNBXBRJF6VDY">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthKGUNG5GP5VHVDIIY5KIZXTKCIA" Name="reportPropsNotSet" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="object" Id="mprXYLVPMTNEFBT7MFNQ67MM266IE">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="propId" Id="mprDI3TOCKGWZDCJCIFUHYL7YQALQ">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (listNotImportedPropTitles != null &amp;&amp; warningMessage != null) {
+    String props = "";
+    for (String prop : listNotImportedPropTitles) {   
+        props += " • " + prop + "\n";
+    }
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcRSOIQEOHVNH4TEF7VSIALMFPJU prdPOZNNZ3SSJFRZDRX7PWY4VV5TA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = warningMessage + props; 
+} else 
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcRSOIQEOHVNH4TEF7VSIALMFPJU prdPOZNNZ3SSJFRZDRX7PWY4VV5TA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthTPLYMFLRXNCNFGMLV5T4ZLPCN4" Name="exceptionIfRefNotFound" DescriptionId="mlsAMSD3N3LHJDKZGG7XEFT5ZJXGQ" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="object" Id="mprG2AQXVFVYVDRBDONQC24PQCH4E">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="propId" Id="mprI7MLKYWSONCBFODNBXBRJF6VDY">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="extRef" Id="mprPSQI3EOXU5ADFBLTLR3KKFC2FU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthNEJWG2R45RBEZPQPIVEB5VZEOU" Name="checkIfRefNotFound" DescriptionId="mls4ZHYG2I24NGTFPK55XKHOCCXOQ" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="object" Id="mprG2AQXVFVYVDRBDONQC24PQCH4E">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="propId" Id="mprI7MLKYWSONCBFODNBXBRJF6VDY">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="extRef" Id="mprPSQI3EOXU5ADFBLTLR3KKFC2FU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthMR4FWKYDLVHEPNGGW4BXBKCTKY" Name="exceptionIfRefNotFound" DescriptionId="mlsKQGPSK674ZFLROMMKXAX3OS2OY" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="object" Id="mprUYDT7D2D7BEPLOL7DH5B5JOJ6I">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="objectTitle" Id="mprG2AQXVFVYVDRBDONQC24PQCH4E">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="propId" Id="mprI7MLKYWSONCBFODNBXBRJF6VDY">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="extRef" Id="mprPSQI3EOXU5ADFBLTLR3KKFC2FU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mth6ZR34BIPIBBSFAAWKDPZYLWSLI" Name="checkIfRefNotFound" DescriptionId="mlsOMLBUUJL55CIJFY7A6CLZZOMHQ" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="object" Id="mprJI3UDO2MG5BWHPYICS3QTITIVE">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="objectTitle" Id="mprG2AQXVFVYVDRBDONQC24PQCH4E">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="propId" Id="mprI7MLKYWSONCBFODNBXBRJF6VDY">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="extRef" Id="mprPSQI3EOXU5ADFBLTLR3KKFC2FU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthVUMOLWDHNFES5NMSQAHCOJPSAU" Name="reportIfRefNotFound" DescriptionId="mlsABQQ6H4L7BCUXAYQ5ZIWJUBBSE" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="object" Id="mprGJ5OKKTX6BFA7DUYHUG2AFBQSA">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="objectTitle" Id="mprG2AQXVFVYVDRBDONQC24PQCH4E">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="propId" Id="mprI7MLKYWSONCBFODNBXBRJF6VDY">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="extRef" Id="mprP6MWW2ECRJG3JOD4ZATMR3JLUA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthVM3TITIE75HB3DEOZL642DOWGY" Name="reportPropsNotSet" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="object" Id="mprBZXZ7CTOOFHEBCKZKZQYC5C34Y">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="objectTitle" Id="mprXYLVPMTNEFBT7MFNQ67MM266IE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="propId" Id="mprDI3TOCKGWZDCJCIFUHYL7YQALQ">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (listNotImportedPropTitles != null &amp;&amp; warningMessage != null) {
+    String props = "";
+    for (String prop : listNotImportedPropTitles) {   
+        props += " • " + prop + "\n";
+    }
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcRSOIQEOHVNH4TEF7VSIALMFPJU prdPOZNNZ3SSJFRZDRX7PWY4VV5TA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = warningMessage + props; 
+} else 
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcRSOIQEOHVNH4TEF7VSIALMFPJU prdPOZNNZ3SSJFRZDRX7PWY4VV5TA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthMJXLQKFP2NCK7K2NFJAAJ6J7MA" Name="calcObjTitle" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="obj" Id="mprGZXHAUA2Y5HGHESZNJVGOMGKJA">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mth2NVB6USYYRFX7BE6B2ATV7TISA" Name="wasCancelled" DescriptionId="mlsGDXG5QJCWRGLPLWCXL34P7B4AU" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+    </Methods>
+    <InnerClasses>
+      <Clazz Id="aet7VLOHHAMS5F6DPWK7WVYL4E2YY" Name="Action" Type="24" Environment="server">
+        <AccessRules>
+          <Transparence Extendable="false"/>
+        </AccessRules>
+        <Headers>
+          <Src Name="Headeraet7VLOHHAMS5F6DPWK7WVYL4E2YY"/>
+        </Headers>
+        <Bodies>
+          <Src Name="Bodyaet7VLOHHAMS5F6DPWK7WVYL4E2YY"/>
+        </Bodies>
+        <MethodGroup Id="cmgPMCIK34SUNG4NDGNGF7MUZWD64" Name="Root"/>
+        <PropertyGroup Id="cpgSCGSABUTIFBDNK5H7V7SXLVOTU" Name="Root"/>
+        <Properties/>
+        <Methods/>
+        <EnumClassFields>
+          <Field Id="aefUIMZ2UL3CJGVRNRIRBJ6OXKJ5E" Name="UPDATE">
+            <Values/>
+          </Field>
+          <Field Id="aefKHSLRWPHZZG4RECAXGDVQITCSY" Name="NEW">
+            <Values/>
+          </Field>
+          <Field Id="aefXBJPINJDY5EIFN4YRQXWPURESA" Name="CANCELL">
+            <Values/>
+          </Field>
+        </EnumClassFields>
+        <EnumClassFieldStruct/>
+      </Clazz>
+    </InnerClasses>
+  </AdsClassDefinition>
+</AdsDefinition>

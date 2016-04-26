@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcWQXERQYKIJHFRLULJ7V3XR32C4" Name="Hex" Type="3" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.utils.Hex"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcVX6M45YAV5GWNLDXOIL5ASHNUY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc3BZ7C3JGWVBJDJS7XA27HURARA"/>
+    </Bodies>
+    <MethodGroup Id="cmgWFD7HOV74NHPTKDLZFBS4LLUTM" Name="Root"/>
+    <PropertyGroup Id="cpg67Z6YFMOHJEA7LXS6DO5XRVKHA" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthJ5RFZCEPFJHVVHT4CVH27MACCQ" Name="decode" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true">
+          <Transparence Extendable="false" PublishedName="decode(Ljava.lang.String;)[B"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="str" Id="mpr5IQMBBDU4BAHLBOJ5AEQ2O6RHU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="byte" Dimension="1"/>
+      </Method>
+      <Method Id="mthTC6U2C3YSRAALDI6UX6EC7S5NE" Name="encode" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true">
+          <Transparence Extendable="false" PublishedName="encode([B)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="bytes" Id="mprUL2BWHN5YZEINJS7VCCZJJTBXA">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mth46LERJ3TZVHJ7PQHDTPPV6MBSY" Name="isHexDigit" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="isHexDigit(B)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="b" Id="mpr6IC4AC354NAI3HETPPGU5AV67U">
+            <Type TypeId="401" extStr="byte"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

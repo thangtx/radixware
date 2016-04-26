@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcUQ4BMLDMSRAFJANAXHOMCE65FU" Name="SelectEntityDialog" Type="3" Environment="common-client" IsDual="true">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcUQ4BMLDMSRAFJANAXHOMCE65FU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcUQ4BMLDMSRAFJANAXHOMCE65FU"/>
+    </Bodies>
+    <MethodGroup Id="cmg2LMM3AUAAFHE5NA4C2GWHUI52Y" Name="Root"/>
+    <PropertyGroup Id="cpgW6XNVR4EIVDDVJBQRCKX4B7RV4" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthJGTYOJFAT5DZLPXNLDKTYVOBXU" Name="newInstance" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="group" Id="mprM7BUHYKMZJCA5JT36ETQWQ6BT4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+          </Parameter>
+          <Parameter Name="canBeNull" Id="mprZRYYD4AJ2VF5JMSCVYB34DCN54">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.views.ISelectEntityDialog"/>
+        <Sources>
+          <Src Environment="explorer">
+            <xsc:Item>
+              <xsc:Java>return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcXE7S6UVTWFHKZIYM7Z6PKOJENA mthCW3WKPICDBG5PJGZHSQ5XJEU2M" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(group,canBeNull);</xsc:Java>
+            </xsc:Item>
+          </Src>
+          <Src Environment="web">
+            <xsc:Item>
+              <xsc:Java>return new org.radixware.wps.views.dialog.SelectEntityDialog(((org.radixware.wps.WpsEnvironment)group.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()).getDialogDisplayer(),group,canBeNull);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

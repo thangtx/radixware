@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Model xmlns="http://schemas.radixware.org/ddsdef.xsd" xmlns:com="http://schemas.radixware.org/commondef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" Id="prjZX6M73ZCMVC63KW6EABEG475EU" DbNamePrefix="RDX">
+  <Tables>
+    <Table Id="tbl7KEBDLAYLVHQDMHFSJTZSLRZJA" Name="ProfilerLog" DbName="RDX_PROFILERLOG">
+      <Columns>
+        <Column Id="colQK4QT6WMAJFWTHFTKYWP4SSUGU" Name="Id" ValType="2" Length="12" DbType="NUMBER(12,0)" NotNull="true" DbName="ID" SequenceId="sqnLZOEB5NOKNGEVAQVZQF5GNVZIA"/>
+        <Column Id="colD6UBRQ763RA6XIT2RNYMNIEWGQ" Name="instanceId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="INSTANCEID">
+          <com:Description>Идентификатор инстанции системы</com:Description>
+        </Column>
+        <Column Id="colK2QWAL7JHNGY5OL2IATMC6F7DU" Name="sectionId" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="true" DbName="SECTIONID">
+          <com:Description>Идентификатор Timing Section</com:Description>
+        </Column>
+        <Column Id="colWP5GZKZHYNFETENC2QN2NQXLPM" Name="periodEndTime" ValType="12" Length="0" Precision="6" DbType="TIMESTAMP(6)" NotNull="true" DbName="PERIODENDTIME">
+          <com:Description>Время окончания периода профилирования</com:Description>
+        </Column>
+        <Column Id="colYZ7INGYPRVCYFJV5USAMHXITWI" Name="context" ValType="21" Length="2000" DbType="VARCHAR2(2000 char)" NotNull="false" DbName="CONTEXT">
+          <com:Description>Идентификаторы Timing Section, в которые была вложена данная секция. Через: “;”, от охватывающих секций к вложенным.
+Например,  eas;cmd.app;entity.read;db.qry
+</com:Description>
+        </Column>
+        <Column Id="colHLLRSGR27FEDPBWIAGRKMOQB2Q" Name="duration" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="true" DbName="DURATION">
+          <com:Description>Сумарное время выполнения указанной секции в указанном контексте в течение указанного периода, наносекунды</com:Description>
+        </Column>
+        <Column Id="colBFSWD6V7WJFLBAC44WJERV7FTE" Name="minDuration" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="true" DbName="MINDURATION">
+          <com:Description>Сумарное время выполнения указанной секции в указанном контексте в течение указанного периода, наносекунды</com:Description>
+          <DefaultVal Type="ValAsStr">
+            <com:Value>0</com:Value>
+          </DefaultVal>
+        </Column>
+        <Column Id="colKZRY2TT4CBD27B7A2BA3KWFLCQ" Name="maxDuration" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="true" DbName="MAXDURATION">
+          <com:Description>Сумарное время выполнения указанной секции в указанном контексте в течение указанного периода, наносекунды</com:Description>
+          <DefaultVal Type="ValAsStr">
+            <com:Value>0</com:Value>
+          </DefaultVal>
+        </Column>
+        <Column Id="colFGXNUCRJ75A5BGSNISBYIC255Y" Name="count" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="true" DbName="COUNT">
+          <com:Description>Количество входов в указанную секцию в указанном контексте в течение указанного периода</com:Description>
+        </Column>
+      </Columns>
+      <PrimaryKey Id="idxY352OIMATBHDBKJDABD66G3DDA" Name="PrimaryKey" DbName="PK_RDX_PROFILERLOG" Unique="true">
+        <Columns>
+          <Column ColumnId="colQK4QT6WMAJFWTHFTKYWP4SSUGU" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqSWIA65TAGBB7BH6TBJ7F73DIGI" DbName="PK_RDX_PROFILERLOG" Rely="true"/>
+      </PrimaryKey>
+      <Indices>
+        <Index Id="idxDJPPIBEQGNDWVAY2DQO5EOLGDA" Name="SectionInstance" DbName="IDX_RDX_PROFILERLOG_SECTIONINS">
+          <Columns>
+            <Column ColumnId="colK2QWAL7JHNGY5OL2IATMC6F7DU" Order="Asc"/>
+            <Column ColumnId="colD6UBRQ763RA6XIT2RNYMNIEWGQ" Order="Asc"/>
+          </Columns>
+        </Index>
+        <Index Id="idxTEXZIERTN5FVFDOQLSKVSVCFQ4" Name="SessionContextInstance" DbName="IDX_RDX_PROFILERLOG_SESSIONCON">
+          <Columns>
+            <Column ColumnId="colK2QWAL7JHNGY5OL2IATMC6F7DU" Order="Asc"/>
+            <Column ColumnId="colYZ7INGYPRVCYFJV5USAMHXITWI" Order="Asc"/>
+            <Column ColumnId="colD6UBRQ763RA6XIT2RNYMNIEWGQ" Order="Asc"/>
+          </Columns>
+        </Index>
+      </Indices>
+      <Placement PosX="200" PosY="178"/>
+    </Table>
+  </Tables>
+  <Views>
+    <View Id="tblZOBMZ3SMVRDXFBYDYF6DKD6OYQ" Name="PeriodsView" DbName="RDX_PERIODSVIEW" Distinct="false" WithOption="None">
+      <Columns>
+        <Column Id="colMFQFDPL2LVBHPBJSCGSHBZJ5CU" Name="instanceId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="INSTANCEID">
+          <com:Description>Идентификатор инстанции системы</com:Description>
+        </Column>
+        <Column Id="col4MPPNUSDM5H5HDSSWUTEPLISPU" Name="periodEndTime" ValType="12" Length="0" Precision="6" DbType="TIMESTAMP(6)" NotNull="true" DbName="PERIODENDTIME">
+          <com:Description>Время окончания периода профилирования</com:Description>
+        </Column>
+      </Columns>
+      <PrimaryKey Id="idxYCIUND44RVFIRCUGGCAXTRTV74" Name="PrimaryKey" DbName="PK_RDX_PERIODSVIEW" GenerateInDb="false" Unique="true">
+        <Columns>
+          <Column ColumnId="colMFQFDPL2LVBHPBJSCGSHBZJ5CU" Order="Asc"/>
+          <Column ColumnId="col4MPPNUSDM5H5HDSSWUTEPLISPU" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqRJEZOHN34RAMDGJKQOFZIL6RXE" DbName="PK_RDX_PERIODSVIEW" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="516" PosY="227"/>
+      <Query>
+        <xsc:Item>
+          <xsc:Sql>Select Distinct </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl7KEBDLAYLVHQDMHFSJTZSLRZJA" PropId="colWP5GZKZHYNFETENC2QN2NQXLPM" Owner="TABLE">
+            <xsc:Sql>RDX_PROFILERLOG.PERIODENDTIME</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblZOBMZ3SMVRDXFBYDYF6DKD6OYQ" PropId="col4MPPNUSDM5H5HDSSWUTEPLISPU" Owner="THIS">
+            <xsc:Sql>PERIODENDTIME</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl7KEBDLAYLVHQDMHFSJTZSLRZJA" PropId="colD6UBRQ763RA6XIT2RNYMNIEWGQ" Owner="TABLE">
+            <xsc:Sql>RDX_PROFILERLOG.INSTANCEID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblZOBMZ3SMVRDXFBYDYF6DKD6OYQ" PropId="colMFQFDPL2LVBHPBJSCGSHBZJ5CU" Owner="THIS">
+            <xsc:Sql>INSTANCEID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> From </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tbl7KEBDLAYLVHQDMHFSJTZSLRZJA">
+            <xsc:Sql>RDX_PROFILERLOG</xsc:Sql>
+          </xsc:TableSqlName>
+        </xsc:Item>
+      </Query>
+      <UsedTables>
+        <Table>tbl7KEBDLAYLVHQDMHFSJTZSLRZJA</Table>
+      </UsedTables>
+    </View>
+  </Views>
+  <ExtTables>
+    <ExtTable Id="tbeGLRF3DVF65DZ5JCFZ3CNJD52ZU" TableId="tbl52CHFNO3EGWDBRCRAAIT4AGD7E">
+      <Placement PosX="416" PosY="101"/>
+    </ExtTable>
+  </ExtTables>
+  <References>
+    <Reference Id="refVOHJY2IABZHLRHKGUVLBFMJESY" DbName="FK_RDX_PROFILERLOG_INSTANCE" Type="LINK" ChildTableId="tbl7KEBDLAYLVHQDMHFSJTZSLRZJA" ParentTableId="tbl52CHFNO3EGWDBRCRAAIT4AGD7E" ExtParentTableId="tbeGLRF3DVF65DZ5JCFZ3CNJD52ZU" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unq52CHFNO3EGWDBRCRAAIT4AGD7E">
+      <Columns>
+        <Item ChildColumnId="colD6UBRQ763RA6XIT2RNYMNIEWGQ" ParentColumnId="col3VINP666G5VDBFSUAAUMFADAIA"/>
+      </Columns>
+    </Reference>
+  </References>
+  <Sequences>
+    <Sequence Id="sqnLZOEB5NOKNGEVAQVZQF5GNVZIA" Name="ProfilerLogId" DbName="SQN_RDX_PROFILERLOGID" Cycle="false" Order="true" Cache="20">
+      <Placement PosX="196" PosY="75"/>
+    </Sequence>
+  </Sequences>
+</Model>

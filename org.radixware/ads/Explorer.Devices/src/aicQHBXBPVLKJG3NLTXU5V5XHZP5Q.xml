@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicQHBXBPVLKJG3NLTXU5V5XHZP5Q" Name="ISerialPortResource" Type="5" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcQWO5ZJSLTVE6TLC3I22QKAPZEY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcND7UKWNUPBB5FJN77QNMWNJZLM"/>
+    </Bodies>
+    <MethodGroup Id="cmg4W52RMXA6FF6DMBHSB7E6PV6PA" Name="Root"/>
+    <PropertyGroup Id="cpgP4D7WVLKBJFWHD7AQUJ2NL4JOM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthG64GLVFYENEWZHUCLISLGJGGHU" Name="open" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="params" Id="mprTHM63NDJXNHDVJ2RZGEI5FISIQ">
+            <Type TypeId="411" Path="apcN5HNPGLMSHPBDC7IABIFNQAABA"/>
+          </Parameter>
+          <Parameter Name="appName" Id="mprRJIJMA4SQJCURMEUOWBFFIOS3Q">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="openTimeout" Id="mprTV3GWVD3TZCXLGIGEADILPTZOM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="rcvTimeout" Id="mprM3TBS6CIPFD77NTGVOGBFEI7TY">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="pxcUEAXSPDOSHPBDC7IABIFNQAABA"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthE2QUBETGWRCW7H3DXJHSQMM3UE" Name="close" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="pxcUEAXSPDOSHPBDC7IABIFNQAABA"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthC43M43AJUREUNAPMJMRK7IOYE4" Name="read" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="count" Id="mpr3U4LO4MNARBZRAC5A6Y6DPQWMA">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="rcvTimeout" Id="mprXFDKUWBWLJCUZAPQR44QCIQJHA">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="byte" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="pxcUEAXSPDOSHPBDC7IABIFNQAABA"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthYSAYTCDLZREKZCER54FZM3AGII" Name="read" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="count" Id="mpr4DF2CBHXV5HXTFA7HKY3GTIFSY">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="byte" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="pxcUEAXSPDOSHPBDC7IABIFNQAABA"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthOFJED23ZOJHV3HESHSP3UU6RJY" Name="write" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="data" Id="mprIAQCSO7XUJAJTD6IXXQM24TLFI">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="count" Id="mprURKCW4VHJZBHVLYVSVYRHRPAFQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="pxcUEAXSPDOSHPBDC7IABIFNQAABA"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthUSFZI3LMSJGYBP2XLULGTXHGCA" Name="wait4Read" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="bytesInStream" Id="mprSPLHAS6NTFBU7BL5DFHSMMYCZI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="count" Id="mpr7ZMSEP6NARBH7BNOWAPQCJOZPA">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="pxcUEAXSPDOSHPBDC7IABIFNQAABA"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

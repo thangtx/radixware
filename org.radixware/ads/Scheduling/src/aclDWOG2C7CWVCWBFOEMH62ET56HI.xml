@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclDWOG2C7CWVCWBFOEMH62ET56HI" Name="CalendarItem.Absolute.Calendar" Type="2">
+    <AccessRules Access="4" IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderadcR6HKTNNNR5CPNGK24U54YXXKHY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc6CH6YAAVIJH7POG2VLFUSRRTVE"/>
+    </Bodies>
+    <MethodGroup Id="cmgO6Z7OD7ZMNHS5CAVFJF4D35ZVM" Name="Root">
+      <Group Id="cmgKQTA3ONKNVCHJBEJDCPHM4WEEQ" Name="Ovr" Members="mthVW4XVUSPYFHDVM34UMIJ6K4SAY mth3RZGBJY3Y5BRVG3OSU2XUDFG6E mthNRY5VTMUCVHDRMNW7MJIA7UQX4 mthOYESDQBEI7OBDCIPAALOMT5GDM"/>
+    </MethodGroup>
+    <PropertyGroup Id="cpgU7QHKOADGZEIRBFUTVXFWR42BE" Name="Root"/>
+    <Properties>
+      <Property Id="colKAEHNYXSI3OBDCIPAALOMT5GDM" Name="incCalendar" Nature="0" IsConst="false" IsOverride="true" ParentRefId="ref6SVAPKZ7I3OBDCIOAALOMT5GDM">
+        <AccessRules/>
+        <Type TypeId="31" Path="aecHC6VVBZ4I3OBDCIOAALOMT5GDM"/>
+        <Presentation InheritanceMask="5">
+          <Editing NotNull="true" IsDuplicatesEnabled="true" ObjectEditorPresentationIdList="eprXMZEW6K3I3OBDCIOAALOMT5GDM"/>
+          <ParentSelect ParentSelectorPresentationId="spr7ZWN26EIUBBJVBUF7GV2AGP7HM" ParentEditorRestrictions="262143" ParentSelectorRestrictions="262143">
+            <ParentSelectCondition>
+              <ConditionWhere>
+                <xsc:Item>
+                  <xsc:PropSqlName TableId="tblHC6VVBZ4I3OBDCIOAALOMT5GDM" PropId="col2BAXRDR4I3OBDCIOAALOMT5GDM" Owner="THIS"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Sql> &lt;> </xsc:Sql>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:PropSqlName TableId="tblCRD53OZ5I3OBDCIOAALOMT5GDM" PropId="colMF3T2LPMKXOBDCI6AALOMT5GDM" Owner="CHILD"/>
+                </xsc:Item>
+              </ConditionWhere>
+              <ConditionFrom/>
+            </ParentSelectCondition>
+          </ParentSelect>
+        </Presentation>
+      </Property>
+      <Property Id="prdBSMU5UN3K5FM5PNXKYNP3B7ORE" Name="absIncCalendar" Nature="2" IsConst="true" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="411" Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI"/>
+        <Presentation InheritanceMask="0" IsPresentable="false">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+        <GetterSources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colKAEHNYXSI3OBDCIPAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)
+	return (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colKAEHNYXSI3OBDCIPAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+return null;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </GetterSources>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth3RZGBJY3Y5BRVG3OSU2XUDFG6E" Name="isExcluded" Nature="0" IsOverride="true">
+        <AccessRules Access="4" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="date" Id="mpr6GTW3F4ZYBDRJB3RY2H7UIG5YE">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="dayOfWeek" Id="mprR43R3OLSGFHYFGCP4DL6P4BN7E">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="daysInMonth" Id="mprHZWZ4IXF75H6HOHYRK4QAV2X7M">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="dayOfMonth" Id="mprBYSUBPQ66ZDQBHYCLGEKR2VPBU">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="daysInQuarter" Id="mprVOL2NZOUKBCUPDCKQAC6PB22S4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="dayOfQuarter" Id="mprBZ34DBXXKFGSDPBKJWJD437KKE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colFDW6KVZ6I3OBDCIOAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsVA7VVTUNEBFXLNKSXHQ4A75NVY aciLTLEIG2BFVF3XEVQF3WHALIOSI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclDWOG2C7CWVCWBFOEMH62ET56HI prdBSMU5UN3K5FM5PNXKYNP3B7ORE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclDWOG2C7CWVCWBFOEMH62ET56HI prdBSMU5UN3K5FM5PNXKYNP3B7ORE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI mthWSERKGJBZVCNXCMMIPTHG3MMEU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(date)
+        || </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colFDW6KVZ6I3OBDCIOAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsVA7VVTUNEBFXLNKSXHQ4A75NVY aci4OZPPEOE3ZDENMBBT6543IFBSA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclDWOG2C7CWVCWBFOEMH62ET56HI prdBSMU5UN3K5FM5PNXKYNP3B7ORE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI mthQWAIDCVECBGARNCC5HIEVMFHTI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(date);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthNRY5VTMUCVHDRMNW7MJIA7UQX4" Name="isIncluded" Nature="0" IsOverride="true">
+        <AccessRules Access="4" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="date" Id="mprKLGRQUTI2FE6JEWJL4XQMEUWTE">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="dayOfWeek" Id="mprXXHRFGO53JAHLMJPMF4OOFFQZM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="daysInMonth" Id="mprKBRJKJKKLJCDBOK35MFAQN2GQ4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="dayOfMonth" Id="mprHM7J4BZHQVHDZKYHKBCZ62ZYVA">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="daysInQuarter" Id="mprXEYFKMUIYJCW5O3J2Z6JL6HWZU">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="dayOfQuarter" Id="mpr27QUYSWEVNEKHODLVRF3PC2MQE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colFDW6KVZ6I3OBDCIOAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsVA7VVTUNEBFXLNKSXHQ4A75NVY aci4OZPPEOE3ZDENMBBT6543IFBSA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclDWOG2C7CWVCWBFOEMH62ET56HI prdBSMU5UN3K5FM5PNXKYNP3B7ORE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclDWOG2C7CWVCWBFOEMH62ET56HI prdBSMU5UN3K5FM5PNXKYNP3B7ORE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI mthWSERKGJBZVCNXCMMIPTHG3MMEU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(date)
+	|| </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colFDW6KVZ6I3OBDCIOAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsVA7VVTUNEBFXLNKSXHQ4A75NVY aciLTLEIG2BFVF3XEVQF3WHALIOSI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclDWOG2C7CWVCWBFOEMH62ET56HI prdBSMU5UN3K5FM5PNXKYNP3B7ORE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI mthQWAIDCVECBGARNCC5HIEVMFHTI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(date);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthOYESDQBEI7OBDCIPAALOMT5GDM" Name="check" Nature="0" IsOverride="true">
+        <AccessRules Access="4" IsPublished="false"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclDWOG2C7CWVCWBFOEMH62ET56HI mthOYESDQBEI7OBDCIPAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclIILSXGMEEBBJLEGPBGLUMBV66A colKAEHNYXSI3OBDCIPAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null &amp;&amp; !(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclIILSXGMEEBBJLEGPBGLUMBV66A colKAEHNYXSI3OBDCIPAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>))
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcPHBYRYF6B5ENHEMQSPK5QSW3HE mthBUNWDD53GNBOVP53HW7ZJJAISY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mth3VQXRGQW6PNRDA2JAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colKAEHNYXSI3OBDCIPAALOMT5GDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthVW4XVUSPYFHDVM34UMIJ6K4SAY" Name="getValueTitle" Nature="0" IsOverride="true">
+        <AccessRules Access="4" IsPublished="false"/>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclDWOG2C7CWVCWBFOEMH62ET56HI prdBSMU5UN3K5FM5PNXKYNP3B7ORE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null ? </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclDWOG2C7CWVCWBFOEMH62ET56HI prdBSMU5UN3K5FM5PNXKYNP3B7ORE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthQCGEEZOUAHOBDA26AAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() : null;
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblCRD53OZ5I3OBDCIOAALOMT5GDM"/>
+    <Presentations ObjectTitleId="mlsQQKQ5IREZFFOZL6RZFCGFLYJUA">
+      <ClassCatalogs>
+        <ClassCatalog Id="eccTNVRW53A3FBSDHD6UFIKCAJPNA" Name="Absolute">
+          <AccessRules Access="2" IsPublished="false"/>
+          <ClassRef Order="300.0"/>
+        </ClassCatalog>
+      </ClassCatalogs>
+      <EditorPresentations>
+        <EditorPresentation Id="eprEDRATJSNJVCVFMTFEW26ZVG6VU" Name="Calendar" BasePresentationId="epr62PPCZHVI3OBDCIPAALOMT5GDM" InheritanceMask="11442" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="epr62PPCZHVI3OBDCIPAALOMT5GDM">
+          <AccessRules Access="2" IsPublished="false"/>
+          <ChildExplorerItems/>
+          <EditorPages>
+            <Page Id="epgSZPVE4HVI3OBDCIPAALOMT5GDM" Name="Main" Type="1">
+              <AccessRules Access="2" IsPublished="false"/>
+              <Properties>
+                <Property Id="colKMHFBYXXI3OBDCIPAALOMT5GDM" Row="0" Column="0"/>
+                <Property Id="colOCF4R7J5I3OBDCIOAALOMT5GDM" Row="1" Column="0"/>
+                <Property Id="colFDW6KVZ6I3OBDCIOAALOMT5GDM" Row="2" Column="0"/>
+                <Property Id="prd66PK2BGT2BGJJJH4XNKK3RGSV4" Row="3" Column="0"/>
+                <Property Id="colKAEHNYXSI3OBDCIPAALOMT5GDM" Row="4" Column="0"/>
+              </Properties>
+            </Page>
+            <PageOrder>
+              <Item PageId="epgSZPVE4HVI3OBDCIPAALOMT5GDM" Level="1"/>
+            </PageOrder>
+          </EditorPages>
+          <ObjectTitleFormat Id="etfZ6KOXY4MTJG6HMU466H36ZWS2E"/>
+        </EditorPresentation>
+      </EditorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y"/>
+  </AdsClassDefinition>
+</AdsDefinition>

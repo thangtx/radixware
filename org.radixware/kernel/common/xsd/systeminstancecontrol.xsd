@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:mess="http://schemas.radixware.org/systeminstancecontrol.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:types="http://schemas.radixware.org/types.xsd" targetNamespace="http://schemas.radixware.org/systeminstancecontrol.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <!--                   Enumerations    -->
+    <xs:simpleType name="ActionStateEnum">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Done"/>
+            <xs:enumeration value="Scheduled"/>
+            <xs:enumeration value="Postponed"/>
+            <xs:enumeration value="Failed"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="ExceptionEnum">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="FormatError"/>
+            <xs:enumeration value="WrongState"/>
+            <xs:enumeration value="InvalidRequest"/>
+            <xs:enumeration value="ServerException"/>
+            <xs:enumeration value="ServerMalfunction"/>
+            <xs:enumeration value="ApplicationError"/>
+            <xs:enumeration value="UnitNotFound"/>
+            <xs:enumeration value="ConfigFileNotSpecified"/>
+            <xs:enumeration value="UnableToLoadOptions"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="TraceLevelEnum">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="None"/>
+            <xs:enumeration value="Alarm"/>
+            <xs:enumeration value="Error"/>
+            <xs:enumeration value="Warning"/>
+            <xs:enumeration value="Event"/>
+            <xs:enumeration value="Debug"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="OptionsList">
+        <xs:list itemType="xs:string"/>
+    </xs:simpleType>
+    <xs:complexType name="Trace">
+        <xs:sequence>
+            <xs:element name="Item" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="Level" type="mess:TraceLevelEnum" use="required"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!--                  Abstract Request/Response      -->
+    <xs:complexType name="Request" abstract="true">
+        <xs:sequence>
+            <xs:element name="TraceProfile" type="xs:string" default="None" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Профиль трассировки. 
+                        Формат профиля: {defaultSeverity};{source}={severity}, например "Error;Arte.DefManager=Debug".
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="User" type="xs:string" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="UnitRequest">
+        <xs:complexContent>
+            <xs:extension base="mess:Request">
+                <xs:sequence>
+                    <xs:element name="UnitId" type="xs:int"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Response" abstract="true">
+        <xs:sequence>
+            <xs:element name="Trace" type="mess:Trace" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Трасса исполнения запроса</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="SimpleResponse" abstract="true">
+        <xs:complexContent>
+            <xs:extension base="mess:Response">
+                <xs:sequence>
+                    <xs:element name="Result" type="mess:ActionStateEnum"/>
+                    <xs:element name="ResultComment" type="xs:string"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!--                  Messages    -->
+    <xs:complexType name="ApplyConfigFileOptionsRq" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:Request">
+                <xs:attribute name="Options" type="mess:OptionsList"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ApplyConfigFileOptionsRs" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:Response">
+                <xs:sequence>
+                    <xs:element name="Results">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Item" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:sequence minOccurs="0">
+                                            <xs:element name="ResultComment" type="xs:string" minOccurs="0"/>
+                                        </xs:sequence>
+                                        <xs:attribute name="Option" type="xs:string" use="required"/>
+                                        <xs:attribute name="Result" type="mess:ActionStateEnum" use="required"/>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="MakeThreadDumpRq" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:Request"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="MakeThreadDumpRs" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:SimpleResponse"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ReloadArtePoolRq" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:Request"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ReloadArtePoolRs" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:SimpleResponse"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="InstanceMaintenanceRq" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:Request"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="InstanceMaintenanceRs" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:SimpleResponse"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ActualizeVerRq" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:Request"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ActualizeVerRs" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:SimpleResponse"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="StartAllUnitsRq" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:Request"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="StartAllUnitsRs" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:SimpleResponse"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="RestartAllUnitsRq" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:Request"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="RestartAllUnitsRs" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:SimpleResponse"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="StopAllUnitsRq" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:Request"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="StopAllUnitsRs" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:SimpleResponse"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="StartUnitRq" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:UnitRequest"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="StartUnitRs" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:SimpleResponse"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="RestartUnitRq" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:UnitRequest"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="RestartUnitRs" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:SimpleResponse"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="StopUnitRq" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:UnitRequest"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="StopUnitRs" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:SimpleResponse"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="UnitCommandRq" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:UnitRequest">
+                <xs:sequence>
+                    <xs:element name="Request" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="UnitCommandRs" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:SimpleResponse">
+                <xs:sequence>
+                    <xs:element name="Response" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ApplyConfigFileOptionsMess">
+        <xs:choice>
+            <xs:element name="ApplyConfigFileOptionsRs" type="mess:ApplyConfigFileOptionsRs"/>
+            <xs:element name="ApplyConfigFileOptionsRq" type="mess:ApplyConfigFileOptionsRq"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="ActualizeVerMess">
+        <xs:choice>
+            <xs:element name="ActualizeVerRs" type="mess:ActualizeVerRs"/>
+            <xs:element name="ActualizeVerRq" type="mess:ActualizeVerRq"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="StartAllUnitsMess">
+        <xs:choice>
+            <xs:element name="StartAllUnitsRs" type="mess:StartAllUnitsRs"/>
+            <xs:element name="StartAllUnitsRq" type="mess:StartAllUnitsRq"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="RestartAllUnitsMess">
+        <xs:choice>
+            <xs:element name="RestartAllUnitsRs" type="mess:RestartAllUnitsRs"/>
+            <xs:element name="RestartAllUnitsRq" type="mess:RestartAllUnitsRq"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="StopAllUnitsMess">
+        <xs:choice>
+            <xs:element name="StopAllUnitsRs" type="mess:StopAllUnitsRs"/>
+            <xs:element name="StopAllUnitsRq" type="mess:StopAllUnitsRq"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="StartUnitMess">
+        <xs:choice>
+            <xs:element name="StartUnitRs" type="mess:StartUnitRs"/>
+            <xs:element name="StartUnitRq" type="mess:StartUnitRq"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="RestartUnitMess">
+        <xs:choice>
+            <xs:element name="RestartUnitRs" type="mess:RestartUnitRs"/>
+            <xs:element name="RestartUnitRq" type="mess:RestartUnitRq"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="StopUnitMess">
+        <xs:choice>
+            <xs:element name="StopUnitRs" type="mess:StopUnitRs"/>
+            <xs:element name="StopUnitRq" type="mess:StopUnitRq"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="ReloadArtePoolMess">
+        <xs:choice>
+            <xs:element name="ReloadArtePoolRq" type="mess:ReloadArtePoolRq"/>
+            <xs:element name="ReloadArtePoolRs" type="mess:ReloadArtePoolRs"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="InstanceMaintenanceMess">
+        <xs:choice>
+            <xs:element name="InstanceMaintenanceRq" type="mess:InstanceMaintenanceRq"/>
+            <xs:element name="InstanceMaintenanceRs" type="mess:InstanceMaintenanceRs"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="MakeThreadDumpMess">
+        <xs:choice>
+            <xs:element name="MakeThreadDumpRq" type="mess:MakeThreadDumpRq"/>
+            <xs:element name="MakeThreadDumpRs" type="mess:MakeThreadDumpRs"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="UnitCommandMess">
+        <xs:choice>
+            <xs:element name="UnitCommandRq" type="mess:UnitCommandRq"/>
+            <xs:element name="UnitCommandRs" type="mess:UnitCommandRs"/>
+        </xs:choice>
+    </xs:complexType>
+    
+    <xs:complexType name="InterruptArteRq" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:Request"/>
+        </xs:complexContent>
+    </xs:complexType> 
+    <xs:complexType name="InterruptArteRs" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:SimpleResponse"/>
+        </xs:complexContent>
+    </xs:complexType> 
+    <xs:complexType name="InterruptArteMess">
+        <xs:choice>
+            <xs:element name="InterruptArteRq" type="mess:InterruptArteRq"/>
+            <xs:element name="InterruptArteRs" type="mess:InterruptArteRs"/>
+        </xs:choice>
+    </xs:complexType>
+    
+    <xs:complexType name="CloseDbConnRq" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:Request"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="CloseDbConnRs" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:SimpleResponse"/>
+        </xs:complexContent>
+    </xs:complexType> 
+    <xs:complexType name="CloseDbConnMess">
+        <xs:choice>
+            <xs:element name="CloseDbConnRq" type="mess:CloseDbConnRq"/>
+            <xs:element name="CloseDbConnRs" type="mess:CloseDbConnRs"/>
+        </xs:choice>
+    </xs:complexType>
+    
+    <xs:complexType name="MakeThreadDumpHtmlRq" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:Request"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="MakeThreadDumpHtmlRs" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:SimpleResponse">
+                <xs:sequence>
+                    <xs:element name="ThreadDumpStr" type="xs:string"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType> 
+    <xs:complexType name="MakeThreadDumpHtmlMess">
+        <xs:choice>
+            <xs:element name="MakeThreadDumpHtmlRq" type="mess:MakeThreadDumpHtmlRq"/>
+            <xs:element name="MakeThreadDumpHtmlRs" type="mess:MakeThreadDumpHtmlRs"/>
+        </xs:choice>
+
+    </xs:complexType>
+        
+    <xs:complexType name="ArteCommandMess">
+        <xs:choice>
+            <xs:element name="CloseDbConnMess" type="mess:CloseDbConnMess"/>    
+            <xs:element name="InterruptArteMess" type="mess:InterruptArteMess"/>
+            <xs:element name="MakeThreadDumpHtmlMess" type="mess:MakeThreadDumpHtmlMess"/>
+        </xs:choice>
+        <xs:attribute name="ArteSerial" type="xs:long"/>
+    </xs:complexType>
+    
+    <xs:complexType name="GetDiagnosticInfoRq" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:Request"/> 
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="GetDiagnosticInfoRs" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:SimpleResponse">
+                <xs:sequence>
+                    <xs:element name="DiagnosticInfoStr" type="xs:string"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType> 
+    <xs:complexType name="GetDiagnosticInfoMess">
+        <xs:choice>
+            <xs:element name="GetDiagnosticInfoRq" type="mess:GetDiagnosticInfoRq"/>
+            <xs:element name="GetDiagnosticInfoRs" type="mess:GetDiagnosticInfoRs"/>
+        </xs:choice>
+    </xs:complexType>
+    
+    <xs:complexType name="FillArteTableRq" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:Request"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="FillArteTableRs" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:SimpleResponse"/>
+        </xs:complexContent>
+    </xs:complexType> 
+    <xs:complexType name="FillArteTableMess">
+        <xs:choice>
+            <xs:element name="FillArteTableRq" type="mess:FillArteTableRq"/>
+            <xs:element name="FillArteTableRs" type="mess:FillArteTableRs"/>
+        </xs:choice>
+    </xs:complexType>
+    
+    
+    <xs:complexType name="GetStatusRq" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:Request"/> 
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="GetStatusRs" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:SimpleResponse">
+                <xs:sequence>
+                    <xs:element name="SensitiveDataTracingFinishTime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType> 
+    <xs:complexType name="GetStatusMess">
+        <xs:choice>
+            <xs:element name="GetStatusRq" type="mess:GetStatusRq"/>
+            <xs:element name="GetStatusRs" type="mess:GetStatusRs"/>
+        </xs:choice>
+    </xs:complexType>
+    
+    
+    <xs:complexType name="GetArteClassLoadingProfileRq" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:Request"/> 
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="GetArteClassLoadingProfileRs" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:SimpleResponse">
+                <xs:sequence>
+                    <xs:element name="Item" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType> 
+    <xs:complexType name="GetArteClassLoadingProfileMess">
+        <xs:choice>
+            <xs:element name="GetArteClassLoadingProfileRq" type="mess:GetArteClassLoadingProfileRq"/>
+            <xs:element name="GetArteClassLoadingProfileRs" type="mess:GetArteClassLoadingProfileRs"/>
+        </xs:choice>
+    </xs:complexType>
+    
+</xs:schema>

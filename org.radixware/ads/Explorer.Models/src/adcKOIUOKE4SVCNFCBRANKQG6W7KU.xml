@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcKOIUOKE4SVCNFCBRANKQG6W7KU" Name="Sortings" Type="3" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.models.groupsettings.Sortings"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcCG6G3PESARG6PB3IMGVU2IUAZE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcATR5ADT2XJDYNMGOB32XVPXJDI"/>
+    </Bodies>
+    <MethodGroup Id="cmgWU6W2CCS2RC4PLEG7756SRECUY" Name="Root"/>
+    <PropertyGroup Id="cpgUVLQRB4O3VF4TMNOAQ33TRHXGA" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthWO4J25AG7FBDJH2MRIVUDEDW44" Name="isAcceptable" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isAcceptable(Lorg.radixware.kernel.common.client.meta.RadSortingDef;Lorg.radixware.kernel.common.client.models.FilterModel;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="sorting" Id="mprCZB25KFBYFDTXD3AVREIDQZUMQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.RadSortingDef"/>
+          </Parameter>
+          <Parameter Name="currentFilter" Id="mprQUFVRXAAKZASDAVCLAKC2RIFL4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.FilterModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthFTQ7QTHQYFH35NMB2FM72PU7SA" Name="canCreateNew" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="canCreateNew()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthOEUEW534KVFA7BEY5PQUVT42SA" Name="getDefaultSorting" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getDefaultSorting(Lorg.radixware.kernel.common.client.models.FilterModel;)Lorg.radixware.kernel.common.client.meta.RadSortingDef;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="filter" Id="mprD56WFLIHH5ARTILIS2WDIUQWXA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.FilterModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.RadSortingDef"/>
+      </Method>
+      <Method Id="mth2ZZNV2BHY5GENBM6ALEWADKY54" Name="setDefaultSorting" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setDefaultSorting(Lorg.radixware.kernel.common.client.meta.RadSortingDef;Lorg.radixware.kernel.common.client.models.FilterModel;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="sorting" Id="mpr4CCUWLQQKVA7VCBXC7DQH4XJRE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.RadSortingDef"/>
+          </Parameter>
+          <Parameter Name="filter" Id="mprJJWOM3TTYJDEJEMUXI7SPAA7IU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.FilterModel"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthEBXAJGZKDVBTFDPFMQ3FADVVSU" Name="setDefaultSortingId" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setDefaultSortingId(Lorg.radixware.kernel.common.types.Id;Lorg.radixware.kernel.common.types.Id;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="sortingId" Id="mpr5OEBCKYIYNCV3MLT376DDOIBMI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+          <Parameter Name="filterId" Id="mprU6ZFR5BVKBHFHBESA3VCESJBZA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

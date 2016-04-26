@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcAPE5HB2OWZDWPPYMCEL4SDD3YE" Name="LicenseReportEntryBuilder" Type="3" Environment="server">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcAPE5HB2OWZDWPPYMCEL4SDD3YE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcAPE5HB2OWZDWPPYMCEL4SDD3YE">
+        <xsc:Item>
+          <xsc:Java>private java.util.List&lt;org.radixware.kernel.license.ILicenseReport.Entry> internalList;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmgC6XUACXOERCNVCMGBX24XDOG3U" Name="Root"/>
+    <PropertyGroup Id="cpgLHFQRVP2XBDZLHIYUD6KUEDBVE" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthL4HQ67WNEZHZHLF74TNN6Y4OV4" Name="add" Nature="0" IsOverride="false">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="path" Id="mpr3U2BCTEDDNAZZC7HLGEZ6Z32UU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="sqlQuery" Id="mprYWUCJTHKSZAUFPRLDHHMEZTI2Q">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (internalList != null) {
+    internalList.add(new org.radixware.kernel.license.ILicenseReport.Entry(sqlQuery, path));
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthGXZYGBA7YVHYXFBXTGWFZVFYCI" Name="build" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsAbstract="true"/>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthOMROJH6PYFDKXPWEYX6FC7CXFU" Name="build" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="list" Id="mprQTEYDVK2JREGPGMJ5FU6BQQVTU">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.license.ILicenseReport.Entry"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+    internalList = list;
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcAPE5HB2OWZDWPPYMCEL4SDD3YE mthGXZYGBA7YVHYXFBXTGWFZVFYCI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+} finally {
+    internalList = null;
+}
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

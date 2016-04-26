@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicXW73KKM5TJETZPTISFM6JIE6U4" Name="ISelectorTree" Type="5" Environment="web">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.wps.views.selector.tree.IRwtSelectorTree"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderaicXW73KKM5TJETZPTISFM6JIE6U4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaicXW73KKM5TJETZPTISFM6JIE6U4"/>
+    </Bodies>
+    <MethodGroup Id="cmgTXFU74F7O5GR7JB3Z2P6ARACPM" Name="Root"/>
+    <PropertyGroup Id="cpgH6GAYAMXBBG6PISTQ2FFRUET6E" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthKYPKFBR2XJDU5KI652WWYNVEKU" Name="getRootGroupModel" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getRootGroupModel()Lorg.radixware.kernel.common.client.models.GroupModel;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+      </Method>
+      <Method Id="mth3FTW45S3IJETLLQ5GKVQ7VG4PA" Name="getSelectorColumns" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getSelectorColumns()Ljava.util.List&lt;Lorg.radixware.kernel.common.client.models.items.SelectorColumnModelItem;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.SelectorColumnModelItem"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthWFTKQKQN5FD23K2UWM2OO43VDU" Name="getNodeIcon" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getNodeIcon(Lorg.radixware.wps.views.selector.tree.SelectorTreeNode;Lorg.radixware.wps.rwt.tree.Node;)Lorg.radixware.kernel.common.client.types.Icon;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parentNode" Id="mprD4FKCBRH2NHFNPBJLSXRUSJ3MM">
+            <Type TypeId="400" extStr="org.radixware.wps.views.selector.tree.SelectorTreeNode"/>
+          </Parameter>
+          <Parameter Name="childNode" Id="mpr7KRAG5UJZZF7FDKGXCAG2UYKNA">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.tree.Node"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.types.Icon"/>
+      </Method>
+      <Method Id="mthUX4FLGC2MZC6BEVKIHO6KIRA7E" Name="createChildGroupModels" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="createChildGroupModels(Lorg.radixware.wps.views.selector.tree.SelectorTreeNode;Lorg.radixware.kernel.common.client.models.EntityModel;)Ljava.util.List&lt;Lorg.radixware.kernel.common.client.models.GroupModel;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parentNode" Id="mprJARCB6ZREZGNLA6GL6XXRCY6NE">
+            <Type TypeId="400" extStr="org.radixware.wps.views.selector.tree.SelectorTreeNode"/>
+          </Parameter>
+          <Parameter Name="parentEntityModel" Id="mprGCLPMVDBXBFJXGHUCVSRHPEASQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthFMXMRQEAJRHKJLQ4L7UX6XEDXY" Name="hasChildNodes" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="hasChildNodes(Lorg.radixware.wps.views.selector.tree.SelectorTreeNode;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parentNode" Id="mprGB7J3KYCRJDNPL3QNLGLQBR2ZA">
+            <Type TypeId="400" extStr="org.radixware.wps.views.selector.tree.SelectorTreeNode"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthP74HMS6AGRHFJHTIX6OJBGXMBQ" Name="initChildren" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="initChildren(Lorg.radixware.wps.views.selector.tree.SelectorTreeNode;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parentNode" Id="mprDWEILD3XEFCDFF2FPGGTGUWRYQ">
+            <Type TypeId="400" extStr="org.radixware.wps.views.selector.tree.SelectorTreeNode"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthPPWDWVWSEVAQXGLH46D2LAQNNI" Name="onNodeStateChanged" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="onNodeStateChanged(Lorg.radixware.wps.rwt.tree.Node;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="node" Id="mprKTYFLXJ75BDADBKLRZIUTERQRY">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.tree.Node"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthSC6MKKCECZBBZKE7MHXRKBNODY" Name="mapSelectorColumn" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="mapSelectorColumn(Lorg.radixware.kernel.common.client.models.items.SelectorColumnModelItem;Lorg.radixware.wps.views.selector.tree.SelectorTreeNode;Lorg.radixware.kernel.common.client.models.GroupModel;Lorg.radixware.kernel.common.client.models.EntityModel;)Lorg.radixware.kernel.common.types.Id;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="column" Id="mpr2TBPDEQGFRHHFCHUDDWPW2BHMA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.SelectorColumnModelItem"/>
+          </Parameter>
+          <Parameter Name="parentNode" Id="mprFSHHQNBCD5EARPC3CI7JPEEKYQ">
+            <Type TypeId="400" extStr="org.radixware.wps.views.selector.tree.SelectorTreeNode"/>
+          </Parameter>
+          <Parameter Name="childGroupModel" Id="mprT6WVFDQI4VA73NXOF2CKNV4VS4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+          </Parameter>
+          <Parameter Name="childEntityModel" Id="mpr4VG7566DQ5D5ZIRHIFBHAB3NIU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

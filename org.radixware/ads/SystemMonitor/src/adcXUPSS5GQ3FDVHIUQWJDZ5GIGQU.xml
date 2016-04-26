@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcXUPSS5GQ3FDVHIUQWJDZ5GIGQU" Name="DashUtils" Type="3" Environment="common-client">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcXUPSS5GQ3FDVHIUQWJDZ5GIGQU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcXUPSS5GQ3FDVHIUQWJDZ5GIGQU"/>
+    </Bodies>
+    <MethodGroup Id="cmgYC7CCPPLMNB5BH2VDUCH7R2U6A" Name="Root"/>
+    <PropertyGroup Id="cpgUD7MB6FDZJGJHPLOVH6ZGGCRUU" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthBMN37QJXSNEETCMNTGHBIUBNP4" Name="getTextBackgroundColorBySeverity" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="severity" Id="mprDQY27DWS6BBFHGRHOB2W7SYVJY">
+            <Type TypeId="2" Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.awt.Color"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>switch (severity) {
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5OAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcWZMNTDGRGFGDZHH7E7GXH2MZ2M"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.red;
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcWZMNTDGRGFGDZHH7E7GXH2MZ2M"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(255, 80, 50, 100);
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci6CAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcWZMNTDGRGFGDZHH7E7GXH2MZ2M"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(240, 210, 115, 140);
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci52AUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci56AUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcWZMNTDGRGFGDZHH7E7GXH2MZ2M"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.black;
+    default:
+        return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcWZMNTDGRGFGDZHH7E7GXH2MZ2M"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.black;
+}
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthL2O5BAHGFBC7XBRVI4GDAPHFCU" Name="getTextForegroundColorBySeverity" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="severity" Id="mprDQY27DWS6BBFHGRHOB2W7SYVJY">
+            <Type TypeId="2" Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.awt.Color"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>switch (severity) {
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5OAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcWZMNTDGRGFGDZHH7E7GXH2MZ2M"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.red;
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcWZMNTDGRGFGDZHH7E7GXH2MZ2M"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(180, 0, 0);
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci6CAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcWZMNTDGRGFGDZHH7E7GXH2MZ2M"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(198, 86, 0);
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci52AUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci56AUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcWZMNTDGRGFGDZHH7E7GXH2MZ2M"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.black;
+    default:
+        return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcWZMNTDGRGFGDZHH7E7GXH2MZ2M"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.black;
+}
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

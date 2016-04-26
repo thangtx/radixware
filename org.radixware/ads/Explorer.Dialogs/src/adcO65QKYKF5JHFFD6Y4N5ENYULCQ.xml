@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcO65QKYKF5JHFFD6Y4N5ENYULCQ" Name="ExplorerDialog" Type="3" Environment="explorer">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.explorer.dialogs.ExplorerDialog"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcO65QKYKF5JHFFD6Y4N5ENYULCQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcO65QKYKF5JHFFD6Y4N5ENYULCQ"/>
+    </Bodies>
+    <MethodGroup Id="cmg7QWBTKX2KVBGXI46ECEUAJYQCI" Name="Root"/>
+    <PropertyGroup Id="cpgPFXCQYIEZRAI7CBW2ZXMZAVFWY" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthP3HGTMICUZDVXK6WC3DBEQF4FU" Name="addButtons" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="addButtons(Ljava.util.EnumSet&lt;Lorg.radixware.kernel.common.enums.EDialogButtonType;>;Z)Ljava.util.EnumMap&lt;Lorg.radixware.kernel.common.enums.EDialogButtonType;Lorg.radixware.kernel.common.client.widgets.IPushButton;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="buttonTypes" Id="mprO4E5L754EJABHCT3NI5LHOZWCY">
+            <Type TypeId="400" extStr="java.util.EnumSet">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.enums.EDialogButtonType"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="autoConnect" Id="mpr4FVPJP2CNNELRDPT7RXSVEKMLY">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.EnumMap">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.enums.EDialogButtonType"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IPushButton"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthBXESMLKYXNB3XG3TFXMJNRJRU4" Name="confirmOnReject" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="confirmOnReject()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthVRU6C6OWAZFWPGBVAVLM7CKDEQ" Name="confirmToReject" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="confirmToReject()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthS74X62YXIFBDZFNGVUZHO7JT4I" Name="dialogLayout" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="dialogLayout()Lcom.trolltech.qt.gui.QVBoxLayout;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QVBoxLayout"/>
+      </Method>
+      <Method Id="mthGD2UON6R2VFYDLXV3CU5Z5KMVE" Name="ExplorerDialog" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Lcom.trolltech.qt.gui.QWidget;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprKHAN36AG75DABEZEYG7Q6XAYTA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parent" Id="mprV7RALSO5HZBGHNAGPCDA54KX7M">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthBIIWWQZS45DCBDKVEFXIGGAFUI" Name="ExplorerDialog" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Lcom.trolltech.qt.gui.QWidget;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprI5MQ6CALOJEIBBT2XVRQOHGRYY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parent" Id="mprEL2X6AECAVHJFKEXBTJIZKYVBA">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+          <Parameter Name="dlgName" Id="mpr737GE4PZKNBF7BGKM45TUFDNJY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthXW3UMBLQ7ZGZ7J6S6JKHOKTPWU" Name="ExplorerDialog" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Lcom.trolltech.qt.gui.QWidget;Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprUHW62QZGNRG4DCJAOH6EU2ALV4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parent" Id="mprPFCGOAUWTRAUPLYWDR6JHNHSNM">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+          <Parameter Name="storeGeometry" Id="mprY6G6YOZ6RFHR7NJUPOX5373RF4">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth4GWL4NSXAJHW3LNH7LYPMMGGPM" Name="ExplorerDialog" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Lcom.trolltech.qt.gui.QWidget;Ljava.lang.String;II)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprDEOPFFB33JGRZPBVZDNCP6YQEY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parent" Id="mprCOEHYQ6LWVEXVELNU4F7YOIBR4">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+          <Parameter Name="dlgName" Id="mprWL7QIXCFBVEQRKUUXSPOZTSDWY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="defaultWidth" Id="mprR4KX6OWS6FDOBBNCDPJBHTMFIY">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="defaultHeight" Id="mpr2RZI4ACSZVCYHIXBMHUWDTVIMI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthMOGLLVVLFZDWZEDHE4HXPIXZ5I" Name="forceClose" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="forceClose()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthNT6K5HXMFFEN7CRUGAMC2B6GUA" Name="getEnvironment" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getEnvironment()Lorg.radixware.kernel.common.client.IClientEnvironment;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+      </Method>
+      <Method Id="mthOADVJ4X2HZCSZDXEULTD652I7U" Name="isAutoHeight" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isAutoHeight()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth5UC5CGTCSBB6JA57CPTIAM4EDM" Name="isAutoSize" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isAutoSize()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthGN4Y5L4OC5EHPFWRAKHBKSXNIY" Name="isAutoWidth" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isAutoWidth()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthYELJE5QK7ZDPHOJQ4BH27CR7OI" Name="layoutMaximumSize" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="layoutMaximumSize(Lcom.trolltech.qt.core.QSize;)Lcom.trolltech.qt.core.QSize;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="size" Id="mprOXFB7XSVSRF3RJT3N5LYDXV7WQ">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QSize"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.core.QSize"/>
+      </Method>
+      <Method Id="mthRHWLUKTUZBD4RKYT5HMKJUFAZI" Name="layoutMinimumSize" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="layoutMinimumSize(Lcom.trolltech.qt.core.QSize;)Lcom.trolltech.qt.core.QSize;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="size" Id="mprUWENPWWX2ZCTBO5QC3KL4GTMNE">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QSize"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.core.QSize"/>
+      </Method>
+      <Method Id="mthMERNT2AEDVGHTKWJFQUWMW3MEE" Name="loadGeometryFromConfig" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="loadGeometryFromConfig()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth5XFPGISV45GEDFTZVPSBPBMY7Q" Name="removeButtonBox" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="removeButtonBox()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthUZDS76UJZRHQJBLRTZMR2JG7LA" Name="saveGeometryToConfig" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="saveGeometryToConfig()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthKFB4NLX2LJHSDKZYIDOIISI2D4" Name="setAutoHeight" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setAutoHeight(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isAuto" Id="mprG7P2FIUTXJDB7ERUEIUFATGF5U">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthE45SY6AYZVARNK55BB7N6OVHTU" Name="setAutoSize" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setAutoSize(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isAuto" Id="mprCZS4G6JOPRDVLAYNHX7SI7JKFE">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthZN3GESIIDNC6TOPUIEFAL4YBGY" Name="setAutoWidth" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setAutoWidth(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isAuto" Id="mprJFJOMFP7L5B27BODQ3EELNCMBQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthQ67TQLVTNFDLFBFVVQHGST26VQ" Name="setCenterButtons" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setCenterButtons(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="center" Id="mprI5CBAZD4ZZAVZLOZ4JJTOV4ZUI">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthPOLOUNVEC5GMDJQOKFPZEFHJME" Name="setConfirmToReject" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setConfirmToReject(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="confirm" Id="mpr32FLIXOS45A3RCWVOYUKI6OQ5Y">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

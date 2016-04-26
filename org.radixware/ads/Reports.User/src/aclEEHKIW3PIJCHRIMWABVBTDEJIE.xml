@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclEEHKIW3PIJCHRIMWABVBTDEJIE" Name="CfgItem.UserReportGroup" Type="2" ClientEnvironment="explorer">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderaclEEHKIW3PIJCHRIMWABVBTDEJIE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaclEEHKIW3PIJCHRIMWABVBTDEJIE"/>
+    </Bodies>
+    <MethodGroup Id="cmgIZDQLIT27JGOXPWKTUC65B35AQ" Name="Root"/>
+    <PropertyGroup Id="cpgPJSVUP65DFGYVPTO74UZI7JD7M" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth7Z323JY4JFB7PAHXRDBVOX2EE4" Name="extractExportData" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="data" Id="mprXB6U5NBV5JF57IV5PWPW6BJBGU">
+            <Type TypeId="411" Path="adcE2YCRKQL7JE7HBMJ7SVQTSLQRA"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecRHH7SYO5I5EFRGYIBOSVUXKD7U"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecRHH7SYO5I5EFRGYIBOSVUXKD7U mthDS52HOWT4ZAQZFWRC3K4GU4OH4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(null,data);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthEBTC42HN7RENPIGWWSTFCC2IOQ" Name="linkImpObject" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthHOVIQBNNZRERVBNIKFD56Y6OK4" Name="load" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="helper" Id="mpr4LHJC4FTL5CI3DXNMRCJRAJGXE">
+            <Type TypeId="411" Path="aicKHRATBBJWBDMXKUCDE7IDPVFOM"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblJ4WZRLJ23BGMBKQ2JBSOBEGBP4"/>
+    <Presentations ObjectTitleId="mlsOCGTCQUV4ZGWBNY23VKYKYNXGI">
+      <EditorPresentations>
+        <EditorPresentation Id="eprYO73FWUIT5CALJKKR5PIN4REC4" Name="Import" BasePresentationId="eprIFGJZ5IMOBC5BOPWMWBGQ6GI3M" InheritanceMask="40112" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprIFGJZ5IMOBC5BOPWMWBGQ6GI3M" RightsInheritanceMode="0">
+          <AccessRules IsPublished="false"/>
+          <ChildExplorerItems/>
+          <ObjectTitleFormat Id="etfUJDI676JLNERTBFJXTU4VJS45I"/>
+        </EditorPresentation>
+        <EditorPresentation Id="eprIRBIY4ZP2ZFXZJX6PHDAPUUZAU" Name="Export" BasePresentationId="eprJ2YTMJMIYZHL3HKDSW272LXO2M" InheritanceMask="40112" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprJ2YTMJMIYZHL3HKDSW272LXO2M" RightsInheritanceMode="0">
+          <AccessRules IsPublished="false"/>
+          <ChildExplorerItems/>
+          <ObjectTitleFormat Id="etfI6NGHO2HVZCPVG5YZJPCV5V2RM"/>
+        </EditorPresentation>
+      </EditorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="aclUCWMPHKY3JETLBF7GYCXUMVJ4E"/>
+  </AdsClassDefinition>
+</AdsDefinition>

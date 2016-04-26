@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcXDXMFB4OMVBSXPKLWHQYWYHGTQ" Name="InvalidValueReason.Factory" Type="3" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.meta.mask.validators.InvalidValueReason.Factory"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcXZPHLWEN3NEBHOXYUTMEHE2SYY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcJ7FZTZQBQZG5VHZ2BDICQTZJIM"/>
+    </Bodies>
+    <MethodGroup Id="cmgA5D6VEHLFJAMFH4Z53FOD77AQA" Name="Root"/>
+    <PropertyGroup Id="cpgE6NR4MOFANHO7KAQ3WOADC7TFM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth7R3KUU2CWVGEPGJJEDXQFFGDUE" Name="createForTooBigValue" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="createForTooBigValue(Lorg.radixware.kernel.common.client.IClientEnvironment;Ljava.lang.String;)Lorg.radixware.kernel.common.client.meta.mask.validators.InvalidValueReason;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprBNV2LEIKOZGQHFY6JFZDF7Q4IQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="maxValue" Id="mprDXONITB25FHUJFJLFV3I3KPTEI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.validators.InvalidValueReason"/>
+      </Method>
+      <Method Id="mthQDUCVZZQ5NDYPDGK7RRUKN3YKA" Name="createForInvalidValueType" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="createForInvalidValueType(Lorg.radixware.kernel.common.client.IClientEnvironment;)Lorg.radixware.kernel.common.client.meta.mask.validators.InvalidValueReason;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mpr5JGZZULSDNHQDOTLMBCZL4KOZI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.validators.InvalidValueReason"/>
+      </Method>
+      <Method Id="mthBIEKKILAXZHWDOXWWF2T6X2IRU" Name="createForTooSmallValue" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="createForTooSmallValue(Lorg.radixware.kernel.common.client.IClientEnvironment;Ljava.lang.String;)Lorg.radixware.kernel.common.client.meta.mask.validators.InvalidValueReason;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprZYCOAGFXT5DZDHZZ57OE2SOSKI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="minValue" Id="mprXT4KETXFNZAIZEMU6QLSKFEV5Y">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.validators.InvalidValueReason"/>
+      </Method>
+      <Method Id="mthN6XVC3WQVFHSHAJAMZBLVJVKHM" Name="createForInvalidValue" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="createForInvalidValue(Ljava.lang.String;)Lorg.radixware.kernel.common.client.meta.mask.validators.InvalidValueReason;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="reason" Id="mprYF24QYPLKNDCNMEHLHBHTGDIU4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.validators.InvalidValueReason"/>
+      </Method>
+      <Method Id="mthFVUJIG2MGBGG7HXZHUMI7A57RY" Name="createForOutOfRange" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="createForOutOfRange(Lorg.radixware.kernel.common.client.IClientEnvironment;Ljava.lang.String;Ljava.lang.String;)Lorg.radixware.kernel.common.client.meta.mask.validators.InvalidValueReason;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprG235HRKWEFCUDHVBZSEAKA3ZRY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="minValue" Id="mprM6YTBHG4AVBYZENOWJQ456CRRM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="maxValue" Id="mprD4TQHXX4NZAY5G4LZTJY4AWUHY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.validators.InvalidValueReason"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

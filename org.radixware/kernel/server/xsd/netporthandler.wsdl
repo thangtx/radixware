@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions 
+    xmlns="http://schemas.xmlsoap.org/wsdl/" 
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+    xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+    xmlns:mess="http://schemas.radixware.org/netporthandler.xsd" 
+    xmlns:wsdl="http://schemas.radixware.org/netporthandler.wsdl" 
+    xmlns:ns="http://schemas.radixware.org/types.xsd" 
+    targetNamespace="http://schemas.radixware.org/netporthandler.wsdl">
+    <types>
+        <xs:schema xmlns:wsdl="http://schemas.radixware.org/netporthandler.wsdl" xmlns:types="http://schemas.radixware.org/types.xsd" targetNamespace="http://schemas.radixware.org/netporthandler.wsdl">
+            <xs:import namespace="http://schemas.radixware.org/netporthandler.xsd" schemaLocation="netporthandler.xsd"/>
+            <xs:element name="Process" type="mess:ProcessMess"/>
+            <xs:element name="Connect" type="mess:ConnectMess"/>
+            <xs:element name="Close" type="mess:CloseMess"/>
+            <xs:element name="ApplySettings" type="mess:ApplySettingsMess"/>
+            <xs:element name="ChannelControl" type="mess:ChannelControlMess"/>
+        </xs:schema>
+    </types>
+    <message name="ProcessRq">
+        <part name="ProcessRq" type="mess:ProcessRq"/>
+    </message>
+    <message name="ProcessRs">
+        <part name="ProcessRs" type="mess:ProcessRs"/>
+    </message>        
+    <message name="ConnectRq">
+        <part name="ConnectRq" type="mess:ConnectRq"/>
+    </message>
+    <message name="ConnectRs">
+        <part name="ConnectRs" type="mess:ConnectRs"/>
+    </message>        
+    <message name="CloseRq">
+        <part name="CloseRq" type="mess:CloseRq"/>
+    </message>
+    <message name="CloseRs">
+        <part name="CloseRs" type="mess:CloseRs"/>
+    </message>
+    <message name="ApplySettingsSRq">
+        <part name="ApplySettingsRq" type="mess:ApplySettingsRq"/>
+    </message>
+    <message name="ApplySettingsRs">
+        <part name="ApplySettingsRs" type="mess:ApplySettingsRs"/>
+    </message>
+    <message name="ChannelControlRq">
+        <part name="ChannelControlRq" type="mess:ChannelControlRq"/>
+    </message>
+    <message name="ChannelControlRs">
+        <part name="ChannelControlRs" type="mess:ChannelControlRs"/>
+    </message>
+    <portType name="netporthandler">
+        <operation name="Close">
+            <input message="wsdl:CloseRq"/>
+            <output message="wsdl:CloseRs"/>
+        </operation>
+        <operation name="ApplySettings">
+            <input message="wsdl:ApplySettingsRq"/>
+            <output message="wsdl:ApplySettingsRs"/>
+        </operation>
+        <operation name="Process">
+            <input message="wsdl:ProcessRq"/>
+            <output message="wsdl:ProcessRs"/>
+        </operation>
+        <operation name="Connect">
+            <input message="wsdl:ConnectRq"/>
+            <output message="wsdl:ConnectRs"/>
+        </operation>
+        <operation name="ChannelControl">
+            <input message="wsdl:ChannelControlRq"/>
+            <output message="wsdl:ChannelControlRs"/>
+        </operation>
+    </portType>
+    <binding name="netporthandler" type="wsdl:netporthandler">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="Close">
+            <soap:operation soapAction="http://schemas.radixware.org/netporthandler.wsdl#Close" style="rpc"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="ApplySettings">
+            <soap:operation soapAction="http://schemas.radixware.org/netporthandler.wsdl#ApplySettings" style="rpc"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="Process">
+            <soap:operation soapAction="http://schemas.radixware.org/netporthandler.wsdl#Process" style="rpc"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="Connect">
+            <soap:operation soapAction="http://schemas.radixware.org/netporthandler.wsdl#Connect" style="rpc"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name = "ChannelControl">
+            <soap:operation soapAction="http://schemas.radixware.org/netporthandler.wsdl#ChannelControl" style="rpc"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+    <service name="netporthandler">
+        <port name="netporthandler" binding="wsdl:netporthandler">
+            <soap:address location="http://"/>
+        </port>
+    </service>
+</definitions>
+

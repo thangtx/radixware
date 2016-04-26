@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsContextlessCommandDefinition Id="clcHYJRH2FHLVCWTAFE6YGY2ZAHNU" Name="DashGroupMetricStateByKind" Nature="2" IsVisible="false" IsConfirmationRequired="false">
+    <AccessRules IsPublished="false"/>
+    <OutType TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStrDocument"/>
+    <Source>
+      <xsc:Item>
+        <xsc:Java>org.radixware.schemas.types.MapStrStrDocument stateByKindDoc = org.radixware.schemas.types.MapStrStrDocument.Factory.newInstance();
+org.radixware.schemas.types.MapStrStr stateByKind = stateByKindDoc.addNewMapStrStr();
+final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="accJDOUCA5X55FEHEO7RQ57PZKNMU"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> cursor  = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="accJDOUCA5X55FEHEO7RQ57PZKNMU"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="accJDOUCA5X55FEHEO7RQ57PZKNMU mth_stmt_execute_____________" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>();
+try {
+    while (cursor.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>()) {
+        org.radixware.schemas.types.MapStrStr.Entry entry = stateByKind.addNewEntry();
+        entry.Key = cursor.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="accJDOUCA5X55FEHEO7RQ57PZKNMU prf7TQ54JQCP5BQ3IPIDUF5KXB26U" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>;
+        entry.Value = cursor.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="accJDOUCA5X55FEHEO7RQ57PZKNMU prfEHXF5H5LHZDPVIKG7SEDXC4IHU" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.toString();
+    }
+} finally {
+    cursor.close();
+}
+return stateByKindDoc;</xsc:Java>
+      </xsc:Item>
+    </Source>
+  </AdsContextlessCommandDefinition>
+</AdsDefinition>

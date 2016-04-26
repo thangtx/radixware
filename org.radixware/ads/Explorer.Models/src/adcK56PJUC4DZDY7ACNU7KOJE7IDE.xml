@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcK56PJUC4DZDY7ACNU7KOJE7IDE" Name="RawEntityModelData" Type="3" Environment="common-client">
+    <AccessRules IsFinal="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.models.RawEntityModelData"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcK56PJUC4DZDY7ACNU7KOJE7IDE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcK56PJUC4DZDY7ACNU7KOJE7IDE"/>
+    </Bodies>
+    <MethodGroup Id="cmgNOWKM7WKRRGF3GVI7JHGI372WE" Name="Root"/>
+    <PropertyGroup Id="cpgFQGBGAPDMJD5ZHYZFUQ4ZMFHZU" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthBF57D54C2VHD7K7HD537N53FJQ" Name="getEntityObjectData" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getEntityObjectData()Lorg.radixware.schemas.eas.Object;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.schemas.eas.Object"/>
+      </Method>
+      <Method Id="mthCIMV2SWF4NGM7NILWEKW4KSYNQ" Name="RawEntityModelData" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.schemas.eas.Object;Ljava.util.List&lt;Lorg.radixware.schemas.eas.Actions.Item;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="entityObjectData" Id="mprJNYSRZCHJRFBDNUG6BIGEO6NV4">
+            <Type TypeId="400" extStr="org.radixware.schemas.eas.Object"/>
+          </Parameter>
+          <Parameter Name="actionsRestrictedByServer" Id="mprOCLVEB3G75DKZLXTIXXYWN5L7U">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.schemas.eas.Actions.Item"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthJFUOCHUTSFH5BK3T6FMXE2WWCY" Name="RawEntityModelData" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.schemas.eas.ReadRs;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="response" Id="mpr56XMU4IECVCNTKB2J6WIHS3T5U">
+            <Type TypeId="400" extStr="org.radixware.schemas.eas.ReadRs"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthUG74R47WEZGYHPZCRJA5YV5GJI" Name="RawEntityModelData" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.schemas.eas.Object;Ljava.util.List&lt;Lorg.radixware.schemas.eas.Actions.Item;>;Lorg.radixware.schemas.eas.EditorPages;Lorg.radixware.schemas.eas.ExplorerItemList;Lorg.radixware.kernel.common.enums.ESelectorRowStyle;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="objectData" Id="mprUL3G6RZLRRFFFNOUMBE6QFO3LY">
+            <Type TypeId="400" extStr="org.radixware.schemas.eas.Object"/>
+          </Parameter>
+          <Parameter Name="serverDisabledActions" Id="mprX25I6B2WMNFITEJIJL25QWAGOU">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.schemas.eas.Actions.Item"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="enabledEditorPages" Id="mprLXRCBWONUBHU7BR5O6BY52WYHY">
+            <Type TypeId="400" extStr="org.radixware.schemas.eas.EditorPages"/>
+          </Parameter>
+          <Parameter Name="accessibleExplorerItems" Id="mprVQMUE7N4CZGARJ5FYAAFNQMPTU">
+            <Type TypeId="400" extStr="org.radixware.schemas.eas.ExplorerItemList"/>
+          </Parameter>
+          <Parameter Name="selectorRowStyle" Id="mprAF6UYNWKHFH3NCJ7TLARQQD4PM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.ESelectorRowStyle"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth2VQRKTJNVNFTTJAER2BT4NUKJQ" Name="getAccessibleChildExplorerItems" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getAccessibleChildExplorerItems()Ljava.util.Collection&lt;Lorg.radixware.kernel.common.client.models.RawEntityModelData.ChildExplorerItemInfo;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.Collection">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.models.RawEntityModelData.ChildExplorerItemInfo"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthJPZ2MXL3IJG6RAYKEJ7YBRAPF4" Name="getEnabledEditorPages" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getEnabledEditorPages()Lorg.radixware.kernel.common.client.models.RawEntityModelData.EnabledEditorPages;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.RawEntityModelData.EnabledEditorPages"/>
+      </Method>
+      <Method Id="mthJVPTJEYS5ZHTPBTRQNVXSISUXQ" Name="getRestrictions" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getRestrictions()Lorg.radixware.kernel.common.client.models.RawEntityModelData.ServerRestrictions;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.RawEntityModelData.ServerRestrictions"/>
+      </Method>
+      <Method Id="mth6HUWP4BUCFFQPIFK56APSASICM" Name="getSelectorRowStyle" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getSelectorRowStyle()Lorg.radixware.kernel.common.enums.ESelectorRowStyle;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.enums.ESelectorRowStyle"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

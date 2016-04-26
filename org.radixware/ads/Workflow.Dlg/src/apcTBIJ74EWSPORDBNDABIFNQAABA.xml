@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="apcTBIJ74EWSPORDBNDABIFNQAABA" Name="PropDiff" Type="3" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcID3IMUHR6VGGHJOWCMU2TVRFVE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcA5DCCRZ62FHLNMFWPVL5TUT6CA"/>
+    </Bodies>
+    <MethodGroup Id="cmg5M777EJSVVBDXDW77CJK3WU32M" Name="Root">
+      <Group Id="cmgJLRIFSHITVFZNGVPVF2GC5XA6I" Name="Methods" Members="mthJCKQOOMXSPORDBNDABIFNQAABA mthAPCGLFZUSTORDBNFABIFNQAABA mthWQGFE5OHRPORDBM4ABIFNQAABA"/>
+    </MethodGroup>
+    <PropertyGroup Id="cpg627PFU4SOJEO5FJB3UU7SBCREQ" Name="Root">
+      <Group Id="cpgXDXEXZL65ZGKRFBSXONDYV33Y4" Name="Properties" Members="prpCAW7ATUXSPORDBNDABIFNQAABA"/>
+    </PropertyGroup>
+    <Properties>
+      <Property Id="prpCAW7ATUXSPORDBNDABIFNQAABA" Name="oldValue" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthAPCGLFZUSTORDBNFABIFNQAABA" Name="getOldValue" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcTBIJ74EWSPORDBNDABIFNQAABA prpCAW7ATUXSPORDBNDABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>!=null ? </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcTBIJ74EWSPORDBNDABIFNQAABA prpCAW7ATUXSPORDBNDABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> : </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls2JAL3D2USTORDBNFABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthJCKQOOMXSPORDBNDABIFNQAABA" Name="PropDiff" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="id" Id="mprXDXGLPMOUBHSBFDNZS7ZYOXFEI">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="oldValue" Id="mprA5MOQRMZIFEUVJXXZ4DIERZRJ4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="value" Id="mpr7OJPXOKXTRDENPLEE3JSL3DWKM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(id, value);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcTBIJ74EWSPORDBNDABIFNQAABA prpCAW7ATUXSPORDBNDABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = oldValue;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthWQGFE5OHRPORDBM4ABIFNQAABA" Name="toString" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="env" Id="mprN76OVTGHZJFMXOSC3VN37QEUNE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="classId" Id="mprGCDJ5CRUBBAW3CRAQ4TXVPS3GE">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return
+   "id=" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA prp7FKNOCVJRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + 
+   " title=" +  </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA mthAFERJKEMSPORDBNCABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(env,classId) + 
+   " oldValue=" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcTBIJ74EWSPORDBNDABIFNQAABA prpCAW7ATUXSPORDBNDABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> +
+   " value=" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA prpLXFNYHFJRPORDBM4ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="apcFG5YZ6FIRPORDBM4ABIFNQAABA"/>
+  </AdsClassDefinition>
+</AdsDefinition>

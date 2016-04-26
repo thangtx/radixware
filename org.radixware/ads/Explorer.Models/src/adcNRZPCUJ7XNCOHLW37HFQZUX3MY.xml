@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcNRZPCUJ7XNCOHLW37HFQZUX3MY" Name="GroupModelDataSource.Listener" Type="3" Environment="common-client">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.models.GroupModelDataSource.Listener"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcNRZPCUJ7XNCOHLW37HFQZUX3MY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcNRZPCUJ7XNCOHLW37HFQZUX3MY"/>
+    </Bodies>
+    <MethodGroup Id="cmgBE3YMXJD2FHOVKOXQSYQCWN2BA" Name="Root"/>
+    <PropertyGroup Id="cpgQBTRQJHENFEEPJCMLR5KEGVK44" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthTGDLZOHR3RFTFJD26R7A7ZSWTI" Name="GroupModelDataSource.Listener" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthAQCM3T3UJJFBBAPX33AB2IXSYI" Name="onDataReceived" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="onDataReceived(Lorg.radixware.kernel.common.client.models.GroupModelData;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="data" Id="mprX6UBGGON4ZCVBKFHBBSXOSQJMM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModelData"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthJZSGAJ2REFGDRMFDM4EE66U6PI" Name="onException" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="onException(Ljava.lang.reflect.InvocationTargetException;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="exception" Id="mprRCI3XXAA55F47GBPA7JB6JMMWY">
+            <Type TypeId="400" extStr="java.lang.reflect.InvocationTargetException"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

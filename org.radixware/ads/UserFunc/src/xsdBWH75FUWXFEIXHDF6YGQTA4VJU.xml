@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdBWH75FUWXFEIXHDF6YGQTA4VJU" Name="_Fast_UserFuncCommands" TargetNamespace="http://schemas.radixware.org/userfunccommands-turbo.xsd" Environment="common"><ads:AccessRules IsPublished="false"/><xs:schema targetNamespace="http://schemas.radixware.org/userfunccommands-turbo.xsd" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:defs="http://schemas.radixware.org/adsdef.xsd" xmlns:this="http://schemas.radixware.org/userfunccommands-turbo.xsd" xmlns:xscml="http://schemas.radixware.org/xscml.xsd">
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/adsdef.xsd" schemaLocation="adsdef.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/xscml.xsd" schemaLocation="xscml.xsd"/>
+    <xs:element name="ListRq">
+        <xs:complexType>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ListRs">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="UserFunc" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:attribute name="upDefId" type="xs:string"/>
+                        <xs:attribute name="upOwnerEntityId" type="types:Id"/>
+                        <xs:attribute name="classGUID" type="xs:string"/>
+                        <xs:attribute name="upOwnerPid" type="xs:string"/>                            
+                        <xs:attribute name="ownerClassName" type="xs:string"/>           
+                        <xs:attribute name="ownerClassId" type="types:Id"/>           
+                        <xs:attribute name="ownerTitle" type="xs:string"/>           
+                        <xs:attribute name="profile" type="xs:string"/>        
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

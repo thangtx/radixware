@@ -1,0 +1,1228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Model xmlns="http://schemas.radixware.org/ddsdef.xsd" xmlns:com="http://schemas.radixware.org/commondef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" Id="prjJUMIKT2FTFDYDBILP6VHEPRE6E" DbNamePrefix="RDX">
+  <Tables>
+    <Table Id="tbl5KB4QGXUAJA6LJEZPWXSFQPZDU" Name="EnumItem2Domain" DbName="RDX_ENUMITEM2DOMAIN" GlobalTemporary="true" OnCommitPreserveRows="true">
+      <Columns>
+        <Column Id="colXUVRQJVIXRGZ5CISUVGN4TRPZ4" Name="VersionNum" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="true" DbName="VERSIONNUM"/>
+        <Column Id="col6QKPE325G5H4RFZXQR5A3T64J4" Name="EnumId" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="ENUMID"/>
+        <Column Id="colR2DQ6IJXMRCFRCLWNFHFQHF4KE" Name="EnumItemValAsStr" ValType="21" Length="2000" DbType="VARCHAR2(2000 char)" NotNull="true" DbName="ENUMITEMVALASSTR"/>
+        <Column Id="colIA3Z4YIMT5CGDNLZLSGJ62NV74" Name="DomainId" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="DOMAINID"/>
+      </Columns>
+      <PrimaryKey Id="idxFDVPRE3QEJEY3BEIIANXNKPSLA" Name="PrimaryKey" DbName="PK_RDX_ENUMITEM2DOMAIN" Unique="true">
+        <Columns>
+          <Column ColumnId="colXUVRQJVIXRGZ5CISUVGN4TRPZ4" Order="Asc"/>
+          <Column ColumnId="col6QKPE325G5H4RFZXQR5A3T64J4" Order="Asc"/>
+          <Column ColumnId="colIA3Z4YIMT5CGDNLZLSGJ62NV74" Order="Asc"/>
+          <Column ColumnId="colR2DQ6IJXMRCFRCLWNFHFQHF4KE" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unq5Y4YQHPZL5GEPA5VWUBXJRHU54" DbName="PK_RDX_ENUMITEM2DOMAIN" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="370" PosY="118"/>
+    </Table>
+    <Table Id="tblMU5IS7WBRVC5JEYO2EQF6YXMBM" Name="Def2Domain" DbName="RDX_DEF2DOMAIN" GlobalTemporary="true" OnCommitPreserveRows="true">
+      <Columns>
+        <Column Id="colZF7523H5UFBPFJAUOBXBSDIVEE" Name="VersionNum" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="true" DbName="VERSIONNUM"/>
+        <Column Id="colQZEFZP35EVCNPKFSNGY6QGKPRQ" Name="DefId" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="DEFID"/>
+        <Column Id="col3GDJNBZZENCCTFLJG3JNVJQBGU" Name="DomainId" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="DOMAINID"/>
+      </Columns>
+      <PrimaryKey Id="idxSREPWPYVBFEXXLPEF5WKPLVZYY" Name="PrimaryKey" DbName="PK_RDX_DEF2DOMAIN" Unique="true">
+        <Columns>
+          <Column ColumnId="colZF7523H5UFBPFJAUOBXBSDIVEE" Order="Asc"/>
+          <Column ColumnId="colQZEFZP35EVCNPKFSNGY6QGKPRQ" Order="Asc"/>
+          <Column ColumnId="col3GDJNBZZENCCTFLJG3JNVJQBGU" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqG4R4QJRN5NDDTDSGBCEDAQRYXE" DbName="PK_RDX_DEF2DOMAIN" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="232" PosY="118"/>
+    </Table>
+    <Table Id="tblUNUUL4SXNVGDBEM6JTHKYT3JFU" Name="ClassAncestor" DescriptionId="mls74ILADTEHFCKNEMJPAYZRGXDB4" DbName="RDX_CLASSANCESTOR" GlobalTemporary="true" OnCommitPreserveRows="true">
+      <Columns>
+        <Column Id="colGRPUK63CSZCUJG7IVUUBDOY53Y" Name="VersionNum" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="true" DbName="VERSIONNUM"/>
+        <Column Id="colABWYOLU76VBCNOSUJIBIOLAUT4" Name="ClassId" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="CLASSID"/>
+        <Column Id="colK6W5N6LXFZFVXPNHCZZSOA5KOA" Name="AncestorId" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="ANCESTORID"/>
+      </Columns>
+      <PrimaryKey Id="idxGSYFXMFWTRGQ7IYHETFGOUFDGA" Name="PrimaryKey" DbName="PK_RDX_CLASSANCESTOR" Unique="true">
+        <Columns>
+          <Column ColumnId="colGRPUK63CSZCUJG7IVUUBDOY53Y" Order="Asc"/>
+          <Column ColumnId="colABWYOLU76VBCNOSUJIBIOLAUT4" Order="Asc"/>
+          <Column ColumnId="colK6W5N6LXFZFVXPNHCZZSOA5KOA" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unq65DSM2F7PVA35J2GK44Q44VGHQ" DbName="PK_RDX_CLASSANCESTOR" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="85" PosY="117"/>
+    </Table>
+    <Table Id="tblINNX25XRZ5EIPLHILBZDENFNY4" Name="DdsVersion" DbName="RDX_DDSVERSION" GenerateInDb="false">
+      <com:Description>This table stores DDS version info. It is used by Radix Manager.
+The table is created by creation script (0.sql)</com:Description>
+      <Columns>
+        <Column Id="col4E4PIQ5EYJHM7FMLLOAXG2YHRM" Name="layerUri" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="LAYERURI"/>
+        <Column Id="col45XNOJAT3ZFY7J4KLY7LAWTHM4" Name="version" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="VERSION"/>
+        <Column Id="colMNSHWNH43RFGLCFDDUUEUO6TDE" Name="upgradeDate" ValType="12" Length="0" DbType="DATE" NotNull="true" DbName="UPGRADEDATE"/>
+        <Column Id="col6UDTDKELQ5BYZCZIGZHZ53DDZA" Name="upgradeStartTime" ValType="12" Length="0" DbType="DATE" NotNull="false" DbName="UPGRADESTARTTIME"/>
+        <Column Id="colSNI763A7IVFETBC5CPQ2CKH2HM" Name="upgradeToVersion" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="UPGRADETOVERSION"/>
+        <Column Id="colWMQ2ZBLU7ZD5RHQ4LMDRUG3UIA" Name="prevCompatibleVer" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="PREVCOMPATIBLEVER"/>
+        <Column Id="colHKQ2NAZMBFCPHIJ24XOZCLFRKQ" Name="lastFileName" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="LASTFILENAME"/>
+      </Columns>
+      <PrimaryKey Id="idxKJS5LOQ6ZBCXNEWJC6DYO6ZEEI" Name="PrimaryKey" DbName="PK_RDX_DDSVERSION" GenerateInDb="false" Unique="true">
+        <Columns>
+          <Column ColumnId="col4E4PIQ5EYJHM7FMLLOAXG2YHRM" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqZYTYDLN4CNF47NWFGHENFME33Q" DbName="PK_RDX_DDSVERSION" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="157" PosY="363"/>
+    </Table>
+    <Table Id="tblS7BCGIOOOJCLFPXNR3QFQPQY5Q" Name="DdsUpgradeLog" DbName="RDX_DDSUPGRADELOG" GenerateInDb="false">
+      <com:Description>This table stores DDS version upgrade log. It is used by Radix Manager.
+The table is created by creation script (0.sql)</com:Description>
+      <Columns>
+        <Column Id="colXOLLPN2W25G43ISPIBYNSGSHPU" Name="layerUri" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="LAYERURI"/>
+        <Column Id="colCMGDLKSESBAZPKLQ276FVFLO3M" Name="fromRelease" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="FROMRELEASE"/>
+        <Column Id="colPOXCLCNO7JEUBADF7SXO4TTRAU" Name="toRelease" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="TORELEASE"/>
+        <Column Id="colLGH65AZHEZFXBKIADF2P5WXGIU" Name="fileName" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="true" DbName="FILENAME"/>
+        <Column Id="colU64IWWRL7RBV7GC2IDKZAQ7ZSU" Name="problemGuid" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="false" DbName="PROBLEMGUID"/>
+        <Column Id="colB7LTBF5HZZEFLNBE4TYFSEKKLM" Name="upgradeDate" ValType="12" Length="0" DbType="DATE" NotNull="true" DbName="UPGRADEDATE"/>
+      </Columns>
+      <PrimaryKey Id="idxACIL3T35WNG7XOV6S2LGL3532A" Name="PrimaryKey" DbName="PK_RDX_DDSUPGRADELOG" GenerateInDb="false" Unique="true">
+        <Columns>
+          <Column ColumnId="colXOLLPN2W25G43ISPIBYNSGSHPU" Order="Asc"/>
+          <Column ColumnId="colCMGDLKSESBAZPKLQ276FVFLO3M" Order="Asc"/>
+          <Column ColumnId="colPOXCLCNO7JEUBADF7SXO4TTRAU" Order="Asc"/>
+          <Column ColumnId="colLGH65AZHEZFXBKIADF2P5WXGIU" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqEHY4KDHC2ZD2JNYXAEGS5EUNUA" DbName="PK_RDX_DDSUPGRADELOG" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="333" PosY="363"/>
+    </Table>
+    <Table Id="tblHW4OSVMS27NRDISQAAAAAAAAAA" Name="TestCase" DbName="RDX_TESTCASE" UserExtMask="65568">
+      <Columns>
+        <Column Id="colN3UZ2Z4S27NRDISQAAAAAAAAAA" Name="id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID" SequenceId="sqnEWD7TIMT27NRDISQAAAAAAAAAA"/>
+        <Column Id="col3AN3AUHYHNHNFBQ3J4PRDXRRXE" Name="groupId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="GROUPID"/>
+        <Column Id="colQQJY664T27NRDISQAAAAAAAAAA" Name="classGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="CLASSGUID"/>
+        <Column Id="colEZ4SH34S27NRDISQAAAAAAAAAA" Name="parentId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="PARENTID"/>
+        <Column Id="colHWP3QCET27NRDISQAAAAAAAAAA" Name="notes" ValType="21" Length="2000" DbType="VARCHAR2(2000 char)" NotNull="false" DbName="NOTES"/>
+        <Column Id="colPMEM3RSM3PNRDISQAAAAAAAAAA" Name="traceProfile" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="true" DbName="TRACEPROFILE">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>Debug</com:Value>
+          </DefaultVal>
+        </Column>
+        <Column Id="colMWOGO4MS27NRDISQAAAAAAAAAA" Name="actor" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="true" DbName="ACTOR"/>
+        <Column Id="colGBJZDIUS27NRDISQAAAAAAAAAA" Name="startTime" ValType="12" Length="0" Precision="6" DbType="TIMESTAMP(6)" NotNull="true" DbName="STARTTIME"/>
+        <Column Id="colQKCERAMS27NRDISQAAAAAAAAAA" Name="finishTime" ValType="12" Length="0" Precision="6" DbType="TIMESTAMP(6)" NotNull="true" DbName="FINISHTIME"/>
+        <Column Id="colYWL4NXUS27NRDISQAAAAAAAAAA" Name="result" ValType="2" Length="1" DbType="NUMBER(1,0)" NotNull="true" DbName="RESULT"/>
+        <Column Id="colC46NAASN3PNRDISQAAAAAAAAAA" Name="resultComment" ValType="27" Length="0" DbType="CLOB" NotNull="false" DbName="RESULTCOMMENT"/>
+        <Column Id="colQP4LKSN3IFHITPAQXU7J72H6FA" Name="runOnIs" ValType="1" Length="1" Precision="1" DbType="NUMBER(1,0)" NotNull="true" DbName="RUNONIS">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>1</com:Value>
+          </DefaultVal>
+        </Column>
+      </Columns>
+      <PrimaryKey Id="idxHW4OSVMS27NRDISQAAAAAAAAAA" Name="PrimaryKey" DbName="PK_RDX_TESTCASE" Unique="true">
+        <Columns>
+          <Column ColumnId="colN3UZ2Z4S27NRDISQAAAAAAAAAA" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqHW4OSVMS27NRDISQAAAAAAAAAA" DbName="PK_RDX_TESTCASE" Rely="true"/>
+      </PrimaryKey>
+      <Triggers>
+        <Trigger Id="trgWH3RE2UDSFEAHJ56SDGBRVC4SI" Name="UserPropOwn" DbName="UPO_HW4OSVMS27NRDISQAAAAAAAAAA" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+   RDX_ENTITY.UserPropOnDelOwner('tblHW4OSVMS27NRDISQAAAAAAAAAA', :old.ID);
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+      </Triggers>
+      <Placement PosX="174" PosY="648"/>
+    </Table>
+    <Table Id="tblR6JNUXPKLZBMHPVTUWNRPXXJCU" Name="EntityArrUserRef" DbName="RDX_ENTITYARRUSERREF" GlobalTemporary="true" OnCommitPreserveRows="true">
+      <Columns>
+        <Column Id="colTMW37PCXZBGCFOJSXLAIITJ4KA" Name="VersionNum" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="true" DbName="VERSIONNUM"/>
+        <Column Id="colR3MSTOASTNA5TDJKULWAFLBUDY" Name="tableId" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="TABLEID"/>
+        <Column Id="colLLXXW52LUJAC3AXQPAWUMODP5Q" Name="userPropId" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="USERPROPID"/>
+        <Column Id="colWMFPXPCZHJFYDDB4X2ETG56JCM" Name="deleteMode" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="DELETEMODE"/>
+      </Columns>
+      <PrimaryKey Id="idxCQUAS5KPRREMRMB6LJPZ3WSG24" Name="PrimaryKey" DbName="PK_RDX_ENTITYARRUSERREF" Unique="true">
+        <Columns>
+          <Column ColumnId="colTMW37PCXZBGCFOJSXLAIITJ4KA" Order="Asc"/>
+          <Column ColumnId="colR3MSTOASTNA5TDJKULWAFLBUDY" Order="Asc"/>
+          <Column ColumnId="colLLXXW52LUJAC3AXQPAWUMODP5Q" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqOCN23VSDSRCYNBJMDZ62TNRCKU" DbName="PK_RDX_ENTITYARRUSERREF" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="695" PosY="118"/>
+    </Table>
+    <Table Id="tblORZLY3X3XJBFBNKFFDZHBWMTBM" Name="EntityUserRef" DbName="RDX_ENTITYUSERREF" GlobalTemporary="true" OnCommitPreserveRows="true">
+      <Columns>
+        <Column Id="colZPLT5MC3FBGENBOOFXEOB62TQI" Name="VersionNum" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="true" DbName="VERSIONNUM"/>
+        <Column Id="col5HQQAPOMQJDNFMU2JWXTEQI3RM" Name="tableId" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="TABLEID"/>
+        <Column Id="col2PMALH66ZJGGFG7PGGEB2K4MHA" Name="userPropId" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="USERPROPID"/>
+        <Column Id="colUXFWVYYIFFHGLA2WIQHHOAP3ZM" Name="deleteMode" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="DELETEMODE"/>
+      </Columns>
+      <PrimaryKey Id="idxUU46UTKXBRAZFDHZR23USV3YOM" Name="PrimaryKey" DbName="PK_RDX_ENTITYUSERREF" Unique="true">
+        <Columns>
+          <Column ColumnId="colZPLT5MC3FBGENBOOFXEOB62TQI" Order="Asc"/>
+          <Column ColumnId="col5HQQAPOMQJDNFMU2JWXTEQI3RM" Order="Asc"/>
+          <Column ColumnId="col2PMALH66ZJGGFG7PGGEB2K4MHA" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqCHXX6SXDRBFEHONP4PH7TXYRNU" DbName="PK_RDX_ENTITYUSERREF" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="548" PosY="118"/>
+    </Table>
+    <Table Id="tblQEGQZYZRSJD57JKZRV5NJY6U3I" Name="EventCode2EventParams" DbName="RDX_EVENTCODE2EVENTPARAMS" GlobalTemporary="true" OnCommitPreserveRows="true">
+      <Columns>
+        <Column Id="colUBGNGH4MCVEIXOLP5YLSJM32LM" Name="VersionNum" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="true" DbName="VERSIONNUM"/>
+        <Column Id="colWIFTDY55GZHMVFNTUWMJFMFHSM" Name="eventCode" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="EVENTCODE"/>
+        <Column Id="colXMA7PRAFMNEM7LT4GY4Z4MAXFQ" Name="eventSeverity" ValType="2" Length="1" DbType="NUMBER(1,0)" NotNull="true" DbName="EVENTSEVERITY"/>
+        <Column Id="colTBQMLGFG5NFX3J4GNHTGJ4Z35U" Name="eventSource" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="true" DbName="EVENTSOURCE"/>
+      </Columns>
+      <PrimaryKey Id="idxTSVHXU7BSVCYBJA5TGWYNUUYFU" Name="PrimaryKey" DbName="PK_RDX_EVENTCODE2EVENTPARAMS" Unique="true">
+        <Columns>
+          <Column ColumnId="colWIFTDY55GZHMVFNTUWMJFMFHSM" Order="Asc"/>
+          <Column ColumnId="colUBGNGH4MCVEIXOLP5YLSJM32LM" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqD4GILHUN2NHJ7L5TUNTPUWAOQE" DbName="PK_RDX_EVENTCODE2EVENTPARAMS" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="864" PosY="117"/>
+    </Table>
+    <Table Id="tblORVQD2YE4NHNFIWAJEJ7HU7WQU" Name="DdsOption" DbName="RDX_DDSOPTION" GenerateInDb="false">
+      <com:Description>This table stores information about database configuration (is partitioning in use, etc).
+It is created by create script (0.sql), filled by manager and used by manager and at runtime for preprocessing.</com:Description>
+      <Columns>
+        <Column Id="colB6RMBQSV4ZFZ3M5JH57THZEC3Y" Name="layerUri" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="LAYERURI"/>
+        <Column Id="col25NDZIS5PRBIHLD6CA5CZJ2YY4" Name="name" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="NAME"/>
+        <Column Id="colXXD62SQYHJCFFFOZFDUG4FPFOY" Name="value" ValType="21" Length="500" DbType="VARCHAR2(500 char)" NotNull="false" DbName="VALUE"/>
+      </Columns>
+      <PrimaryKey Id="idxSKLWMJD4KVCKJE7GCFWELJK4T4" Name="PrimaryKey" DbName="PK_RDX_DDSOPTION" GenerateInDb="false" Unique="true">
+        <Columns>
+          <Column ColumnId="colB6RMBQSV4ZFZ3M5JH57THZEC3Y" Order="Asc"/>
+          <Column ColumnId="col25NDZIS5PRBIHLD6CA5CZJ2YY4" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unq6VSBZ3RTDFFVDAAAVHHAGFEYBM" DbName="PK_RDX_DDSOPTION" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="504" PosY="364"/>
+    </Table>
+  </Tables>
+  <References>
+    <Reference Id="refZ3L7OMMT27NRDISQAAAAAAAAAA" AutoDbName="false" DbName="FK_RDX_TESTCASE_TESTCASE" Type="LINK" ChildTableId="tblHW4OSVMS27NRDISQAAAAAAAAAA" ParentTableId="tblHW4OSVMS27NRDISQAAAAAAAAAA" ConfirmDelete="false" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqHW4OSVMS27NRDISQAAAAAAAAAA">
+      <Columns>
+        <Item ChildColumnId="colEZ4SH34S27NRDISQAAAAAAAAAA" ParentColumnId="colN3UZ2Z4S27NRDISQAAAAAAAAAA"/>
+      </Columns>
+    </Reference>
+    <Reference Id="ref2VO3FCZ4RRBTZO2UKNRBRWALQY" AutoDbName="false" DbName="FK_RDX_TESTCASE_TESTCASE_GRP" Type="LINK" ChildTableId="tblHW4OSVMS27NRDISQAAAAAAAAAA" ParentTableId="tblHW4OSVMS27NRDISQAAAAAAAAAA" ConfirmDelete="true" DeleteMode="SET_NULL" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqHW4OSVMS27NRDISQAAAAAAAAAA">
+      <Columns>
+        <Item ChildColumnId="col3AN3AUHYHNHNFBQ3J4PRDXRRXE" ParentColumnId="colN3UZ2Z4S27NRDISQAAAAAAAAAA"/>
+      </Columns>
+    </Reference>
+  </References>
+  <Sequences>
+    <Sequence Id="sqnEWD7TIMT27NRDISQAAAAAAAAAA" Name="TestCaseId" DbName="SQN_RDX_TESTCASEID" StartWith="1" IncrementBy="1" Cycle="false" MinValue="1" MaxValue="999999999" Order="true" Cache="20">
+      <Placement PosX="397" PosY="659"/>
+    </Sequence>
+  </Sequences>
+  <Packages>
+    <Package Id="pkgVFUJ6DDFLLNBDI3LABQAQDAAKI" Name="RDX_ADS_META" PurityLevelMask="0">
+      <com:Description>Replacement for DAC_INFO</com:Description>
+      <Header>
+        <Item>
+          <Prototype Id="dprJVCAA234LNAXZDUBIUXDUHPGV4" FunctionId="dfnJVCAA234LNAXZDUBIUXDUHPGV4"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprW2OBNDN4IFGLFC5S4KDH6FPMBM" FunctionId="dfnW2OBNDN4IFGLFC5S4KDH6FPMBM"/>
+        </Item>
+        <Item>
+          <Prototype Id="dpr3OXAHT4FYLORDBBJABIFNQAABA" FunctionId="dfn3OXAHT4FYLORDBBJABIFNQAABA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprYNMFKVWMUBAVXABKTKVM7SUWTA" FunctionId="dfnOVRYUVG77JDHTO5S7PAOZYTFXQ"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprROE4VHR3CBE2XNPKS5Z7Z7ZAUM" FunctionId="dfnWCWMOCLIEFBXJCMXV73SFZWTHU"/>
+        </Item>
+      </Header>
+      <Body>
+        <Item>
+          <Function Id="dfnJVCAA234LNAXZDUBIUXDUHPGV4" Name="isDefInDomain" DescriptionId="mlsW2RDA25KG5B2RJHSDVU4443SAM" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+    if pDefId = pDomainId then
+        return 1;
+    end if;
+    for cur in (select </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblMU5IS7WBRVC5JEYO2EQF6YXMBM" PropId="col3GDJNBZZENCCTFLJG3JNVJQBGU" Owner="NONE">
+                  <xsc:Sql>DOMAINID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> domainId from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblMU5IS7WBRVC5JEYO2EQF6YXMBM">
+                  <xsc:Sql>RDX_DEF2DOMAIN</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblMU5IS7WBRVC5JEYO2EQF6YXMBM" PropId="colZF7523H5UFBPFJAUOBXBSDIVEE" Owner="NONE">
+                  <xsc:Sql>VERSIONNUM</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnQEQKKJW4CTOBDCKFAAMPGXSZKU">
+                  <xsc:Sql>RDX_Arte.getVersion</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> and </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblMU5IS7WBRVC5JEYO2EQF6YXMBM" PropId="colQZEFZP35EVCNPKFSNGY6QGKPRQ" Owner="NONE">
+                  <xsc:Sql>DEFID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = pDefId) loop
+      if </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnJVCAA234LNAXZDUBIUXDUHPGV4">
+                  <xsc:Sql>RDX_ADS_META.isDefInDomain</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(cur.domainId, pDomainId) != 0 then  
+          return 1;
+      end if;
+    end loop;
+    return 0;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfp6RDNZBRTKZAYNMQOPHH6YKSUH4" Name="pDefId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp2E2Q3VOT3FAFTEC2WGLCJZBYG4" Name="pDomainId" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfn3OXAHT4FYLORDBBJABIFNQAABA" Name="isClassExtends" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+    if pClsId = pBaseClsId then
+        return 1;
+    end if;
+    for cur in (select /*+ INDEX(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblUNUUL4SXNVGDBEM6JTHKYT3JFU">
+                  <xsc:Sql>RDX_CLASSANCESTOR</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="tblUNUUL4SXNVGDBEM6JTHKYT3JFU idxGSYFXMFWTRGQ7IYHETFGOUFDGA">
+                  <xsc:Sql>PK_RDX_CLASSANCESTOR</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>) */ </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblUNUUL4SXNVGDBEM6JTHKYT3JFU" PropId="colK6W5N6LXFZFVXPNHCZZSOA5KOA" Owner="NONE">
+                  <xsc:Sql>ANCESTORID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblUNUUL4SXNVGDBEM6JTHKYT3JFU">
+                  <xsc:Sql>RDX_CLASSANCESTOR</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblUNUUL4SXNVGDBEM6JTHKYT3JFU" PropId="colGRPUK63CSZCUJG7IVUUBDOY53Y" Owner="NONE">
+                  <xsc:Sql>VERSIONNUM</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnQEQKKJW4CTOBDCKFAAMPGXSZKU">
+                  <xsc:Sql>RDX_Arte.getVersion</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>() and </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblUNUUL4SXNVGDBEM6JTHKYT3JFU" PropId="colABWYOLU76VBCNOSUJIBIOLAUT4" Owner="NONE">
+                  <xsc:Sql>CLASSID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = pClsId) loop
+      if </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn3OXAHT4FYLORDBBJABIFNQAABA">
+                  <xsc:Sql>RDX_ADS_META.isClassExtends</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(cur.ancestorId, pBaseClsId) != 0 then  
+          return 1;
+      end if;
+    end loop;
+    return 0;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpM6GOKK7ETVC5LH3UK5GVX37Y5I" Name="pClsId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpFP57WE3JB5F6JMNAHXCOS4NMMU" Name="pBaseClsId" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnOVRYUVG77JDHTO5S7PAOZYTFXQ" Name="areVersionIndicesDeployed" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+    for cur in (select 1 from dual 
+        where   exists (select * from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblUNUUL4SXNVGDBEM6JTHKYT3JFU">
+                  <xsc:Sql>RDX_CLASSANCESTOR</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblUNUUL4SXNVGDBEM6JTHKYT3JFU" PropId="colGRPUK63CSZCUJG7IVUUBDOY53Y" Owner="NONE">
+                  <xsc:Sql>VERSIONNUM</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = pVersionNum) or 
+                exists (select * from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblMU5IS7WBRVC5JEYO2EQF6YXMBM">
+                  <xsc:Sql>RDX_DEF2DOMAIN</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblMU5IS7WBRVC5JEYO2EQF6YXMBM" PropId="colZF7523H5UFBPFJAUOBXBSDIVEE" Owner="NONE">
+                  <xsc:Sql>VERSIONNUM</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = pVersionNum) or
+                exists (select * from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tbl5KB4QGXUAJA6LJEZPWXSFQPZDU">
+                  <xsc:Sql>RDX_ENUMITEM2DOMAIN</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tbl5KB4QGXUAJA6LJEZPWXSFQPZDU" PropId="colXUVRQJVIXRGZ5CISUVGN4TRPZ4" Owner="NONE">
+                  <xsc:Sql>VERSIONNUM</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = pVersionNum) or
+                exists (select * from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblORZLY3X3XJBFBNKFFDZHBWMTBM">
+                  <xsc:Sql>RDX_ENTITYUSERREF</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblORZLY3X3XJBFBNKFFDZHBWMTBM" PropId="colZPLT5MC3FBGENBOOFXEOB62TQI" Owner="TABLE">
+                  <xsc:Sql>RDX_ENTITYUSERREF.VERSIONNUM</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = pVersionNum) or
+                exists (select * from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblR6JNUXPKLZBMHPVTUWNRPXXJCU">
+                  <xsc:Sql>RDX_ENTITYARRUSERREF</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where  </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblR6JNUXPKLZBMHPVTUWNRPXXJCU" PropId="colTMW37PCXZBGCFOJSXLAIITJ4KA" Owner="TABLE">
+                  <xsc:Sql>RDX_ENTITYARRUSERREF.VERSIONNUM</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = pVersionNum) or
+                exists (select * from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblQEGQZYZRSJD57JKZRV5NJY6U3I">
+                  <xsc:Sql>RDX_EVENTCODE2EVENTPARAMS</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where  </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblQEGQZYZRSJD57JKZRV5NJY6U3I" PropId="colUBGNGH4MCVEIXOLP5YLSJM32LM" Owner="TABLE">
+                  <xsc:Sql>RDX_EVENTCODE2EVENTPARAMS.VERSIONNUM</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = pVersionNum)
+    ) loop
+        return 1;
+    end loop;
+    return 0;
+end;
+</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpNEEKUFWE45DNFKS6EZLKDOYVYQ" Name="pVersionNum" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnW2OBNDN4IFGLFC5S4KDH6FPMBM" Name="isEnumValueInDomain" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+    for cur in (select </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tbl5KB4QGXUAJA6LJEZPWXSFQPZDU" PropId="colIA3Z4YIMT5CGDNLZLSGJ62NV74" Owner="NONE">
+                  <xsc:Sql>DOMAINID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> enumItemDomainId from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tbl5KB4QGXUAJA6LJEZPWXSFQPZDU">
+                  <xsc:Sql>RDX_ENUMITEM2DOMAIN</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where 
+        </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tbl5KB4QGXUAJA6LJEZPWXSFQPZDU" PropId="colXUVRQJVIXRGZ5CISUVGN4TRPZ4" Owner="NONE">
+                  <xsc:Sql>VERSIONNUM</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnQEQKKJW4CTOBDCKFAAMPGXSZKU">
+                  <xsc:Sql>RDX_Arte.getVersion</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>() and </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tbl5KB4QGXUAJA6LJEZPWXSFQPZDU" PropId="col6QKPE325G5H4RFZXQR5A3T64J4" Owner="NONE">
+                  <xsc:Sql>ENUMID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = pEnumId and
+        </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tbl5KB4QGXUAJA6LJEZPWXSFQPZDU" PropId="colR2DQ6IJXMRCFRCLWNFHFQHF4KE" Owner="NONE">
+                  <xsc:Sql>ENUMITEMVALASSTR</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = pEnumItemValAsStr) 
+    loop
+        if (</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnJVCAA234LNAXZDUBIUXDUHPGV4">
+                  <xsc:Sql>RDX_ADS_META.isDefInDomain(pDefId => cur.enumItemDomainId, pDomainId => pDomainId)</xsc:Sql>
+                  <xsc:Params>
+                    <xsc:Param ParamId="dfp6RDNZBRTKZAYNMQOPHH6YKSUH4">
+                      <xsc:Value>cur.enumItemDomainId</xsc:Value>
+                    </xsc:Param>
+                    <xsc:Param ParamId="dfp2E2Q3VOT3FAFTEC2WGLCJZBYG4">
+                      <xsc:Value>pDomainId</xsc:Value>
+                    </xsc:Param>
+                  </xsc:Params>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> &lt;> 0) then        
+            return 1;
+        end if;
+    end loop;
+    return 0;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpKHAJJ7KT3VDUNEDPQA3WRPXFSI" Name="pEnumId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp7Z4BAIBMPBFSVMSPSVVSCHGE2Y" Name="pEnumItemValAsStr" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpC3BIAZ5LQREJ5AH7CGU5T66GZQ" Name="pDomainId" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfn6YJETL2XEVGDRN3MQ2VGXSULAQ" Name="getIndicesOldestVersion" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+  tmp integer;
+  res integer;
+begin
+    select min(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblUNUUL4SXNVGDBEM6JTHKYT3JFU" PropId="colGRPUK63CSZCUJG7IVUUBDOY53Y" Owner="NONE">
+                  <xsc:Sql>VERSIONNUM</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> ) into res from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblUNUUL4SXNVGDBEM6JTHKYT3JFU">
+                  <xsc:Sql>RDX_CLASSANCESTOR</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+    select min(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblMU5IS7WBRVC5JEYO2EQF6YXMBM" PropId="colZF7523H5UFBPFJAUOBXBSDIVEE" Owner="NONE">
+                  <xsc:Sql>VERSIONNUM</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>) into tmp from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblMU5IS7WBRVC5JEYO2EQF6YXMBM">
+                  <xsc:Sql>RDX_DEF2DOMAIN</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+    if (tmp &lt; res) then
+        res := tmp;
+    end if;    
+    select min(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tbl5KB4QGXUAJA6LJEZPWXSFQPZDU" PropId="colXUVRQJVIXRGZ5CISUVGN4TRPZ4" Owner="NONE">
+                  <xsc:Sql>VERSIONNUM</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>) into tmp from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tbl5KB4QGXUAJA6LJEZPWXSFQPZDU">
+                  <xsc:Sql>RDX_ENUMITEM2DOMAIN</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+    if (tmp &lt; res) then
+        res := tmp;
+    end if;    
+    select min(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblORZLY3X3XJBFBNKFFDZHBWMTBM" PropId="colZPLT5MC3FBGENBOOFXEOB62TQI" Owner="TABLE">
+                  <xsc:Sql>RDX_ENTITYUSERREF.VERSIONNUM</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>) into tmp from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblORZLY3X3XJBFBNKFFDZHBWMTBM">
+                  <xsc:Sql>RDX_ENTITYUSERREF</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+    if (tmp &lt; res) then
+        res := tmp;
+    end if;    
+    select min(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblR6JNUXPKLZBMHPVTUWNRPXXJCU" PropId="colTMW37PCXZBGCFOJSXLAIITJ4KA" Owner="TABLE">
+                  <xsc:Sql>RDX_ENTITYARRUSERREF.VERSIONNUM</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>) into tmp from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblR6JNUXPKLZBMHPVTUWNRPXXJCU">
+                  <xsc:Sql>RDX_ENTITYARRUSERREF</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+    if (tmp &lt; res) then
+        res := tmp;
+    end if;
+    select min(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblQEGQZYZRSJD57JKZRV5NJY6U3I" PropId="colUBGNGH4MCVEIXOLP5YLSJM32LM" Owner="TABLE">
+                  <xsc:Sql>RDX_EVENTCODE2EVENTPARAMS.VERSIONNUM</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>) into tmp from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblQEGQZYZRSJD57JKZRV5NJY6U3I">
+                  <xsc:Sql>RDX_EVENTCODE2EVENTPARAMS</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+    if (tmp &lt; res) then
+        res := tmp;
+    end if;     
+    return res;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnNZXGPH3TPFFBJOUXSW2G4O5RUI" Name="getIndexedVersionsCnt" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+  res integer;
+begin
+  select count(*) into res from (
+    select distinct versionnum from (
+         select distinct </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblUNUUL4SXNVGDBEM6JTHKYT3JFU" PropId="colGRPUK63CSZCUJG7IVUUBDOY53Y" Owner="NONE">
+                  <xsc:Sql>VERSIONNUM</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblUNUUL4SXNVGDBEM6JTHKYT3JFU">
+                  <xsc:Sql>RDX_CLASSANCESTOR</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> union
+         select distinct </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblMU5IS7WBRVC5JEYO2EQF6YXMBM" PropId="colZF7523H5UFBPFJAUOBXBSDIVEE" Owner="NONE">
+                  <xsc:Sql>VERSIONNUM</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblMU5IS7WBRVC5JEYO2EQF6YXMBM">
+                  <xsc:Sql>RDX_DEF2DOMAIN</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> union
+         select distinct </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tbl5KB4QGXUAJA6LJEZPWXSFQPZDU" PropId="colXUVRQJVIXRGZ5CISUVGN4TRPZ4" Owner="NONE">
+                  <xsc:Sql>VERSIONNUM</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tbl5KB4QGXUAJA6LJEZPWXSFQPZDU">
+                  <xsc:Sql>RDX_ENUMITEM2DOMAIN</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> union
+         select distinct </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblORZLY3X3XJBFBNKFFDZHBWMTBM" PropId="colZPLT5MC3FBGENBOOFXEOB62TQI" Owner="TABLE">
+                  <xsc:Sql>RDX_ENTITYUSERREF.VERSIONNUM</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblORZLY3X3XJBFBNKFFDZHBWMTBM">
+                  <xsc:Sql>RDX_ENTITYUSERREF</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> union
+         select distinct </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblR6JNUXPKLZBMHPVTUWNRPXXJCU" PropId="colTMW37PCXZBGCFOJSXLAIITJ4KA" Owner="TABLE">
+                  <xsc:Sql>RDX_ENTITYARRUSERREF.VERSIONNUM</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblR6JNUXPKLZBMHPVTUWNRPXXJCU">
+                  <xsc:Sql>RDX_ENTITYARRUSERREF</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> union
+         select distinct </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblQEGQZYZRSJD57JKZRV5NJY6U3I" PropId="colUBGNGH4MCVEIXOLP5YLSJM32LM" Owner="TABLE">
+                  <xsc:Sql>RDX_EVENTCODE2EVENTPARAMS.VERSIONNUM</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblQEGQZYZRSJD57JKZRV5NJY6U3I">
+                  <xsc:Sql>RDX_EVENTCODE2EVENTPARAMS</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+    )
+  );
+  return res;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnWCWMOCLIEFBXJCMXV73SFZWTHU" Name="truncDeployedIndices" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+    oldestVer integer;
+begin
+   if </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnNZXGPH3TPFFBJOUXSW2G4O5RUI">
+                  <xsc:Sql>RDX_ADS_META.getIndexedVersionsCnt</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>() > 4 then
+      oldestVer := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn6YJETL2XEVGDRN3MQ2VGXSULAQ">
+                  <xsc:Sql>RDX_ADS_META.getIndicesOldestVersion</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>();
+      delete from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblUNUUL4SXNVGDBEM6JTHKYT3JFU">
+                  <xsc:Sql>RDX_CLASSANCESTOR</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblUNUUL4SXNVGDBEM6JTHKYT3JFU" PropId="colGRPUK63CSZCUJG7IVUUBDOY53Y" Owner="NONE">
+                  <xsc:Sql>VERSIONNUM</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = oldestVer;  
+      delete from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblMU5IS7WBRVC5JEYO2EQF6YXMBM">
+                  <xsc:Sql>RDX_DEF2DOMAIN</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblMU5IS7WBRVC5JEYO2EQF6YXMBM" PropId="colZF7523H5UFBPFJAUOBXBSDIVEE" Owner="NONE">
+                  <xsc:Sql>VERSIONNUM</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = oldestVer;  
+      delete from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tbl5KB4QGXUAJA6LJEZPWXSFQPZDU">
+                  <xsc:Sql>RDX_ENUMITEM2DOMAIN</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tbl5KB4QGXUAJA6LJEZPWXSFQPZDU" PropId="colXUVRQJVIXRGZ5CISUVGN4TRPZ4" Owner="NONE">
+                  <xsc:Sql>VERSIONNUM</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = oldestVer;
+      delete from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblORZLY3X3XJBFBNKFFDZHBWMTBM">
+                  <xsc:Sql>RDX_ENTITYUSERREF</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblORZLY3X3XJBFBNKFFDZHBWMTBM" PropId="colZPLT5MC3FBGENBOOFXEOB62TQI" Owner="TABLE">
+                  <xsc:Sql>RDX_ENTITYUSERREF.VERSIONNUM</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = oldestVer;
+      delete from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblR6JNUXPKLZBMHPVTUWNRPXXJCU">
+                  <xsc:Sql>RDX_ENTITYARRUSERREF</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblR6JNUXPKLZBMHPVTUWNRPXXJCU" PropId="colTMW37PCXZBGCFOJSXLAIITJ4KA" Owner="TABLE">
+                  <xsc:Sql>RDX_ENTITYARRUSERREF.VERSIONNUM</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = oldestVer;
+      delete from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblQEGQZYZRSJD57JKZRV5NJY6U3I">
+                  <xsc:Sql>RDX_EVENTCODE2EVENTPARAMS</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblQEGQZYZRSJD57JKZRV5NJY6U3I" PropId="colUBGNGH4MCVEIXOLP5YLSJM32LM" Owner="TABLE">
+                  <xsc:Sql>RDX_EVENTCODE2EVENTPARAMS.VERSIONNUM</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = oldestVer;
+   end if;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+          </Function>
+        </Item>
+      </Body>
+    </Package>
+    <Package Id="pkg7BLOFIGYQNH3LII3GTF33RVGYQ" Name="RDX_DDS_META" PurityLevelMask="0">
+      <Header>
+        <Item>
+          <Prototype Id="dprIZORQVJWV5E2TJOMO6ASFV6LW4" FunctionId="dfnKK6CO5C3VBHARAXWPKYCM7AU4Y"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprMZRY2RFIYNFKJBAVTXQ5QGPCDQ" FunctionId="dfnEIYBYNJE4VE7VEZPGUFFLHMPEM"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprID6LG4X5LBDR5MLUJP566RHSDY" FunctionId="dfnT42FLYYLMRFVXHD3AJI4Q776XU"/>
+        </Item>
+      </Header>
+      <Body>
+        <Item>
+          <CustomText Id="dtxPOVHKEKPMNGYLHDRLKXYNO4RVI" Name="types">
+            <Text>
+              <xsc:Item>
+                <xsc:Sql>Type TArrInt is table of Integer index by binary_integer;</xsc:Sql>
+              </xsc:Item>
+            </Text>
+          </CustomText>
+        </Item>
+        <Item>
+          <Function Id="dfnWCWAJ67FGVFAXATYEZE3GLTU6E" Name="getVersion" ResultDbType="TArrInt" Deterministic="true" CacheResult="false" PurityLevelMask="3" ResultValType="50">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+ rez TArrInt;
+ curIndex integer;
+ pos integer;
+ newPos integer;
+ buffer varchar2(32767);
+ 
+begin
+ 
+ if (versionAsStr is null) then
+   rez(1):=0;
+   return rez;
+ end if;
+ pos:=1;
+ 
+ &lt;&lt;l>> while true loop
+   
+   newPos := instr(versionAsStr, '.', pos);
+   
+   if newPos = 0 then
+      buffer := substr(versionAsStr, pos);
+   else
+      buffer := substr(versionAsStr, pos, newPos - pos + 1);
+      pos := newPos+1;
+   end if;
+   
+   curIndex := rez.count() + 1;
+   rez(curIndex) := to_number(buffer);
+   
+   if newPos = 0 then
+      exit l;
+   end if;
+   
+ end loop;
+ 
+ dbms_output.put_line('---------------------------------------------');
+ dbms_output.put_line(rez.count());
+ dbms_output.put_line('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+  if (rez.first() is not null) then
+   for i in rez.first() .. rez.last() 
+   loop 
+     if rez.exists(i) then 
+        dbms_output.put_line(to_char(i) || ') ' || to_char(rez(i)));
+     end if;
+   end loop;                               
+ end if; 
+ dbms_output.put_line('---------------------------------------------');
+ return rez;
+ 
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpLFBYFOPJ6ZAT3FUTGXYIJSCP5A" Name="versionAsStr" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnT42FLYYLMRFVXHD3AJI4Q776XU" Name="compareVersions" ResultDbType="integer" Deterministic="true" CacheResult="false" PurityLevelMask="3" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+    ver1 TArrInt;
+    ver2 TArrInt;
+    i integer;
+ 
+begin
+    ver1 := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnWCWAJ67FGVFAXATYEZE3GLTU6E">
+                  <xsc:Sql>RDX_DDS_META.getVersion</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(versionAsStr1);
+    ver2 := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnWCWAJ67FGVFAXATYEZE3GLTU6E">
+                  <xsc:Sql>RDX_DDS_META.getVersion</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(versionAsStr2);
+ 
+    i := 1;
+ 
+    while (i &lt;= ver1.count()) and (i &lt;= ver2.count())
+    loop
+        if ver1(i) > ver2(i) then        
+            return 1;
+        end if;
+        if ver1(i) &lt; ver2(i) then
+            return -1;
+        end if;
+        i:=i+1;
+    end loop;
+    
+    while (i &lt;= ver1.count()) 
+    loop
+        if ver1(i) != 0 then
+            return 1;
+        end if;
+        i:=i+1;
+    end loop;
+    
+    while (i &lt;= ver2.count()) 
+    loop
+        if ver2(i) != 0 then
+            return -1;
+        end if;
+        i:=i+1;
+    end loop;
+    return 0;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpXK6UUFRKVNEWNKDTXIFXJE3EDY" Name="versionAsStr1" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpC7SUKMKR4RBQDIMQDQ5BFLEN2A" Name="versionAsStr2" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnKK6CO5C3VBHARAXWPKYCM7AU4Y" Name="isDbOptionEnabled" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+    for cur in (select 1 from RDX_DDSOPTION where layerUri || '\' || name = optionQualifiedName and value = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:ConstValue EnumId="acsUKPG6USF4RFIRBEGX6AZBFAVOY" ItemId="aciSLGJK4657BHF7GEC2RCWMD47N4">
+                  <xsc:Sql>'ENABLED'</xsc:Sql>
+                </xsc:ConstValue>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>) loop
+        return 1;
+    end loop;
+    return 0;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpGOCUE23KUJCBZKM5NHQB6R5UCQ" Name="optionQualifiedName" DbType="varchar2" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnEIYBYNJE4VE7VEZPGUFFLHMPEM" Name="isDbOptionEnabled" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+return </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnKK6CO5C3VBHARAXWPKYCM7AU4Y">
+                  <xsc:Sql>RDX_DDS_META.isDbOptionEnabled</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(optionLayerUri || '\' || optionSimpleName);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpU6KOS23XOZHSXA36RAIR4AVMJA" Name="optionLayerUri" DbType="varchar2" Direction="0" ValType="2"/>
+              <Param Id="dfpESJFK3DIFFHVNOE74YOCGUG5KA" Name="optionSimpleName" DbType="varchar2" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+      </Body>
+    </Package>
+  </Packages>
+  <Labels>
+    <Label Id="lblXNKGGWIDUBCQBHC67W7BHGWNIU">
+      <Placement PosX="142" PosY="77"/>
+      <Font Bold="false" Italic="false" Size="14"/>
+      <Text>Tables for storing meta information temporary</Text>
+    </Label>
+    <Label Id="lblMA5LEMP4XFBSZPESD5SQROIVUA">
+      <Placement PosX="348" PosY="300"/>
+      <Font Bold="false" Italic="false" Size="14"/>
+      <Text>Upgrades support</Text>
+    </Label>
+    <Label Id="lblTAJUQ42AD3OBDJOIACQMTAIZT4">
+      <Placement PosX="163" PosY="577"/>
+      <Font Bold="false" Italic="false" Size="32"/>
+      <Text>Test Cases</Text>
+    </Label>
+  </Labels>
+  <ColumnTemplates>
+    <ColumnTemplate Id="cdmVKEXNOQQ5ZGI3KZWQLOMROTKWE" Name="Title" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)"/>
+    <ColumnTemplate Id="cdmBTGBYZC5GBAM5PKMEF2HYVPF7U" Name="Notes" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)"/>
+    <ColumnTemplate Id="cdmIPP7BRC6XVHYNGYP5YKDW4FMDE" Name="LongId" ValType="2" Length="18" DbType="NUMBER(18,0)"/>
+    <ColumnTemplate Id="cdm4D3OXB3KLJFKHBXXD6PF5B5WMQ" Name="LongFk" ValType="2" Length="18" DbType="NUMBER(18,0)"/>
+    <ColumnTemplate Id="cdmN4HG25YEYZCLLGEB3KQ2WTP7EU" Name="Short" ValType="2" Length="9" DbType="NUMBER(9,0)"/>
+    <ColumnTemplate Id="cdm7256M45ZTRFANMU2Z4OFJJ2WRE" Name="Pid" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)"/>
+  </ColumnTemplates>
+</Model>

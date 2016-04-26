@@ -1,0 +1,757 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsCustomPropEditorDefinition Id="cpe2ATLT7MVSPORDID2ABQAQH3XQ4" Name="RoleEditorDlg">
+    <ui:ui>
+      <ui:widget name="editor" id="wdg2ITLT7MVSPORDID2ABQAQH3XQ4" class="cpe2ATLT7MVSPORDID2ABQAQH3XQ4" weight="0.0">
+        <ui:property name="geometry">
+          <ui:rect>
+            <ui:x>0</ui:x>
+            <ui:y>0</ui:y>
+            <ui:width>400</ui:width>
+            <ui:height>275</ui:height>
+          </ui:rect>
+        </ui:property>
+        <ui:property name="objectName">
+          <ui:string>editor</ui:string>
+        </ui:property>
+        <ui:property name="objectName">
+          <ui:string>editor</ui:string>
+        </ui:property>
+        <ui:property name="windowIcon">
+          <ui:imageRef>imgRWDDDR2YBZED5B3BUYIQRTLAQQ</ui:imageRef>
+        </ui:property>
+        <ui:layout class="QVBoxLayout" name="verticalLayout">
+          <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+            <ui:widget name="treeWidget" id="wdgTU36WQG2PTPBDCQLAAQYKZSZXU" class="QTreeWidget" weight="0.0">
+              <ui:property name="columnCount">
+                <ui:int>1</ui:int>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>treeWidget</ui:string>
+              </ui:property>
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>9</ui:x>
+                  <ui:y>9</ui:y>
+                  <ui:width>382</ui:width>
+                  <ui:height>228</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:column>
+                <ui:property name="text">
+                  <ui:mlstringid>mlsTCVDYIRVMZHYLJUF4GZO7GWZYQ</ui:mlstringid>
+                </ui:property>
+              </ui:column>
+            </ui:widget>
+          </ui:item>
+          <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+            <ui:widget name="legendFrame" id="wdgH2WY3TFM3ZHFJLDF4L7ONJPUOU" class="QFrame" weight="0.0">
+              <ui:property name="frameShape">
+                <ui:enum>com.trolltech.qt.gui.QFrame.Shape.NoFrame</ui:enum>
+              </ui:property>
+              <ui:property name="frameShadow">
+                <ui:enum>com.trolltech.qt.gui.QFrame.Shadow.Plain</ui:enum>
+              </ui:property>
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>220</ui:x>
+                  <ui:y>193</ui:y>
+                  <ui:width>120</ui:width>
+                  <ui:height>120</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="sizePolicy">
+                <ui:sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Expanding" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Minimum"/>
+              </ui:property>
+              <ui:property name="lineWidth">
+                <ui:int>0</ui:int>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>legendFrame</ui:string>
+              </ui:property>
+              <ui:layout class="QHBoxLayout" name="horizontalLayout">
+                <ui:property name="layoutLeftMargin">
+                  <ui:int>0</ui:int>
+                </ui:property>
+                <ui:property name="layoutTopMargin">
+                  <ui:int>0</ui:int>
+                </ui:property>
+                <ui:property name="layoutRightMargin">
+                  <ui:int>0</ui:int>
+                </ui:property>
+                <ui:property name="layoutBottomMargin">
+                  <ui:int>0</ui:int>
+                </ui:property>
+              </ui:layout>
+            </ui:widget>
+          </ui:item>
+          <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+            <ui:widget name="dlgBtns" id="wdgGJPZEGMWSPORDID2ABQAQH3XQ4" class="QDialogButtonBox" weight="0.0">
+              <ui:property name="objectName">
+                <ui:string>dlgBtns</ui:string>
+              </ui:property>
+              <ui:property name="standardButtons">
+                <ui:set>com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Ok | com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Cancel</ui:set>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>dlgBtns</ui:string>
+              </ui:property>
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>9</ui:x>
+                  <ui:y>243</ui:y>
+                  <ui:width>382</ui:width>
+                  <ui:height>23</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="autoConnectRejectSignal">
+                <ui:bool>true</ui:bool>
+              </ui:property>
+            </ui:widget>
+          </ui:item>
+        </ui:layout>
+      </ui:widget>
+      <ui:connections>
+        <ui:connection>
+          <ui:sender>wdg2ITLT7MVSPORDID2ABQAQH3XQ4</ui:sender>
+          <ui:signal>opened(com.trolltech.qt.gui.QWidget widget)</ui:signal>
+          <ui:slot>mth2ITLT7MVSPORDID2ABQAQH3XQ4_opened</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgTU36WQG2PTPBDCQLAAQYKZSZXU</ui:sender>
+          <ui:signal>doubleClicked(com.trolltech.qt.core.QModelIndex index)</ui:signal>
+          <ui:slot>mthTU36WQG2PTPBDCQLAAQYKZSZXU_doubleClicked</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgGJPZEGMWSPORDID2ABQAQH3XQ4</ui:sender>
+          <ui:signal>accepted()</ui:signal>
+          <ui:slot>mthGJPZEGMWSPORDID2ABQAQH3XQ4_accepted</ui:slot>
+        </ui:connection>
+      </ui:connections>
+    </ui:ui>
+    <EmbeddedModel Id="arm2ATLT7MVSPORDID2ABQAQH3XQ4" Name="RoleEditorDlg:Model" Type="17">
+      <AccessRules/>
+      <Headers>
+        <Src Name="HeaderadcHWQSTHID7VEWFFU5ZA66SDWKDY" Environment="explorer">
+          <xsc:Item>
+            <xsc:Java>import com.trolltech.qt.gui.QTreeWidgetItem;
+import com.trolltech.qt.core.Qt.ItemDataRole;</xsc:Java>
+          </xsc:Item>
+        </Src>
+      </Headers>
+      <Bodies>
+        <Src Name="Bodyadc3LXD62AQRRBBNLZDLSUZRABT4Q" Environment="explorer">
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> roleList = null; 
+
+
+</xsc:Java>
+          </xsc:Item>
+        </Src>
+      </Bodies>
+      <MethodGroup Id="cmgIL23JCHEP5FNZPVPDV34NUJSSU" Name="Root">
+        <Group Id="cmgJY6VMWEONNG5HAOQZOLX6VYRWA" Name="Commands" Members="mthclcKPRAHIUWSPORDID2ABQAQH3XQ4"/>
+        <Group Id="cmgEUZBAWO3IBF5NKJUKGHXYJ6274" Name="Tree" Members="mthIHLGGWO3PTPBDCQLAAQYKZSZXU mthEDTG76G2PTPBDCQLAAQYKZSZXU"/>
+        <Group Id="cmg7DX4VP2VKFBFDG5RWFZNRKYK3E" Name="Dlg" Members="mthGJPZEGMWSPORDID2ABQAQH3XQ4_accepted mth2ITLT7MVSPORDID2ABQAQH3XQ4_opened"/>
+      </MethodGroup>
+      <PropertyGroup Id="cpgWXS3IZ67D5BENB5PPU3XJBUPIM" Name="Root"/>
+      <Properties>
+        <Property Id="prpCAO4UNSRTTPBDCRTAAQYKZSZXU" Name="oldRoleGuid" Nature="2" IsConst="false" Environment="explorer" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Type TypeId="21"/>
+        </Property>
+      </Properties>
+      <Methods>
+        <Method Id="mthEDTG76G2PTPBDCQLAAQYKZSZXU" Name="fill" Nature="0" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="roles" Id="mpr26XR4AL2Z5GZ5MVIKEAR55IIGQ">
+              <Type TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if (roles==null)
+    return;
+
+java.util.ArrayList&lt;</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument.RoleList.Role"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>> roles2 = new
+        java.util.ArrayList&lt;</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument.RoleList.Role"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>>();
+roles2.addAll(roles.RoleList.RoleList);
+
+try {
+    java.util.Collections.sort(roles2, new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.RolesComparator());
+} catch (Throwable e) {
+    Environment.processException(e);
+}
+
+int count = 0;
+QTreeWidgetItem firstNode = null;
+while (count&lt;roles2.size()) {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument.RoleList.Role"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> role = roles2.get(count);
+    
+    if (count==0)
+        firstNode = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe2ATLT7MVSPORDID2ABQAQH3XQ4 arm2ATLT7MVSPORDID2ABQAQH3XQ4 mthIHLGGWO3PTPBDCQLAAQYKZSZXU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(role.Name, role.Name, role.Id.toString(), role.IsApplicationRole, null);
+    else
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe2ATLT7MVSPORDID2ABQAQH3XQ4 arm2ATLT7MVSPORDID2ABQAQH3XQ4 mthIHLGGWO3PTPBDCQLAAQYKZSZXU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(role.Name, role.Name, role.Id.toString(), role.IsApplicationRole, null);
+    count++;
+}
+
+if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe2ATLT7MVSPORDID2ABQAQH3XQ4 wdgTU36WQG2PTPBDCQLAAQYKZSZXU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcZSKMPF5G3VD63BMVKNKCVGNL3A mthGERGZ5FBABDGZFKFY6NR4IZGDU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>()==null) {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe2ATLT7MVSPORDID2ABQAQH3XQ4 wdgTU36WQG2PTPBDCQLAAQYKZSZXU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setCurrentItem(firstNode);
+}
+
+boolean isIdPropMandatory = false;
+if (this.getPropEditorContext().getHolderModel() instanceof </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="picMRY76BSECRCYND3ZVMDJ3XF3FM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="picMRY76BSECRCYND3ZVMDJ3XF3FM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> roleHolder = (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="picMRY76BSECRCYND3ZVMDJ3XF3FM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>)this.getPropEditorContext().getHolderModel();
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcG4LPCCZWKFAYDPURZEU7GOHAWY"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> roleIdPropId =
+            roleHolder.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="picMRY76BSECRCYND3ZVMDJ3XF3FM mthH5ARGLQ3D5BXLERL3EHYVLCXVM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(getPropEditorContext().property.Id);
+    isIdPropMandatory = roleIdPropId.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthGEEY3STCEFENZPTET7RC7O4LJM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+}
+
+if (!isIdPropMandatory) {
+    QTreeWidgetItem unrestrictedNode = new QTreeWidgetItem();
+    unrestrictedNode.setText(0, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.unrestricted_access);
+    unrestrictedNode.setData(0, ItemDataRole.UserRole, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.unrestricted_access);
+    unrestrictedNode.setData(0, ItemDataRole.UserRole+1, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.unrestricted_access);
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe2ATLT7MVSPORDID2ABQAQH3XQ4 wdgTU36WQG2PTPBDCQLAAQYKZSZXU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.addTopLevelItem(unrestrictedNode);
+    if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe2ATLT7MVSPORDID2ABQAQH3XQ4 arm2ATLT7MVSPORDID2ABQAQH3XQ4 prpCAO4UNSRTTPBDCRTAAQYKZSZXU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> ==null)
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe2ATLT7MVSPORDID2ABQAQH3XQ4 wdgTU36WQG2PTPBDCQLAAQYKZSZXU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setCurrentItem(unrestrictedNode);
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthIHLGGWO3PTPBDCQLAAQYKZSZXU" Name="createNode" Nature="0" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="realFullName" Id="mprPKCHKDEEXFDVTICMHO7LA25UYI">
+              <Type TypeId="21"/>
+            </Parameter>
+            <Parameter Name="fullName" Id="mprYBGBR5KY2ZFUNOHRVPCFM4CWL4">
+              <Type TypeId="21"/>
+            </Parameter>
+            <Parameter Name="data" Id="mprLACHLFYG35DU3JWNL4LS7TTQ4E">
+              <Type TypeId="21"/>
+            </Parameter>
+            <Parameter Name="isApplicationRole" Id="mprQWQI5REI6ZHKJNIZ4U5PMIE6GE">
+              <Type TypeId="1"/>
+            </Parameter>
+            <Parameter Name="parent" Id="mprKGW7VGRNOFBGFJZQ4EXRBPSUNM">
+              <Type TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+            </Parameter>
+          </Parameters>
+          <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QTreeWidgetItem"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>QTreeWidgetItem thisNode = new QTreeWidgetItem();
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4 mthKJPAOBS27JHUNESSUGG3AEMP5I" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(thisNode, isApplicationRole == Boolean.TRUE);
+thisNode.setText(0, fullName);
+thisNode.setData(0, ItemDataRole.UserRole, data);
+thisNode.setData(0, ItemDataRole.UserRole + 1, realFullName);
+if (parent != null)
+    parent.addChild(thisNode);
+else
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe2ATLT7MVSPORDID2ABQAQH3XQ4 wdgTU36WQG2PTPBDCQLAAQYKZSZXU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.addTopLevelItem(thisNode);
+if ((</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe2ATLT7MVSPORDID2ABQAQH3XQ4 arm2ATLT7MVSPORDID2ABQAQH3XQ4 prpCAO4UNSRTTPBDCRTAAQYKZSZXU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> != null) &amp;&amp; (data.equals(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe2ATLT7MVSPORDID2ABQAQH3XQ4 arm2ATLT7MVSPORDID2ABQAQH3XQ4 prpCAO4UNSRTTPBDCRTAAQYKZSZXU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>))) {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe2ATLT7MVSPORDID2ABQAQH3XQ4 wdgTU36WQG2PTPBDCQLAAQYKZSZXU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setCurrentItem(thisNode);
+}
+return thisNode;</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth2ITLT7MVSPORDID2ABQAQH3XQ4_opened" Name="editor_opened" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="arg1" Id="mprJABJYT4DL5HPTI527ME6UM5QNM">
+              <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe2ATLT7MVSPORDID2ABQAQH3XQ4 wdgTU36WQG2PTPBDCQLAAQYKZSZXU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.header().setVisible(false);
+
+
+if (this.getPropEditorContext().getHolderModel() instanceof </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="picMRY76BSECRCYND3ZVMDJ3XF3FM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="picMRY76BSECRCYND3ZVMDJ3XF3FM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> roleHolder = (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="picMRY76BSECRCYND3ZVMDJ3XF3FM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>)this.getPropEditorContext().getHolderModel();
+    Object val = roleHolder.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="picMRY76BSECRCYND3ZVMDJ3XF3FM mthH5ARGLQ3D5BXLERL3EHYVLCXVM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(getPropEditorContext().property.Id).</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthLSANOBLXINHNPFDVOGRUZDVNV4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe2ATLT7MVSPORDID2ABQAQH3XQ4 arm2ATLT7MVSPORDID2ABQAQH3XQ4 prpCAO4UNSRTTPBDCRTAAQYKZSZXU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = val == null ? null : val.toString();
+}
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcETZW74XVUBEX5N3MV3IZMMDTUU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> cmd = getCommand(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="clcKPRAHIUWSPORDID2ABQAQH3XQ4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+if (cmd!=null)
+    cmd.execute();
+
+if (roleList!=null)
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe2ATLT7MVSPORDID2ABQAQH3XQ4 arm2ATLT7MVSPORDID2ABQAQH3XQ4 mthEDTG76G2PTPBDCQLAAQYKZSZXU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(roleList);
+
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe2ATLT7MVSPORDID2ABQAQH3XQ4 wdgGJPZEGMWSPORDID2ABQAQH3XQ4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcSON6XRXVWRCVHCJ4RMGOCMCULM mth4QFA46RVMFDWBDIZL7UHTLIBE4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsS7F4BA7TJXNRDCHCABIFNQAABA aci3KAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>).</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicGX7XFFFXMFCYZPB5272MO5VRCA mthTLXT5MDETFFKPGI6CWMWYMZNXA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(!this.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcIGHXUXORMFFNXGVBAEOQKN3Q6Y mthPJADQB3HBZC4TEHFPWCTXQKXDU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>());
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe2ATLT7MVSPORDID2ABQAQH3XQ4 wdgH2WY3TFM3ZHFJLDF4L7ONJPUOU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthPUWBC7L4QFCCRCCPSXJY2HF5IY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().addWidget(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4 mth4T7NV26O6FAV7LNJDBGAGODNQE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>());
+
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthGJPZEGMWSPORDID2ABQAQH3XQ4_accepted" Name="dlgBtns_accepted" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe2ATLT7MVSPORDID2ABQAQH3XQ4 arm2ATLT7MVSPORDID2ABQAQH3XQ4 mthTU36WQG2PTPBDCQLAAQYKZSZXU_doubleClicked" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(null);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthTU36WQG2PTPBDCQLAAQYKZSZXU_doubleClicked" Name="treeWidget_doubleClicked" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="arg1" Id="mprC4RMS5BZBNBMBGFA5UCWFIR65Q">
+              <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>QTreeWidgetItem curItem = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe2ATLT7MVSPORDID2ABQAQH3XQ4 wdgTU36WQG2PTPBDCQLAAQYKZSZXU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.currentItem();
+boolean isOk = curItem!=null;
+String roleId = null;
+String roleTitle = null;
+
+if (isOk) {
+    roleId = (String)curItem.data(0, ItemDataRole.UserRole);
+    roleTitle = (String)curItem.data(0, ItemDataRole.UserRole+1);
+    isOk = roleId!=null &amp;&amp; roleTitle!=null;
+    if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.unrestricted_access == roleTitle)
+        roleId = null;
+}
+if (!isOk) {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.messageError(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsU2WYA6FFIZHZRMUNIQUFHTQ5HA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mls3NH2UBJMKNDMVIJF7K32CFPN4I"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+    return;
+}
+
+if (this.getPropEditorContext().getHolderModel() instanceof </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="picMRY76BSECRCYND3ZVMDJ3XF3FM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="picMRY76BSECRCYND3ZVMDJ3XF3FM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> roleHolder = (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="picMRY76BSECRCYND3ZVMDJ3XF3FM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>)this.getPropEditorContext().getHolderModel();
+    roleHolder.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="picMRY76BSECRCYND3ZVMDJ3XF3FM mth2ZUYLGXZQRHC5LTWGQEDXMXPKE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(getPropEditorContext().property.Id).setValueObject(roleTitle);
+    roleHolder.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="picMRY76BSECRCYND3ZVMDJ3XF3FM mthH5ARGLQ3D5BXLERL3EHYVLCXVM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(getPropEditorContext().property.Id).setValueObject(roleId);
+ 
+} else {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.messageError(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsBMWG4F4YVZDLZGQMWY2TJKIU5Y"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsCCOBIABITVF4XIVHPJTJ2WH5KA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+    return;
+}
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe2ATLT7MVSPORDID2ABQAQH3XQ4 wdg2ITLT7MVSPORDID2ABQAQH3XQ4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.accept();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthclcKPRAHIUWSPORDID2ABQAQH3XQ4" Name="getRoleListCmd" Nature="1" Environment="explorer" IsOverride="false">
+          <AccessRules Access="1"/>
+          <Parameters>
+            <Parameter Name="command" Id="mpr2CC5BJA3CVBATAO5EN2D74ORPI">
+              <Type TypeId="411" Path="clcKPRAHIUWSPORDID2ABQAQH3XQ4"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>
+try
+{
+    roleList = command.send();
+}
+catch(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="axcWSBFK4LYMVHTXL55MVC44THTGE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> e)
+{
+	showException(e);
+}
+catch(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="400" extStr="java.lang.InterruptedException"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> e)
+{
+	showException(e);
+} </xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+      </Methods>
+    </EmbeddedModel>
+  </AdsCustomPropEditorDefinition>
+</AdsDefinition>

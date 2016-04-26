@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="axcX324UPOL55AXNNJ5XTV25MX5NQ" Name="PipelineException.Timeout.Receive" Type="8" Environment="server">
+    <AccessRules IsFinal="true">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcBXOGNJX25RGM5IFF5QQNJOT4SQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcRBA3Y74FDBHO7LU5QP565O77TI"/>
+    </Bodies>
+    <MethodGroup Id="cmgNG6B5HXTRFBU3KXJEIIQ2TZXGI" Name="Root"/>
+    <PropertyGroup Id="cpgMLJ2JRUC7FFDLB24KHAX6NLS6Q" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthF7VULY27I5DQNPRWAZSY5B3KTE" Name="PipelineException.Timeout.Receive" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="mess" Id="mprOKRO2EO2ZRGZTDWH5QXESF2JPI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(mess);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth7TPFKVV5NFAYHDNH3HWOWAUA5U" Name="PipelineException.Timeout.Receive" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="mess" Id="mprKWQJTFRORBBCJAR5YRV6PU3K2U">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="node" Id="mprA4BACTMLKBGBRA5UZKBFMWZUDA">
+            <Type TypeId="411" Path="aicC6PFHABKKZBO3N6RNZ66DMI5O4"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(mess, node);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="axcJUFSBLVXVZEYDIHHN4G3GICTXI"/>
+  </AdsClassDefinition>
+</AdsDefinition>

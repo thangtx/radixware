@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcXKWJQYIXZVBQJCMTKOIPL5MNCU" Name="IEnum" Type="5" Environment="common">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.types.IKernelEnum"/>
+    </AccessRules>
+    <TypeArguments>
+      <xsc:Argument DerivationRule="extends" Alias="T">
+        <xsc:Type TypeId="400" extStr="java.lang.Comparable"/>
+      </xsc:Argument>
+    </TypeArguments>
+    <Headers>
+      <Src Name="HeaderadcLCCBPRMRXBDGLAND7YSL6KAJ74"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc3TS3X4IMH5DATJNCN2WCBLUXPY"/>
+    </Bodies>
+    <MethodGroup Id="cmgEU6WPEJ52RAQXJ3PBVZAXMDKTY" Name="Root"/>
+    <PropertyGroup Id="cpgO6U6Y4EVDFBJZGZ35KDDKEKX7A" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthN2BNKTEN5FFX3DHGOSEWDDEMCY" Name="getName" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getName()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthMX5MU4Z3XBANRA36ECKBJNTYYI" Name="isInDomain" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isInDomain(Lorg.radixware.kernel.common.types.Id;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="id" Id="mprC22RLR3TPNGHROFT7FTEMO6JSM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthLCPYHFHPBNGCXC4ILUYTWM7YWY" Name="isInDomains" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isInDomains(Ljava.util.List&lt;Lorg.radixware.kernel.common.types.Id;>;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="ids" Id="mprGCHSTEHDYFCUJL32K2DW2QEKDE">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

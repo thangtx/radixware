@@ -1,0 +1,376 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mess="http://schemas.radixware.org/systeminstancecontrol.xsd" xmlns:wsdl="http://schemas.radixware.org/systeminstancecontrol.wsdl" xmlns:ns="http://schemas.radixware.org/types.xsd" targetNamespace="http://schemas.radixware.org/systeminstancecontrol.wsdl">
+    <types>
+        <xs:schema elementFormDefault="unqualified" attributeFormDefault="unqualified" targetNamespace="http://schemas.radixware.org/systeminstancecontrol.wsdl">
+            <xs:import namespace="http://schemas.radixware.org/systeminstancecontrol.xsd" schemaLocation="systeminstancecontrol.xsd"/>
+            <xs:element name="StartAllUnits" type="mess:StartAllUnitsMess"/>
+            <xs:element name="ApplyConfigFileOptions" type="mess:ApplyConfigFileOptionsMess"/>
+            <xs:element name="RestartAllUnits" type="mess:RestartAllUnitsMess"/>
+            <xs:element name="StopAllUnits" type="mess:StopAllUnitsMess"/>
+            <xs:element name="StartUnit" type="mess:StartUnitMess"/>
+            <xs:element name="RestartUnit" type="mess:RestartUnitMess"/>
+            <xs:element name="StopUnit" type="mess:StopUnitMess"/>
+            <xs:element name="ActualizeVer" type="mess:ActualizeVerMess"/>
+            <xs:element name="ReloadArtePool" type="mess:ReloadArtePoolMess"/>
+            <xs:element name="InstanceMaintenance" type="mess:InstanceMaintenanceMess"/>
+            <xs:element name="MakeThreadDump" type="mess:MakeThreadDumpMess"/>
+            <xs:element name="UnitCommand" type="mess:UnitCommandMess"/>
+            <xs:element name="ArteCommand" type="mess:ArteCommandMess"/>
+            <xs:element name="GetDiagnosticInfo" type="mess:GetDiagnosticInfoMess"/>
+            <xs:element name="FillArteTable" type="mess:FillArteTableMess"/>
+            <xs:element name="GetStatus" type="mess:GetStatusMess"/>
+            <xs:element name="GetArteClassLoadingProfile" type="mess:GetArteClassLoadingProfileMess"/>
+        </xs:schema>
+    </types>
+    <message name="MakeThreadDumpRq">
+        <part name="MakeThreadDumpRq" type="mess:MakeThreadDumpMess"/>
+    </message>
+    <message name="MakeThreadDumpRs">
+        <part name="MakeThreadDumpRs" type="mess:MakeThreadDumpMess"/>
+    </message>
+    <message name="ReloadArtePoolRq">
+        <part name="ReloadArtePoolRq" type="mess:ReloadArtePoolMess"/>
+    </message>
+    <message name="ReloadArtePoolRs">
+        <part name="ReloadArtePoolRs" type="mess:ReloadArtePoolMess"/>
+    </message>
+    <message name="InstanceMaintenanceRq">
+        <part name="InstanceMaintenanceRq" type="mess:InstanceMaintenanceMess"/>
+    </message>
+    <message name="InstanceMaintenanceRs">
+        <part name="InstanceMaintenanceRs" type="mess:InstanceMaintenanceMess"/>
+    </message>
+    <message name="ApplyConfigFileOptionsRq">
+        <part name="ApplyConfigFileOptionsRq" type="mess:ApplyConfigFileOptionsMess"/>
+    </message>
+    <message name="ApplyConfigFileOptionsRs">
+        <part name="ApplyConfigFileOptionsRs" type="mess:ApplyConfigFileOptionsMess"/>
+    </message>
+    <message name="ActualizeVerRq">
+        <part name="ActualizeVerRq" type="mess:ActualizeVerMess"/>
+    </message>
+    <message name="ActualizeVerRs">
+        <part name="ActualizeVerRs" type="mess:ActualizeVerMess"/>
+    </message>
+    <message name="StartAllUnitsRq">
+        <part name="StartAllUnitsRq" type="mess:StartAllUnitsMess"/>
+    </message>
+    <message name="StartAllUnitsRs">
+        <part name="StartAllUnitsRs" type="mess:StartAllUnitsMess"/>
+    </message>
+    <message name="RestartAllUnitsRq">
+        <part name="RestartAllUnitsRq" type="mess:RestartAllUnitsMess"/>
+    </message>
+    <message name="RestartAllUnitsRs">
+        <part name="RestartAllUnitsRs" type="mess:RestartAllUnitsMess"/>
+    </message>
+    <message name="StopAllUnitsRq">
+        <part name="StopAllUnitsRq" type="mess:StopAllUnitsMess"/>
+    </message>
+    <message name="StopAllUnitsRs">
+        <part name="StopAllUnitsRs" type="mess:StopAllUnitsMess"/>
+    </message>
+    <message name="StartUnitRq">
+        <part name="StartUnitRq" type="mess:StartUnitMess"/>
+    </message>
+    <message name="StartUnitRs">
+        <part name="StartUnitRs" type="mess:StartUnitMess"/>
+    </message>
+    <message name="RestartUnitRq">
+        <part name="RestartUnitRq" type="mess:RestartUnitMess"/>
+    </message>
+    <message name="RestartUnitRs">
+        <part name="RestartUnitRs" type="mess:RestartUnitMess"/>
+    </message>
+    <message name="StopUnitRq">
+        <part name="StopUnitRq" type="mess:StopUnitMess"/>
+    </message>
+    <message name="StopUnitRs">
+        <part name="StopUnitRs" type="mess:StopUnitMess"/>
+    </message>
+    <message name="UnitCommandRq">
+        <part name="UnitCommandRq" type="wsdl:UnitCommand"/>
+    </message>
+    <message name="UnitCommandRs">
+        <part name="UnitCommandRs" type="wsdl:UnitCommand"/>
+    </message>
+    <message name="ArteCommandRq">
+        <part name="ArteCommandRq" type="mess:ArteCommandMess"/>
+    </message>
+    <message name="ArteCommandRs">
+        <part name="ArteCommandRs" type="mess:ArteCommandMess"/>
+    </message>
+    <message name="GetDiagnosticInfoRq">
+        <part name="GetDiagnosticInfoRq" type="mess:GetDiagnosticInfoMess"/>
+    </message>
+    <message name="GetDiagnosticInfoRs">
+        <part name="GetDiagnosticInfoRs" type="mess:GetDiagnosticInfoMess"/>
+    </message>
+    <message name="FillArteTableRq">
+        <part name="FillArteTableRq" type="mess:FillArteTableMess"/>
+    </message>
+    <message name="FillArteTableRs">
+        <part name="FillArteTableRs" type="mess:FillArteTableMess"/>
+    </message>
+    <message name="GetStatusRq">
+        <part name="GetStatusRq" element="wsdl:GetStatus"/>
+    </message>
+    <message name="GetStatusRs">
+        <part name="GetStatusRs" element="wsdl:GetStatus"/>
+    </message>
+    <message name="GetArteClassLoadingProfileRq">
+        <part name="GetArteClassLoadingProfileRq" element="wsdl:GetArteClassLoadingProfile"/>
+    </message>
+    <message name="GetArteClassLoadingProfileRs">
+        <part name="GetArteClassLoadingProfileRs" element="wsdl:GetArteClassLoadingProfile"/>
+    </message>
+    <portType name="systeminstancecontrol">
+        <operation name="MakeThreadDump">
+            <input message="wsdl:MakeThreadDumpRq"/>
+            <output message="wsdl:MakeThreadDumpRs"/>
+        </operation>
+        <operation name="ReloadArtePool">
+            <input message="wsdl:ReloadArtePoolRq"/>
+            <output message="wsdl:ReloadArtePoolRs"/>
+        </operation>
+        <operation name="InstanceMaintenance">
+            <input message="wsdl:InstanceMaintenanceRq"/>
+            <output message="wsdl:InstanceMaintenanceRs"/>
+        </operation>
+        <operation name="ApplyConfigFileOptions">
+            <input message="wsdl:ApplyConfigFileOptionsRq"/>
+            <output message="wsdl:ApplyConfigFileOptionsRs"/>
+        </operation>
+        <operation name="ActualizeVer">
+            <input message="wsdl:ActualizeVerRq"/>
+            <output message="wsdl:ActualizeVerRs"/>
+        </operation>
+        <operation name="StartAllUnits">
+            <input message="wsdl:StartAllUnitsRq"/>
+            <output message="wsdl:StartAllUnitsRs"/>
+        </operation>
+        <operation name="RestartAllUnits">
+            <input message="wsdl:RestartAllUnitsRq"/>
+            <output message="wsdl:RestartAllUnitsRs"/>
+        </operation>
+        <operation name="StopAllUnits">
+            <input message="wsdl:StopAllUnitsRq"/>
+            <output message="wsdl:StopAllUnitsRs"/>
+        </operation>
+        <operation name="StartUnit">
+            <input message="wsdl:StartUnitRq"/>
+            <output message="wsdl:StartUnitRs"/>
+        </operation>
+        <operation name="RestartUnit">
+            <input message="wsdl:RestartUnitRq"/>
+            <output message="wsdl:RestartUnitRs"/>
+        </operation>
+        <operation name="StopUnit">
+            <input message="wsdl:StopUnitRq"/>
+            <output message="wsdl:StopUnitRs"/>
+        </operation>
+        <operation name="UnitCommand">
+            <input message="wsdl:UnitCommandRq"/>
+            <output message="wsdl:UnitCommandRs"/>
+        </operation>
+        <operation name="ArteCommand">
+            <input message="wsdl:ArteCommandRq"/>
+            <output message="wsdl:ArteCommandRs"/>
+        </operation>
+        <operation name="GetDiagnosticInfo">
+            <input message="wsdl:GetDiagnosticInfoRq"/>
+            <output message="wsdl:GetDiagnosticInfoRs"/>
+        </operation>
+        <operation name="FillArteTable">
+            <input message="wsdl:FillArteTableRq"/>
+            <output message="wsdl:FillArteTableRs"/>
+        </operation>
+        <operation name="GetStatus">
+            <input message="wsdl:GetStatus"/>
+            <output message="wsdl:GetStatus"/>
+        </operation>
+        <operation name="GetArteClassLoadingProfile">
+            <input message="wsdl:GetArteClassLoadingProfile"/>
+            <output message="wsdl:GetArteClassLoadingProfile"/>
+        </operation>
+    </portType>
+    <binding name="systeminstancecontrol" type="wsdl:systeminstancecontrol">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="StartAllUnits">
+            <soap:operation soapAction="http://schemas.radixware.org/systeminstancecontrol.wsdl#StartAllUnits" style="document"/>
+            <input>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </output>
+        </operation>
+        <operation name="ApplyConfigFileOptions">
+            <soap:operation soapAction="http://schemas.radixware.org/systeminstancecontrol.wsdl#ApplyConfigFileOptions" style="document"/>
+            <input>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </output>
+        </operation>
+        <operation name="ReloadArtePool">
+            <soap:operation soapAction="http://schemas.radixware.org/systeminstancecontrol.wsdl#ReloadArtePool" style="document"/>
+            <input>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </output>
+        </operation>
+        <operation name="InstanceMaintenance">
+            <soap:operation soapAction="http://schemas.radixware.org/systeminstancecontrol.wsdl#ReloadArtePool" style="document"/>
+            <input>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </output>
+        </operation>
+        <operation name="ActualizeVer">
+            <soap:operation soapAction="http://schemas.radixware.org/systeminstancecontrol.wsdl#ActualizeVer" style="document"/>
+            <input>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </output>
+        </operation>
+        <operation name="RestartAllUnits">
+            <soap:operation soapAction="http://schemas.radixware.org/systeminstancecontrol.wsdl#RestartAllUnits" style="document"/>
+            <input>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </output>
+        </operation>
+        <operation name="StopAllUnits">
+            <soap:operation soapAction="http://schemas.radixware.org/systeminstancecontrol.wsdl#StopAllUnits" style="document"/>
+            <input>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </output>
+        </operation>
+        <operation name="StartUnit">
+            <soap:operation soapAction="http://schemas.radixware.org/systeminstancecontrol.wsdl#StartUnit" style="document"/>
+            <input>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </output>
+        </operation>
+        <operation name="RestartUnit">
+            <soap:operation soapAction="http://schemas.radixware.org/systeminstancecontrol.wsdl#RestartUnit" style="document"/>
+            <input>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </output>
+        </operation>
+        <operation name="StopUnit">
+            <soap:operation soapAction="http://schemas.radixware.org/systeminstancecontrol.wsdl#StopUnit" style="document"/>
+            <input>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </output>
+        </operation>
+        <operation name="UnitCommand">
+            <soap:operation soapAction="http://schemas.radixware.org/systeminstancecontrol.wsdl#UnitCommand" style="document"/>
+            <input>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </output>
+        </operation>
+        <operation name="ArteCommand">
+            <soap:operation soapAction="http://schemas.radixware.org/systeminstancecontrol.wsdl#ArteCommand" style="document"/>
+            <input>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </output>
+        </operation>
+        <operation name="GetDiagnosticInfo">
+            <soap:operation soapAction="http://schemas.radixware.org/systeminstancecontrol.wsdl#GetDiagnosticInfo" style="document"/>
+            <input>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </output>
+        </operation>
+        <operation name="FillArteTable">
+            <soap:operation soapAction="http://schemas.radixware.org/systeminstancecontrol.wsdl#FillArteTable" style="document"/>
+            <input>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </output>
+        </operation>
+        <operation name="GetStatus">
+            <soap:operation soapAction="http://schemas.radixware.org/systeminstancecontrol.wsdl#GetStatus" style="document"/>            
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="GetArteClassLoadingProfile">
+            <soap:operation soapAction="http://schemas.radixware.org/systeminstancecontrol.wsdl#GetArteClassLoadingProfile" style="document"/>            
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+    <service name="systeminstancecontrol">
+        <port name="systeminstancecontrol" binding="wsdl:systeminstancecontrol">
+            <soap:address location="http://"/>
+        </port>
+    </service>
+</definitions>

@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc2OOHZIVQPZDDXL7WL2AV7OATNM" Name="URClassLoader" Type="3" Environment="server">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc2OOHZIVQPZDDXL7WL2AV7OATNM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc2OOHZIVQPZDDXL7WL2AV7OATNM">
+        <xsc:Item>
+          <xsc:Java>private java.util.Map&lt;String, byte[]> jarEntryData = null;
+private String envName;
+private org.radixware.kernel.common.trace.IRadixTrace trace;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmgHS7N675GVVBSVGPBQACCZLE45M" Name="Root"/>
+    <PropertyGroup Id="cpgYZRMGATQZRFRXPTZ5DJUNTEPJI" Name="Root"/>
+    <Properties>
+      <Property Id="prdJQVJQ5GQYBCLVGMSTYKYBQYP7M" Name="mainClassName" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthAUUGBKL2FBCNRJIXWSEO7PK6WQ" Name="reset" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="reportClassGuid" Id="mprUQDAERSOMVAJXKIL55ZQ2NJ5KY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="blobStream" Id="mprJV43MMV7HBBLFAKSJ4ZEYZELM4">
+            <Type TypeId="400" extStr="java.io.InputStream"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>//java.io.InputStream blobStream = null;
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2OOHZIVQPZDDXL7WL2AV7OATNM prdJQVJQ5GQYBCLVGMSTYKYBQYP7M" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = null;
+    jarEntryData = null;
+    try {            
+       // blobStream = new java.io.ByteArrayInputStream(reportBinary.getBytes(1,(int)reportBinary.length()));//reportBinary.getBinaryStream(1, reportBinary.length());
+        jarEntryData = org.radixware.kernel.common.utils.FileUtils.readJar(blobStream);
+        String mainClassLocalName =envName+"/"+reportClassGuid+ ".class";
+        for (String name : jarEntryData.keySet()) {
+            if (name.endsWith(mainClassLocalName)) {                    
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2OOHZIVQPZDDXL7WL2AV7OATNM prdJQVJQ5GQYBCLVGMSTYKYBQYP7M" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = name.substring(0, name.length() - 6).replace('/', '.');
+                break;
+            }
+        }
+    } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+        //ignore
+    //}  catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcG6PZC4JQPBAI5C7ZFKWL4SWGKA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+        //ignore
+    }finally {
+        try {
+            if (blobStream != null) {
+                blobStream.close();
+            }
+        } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+        }
+    }</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthJO5KR5JDCZFF7BIANXBHRDSJQI" Name="URClassLoader" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="envName" Id="mprHWSH7FZJWFFOHIY7CPL664RS2E">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="trace" Id="mprE3DQMJPMIRFCPKV2LLTIYPY6SM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.trace.IRadixTrace"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2OOHZIVQPZDDXL7WL2AV7OATNM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.class.getClassLoader());
+this.envName=envName;
+this.trace=trace;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthF4OQYIOGO5HC3GFJ3TFMUHVTYU" Name="loadClass" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="name" Id="mprN2UQRU2L6JFFJFGN5RHT42DQYI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="resolve" Id="mprM65MPEEOWZABXI2AYA53FMBAXQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Class">
+          <xsc:GenericArguments>
+            <xsc:Argument DerivationRule="extends" Alias="?">
+              <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.ClassNotFoundException"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>Class&lt;?> c = findLoadedClass(name);
+if (c != null) {
+    return c;
+}
+String entryNameForClass = name.replace('.', '/') + ".class";
+if (jarEntryData.containsKey(entryNameForClass)) {
+    c = findClass(name);
+} else {
+    if (Parent != null) {
+        c = Parent.loadClass(name);
+    }
+}
+if (c != null) {
+    if (resolve)
+        resolveClass(c);
+    return c;
+}
+
+throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcGC2AUW56ZNDNJLQFIP4I5NQLPM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(name);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthV7CXA75LCRA3FCBFOOHRYPNOPE" Name="findClass" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="name" Id="mprTQKPCZYWFRCV7IQIIEHQKIIZAU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Class">
+          <xsc:GenericArguments>
+            <xsc:Argument DerivationRule="extends" Alias="?">
+              <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.ClassNotFoundException"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>trace.put(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,"Looking for class " + name + " in user defined report jar...",org.radixware.kernel.common.enums.EEventSource.ARTE_REPORTS);
+String entryName = name.replace('.', '/') + ".class";
+byte[] data = jarEntryData.remove(entryName);
+if (data != null) {
+    trace.put(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,"Class " + name + " found in user defined report jar", org.radixware.kernel.common.enums.EEventSource.ARTE_REPORTS);
+    return defineClass(name,data, 0, data.length);
+} else {
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcGC2AUW56ZNDNJLQFIP4I5NQLPM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth3WHDHHSCYVF7HC2ILRXC4LPPRQ" Name="check" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="c" Id="mprPNGTTXQANJGTNEHOOCVEYGNMK4">
+            <Type TypeId="400" extStr="java.lang.Class">
+              <xsc:GenericArguments>
+                <xsc:Argument DerivationRule="extends" Alias="?">
+                  <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java> try {
+    this.resolveClass(c);
+    c.getDeclaredClasses();
+    c.getDeclaredAnnotations();
+    c.getDeclaredConstructors();
+    c.getDeclaredFields();
+    c.getDeclaredMethods();
+    c.getDeclaringClass();
+} catch (LinkageError e) {
+    throw e;
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth3IU6NEDHENE65N7YXZDCCRIG2M" Name="validate" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="reportClassGuid" Id="mprFWNNKBFPQJDU3BHV4ZEQZ44JC4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="blobStream" Id="mprQP7OYDGDOZAZVHK37BTKKIRNLM">
+            <Type TypeId="400" extStr="java.io.InputStream"/>
+          </Parameter>
+          <Parameter Name="pid" Id="mprGELQSMJPJBCCNNZFOSGLWLHGBE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>boolean isValid = false;
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, pid + " [validation] checking runtime", </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciA5UFXOQYZVGD3HR3MME5ZDOC5U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2OOHZIVQPZDDXL7WL2AV7OATNM mthAUUGBKL2FBCNRJIXWSEO7PK6WQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(reportClassGuid, blobStream);
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2OOHZIVQPZDDXL7WL2AV7OATNM prdJQVJQ5GQYBCLVGMSTYKYBQYP7M" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null) {
+    String message = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls5VJLJ55RKFHXTPXQMHOUEDA4OU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, message + ", PID=" + pid, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciA5UFXOQYZVGD3HR3MME5ZDOC5U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+} else {
+    try {
+        Class&lt;?> clazz = loadClass(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2OOHZIVQPZDDXL7WL2AV7OATNM prdJQVJQ5GQYBCLVGMSTYKYBQYP7M" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2OOHZIVQPZDDXL7WL2AV7OATNM mth3WHDHHSCYVF7HC2ILRXC4LPPRQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(clazz);
+        isValid = true;
+    } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+        String message = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsLVCMBBAHS5EKBJRC7ZCZ466XWI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + " (" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthPEFBTLSR3JAPDAACBUPT7QLKBU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e) + ")";
+
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, message + ", PID=" + pid + "\n" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthBXQY2BN2DVEUNP7D645ZOVXZM4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciA5UFXOQYZVGD3HR3MME5ZDOC5U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    }
+}
+    
+return isValid;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="adc24UFWM6B2VDGRCDSIN2BKCHP3Y"/>
+  </AdsClassDefinition>
+</AdsDefinition>

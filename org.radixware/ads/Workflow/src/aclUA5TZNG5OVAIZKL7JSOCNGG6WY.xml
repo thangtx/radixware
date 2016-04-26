@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclUA5TZNG5OVAIZKL7JSOCNGG6WY" Name="ReportPubList.WfForm" Type="2">
+    <AccessRules/>
+    <Domains>
+      <Domain Path="dmnR6GOFNTVF5C3LKNFUORHUZ54DI dmnYUAZKI36YJCYPHDKMA6WOLMQPE dmnUY5L2NXYGRF2VIRZESPN7DOLLQ"/>
+      <Domain Path="dmnAHE7526O4JEKHECGEX74Y6QSVE dmnGQTBOGIU3VGFVFZ2LFUEB5QUVE dmnDDJI6LAFXVHP7BICGDPOZVRTCI"/>
+    </Domains>
+    <Headers>
+      <Src Name="HeaderadcJVUC2UDOP5BADH6E6DUBH3NSSA"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcXL7VFXBOTFAGNPRF6TZQRYIXM4"/>
+    </Bodies>
+    <MethodGroup Id="cmgNGFNR5KN35HYNPGJPWLBTVZZ74" Name="Root"/>
+    <PropertyGroup Id="cpgRF3JNUT3KBEA3IUA26KEAGQ2EI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthXF6J24NDWFH4DDXG4YMPQRFBWQ" Name="getContextObject" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="contextId" Id="mpr25DZZU2L55HXDI4R6ML44IEXGY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="pdcEntity____________________"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcPid_______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> pid = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcPid_______________________ mthKCMJGSZYFREVLCWPBDG5YROTDE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(),
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="tblVP66JC4HXLNRDF5JABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+        contextId);
+
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecVP66JC4HXLNRDF5JABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthTJMTUS3Y6HNRDIMQAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(pid);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblQ5T72ARKKBHHNBHOH3LPATQA6M"/>
+    <Presentations ObjectTitleId="mlsWM5ND336OVFDVIPS5NVNUMSFHY">
+      <EditorPresentations>
+        <EditorPresentation Id="eprMQYZ6ZEQBFBXLOVAD4F56OYJ3A" Name="Common" BasePresentationId="eprSMKGLY4AKBDWRB4XEFTYEFZKUA" InheritanceMask="40112" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprSMKGLY4AKBDWRB4XEFTYEFZKUA">
+          <ChildExplorerItems>
+            <Item>
+              <ChildRef Id="xpiT5VMZMVDNNCK3OTTBHF726ZNTI" Name="ReportPub" InheritanceMask="176" IsVisibleInTree="true" ClassId="aclOHGQF6ZXEZEURCRKRHCBXC3K4Q" CreationClassCatalogId="eccT4QYI4WWYZCK5LWBE3U565SQMU" SelectorPresentationId="sprYYUTYV7EYRF4TEAHGYK5SWGV6E" Restrictions="65535" EnabledCommands="" ChildReferenceId="refJLB3T4LDYNGENHZH4FUXEMEU7E">
+                <Condition>
+                  <ConditionWhere/>
+                  <ConditionFrom/>
+                </Condition>
+              </ChildRef>
+            </Item>
+          </ChildExplorerItems>
+          <ObjectTitleFormat Id="etf662NNF32B5CP5MXVAOFVN4OUQE"/>
+        </EditorPresentation>
+      </EditorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M"/>
+  </AdsClassDefinition>
+</AdsDefinition>

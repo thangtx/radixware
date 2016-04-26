@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema version="1.0" 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:this="http://schemas.radixware.org/sqmltran.xsd"
+    xmlns:t="http://schemas.radixware.org/types.xsd"
+    xmlns:xscml="http://schemas.radixware.org/xscml.xsd"
+    targetNamespace="http://schemas.radixware.org/sqmltran.xsd"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+    
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/xscml.xsd" schemaLocation="xscml.xsd"/>
+    
+    <xs:complexType name="SqmlTranRq">
+        <xs:sequence>
+            <xs:element name="Sqml" type="xscml:Sqml" />
+        </xs:sequence>
+        <!--xs:attribute name="Sqml" type="xscml:Sqml" -->
+        <xs:attribute name="TableId" type="t:Id" />
+        <xs:attribute name="EntityClassId" type="t:Id" />
+        <xs:attribute name="TableAlias" type="t:Str" />
+    </xs:complexType>
+    
+    <xs:complexType name="SqmlTranRs">
+        <xs:attribute name="Result" type="t:Str" />
+    </xs:complexType>
+    
+    <xs:element name="SqmlTranslationRq" type="this:SqmlTranRq"/>
+    <xs:element name="SqmlTranslationRs" type="this:SqmlTranRs"/>
+    
+</xs:schema>

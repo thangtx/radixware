@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclXU67V7GMRFEZBKECSUJKKY6EMU" Name="UserFunc.PrepareEchoTestRq" Type="2" ClientEnvironment="explorer">
+    <AccessRules IsDeprecated="true"/>
+    <Headers>
+      <Src Name="HeaderadcXIMY2BZFBVC5BAIIWKEKDD347A"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc66TLGFANTRAN7AUXNME3CDVO2Q"/>
+    </Bodies>
+    <MethodGroup Id="cmgFEQ4KBKT7JHR5LMGP6GSFYUWU4" Name="Root"/>
+    <PropertyGroup Id="cpgZSE3BDJM6BE7TL35NRW54J3X6I" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthFOOX7DTCW5GA5CUK2VYOOVAC3Q" Name="getMethodId" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <ReturnType TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclXU67V7GMRFEZBKECSUJKKY6EMU mth5KBQMU2WEBDAVGBLZXHL7CZICI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth5KBQMU2WEBDAVGBLZXHL7CZICI" Name="prepareEchoTestRq" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <ReturnType TypeId="401" extStr="byte" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcJUFSBLVXVZEYDIHHN4G3GICTXI"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+    return (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="401" extStr="byte" Dimension="1"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM mthTPAFKDKW4TOBDIECAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(new Object[]{});
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcJUFSBLVXVZEYDIHHN4G3GICTXI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+   throw e;    
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+   if (e instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcXJP5J6GEPZCERMRA74CCVXC3HI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)
+        throw (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcXJP5J6GEPZCERMRA74CCVXC3HI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) e;
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcWYWATQSPTFGLVAJPCFEERQFAFY mth2WATDQIFTFEU3KUT2DYGDYORUA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(this, "PrepareEchoTestRq user function error", e);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth434ASVNNEZF7DPGDCEZ572LW7E" Name="prepareEchoTestRq" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="netHub" Id="mprMQDJ2RJJRJBGDHIAGCQFGDC3D4">
+            <Type TypeId="411" Path="aclASDVUU5IOJBFLHENNRCBIS5ZSY"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="byte" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcJUFSBLVXVZEYDIHHN4G3GICTXI"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclXU67V7GMRFEZBKECSUJKKY6EMU mth5KBQMU2WEBDAVGBLZXHL7CZICI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcJUFSBLVXVZEYDIHHN4G3GICTXI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+    netHub.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclASDVUU5IOJBFLHENNRCBIS5ZSY mthQ7MQNDFPEVCSZM46CIFMM4ISAI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("PrepareEchoTestRq pipeline exception: " + e.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() + "\n\n" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e));
+    throw e;
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcXJP5J6GEPZCERMRA74CCVXC3HI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+    netHub.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A mthQ7MQNDFPEVCSZM46CIFMM4ISAI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("PrepareEchoTestRq exception: " + e.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() + "\n\n" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e));
+    throw e;
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+    <Presentations ObjectTitleId="mlsH3JLXOTQNVD6HDNQQGG4ID56EA">
+      <ClassCatalogs>
+        <ClassCatalog Id="eccZMCDFRDL4DOBDIEAAALOMT5GDM" Name="All">
+          <ClassRef Order="770.0"/>
+        </ClassCatalog>
+      </ClassCatalogs>
+    </Presentations>
+    <Extends TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+  </AdsClassDefinition>
+</AdsDefinition>

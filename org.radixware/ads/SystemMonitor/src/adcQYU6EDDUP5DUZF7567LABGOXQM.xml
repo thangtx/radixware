@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcQYU6EDDUP5DUZF7567LABGOXQM" Name="AbstractDecorator" DescriptionId="mlsXGWJP7JGIFCCDA6LEYO4T424LM" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcQYU6EDDUP5DUZF7567LABGOXQM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcQYU6EDDUP5DUZF7567LABGOXQM"/>
+    </Bodies>
+    <MethodGroup Id="cmgDYZY46FGVZCLVGFUQ2AOSEG6YQ" Name="Root"/>
+    <PropertyGroup Id="cpgCTOBRDOMZFCO5BNSEBZKQUFVSQ" Name="Root"/>
+    <Properties>
+      <Property Id="prdJPGUXOW56BBXNPO6K34ZA6FDUQ" Name="inst2info" DescriptionId="mlsTEJJZTUGDZHPNPHNOCOYLWVRNY" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="1"/>
+        <Type TypeId="400" extStr="java.util.Map">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="2"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="SysMonitoringRs.Instance"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </Type>
+        <InitialValue>
+          <Jml>
+            <xsc:Item>
+              <xsc:Java>new java.util.HashMap&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="SysMonitoringRs.Instance"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();</xsc:Java>
+            </xsc:Item>
+          </Jml>
+        </InitialValue>
+      </Property>
+      <Property Id="prd3OXYCRTXHNAUXKUNXDOMCNMLCY" Name="unit2info" DescriptionId="mlsKKS3QR2SQBH5FARXAO6PKYQRUU" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="1"/>
+        <Type TypeId="400" extStr="java.util.Map">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="2"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="SysMonitoringRs.Unit"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </Type>
+        <InitialValue>
+          <Jml>
+            <xsc:Item>
+              <xsc:Java>new java.util.HashMap&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="SysMonitoringRs.Unit"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();</xsc:Java>
+            </xsc:Item>
+          </Jml>
+        </InitialValue>
+      </Property>
+      <Property Id="prdK7J5SPXIT5HAPNNA6SHEXD4JMI" Name="channel2info" DescriptionId="mls7R5TM5OKTNFIRK3PXJLXBZIA6Y" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="1"/>
+        <Type TypeId="400" extStr="java.util.Map">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="2"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="SysMonitoringRs.Channel"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </Type>
+        <InitialValue>
+          <Jml>
+            <xsc:Item>
+              <xsc:Java>new java.util.HashMap&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="SysMonitoringRs.Channel"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();</xsc:Java>
+            </xsc:Item>
+          </Jml>
+        </InitialValue>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthKHBD5R2KMJDWNKTM35GCMT3X5M" Name="decorate" DescriptionId="mlsKHMHJFBHOZEALDJBHLEK7MMTT4" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="treeItem" DescriptionId="mls3H5IM4NW2NEJDEZE5U7YVIMDQQ" Id="mprGZ47FTBF6FH3XPAZ2GZQT45PSM">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.editors.monitoring.tree.TreeItem"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.List" DescriptionId="mlsMSVGCWJWPZD3HAMJGRSQ3LEYIM">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.explorer.editors.monitoring.tree.MonitoringTreeItemDecoration"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (treeItem == null) {
+    return null;
+}
+
+if (treeItem.ContextType == org.radixware.kernel.common.enums.EEventContextType.SYSTEM_INSTANCE) {
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQYU6EDDUP5DUZF7567LABGOXQM mthK3FUSDTDVRB27L5SD455FPKQOA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(treeItem, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQYU6EDDUP5DUZF7567LABGOXQM prdJPGUXOW56BBXNPO6K34ZA6FDUQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.get(treeItem.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcU2JWJJRVJBGNBFW6AERSZBIMNM mthVYZVXOF33VHABKTQOLZPU2RZWE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()));
+}
+if (treeItem.ContextType == org.radixware.kernel.common.enums.EEventContextType.SYSTEM_UNIT) {
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQYU6EDDUP5DUZF7567LABGOXQM mthETNEK77SXZCHLCXZYZSAT7T244" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(treeItem, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQYU6EDDUP5DUZF7567LABGOXQM prd3OXYCRTXHNAUXKUNXDOMCNMLCY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.get(treeItem.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcU2JWJJRVJBGNBFW6AERSZBIMNM mthVYZVXOF33VHABKTQOLZPU2RZWE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()));
+}
+if (treeItem.ContextType == org.radixware.kernel.common.enums.EEventContextType.NET_CHANNEL) {
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQYU6EDDUP5DUZF7567LABGOXQM mth6DMNQEYIENBRVK2PUK6G3IAP5U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(treeItem, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQYU6EDDUP5DUZF7567LABGOXQM prdK7J5SPXIT5HAPNNA6SHEXD4JMI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.get(treeItem.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcU2JWJJRVJBGNBFW6AERSZBIMNM mthVYZVXOF33VHABKTQOLZPU2RZWE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()));
+}
+
+return null;
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthFTIFXQHMAZFYFO7CE7LFS4DCRA" Name="prepare" DescriptionId="mlsPDCFT2EF6BCXLNRFHLAHRKN3AA" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="rq" DescriptionId="mlsNGBORFUXRNHKDOAHRA6HUK76S4" Id="mprD5C3OEZVJ5GSFGGOZJIP6AFR5U">
+            <Type TypeId="400" extStr="org.radixware.schemas.monitoringcommand.SysMonitoringRq"/>
+          </Parameter>
+          <Parameter Name="rs" DescriptionId="mlsBNLIUP2KERHODIXAX5J6ZZLY3Y" Id="mprBQM5RKB2CRETJDAZAY2FMYMCKA">
+            <Type TypeId="400" extStr="org.radixware.schemas.monitoringcommand.SysMonitoringRs"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQYU6EDDUP5DUZF7567LABGOXQM mthZE62DPXYI5AXNIDW3F2UALZA7Q" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(rs, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQYU6EDDUP5DUZF7567LABGOXQM prdJPGUXOW56BBXNPO6K34ZA6FDUQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQYU6EDDUP5DUZF7567LABGOXQM prd3OXYCRTXHNAUXKUNXDOMCNMLCY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQYU6EDDUP5DUZF7567LABGOXQM prdK7J5SPXIT5HAPNNA6SHEXD4JMI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthK3FUSDTDVRB27L5SD455FPKQOA" Name="decorateInstance" DescriptionId="mlsWSABZBPQCBAJRDYA66DRDTRDNE" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="treeItem" DescriptionId="mlsRLVD3U4MNNEODPKKYONIHSDSJY" Id="mprQQCVZWBN35HCNME7UOYOHKFERI">
+            <Type TypeId="411" Path="adcU2JWJJRVJBGNBFW6AERSZBIMNM"/>
+          </Parameter>
+          <Parameter Name="info" DescriptionId="mls7QWMYHJKCJA2PCDUXHSYHP6IKY" Id="mprNCMYOJTV7ZHMJMVHZVL2ODY4A4">
+            <Type TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="SysMonitoringRs.Instance"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.List" DescriptionId="mlsXWQ6ZWFVUNEXZPFC5CBWK73SGM">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="adcXQUTOPEDB5EDLFEW2RRXPVC4MA"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth6DMNQEYIENBRVK2PUK6G3IAP5U" Name="decorateChannel" DescriptionId="mlsZEZUMB6O7ZGE3JQTJTGMAWWZBM" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="treeItem" DescriptionId="mlsUDSELS3QFNBCFNQS7ANAXY3W7A" Id="mprAYYNX26AEVB3FGIK2AQUAYT3OA">
+            <Type TypeId="411" Path="adcU2JWJJRVJBGNBFW6AERSZBIMNM"/>
+          </Parameter>
+          <Parameter Name="info" DescriptionId="mlsRHEKVRQGDJDA3AYG75L3S5PAPY" Id="mprEB4QTEV5IFEQTBYDSSUPSLSBL4">
+            <Type TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="SysMonitoringRs.Channel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.List" DescriptionId="mlsMI47Q4QTUVBCRIQ6F3CGLIGSJM">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="adcXQUTOPEDB5EDLFEW2RRXPVC4MA"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthETNEK77SXZCHLCXZYZSAT7T244" Name="decorateUnit" DescriptionId="mlsMVY2USXGXFHAZFXSERN2BEA25Q" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="treeItem" DescriptionId="mlsHUML5GVBCNHE3IGTRCIQJILQKM" Id="mprQ5GJI33FDRH6VDUDQ6AISSFLP4">
+            <Type TypeId="411" Path="adcU2JWJJRVJBGNBFW6AERSZBIMNM"/>
+          </Parameter>
+          <Parameter Name="info" DescriptionId="mlsKPZ645M2RBEABIXMQPHMZVEH6U" Id="mpr6Y54QPW3JZCKNBEILXRNMEXEWY">
+            <Type TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="SysMonitoringRs.Unit"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.List" DescriptionId="mlsYMTSYJA4KJDGFM6I6V7W5EMSII">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="adcXQUTOPEDB5EDLFEW2RRXPVC4MA"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthZE62DPXYI5AXNIDW3F2UALZA7Q" Name="fillMapsInfoFromXml" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="rs" Id="mprB2FAWZVYLFAPHCQ7JDJPHHPB7M">
+            <Type TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="SysMonitoringRs"/>
+          </Parameter>
+          <Parameter Name="inst2info" Id="mprC33IVYKI45DZHFHSV5XEBDQ22I">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="2"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="SysMonitoringRs.Instance"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="unit2info" Id="mprI5Q4V7K3P5HOXOWBYEYTI76QLA">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="2"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="SysMonitoringRs.Unit"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="channel2info" Id="mprFRQBS7IZLZDNNCE6KYGS4N4XQA">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="2"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="SysMonitoringRs.Channel"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>inst2info.clear();
+unit2info.clear();
+channel2info.clear();
+for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="SysMonitoringRs.Instance"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> i : rs.InstanceList) {
+    inst2info.put(i.Id, i);
+}
+for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="SysMonitoringRs.Unit"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> u : rs.UnitList) {
+    unit2info.put(u.Id, u);
+}
+for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="SysMonitoringRs.Channel"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> c : rs.ChannelList) {
+    channel2info.put(c.Id, c);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Implements>
+      <Interface TypeId="411" Path="aicX3M3B334EJBLRBYSMCKN2U2YXY"/>
+    </Implements>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="agcWMN3P5J5ONCFPLJVGBFAKZXZXU" Name="CfgPacketGroup" Type="11">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderagcZLZQIL2DJNBJHIH7RPXMBDQ42Y"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyagcZLZQIL2DJNBJHIH7RPXMBDQ42Y"/>
+    </Bodies>
+    <MethodGroup Id="cmgB2F34LPF5VFC3OJXQAJXPA4VU4" Name="Root"/>
+    <PropertyGroup Id="cpgMLGK2MCYSJFFFKQIBZKVAWAS6Y" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthcmdHRCUATQLRJBH3CPIY3LJIDYDUU" Name="onCommand_Import" Nature="1" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="input" Id="mpr2HTZIEFCEBDOTNPXN3XBMOHPEQ">
+            <Type TypeId="451" Path="xsdTETHL6NQNFCPZFRZOZP4ET5KDI" extStr="PacketDocument"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="IntDocument"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (!</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="acl6YTUW6RSTFHKHO3LGTUIADUAT4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl6YTUW6RSTFHKHO3LGTUIADUAT4 mth6RGNLHODFJHPPMTDXXGHKEPFCA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(input.Packet.AppVer))
+    try {
+        if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcMessageDialogResource_____"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcMessageDialogResource_____ mthS6CGQH6ZQ5FYBOEEJQPRIYPMME" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(),
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsA6YQGK7TJXNRDCHCABIFNQAABA aci4OAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, null,
+                java.util.Arrays.asList(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21" Path="acsS7F4BA7TJXNRDCHCABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>[]{
+                    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsS7F4BA7TJXNRDCHCABIFNQAABA aci3KAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+                    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsS7F4BA7TJXNRDCHCABIFNQAABA aci2WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>}),
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsPOAA2WUY6VD5RDH6AHJWNNWZCQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, input.Packet.AppVer, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="acl6YTUW6RSTFHKHO3LGTUIADUAT4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWMN3P5J5ONCFPLJVGBFAKZXZXU prd4BAXENWMK5FTLOSFBUY5DFH2NM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)
+        ) == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsS7F4BA7TJXNRDCHCABIFNQAABA aci2WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)
+            return null;
+    } catch (Exception e) {
+        return null;
+    }
+    
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="acl6YTUW6RSTFHKHO3LGTUIADUAT4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> p = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="acl6YTUW6RSTFHKHO3LGTUIADUAT4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl6YTUW6RSTFHKHO3LGTUIADUAT4 mthTFWB46W2QFGYNATKZ6MUSDESZA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(input);
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mth3MY3U3VYSTNRDDXBABIFNQAAAE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsPVLIUELSKTNRDAQSABIFNQAAAE aciXIJLRLO5YRCTRLZGRBEQHM3ZIM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, p.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWMN3P5J5ONCFPLJVGBFAKZXZXU colDZOPCTNIURBCBPLCP75JMZCFYM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthUVXH2WARWLOBDLJLAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:EventCode StringId="mlsETRMM7YMEFDHDDJ74MKXDPZWKE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, input.Packet.FileName);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthA2VYUFF2STNRDDXBABIFNQAAAE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsPVLIUELSKTNRDAQSABIFNQAAAE aciXIJLRLO5YRCTRLZGRBEQHM3ZIM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, p.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWMN3P5J5ONCFPLJVGBFAKZXZXU colDZOPCTNIURBCBPLCP75JMZCFYM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="IntDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> rs = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="IntDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Factory.newInstance();
+rs.Int = p.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWMN3P5J5ONCFPLJVGBFAKZXZXU colDZOPCTNIURBCBPLCP75JMZCFYM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+return rs;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblWMN3P5J5ONCFPLJVGBFAKZXZXU"/>
+    <Presentations>
+      <Commands>
+        <Command Id="cmdHRCUATQLRJBH3CPIY3LJIDYDUU" Name="Import" TitleId="mlsFWCOBH7U3NBMVLFTUP63BP6Z4Y" Nature="2" IconId="imgMUCCZVMA4JC4NMTVVEGYXEXU5Q" IsVisible="true" IsConfirmationRequired="false" Accessibility="0" Scope="2">
+          <AccessRules Access="4" IsPublished="false"/>
+          <InType TypeId="451" Path="xsdTETHL6NQNFCPZFRZOZP4ET5KDI" extStr="PacketDocument"/>
+          <OutType TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="IntDocument"/>
+        </Command>
+      </Commands>
+    </Presentations>
+    <Extends TypeId="411" Path="pdcEntityGroup_______________">
+      <xsc:GenericArguments>
+        <xsc:Argument Alias="?">
+          <xsc:Type TypeId="32" Path="aecWMN3P5J5ONCFPLJVGBFAKZXZXU"/>
+        </xsc:Argument>
+      </xsc:GenericArguments>
+    </Extends>
+  </AdsClassDefinition>
+</AdsDefinition>

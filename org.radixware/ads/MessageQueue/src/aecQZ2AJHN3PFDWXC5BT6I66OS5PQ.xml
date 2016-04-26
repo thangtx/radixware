@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:edit="http://schemas.radixware.org/editmask.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ" Name="MessageQueue" Type="1">
+    <AccessRules/>
+    <Headers>
+      <Src Name="Headeraec4RKPGKBXK5D27NZV4R5LUDMBEM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyaec4RKPGKBXK5D27NZV4R5LUDMBEM"/>
+    </Bodies>
+    <MethodGroup Id="cmgYSX2Q6EBIVBC3MQZRQQ4PMORRU" Name="Root"/>
+    <PropertyGroup Id="cpgYOQLYYBGLRBRLFBOSWMF2CRASY" Name="Root">
+      <Group Id="cpgTH66TDGLIBCILMQX72MC4SXJSY" Name="DB Props" Members="colZDZ4CALBLBGEJCZMA5VSTVPUGQ colLVCKVHLVHBDFDG7LREI4IXZPTM colOPGPZBRRSZFCFP6DSBBECKFM74 colMMPJ3MOF5NEEFB4MEBKFURZTMQ colB56SD6AHQ5AJFMZJHTWW2XRHQE colPRWBAX2DZJDFLL5RB6UKQPNJCM col7PCH7MSGLZFSNNDIFYF6WQLWDI colTRIHVJKCKNDNVESJUPLUFKPVQA colID5J43B3FRHA7OBLDQQQ5DYWSM colFXFWBKZSLZG3JBCGX3IJH6FJCU"/>
+      <Group Id="cpgNYQTBV77TZCXFKUF4O7EFP2FXA" Name="Dynamic Props"/>
+    </PropertyGroup>
+    <Properties>
+      <Property Id="colZDZ4CALBLBGEJCZMA5VSTVPUGQ" Name="id" Nature="0" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <Presentation TitleId="mls3FBZXSZO3FDRNFGRHLVFMYCBVI" InheritanceMask="4">
+          <Editing NotNull="true" EditPossibility="2" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colLVCKVHLVHBDFDG7LREI4IXZPTM" Name="classGuid" Nature="0" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+        <Presentation InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colOPGPZBRRSZFCFP6DSBBECKFM74" Name="brokerAddress" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsGCAWRN7ELBAMTEZT4CLVLOXFW4" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colMMPJ3MOF5NEEFB4MEBKFURZTMQ" Name="login" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsT2HK4HVP2VAXPFEOKZRYCWASR4" InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colB56SD6AHQ5AJFMZJHTWW2XRHQE" Name="partitionName" DescriptionId="mlsPINFJH2JL5GINA7AYRX4YURZGE" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsREMZXXM6TZDRPAE6IFCBRJJUTY" InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colPRWBAX2DZJDFLL5RB6UKQPNJCM" Name="password" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsBPFF6A3ZUFH5FDELQ33D63JLGI" InheritanceMask="4">
+          <Editing ShowDialogButton="true" IsDuplicatesEnabled="true">
+            <EditMask>
+              <edit:Str IsPassword="true" MaxLength="200" Mask="" NoBlankCharacter="false"/>
+            </EditMask>
+          </Editing>
+        </Presentation>
+      </Property>
+      <Property Id="col7PCH7MSGLZFSNNDIFYF6WQLWDI" Name="queueKind" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="21" Path="acsIXEVYI6PORHVNOJ2X4FJ4BGBE4"/>
+        <Presentation TitleId="mlsTJLBOWUHVZHMLNOEMS5JGK4Z2U" InheritanceMask="4">
+          <Editing NotNull="true" EditPossibility="1" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colTRIHVJKCKNDNVESJUPLUFKPVQA" Name="queueName" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsHSWKLSCXUJDTNIXI5OT2MM7SV4" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colID5J43B3FRHA7OBLDQQQ5DYWSM" Name="title" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsPJCOYCNH6ZBUBIAP46SWPPB6RY" InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colFXFWBKZSLZG3JBCGX3IJH6FJCU" Name="consumerKey" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsDNGUOQBXRBE2HGY5KDRMNI6SDE" InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods/>
+    <Entity EntityId="tblQZ2AJHN3PFDWXC5BT6I66OS5PQ">
+      <AccessAreas Type="None"/>
+    </Entity>
+    <Presentations ObjectTitleId="mls27WU2BFIXVCGVJPPCMXP7R2XP4" EntityTitleId="mlsK7CPSWJBPVB5PKMUVCKRJCEZOU" DefaultSelectorPresentationId="sprLUQDA4NYBVG3JJNRMRPBRXLBBU" IconId="imgOVKC2AQ7AFFNPPW6BVS4DHO3CM" Restrictions="0">
+      <ObjectTitleFormat Id="etf6SXDAQAMDNBR3EK7L53G2EQXOQ">
+        <TitleItem PropId="colZDZ4CALBLBGEJCZMA5VSTVPUGQ">
+          <Pattern>{0}) </Pattern>
+        </TitleItem>
+        <TitleItem PropId="colID5J43B3FRHA7OBLDQQQ5DYWSM">
+          <Pattern>{0}</Pattern>
+        </TitleItem>
+      </ObjectTitleFormat>
+      <Sortings>
+        <Sorting Id="srtY7AFHOLR2ZHR5NBTHGVKS7FQDM" Name="ByID">
+          <OrderBy Desc="false" PropId="colZDZ4CALBLBGEJCZMA5VSTVPUGQ"/>
+          <Hint/>
+        </Sorting>
+      </Sortings>
+      <EditorPresentations>
+        <EditorPresentation Id="eprWEEVKI2IT5DQJAS5RJFI4FFDS4" Name="Edit" InheritanceMask="2192" Restrictions="0" EnabledCommandIds="" RightsInheritanceMode="0">
+          <Model Id="aemWEEVKI2IT5DQJAS5RJFI4FFDS4" Name="Edit:Model" Type="15">
+            <AccessRules/>
+            <Headers>
+              <Src Name="HeaderaemWEEVKI2IT5DQJAS5RJFI4FFDS4"/>
+            </Headers>
+            <Bodies>
+              <Src Name="BodyaemWEEVKI2IT5DQJAS5RJFI4FFDS4"/>
+            </Bodies>
+            <MethodGroup Id="cmgT5ZB3KCRPZEOJLWBUTEYUGUCUI" Name="Root"/>
+            <PropertyGroup Id="cpgCHLDNR3ZQFEBLO5NHUUJEQ4YM4" Name="Root"/>
+            <Properties/>
+            <Methods>
+              <Method Id="mth6ICIIE6PUVC6JKT36Y4PSMBYTU" Name="setVisibility" Nature="0" Environment="common-client" IsOverride="false">
+                <AccessRules/>
+                <Sources>
+                  <Src>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colB56SD6AHQ5AJFMZJHTWW2XRHQE" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthYNQQVLTKWJAHZB6DDCMLJSOHAI" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(false);
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colFXFWBKZSLZG3JBCGX3IJH6FJCU" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthYNQQVLTKWJAHZB6DDCMLJSOHAI" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(false);</xsc:Java>
+                    </xsc:Item>
+                  </Src>
+                </Sources>
+              </Method>
+              <Method Id="mth7X7O4RPENFCDZELLNSKEQOPN4Q" Name="afterRead" Nature="0" IsOverride="true">
+                <AccessRules Access="1"/>
+                <Sources>
+                  <Src>
+                    <xsc:Item>
+                      <xsc:Java>if (!(</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mth7I77JEZSOVDBZPRP7N6QITSMQI" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>() instanceof </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="adcA2QXPQM7ZRAO3O43ZSXPOOS324"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>)) {
+    </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ eprWEEVKI2IT5DQJAS5RJFI4FFDS4 aemWEEVKI2IT5DQJAS5RJFI4FFDS4 mth6ICIIE6PUVC6JKT36Y4PSMBYTU" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>();
+}
+super.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mth7X7O4RPENFCDZELLNSKEQOPN4Q" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>();</xsc:Java>
+                    </xsc:Item>
+                  </Src>
+                </Sources>
+              </Method>
+            </Methods>
+          </Model>
+          <ChildExplorerItems/>
+          <EditorPages>
+            <Page Id="epgSSMUGGSOLNEENDZTYAGQ7AIZ5I" Name="General" TitleId="mls3VAC7B2MZNAFFCOZJO3PW7IBPY" Type="1">
+              <AccessRules IsPublished="false"/>
+              <Properties>
+                <Property Id="colZDZ4CALBLBGEJCZMA5VSTVPUGQ" Row="0" Column="0"/>
+                <Property Id="colID5J43B3FRHA7OBLDQQQ5DYWSM" Row="1" Column="0"/>
+                <Property Id="colOPGPZBRRSZFCFP6DSBBECKFM74" Row="3" Column="0"/>
+                <Property Id="colTRIHVJKCKNDNVESJUPLUFKPVQA" Row="4" Column="0"/>
+                <Property Id="colMMPJ3MOF5NEEFB4MEBKFURZTMQ" Row="7" Column="0"/>
+                <Property Id="colPRWBAX2DZJDFLL5RB6UKQPNJCM" Row="8" Column="0"/>
+                <Property Id="colB56SD6AHQ5AJFMZJHTWW2XRHQE" Row="5" Column="0"/>
+                <Property Id="colFXFWBKZSLZG3JBCGX3IJH6FJCU" Row="6" Column="0"/>
+                <Property Id="col7PCH7MSGLZFSNNDIFYF6WQLWDI" Row="2" Column="0"/>
+              </Properties>
+            </Page>
+            <PageOrder>
+              <Item PageId="epgSSMUGGSOLNEENDZTYAGQ7AIZ5I" Level="1"/>
+            </PageOrder>
+          </EditorPages>
+          <ObjectTitleFormat Id="etfLNX6FP2DABBVPIVNVPAWGIB3DE"/>
+        </EditorPresentation>
+        <EditorPresentation Id="eprKFF4CT7VDRE53FMW76LHR7EL4M" Name="Create" BasePresentationId="eprWEEVKI2IT5DQJAS5RJFI4FFDS4" InheritanceMask="40114" Restrictions="0" EnabledCommandIds="" RightsInheritanceMode="0">
+          <AccessRules IsPublished="false"/>
+          <ChildExplorerItems/>
+          <ObjectTitleFormat Id="etfZRL75CQX2ZD5LLB6NE6JKWBYO4"/>
+        </EditorPresentation>
+      </EditorPresentations>
+      <SelectorPresentations>
+        <SelectorPresentation Id="sprLUQDA4NYBVG3JJNRMRPBRXLBBU" Name="Default" InheritanceMask="144" Restrictions="32" EnabledCommandIds="" CreationEditorPresentationIds="eprKFF4CT7VDRE53FMW76LHR7EL4M" EditorPresentationIds="eprWEEVKI2IT5DQJAS5RJFI4FFDS4">
+          <Condition>
+            <ConditionWhere/>
+            <ConditionFrom/>
+          </Condition>
+          <Addons AnyBaseFilterEnabled="true" AnyBaseSortingEnabled="true" CustomFilterEnabled="true" CustomSortingEnabled="true" FilterIsObligatory="false" DefaultSortingId="srtY7AFHOLR2ZHR5NBTHGVKS7FQDM">
+            <DefaultHint/>
+          </Addons>
+          <SelectorColumns>
+            <Column Align="-1" PropId="colZDZ4CALBLBGEJCZMA5VSTVPUGQ" Visibility="1" SizePolicy="2"/>
+            <Column Align="-1" PropId="col7PCH7MSGLZFSNNDIFYF6WQLWDI" Visibility="1" SizePolicy="2"/>
+            <Column Align="-1" PropId="colID5J43B3FRHA7OBLDQQQ5DYWSM" Visibility="1" SizePolicy="3"/>
+          </SelectorColumns>
+        </SelectorPresentation>
+      </SelectorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="pdcEntity____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

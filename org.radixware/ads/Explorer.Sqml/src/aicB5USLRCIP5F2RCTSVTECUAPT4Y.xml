@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicB5USLRCIP5F2RCTSVTECUAPT4Y" Name="ISqmlTableColumns" Type="5" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.meta.sqml.ISqmlTableColumns"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcAEFJQ7L6DRCMBBIYVBJWNZEKBM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcG7OHVOYSAZAYBMAOXPBJCNWIIE"/>
+    </Bodies>
+    <MethodGroup Id="cmgANIBCYWMY5CMJCHA2HOAAHS4DU" Name="Root"/>
+    <PropertyGroup Id="cpgP7FIB4BLFRGFHKIFDANOFY5E7E" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthVQZLRKFBDZH55L7A6SDSC4Z72I" Name="get" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="get(I)Lorg.radixware.kernel.common.client.meta.sqml.ISqmlColumnDef;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mprHKGZCAXHQJBGFLHB2V3JPVQ7VI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlColumnDef"/>
+      </Method>
+      <Method Id="mthBNWI7OYDTRFH7DJGV5NOHHDEIQ" Name="size" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="size()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mth2L7B367C7NDYXEGMNILR4DHDNM" Name="getColumnById" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getColumnById(Lorg.radixware.kernel.common.types.Id;)Lorg.radixware.kernel.common.client.meta.sqml.ISqmlColumnDef;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="columnId" Id="mpr2LD7SVLCERA7TBEIEC4LSHXGLA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlColumnDef"/>
+      </Method>
+      <Method Id="mthB5WM2KVC2BAHZEPOZB47BJ3OSA" Name="getAll" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getAll()Ljava.util.List&lt;Lorg.radixware.kernel.common.client.meta.sqml.ISqmlColumnDef;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlColumnDef"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthIBWPW3UKBNDWTCQYCQBYPDRFZM" Name="getColumnByName" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getColumnByName(Ljava.lang.String;)Lorg.radixware.kernel.common.client.meta.sqml.ISqmlColumnDef;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="columnName" Id="mpr4NBEIL4475BUTA7H56VB35O4VQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlColumnDef"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

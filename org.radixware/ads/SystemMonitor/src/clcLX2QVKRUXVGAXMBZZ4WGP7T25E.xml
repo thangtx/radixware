@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsContextlessCommandDefinition Id="clcLX2QVKRUXVGAXMBZZ4WGP7T25E" Name="DashConfigStoreInDb" Nature="2" IsVisible="true" IsConfirmationRequired="true">
+    <AccessRules IsPublished="false"/>
+    <InType TypeId="451" Path="xsdGVYAU63UXJD2FJUYRDFP5U32OU" extStr="DashboardDocument"/>
+    <Source>
+      <xsc:Item>
+        <xsc:Java>try {
+    </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aecVGSKITRX4FHZJAGAQ7V7VGZUJY"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> dashConfig = new </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aecVGSKITRX4FHZJAGAQ7V7VGZUJY"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>();
+    dashConfig.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcEntity____________________ mthMUQ4NQFMSTNRDDXBABIFNQAAAE" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>();
+    dashConfig.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aecVGSKITRX4FHZJAGAQ7V7VGZUJY colQU77X4CEHNCMPMBTEGPP2OQ3IY" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> = input.Dashboard.DashConfigGuid;
+    dashConfig.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aecVGSKITRX4FHZJAGAQ7V7VGZUJY colQVV4T5O6B5COJMBD3EZL53BF3A" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> = input.Dashboard.Title;
+    dashConfig.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aecVGSKITRX4FHZJAGAQ7V7VGZUJY colBD47EI456VGBLLZ5AUVGEZFKOU" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> = new DateTime(System.currentTimeMillis());
+    dashConfig.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aecVGSKITRX4FHZJAGAQ7V7VGZUJY col2JC6467ZUBDORDSTW5SLDQMFVI" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcArte______________________ mthJQUPUAH4RPNRDCISABIFNQAABA" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>();
+
+    dashConfig.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aecVGSKITRX4FHZJAGAQ7V7VGZUJY colXTE7QVLZ3FGCFDGLAXN7EWNN54" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcArte______________________ mthFAPPRHDR7DNRDOMIABIFNQAABA" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>();
+    java.io.Writer wr = new java.io.StringWriter();
+    input.save(wr, new org.apache.xmlbeans.XmlOptions().setSaveAggressiveNamespaces().setCharacterEncoding("UTF-8"));
+    dashConfig.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aecVGSKITRX4FHZJAGAQ7V7VGZUJY colXTE7QVLZ3FGCFDGLAXN7EWNN54" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.setString(1, wr.toString());
+
+    dashConfig.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcEntity____________________ mth7X446DFQSTNRDDXBABIFNQAAAE" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>();
+} catch (</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="axcG6PZC4JQPBAI5C7ZFKWL4SWGKA"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> ex) {
+    </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcTrace_____________________ mthD6XIGP2SRPNRDCISABIFNQAABA" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(ex), </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci4VSRGAWJBFEH3IAVZIWZJQVMTI" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>);
+} catch (</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> ex) {
+    </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcTrace_____________________ mthD6XIGP2SRPNRDCISABIFNQAABA" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(ex), </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci4VSRGAWJBFEH3IAVZIWZJQVMTI" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>);
+}</xsc:Java>
+      </xsc:Item>
+    </Source>
+  </AdsContextlessCommandDefinition>
+</AdsDefinition>

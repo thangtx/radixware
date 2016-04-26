@@ -1,0 +1,44 @@
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xscml="http://schemas.radixware.org/xscml.xsd" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:this="http://schemas.radixware.org/udsdef.xsd" xmlns:common="http://schemas.radixware.org/commondef.xsd" xmlns:utils="http://schemas.radixware.org/utils.xsd" xmlns:ads="http://schemas.radixware.org/adsdef.xsd" targetNamespace="http://schemas.radixware.org/udsdef.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">    
+    <xs:import namespace="http://schemas.radixware.org/commondef.xsd" schemaLocation="commondef.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/adsdef.xsd" schemaLocation="adsdef.xsd"/>
+    <xs:import namespace="http://schemas.xmlsoap.org/wsdl/" schemaLocation="wsdl.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/xscml.xsd" schemaLocation="xscml.xsd"/>
+    
+    <xs:complexType name="UserFunctionDefinition">
+        <xs:complexContent>
+            <xs:extension base="common:DescribedDefinition">
+                <xs:sequence>
+                    <xs:element name="Source" type="xscml:JmlType" minOccurs="0"/>
+                    <xs:element name="Strings" type="ads:LocalizingBundleDefinition" minOccurs="0"/>
+                    <xs:element name="UserFuncProfile" minOccurs="0" type="ads:UserFuncProfile"/>                            
+                </xs:sequence>
+                <xs:attribute name="OwnerClassId" type="types:Id"/>
+                <xs:attribute name="ClassId" type="types:Id"/>
+                <xs:attribute name="PropId" type="types:Id"/>
+                <xs:attribute name="MethodId" type="types:Id"/>
+                <xs:attribute name="OwnerTitle" type="xs:string"/>
+                <xs:attribute name="SuppressedWarnings" type="utils:SuppressedWarnings" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:element name="UdsDefinition">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element name="UserFunc" type="this:UserFunctionDefinition"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="UdsDefinitionList">
+        <xs:complexType>
+            <xs:sequence>
+                
+                <xs:element ref="this:UdsDefinition" minOccurs="0" maxOccurs="unbounded"/>
+                
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+</xs:schema>

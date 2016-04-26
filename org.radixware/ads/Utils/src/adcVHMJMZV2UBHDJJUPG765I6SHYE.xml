@@ -1,0 +1,871 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" FormatVersion="0">
+  <AdsClassDefinition Id="adcVHMJMZV2UBHDJJUPG765I6SHYE" Name="UDSCompiler" Type="3" Environment="server">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcVHMJMZV2UBHDJJUPG765I6SHYE">
+        <xsc:Item>
+          <xsc:Java>import org.radixware.kernel.common.builder.BuildActionExecutor;
+import org.radixware.kernel.common.defs.RadixObject;
+import org.radixware.kernel.common.defs.ads.build.BuildOptions;
+import org.radixware.kernel.common.defs.Definition;
+import org.radixware.kernel.common.defs.ads.rights.AdsRoleDef;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsUserReportClassDef;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportModelClassDef;
+import org.radixware.kernel.common.defs.ads.localization.AdsLocalizingBundleDef;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcVHMJMZV2UBHDJJUPG765I6SHYE">
+        <xsc:Item>
+          <xsc:Java>private org.radixware.kernel.common.builder.api.userext.UDSRepository repo ;
+private boolean shared=false;
+public </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="aicL25TZFEZONEQJJWZHDTE3THUJY"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> externalLoader = null;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmgJLLRJYND4FHOXK6RO7NA6LZXHE" Name="Root"/>
+    <PropertyGroup Id="cpgSVZCHUCNBFF7JG7RDOTBR7OHIA" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthUHEIC6SZ4FCNBPXXBGVBM3UWPM" Name="compile" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="definition" Id="mprBYBZKQCFIRA2XAZXE6ROH2P2OE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.defs.ads.AdsDefinition"/>
+          </Parameter>
+          <Parameter Name="problemHandler" Id="mprC5WJ66WC2ZGMFH2V3ZTWVGCBLM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.builder.api.IBuildProblemHandler"/>
+          </Parameter>
+          <Parameter Name="requestor" Id="mpr3PSSZNRAWBGEDDJFE2UQCQPYKQ">
+            <Type TypeId="411" Path="adcVHMJMZV2UBHDJJUPG765I6SHYE aicZ6I4SRQKMBFQRPNHAQ3Y4M67SI"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final org.radixware.kernel.common.builder.api.IBuildProblemHandler delegate = problemHandler;
+
+org.radixware.kernel.common.builder.api.IBuildProblemHandler workerHandle = new org.radixware.kernel.common.builder.api.IBuildProblemHandler() {
+    private boolean wasErrors = false;
+
+    public void clear() {
+        wasErrors = false;
+    }
+
+    public boolean wasErrors() {
+        return wasErrors;
+    }
+
+    public void accept(org.radixware.kernel.common.check.RadixProblem problem) {
+        if (delegate != null) {
+            delegate.accept(problem);
+        }
+        boolean isError = problem.getSeverity() == org.radixware.kernel.common.check.RadixProblem.ESeverity.ERROR;
+        String message = "at " + problem.getSource().getQualifiedName() + ": " + problem.getMessage();
+        if (isError) {
+            wasErrors = true;
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, message, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciVHTSMNFUNNBTJFRXGWTPCZA2FI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        } else {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci6CAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, message, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciVHTSMNFUNNBTJFRXGWTPCZA2FI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        }
+    }
+};
+
+BuildActionExecutor executor = new BuildActionExecutor(new org.radixware.kernel.common.builder.api.DefaultBuildEnvironment(BuildActionExecutor.EBuildActionType.COMPILE_SINGLE, workerHandle) {
+    @Override
+    public org.radixware.kernel.common.defs.ads.build.IFlowLogger getFlowLogger() {
+        return new org.radixware.kernel.common.builder.console.ConsoleFlowLogger() {
+            @Override
+            protected void printError(String stirng) {
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, stirng, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciVHTSMNFUNNBTJFRXGWTPCZA2FI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+            }
+
+            @Override
+            protected void printMessage(String stirng) {
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci52AUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, stirng, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciVHTSMNFUNNBTJFRXGWTPCZA2FI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+            }
+
+            @Override
+            public boolean fatal(Exception e) {
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthBXQY2BN2DVEUNP7D645ZOVXZM4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciVHTSMNFUNNBTJFRXGWTPCZA2FI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+                return false;
+            }
+        };
+    }
+});
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> compiledDefId = definition.Id;
+final org.radixware.kernel.common.defs.ads.AdsDefinition compileDef = definition;
+
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcVHMJMZV2UBHDJJUPG765I6SHYE aicZ6I4SRQKMBFQRPNHAQ3Y4M67SI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> requestorRef = requestor;
+executor.execute(new RadixObject[]{
+    definition
+}, new BuildOptions.UserModeHandler() {
+    @Override
+    public void acceptUserDefinitionRuntime(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> id, java.io.File jarFile) {
+        if (id == compiledDefId) {
+            if (requestorRef != null) {
+                try {
+                    String runtimeLocalClassName = compileDef.getId().toString();
+                    if (compileDef instanceof org.radixware.kernel.common.defs.ads.rights.AdsRoleDef) {
+                        runtimeLocalClassName = ((org.radixware.kernel.common.defs.ads.rights.AdsRoleDef) compileDef).getRuntimeId().toString();
+                    } else if (compileDef instanceof org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsUserReportClassDef) {
+                        runtimeLocalClassName = ((org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsUserReportClassDef) compileDef).getRuntimeId().toString();
+                    } else if (compileDef instanceof org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportModelClassDef) {
+                        runtimeLocalClassName = ((org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportModelClassDef) compileDef).getRuntimeId().toString();
+                    } else if (compileDef instanceof org.radixware.kernel.common.defs.ads.localization.AdsLocalizingBundleDef) {
+                        runtimeLocalClassName = ((org.radixware.kernel.common.defs.ads.localization.AdsLocalizingBundleDef) compileDef).getRuntimeId().toString();
+                    }
+                    requestorRef.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcVHMJMZV2UBHDJJUPG765I6SHYE aicZ6I4SRQKMBFQRPNHAQ3Y4M67SI mthHRITJYJNM5DGFPMRZH5EFY56II" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(org.radixware.kernel.common.utils.FileUtils.readBinaryFile(jarFile), runtimeLocalClassName);
+                } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+                    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthBXQY2BN2DVEUNP7D645ZOVXZM4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ex), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciVHTSMNFUNNBTJFRXGWTPCZA2FI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void acceptBuildTarget(Definition def, java.util.Map&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> idsMap) {
+        if (def instanceof AdsRoleDef) {
+            ((AdsRoleDef) def).resetRuntimeId();
+            idsMap.put(((AdsRoleDef) def).getRuntimeId(), def.getId());
+        } else if (def instanceof AdsUserReportClassDef) {
+            ((AdsUserReportClassDef) def).resetRuntimeId();
+            idsMap.put(((AdsUserReportClassDef) def).getRuntimeId(), def.getId());
+            AdsReportModelClassDef model = (AdsReportModelClassDef) ((AdsUserReportClassDef) def).getPresentations().getModel();
+            idsMap.put(model.getRuntimeId(), model.getId());
+        } else if (def instanceof AdsLocalizingBundleDef) {
+            ((AdsLocalizingBundleDef) def).resetRuntimeId();
+        } else if (def instanceof AdsReportModelClassDef) {
+            AdsUserReportClassDef report = (AdsUserReportClassDef) ((AdsReportModelClassDef) def).getOwnerClass();
+            if (idsMap.get(report.getRuntimeId()) == null) {
+                report.resetRuntimeId();
+                idsMap.put(report.getRuntimeId(), report.getId());
+            }
+            idsMap.put(((AdsReportModelClassDef) def).getRuntimeId(), def.getId());
+        }
+    }
+
+    public void startBuild() {
+    }
+
+    public void finishBuild() {
+    }
+});
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthHDNDXSRESFBHFDFDFO4PFDWQ7A" Name="compileAppRole" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="roleId" Id="mprXNMMX654TJGZZH6LILBRXZULHE">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="problemHandler" Id="mpr4ZE7P4MTOJBJJNMGVK6ZD7CSBQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.check.IProblemHandler"/>
+          </Parameter>
+          <Parameter Name="resultRequestor" Id="mprQY3W2RK4E5EMLGGQCJY3MWH2RU">
+            <Type TypeId="411" Path="adcVHMJMZV2UBHDJJUPG765I6SHYE aicZ6I4SRQKMBFQRPNHAQ3Y4M67SI"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>org.radixware.kernel.common.builder.api.userext.UDSRepository repo = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcVHMJMZV2UBHDJJUPG765I6SHYE adcCSPITT6NUFAWNJ3KLXYFKAWC44"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcVHMJMZV2UBHDJJUPG765I6SHYE adcCSPITT6NUFAWNJ3KLXYFKAWC44 mthTRGTKU6NS5BX3NI6RS4MWBK5RI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+try {
+    //1. look for definition
+    org.radixware.kernel.common.repository.Layer targetLayer = repo.getBranch().getLayers().findByURI("user.extensions");
+    org.radixware.kernel.common.defs.ads.rights.AdsRoleDef role = null;
+    for (org.radixware.kernel.common.defs.Module module : targetLayer.getAds().getModules()) {
+        if (module instanceof org.radixware.kernel.common.defs.ads.module.AdsModule) {
+            org.radixware.kernel.common.defs.ads.AdsDefinition roleDef = ((org.radixware.kernel.common.defs.ads.module.AdsModule) module).getDefinitions().findById(roleId);
+            if (roleDef instanceof org.radixware.kernel.common.defs.ads.rights.AdsRoleDef) {
+                role = (org.radixware.kernel.common.defs.ads.rights.AdsRoleDef) roleDef;
+                break;
+            }
+        }
+    }
+    if (role == null) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, "No definitions found for application role: #" + roleId, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciVHTSMNFUNNBTJFRXGWTPCZA2FI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        return true;
+    }
+    final boolean[] wasErrors = new boolean[]{false};
+    final org.radixware.kernel.common.check.IProblemHandler delegate = problemHandler;
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcVHMJMZV2UBHDJJUPG765I6SHYE mthUHEIC6SZ4FCNBPXXBGVBM3UWPM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(role, new org.radixware.kernel.common.builder.api.IBuildProblemHandler() {
+        public void clear() {
+            wasErrors[0] = false;
+        }
+
+        public boolean wasErrors() {
+            return wasErrors[0];
+        }
+
+        public void accept(org.radixware.kernel.common.check.RadixProblem problem) {
+            
+            if (delegate != null) {
+                delegate.accept(problem);
+            }
+            if (problem.getSeverity() == org.radixware.kernel.common.check.RadixProblem.ESeverity.ERROR) {
+                wasErrors[0] = true;
+            }
+         
+        }
+    }, resultRequestor);
+    return !wasErrors[0];
+} finally {
+    repo.close();
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYTFPN4CDPZHDBHXK3M44KS24ME" Name="compileUserReportCurrentVersion" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="reportId" Id="mprXNMMX654TJGZZH6LILBRXZULHE">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="problemHandler" Id="mpr4ZE7P4MTOJBJJNMGVK6ZD7CSBQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.check.IProblemHandler"/>
+          </Parameter>
+          <Parameter Name="resultRequestor" Id="mprQY3W2RK4E5EMLGGQCJY3MWH2RU">
+            <Type TypeId="411" Path="adcVHMJMZV2UBHDJJUPG765I6SHYE aicZ6I4SRQKMBFQRPNHAQ3Y4M67SI"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>
+if (shared) {
+    if (repo == null) {
+        repo = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcVHMJMZV2UBHDJJUPG765I6SHYE adcCSPITT6NUFAWNJ3KLXYFKAWC44"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcVHMJMZV2UBHDJJUPG765I6SHYE adcCSPITT6NUFAWNJ3KLXYFKAWC44 mth6QGRH4OT3JBDDG5F2A4RJTS4WY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    }
+} else {
+    if (repo != null) {
+        repo.close();
+        repo = null;
+    }
+    repo = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcVHMJMZV2UBHDJJUPG765I6SHYE adcCSPITT6NUFAWNJ3KLXYFKAWC44"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcVHMJMZV2UBHDJJUPG765I6SHYE adcCSPITT6NUFAWNJ3KLXYFKAWC44 mth6QGRH4OT3JBDDG5F2A4RJTS4WY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+}
+
+try {
+//1. look for definition
+    org.radixware.kernel.common.repository.Layer targetLayer = repo.getBranch().getLayers().findByURI("user.extensions");
+
+    org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportClassDef report = null;
+    for (org.radixware.kernel.common.defs.Module module : targetLayer.getAds().getModules()) {
+        if (module instanceof org.radixware.kernel.common.defs.ads.module.AdsModule) {
+            org.radixware.kernel.common.defs.ads.AdsDefinition reportDef = ((org.radixware.kernel.common.defs.ads.module.AdsModule) module).getDefinitions().findById(reportId);
+            if (reportDef instanceof org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportClassDef) {
+                report = (org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportClassDef) reportDef;
+                break;
+            }
+        }
+    }
+    if (report == null) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, "No definitions found for user-defined report: #" + reportId, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciVHTSMNFUNNBTJFRXGWTPCZA2FI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        return false;
+    }
+
+    final boolean[] wasErrors = new boolean[]{false};
+    final org.radixware.kernel.common.check.IProblemHandler delegate = problemHandler;
+
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcVHMJMZV2UBHDJJUPG765I6SHYE mthUHEIC6SZ4FCNBPXXBGVBM3UWPM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(report, new org.radixware.kernel.common.builder.api.IBuildProblemHandler() {
+        public void clear() {
+            wasErrors[0] = false;
+        }
+
+        public boolean wasErrors() {
+            return wasErrors[0];
+        }
+
+        public void accept(org.radixware.kernel.common.check.RadixProblem problem) {
+
+            if (delegate != null) {
+                delegate.accept(problem);
+            }
+            if (problem.getSeverity() == org.radixware.kernel.common.check.RadixProblem.ESeverity.ERROR) {
+                wasErrors[0] = true;
+            }
+        }
+    }, resultRequestor);
+    return !wasErrors[0];
+} finally {
+    if (!shared) {
+        if (repo != null) {
+            repo.close();
+        }
+        repo = null;
+    }
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthF7USHLD7MNEKRKRNJ33ZRTI76U" Name="share" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>shared = true;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthBIGK5QXFXRD4JFKQTEB45MCCZM" Name="close" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if(repo!=null){
+    repo.close();
+    repo = null;
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <InnerClasses>
+      <Clazz Id="aicZ6I4SRQKMBFQRPNHAQ3Y4M67SI" Name="ResultRequestor" Type="5" Environment="server">
+        <AccessRules IsPublished="false">
+          <Transparence Extendable="false"/>
+        </AccessRules>
+        <Headers>
+          <Src Name="HeaderaicZ6I4SRQKMBFQRPNHAQ3Y4M67SI"/>
+        </Headers>
+        <Bodies>
+          <Src Name="BodyaicZ6I4SRQKMBFQRPNHAQ3Y4M67SI"/>
+        </Bodies>
+        <MethodGroup Id="cmgFBZLOUNFFFCXFJ2KRWLAACBSOI" Name="Root"/>
+        <PropertyGroup Id="cpgZCRMNBSJANHMJBRSS67KWZRZN4" Name="Root"/>
+        <Properties/>
+        <Methods>
+          <Method Id="mthHRITJYJNM5DGFPMRZH5EFY56II" Name="accept" Nature="0" IsOverride="false">
+            <AccessRules IsPublished="false"/>
+            <Parameters>
+              <Parameter Name="runtime" Id="mpr2IKFQESAY5HRVCTTJYX6PIHL3U">
+                <Type TypeId="401" extStr="byte" Dimension="1"/>
+              </Parameter>
+              <Parameter Name="mainClassLocalName" Id="mprGHD4XXGM6NGDXBN7ZN75Y2QY2I">
+                <Type TypeId="21"/>
+              </Parameter>
+            </Parameters>
+            <Sources>
+              <Src/>
+            </Sources>
+          </Method>
+        </Methods>
+      </Clazz>
+      <Clazz Id="adcCSPITT6NUFAWNJ3KLXYFKAWC44" Name="UDSRepositoryBridge" Type="3" Environment="server">
+        <AccessRules IsPublished="false">
+          <Transparence Extendable="false"/>
+        </AccessRules>
+        <Headers>
+          <Src Name="HeaderadcCSPITT6NUFAWNJ3KLXYFKAWC44"/>
+        </Headers>
+        <Bodies>
+          <Src Name="BodyadcCSPITT6NUFAWNJ3KLXYFKAWC44"/>
+        </Bodies>
+        <MethodGroup Id="cmg7KJCA2ONMBCBNJKXPWBSND4XJE" Name="Root"/>
+        <PropertyGroup Id="cpgPRFIVC5CYZHTHLJDWGL5TPNBPQ" Name="Root"/>
+        <Properties/>
+        <Methods>
+          <Method Id="mthTRGTKU6NS5BX3NI6RS4MWBK5RI" Name="createRepositoryForRoles" Nature="0" IsOverride="false">
+            <AccessRules IsPublished="false"/>
+            <ReturnType TypeId="400" extStr="org.radixware.kernel.common.builder.api.userext.UDSRepository"/>
+            <Sources>
+              <Src>
+                <xsc:Item>
+                  <xsc:Java>org.radixware.kernel.common.repository.Branch branch = null;
+try {
+    branch = </xsc:Java>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java>.</xsc:Java>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:IdReference Path="pdcArte______________________ mthJ22YS76JKFBLHMS32FAYSH3QNI" Invoke="true"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java>().ReleaseCache.Release.Repository.getBranch();
+    //create temporary dir for branch components
+    java.io.File file = org.radixware.kernel.starter.radixloader.RadixLoader.getInstance().createTempFile("uds-branch-tmp");
+    file.delete();
+    file.mkdirs();
+    final Class&lt;?> clazz = </xsc:Java>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java>.</xsc:Java>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java>().DefManager.getClass(</xsc:Java>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:IdReference Path="adcBV4ORSQZB5DSDNY5AZVM76QXGY" Soft="true"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java>);
+    try {
+        </xsc:Java>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:TypeDeclaration TypeId="411" Path="aicL25TZFEZONEQJJWZHDTE3THUJY"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java> loader = (</xsc:Java>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:TypeDeclaration TypeId="411" Path="aicL25TZFEZONEQJJWZHDTE3THUJY"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java>) clazz.newInstance();
+        return org.radixware.kernel.common.builder.api.userext.UDSRepository.newInstance(branch, file, loader);
+    } catch (</xsc:Java>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java> ex) {
+        return null;
+    }
+} catch (</xsc:Java>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java> e) {
+    return null;
+}
+</xsc:Java>
+                </xsc:Item>
+              </Src>
+            </Sources>
+          </Method>
+          <Method Id="mth6QGRH4OT3JBDDG5F2A4RJTS4WY" Name="createRepositoryForReports" Nature="0" IsOverride="false">
+            <AccessRules IsPublished="false"/>
+            <ReturnType TypeId="400" extStr="org.radixware.kernel.common.builder.api.userext.UDSRepository"/>
+            <Sources>
+              <Src>
+                <xsc:Item>
+                  <xsc:Java>org.radixware.kernel.common.repository.Branch branch = null;
+try {
+    branch = </xsc:Java>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java>.</xsc:Java>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:IdReference Path="pdcArte______________________ mthJ22YS76JKFBLHMS32FAYSH3QNI" Invoke="true"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java>().ReleaseCache.Release.Repository.getBranch();
+//create temporary dir for branch components
+
+    try {
+        </xsc:Java>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:TypeDeclaration TypeId="411" Path="aicL25TZFEZONEQJJWZHDTE3THUJY"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java> loader = externalLoader;
+        if (loader == null) {
+            final Class&lt;?> clazz = </xsc:Java>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java>.</xsc:Java>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java>().DefManager.getClass(</xsc:Java>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:IdReference Path="adcAET7DTMA5VE47NWVW22BPT27FQ" Soft="true"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java>);
+            loader = (</xsc:Java>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:TypeDeclaration TypeId="411" Path="aicL25TZFEZONEQJJWZHDTE3THUJY"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java>) clazz.newInstance();
+        }
+        java.io.File file = org.radixware.kernel.starter.radixloader.RadixLoader.getInstance().createTempFile("uds-branch-tmp");
+        file.delete();
+        file.mkdirs();
+
+        return org.radixware.kernel.common.builder.api.userext.UDSRepository.newInstance(branch, file, loader);
+    } catch (</xsc:Java>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java> ex) {
+        return null;
+    }
+} catch (</xsc:Java>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java> e) {
+    return null;
+}
+</xsc:Java>
+                </xsc:Item>
+              </Src>
+            </Sources>
+          </Method>
+        </Methods>
+      </Clazz>
+    </InnerClasses>
+    <Resources>
+      <Resource Name="untitled">
+        <Data xsi:nil="true"/>
+      </Resource>
+    </Resources>
+  </AdsClassDefinition>
+</AdsDefinition>

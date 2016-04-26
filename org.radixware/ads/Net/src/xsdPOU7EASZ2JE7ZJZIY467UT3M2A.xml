@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdPOU7EASZ2JE7ZJZIY467UT3M2A" Name="NetHubCmdXsd" TargetNamespace="http://schemas.radixware.org/nethubcmd.xsd" Environment="common"><ads:AccessRules IsPublished="false"/><xs:schema targetNamespace="http://schemas.radixware.org/nethubcmd.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:mess="http://schemas.radixware.org/nethubcmd.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:sic="http://schemas.radixware.org/systeminstancecontrol.xsd" xmlns:t="http://schemas.radixware.org/types.xsd">
+  <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+  <xs:import namespace="http://schemas.radixware.org/systeminstancecontrol.xsd" schemaLocation="systeminstancecontrol.xsd"/>
+  <!---->
+  <xs:complexType name="ReconnectRs" abstract="false">
+    <xs:complexContent>
+      <xs:extension base="sic:SimpleResponse"/>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="EchoTestRs" abstract="false">
+    <xs:complexContent>
+      <xs:extension base="sic:SimpleResponse"/>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

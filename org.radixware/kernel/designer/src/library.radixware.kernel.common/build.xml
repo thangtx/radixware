@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- You may freely edit this file. See harness/README in the NetBeans platform -->
+<!-- for some information on what you could do (e.g. targets to override). -->
+<!-- If you delete this file and reopen the project it will be recreated. -->
+<project name="org.radixware.kernel.common" default="netbeans" basedir=".">
+    <description>Builds, tests, and runs the project org.radixware.kernel.common.</description>
+    <import file="nbproject/build-impl.xml"/>
+    <target name="release">        
+  
+        <copy todir="${cluster}/modules/ext">
+            <fileset dir="../../../common/bin" includes="*.jar" />
+        </copy>
+        <copy todir="${cluster}/modules/ext">
+            <fileset dir="../../../utils/bin/" includes="utils.jar"/>
+        </copy>
+        <copy todir="${cluster}/modules/ext">
+            <fileset dir="../../../common/lib" includes="httpcore-4.4.3.jar,httpclient-4.5.1.jar, serializer.jar, xalan-for-radix-1.0.jar, sqljet-1.1.10.jar, jna-4.1.0.jar , jsr173_1.0_api.jar, xbean.jar, swingx-1.6.4.jar, miglayout-3.7-swing.jar, javadbf-for-radix-1.0.jar, mail.jar,  antlr-runtime-3.4.jar, trilead-ssh2-1.0.0-build217.jar, commons-lang-2.6.jar, sequence-library-1.0.3.jar, commons-logging-1.1.1.jar, org.eclipse.jdt.core_3.9.2.v20140114-1555.jar, jettison-1.1.jar, DdsRadixDocCodeGenerator.jar, poi-3.11-20141221.jar, poi-ooxml-3.11-20141221.jar, poi-ooxml-schemas-3.11-20141221.jar"/>
+        </copy>
+        
+    </target>
+</project>

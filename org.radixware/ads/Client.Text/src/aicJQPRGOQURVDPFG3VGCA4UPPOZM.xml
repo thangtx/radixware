@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicJQPRGOQURVDPFG3VGCA4UPPOZM" Name="ITextOptionsProvider" DescriptionId="mlsD5H2SF7OKJFY3DEIVMF64PKSEE" Type="5" Environment="common-client">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.text.ITextOptionsProvider"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderaicJQPRGOQURVDPFG3VGCA4UPPOZM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaicJQPRGOQURVDPFG3VGCA4UPPOZM"/>
+    </Bodies>
+    <MethodGroup Id="cmgOW6JITXQQVDVBCN4ANSE3KNOA4" Name="Root"/>
+    <PropertyGroup Id="cpgKDQUDTINJ5E2TGXYZIGCYJU4NU" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth2PDH2IYL7RHL7D4FB36VYPZSAU" Name="getOptions" DescriptionId="mlsD4VB5K4ZSFC7VIUBIL3UHAG4FU" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getOptions(Ljava.util.EnumSet&lt;Lorg.radixware.kernel.common.client.enums.ETextOptionsMarker;>;Lorg.radixware.kernel.common.enums.ESelectorRowStyle;)Lorg.radixware.kernel.common.client.text.ITextOptions;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="markers" DescriptionId="mlsXKF5QSZ2SVEZRHVCRIJJIGI6OY" Id="mprMMAFD367SZESTJS2B6GSY6AOJY">
+            <Type TypeId="400" extStr="java.util.EnumSet">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.ETextOptionsMarker"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="rowStyle" DescriptionId="mls465H45HTTVDWTPSWWNAAUHADLI" Id="mprUYGRBLUDCBH3PHPKANG5PM4MZM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.ESelectorRowStyle"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.text.ITextOptions"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

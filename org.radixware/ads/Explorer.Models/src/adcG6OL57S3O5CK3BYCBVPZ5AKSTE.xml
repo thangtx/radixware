@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcG6OL57S3O5CK3BYCBVPZ5AKSTE" Name="ReportParamDialogModel" Type="3" Environment="common-client">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.models.ReportParamDialogModel"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcUZBA2LETIVAXHG2M4ER373W7BM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc666GGNDQZJHOVLVT6JNPUGZZR4"/>
+    </Bodies>
+    <MethodGroup Id="cmg3UC7HLSVQBHT7PAWKOG64SONWA" Name="Root"/>
+    <PropertyGroup Id="cpgUXGQ2TISY5GE5HREVXEOD4FYZQ" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthDK7O55VWB5CJZMNY2K4RBMZKG4" Name="isDefaultButton" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="isDefaultButton(Ljava.lang.String;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="buttonTypeName" Id="mprRXFYH5CPFNFR7LJMAIOYLYNGDU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthXRWW4PP5B5B4LCOAPELPYNPDAQ" Name="getButtonIcon" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getButtonIcon(Ljava.lang.String;)Lorg.radixware.kernel.common.client.types.Icon;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="buttonTypeName" Id="mprP2MY32ALZZGBZLIZJX4H5IXZ5Y">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.types.Icon"/>
+      </Method>
+      <Method Id="mthJC4O6W2AAJD43APURY4IO5BERU" Name="getEditorPage" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getEditorPage(Lorg.radixware.kernel.common.types.Id;)Lorg.radixware.kernel.common.client.models.items.EditorPageModelItem;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="editorPageId" Id="mprH424IFZ25ND7PEGLEXGHFBNYNM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.items.EditorPageModelItem"/>
+      </Method>
+      <Method Id="mthEHLMXQ5HJNDQZE5FA7WDUUNSQ4" Name="beforeExecReport" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="beforeExecReport()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthCK4XHTDC6NFOPIAI3FWMYYJPRM" Name="readProperties" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="readProperties(Lorg.radixware.schemas.eas.PropertyList;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="propertyList" Id="mprWS6ARKOHIVESVB3TS5C2XUWMYA">
+            <Type TypeId="400" extStr="org.radixware.schemas.eas.PropertyList"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth5FC6FHAX5NDSVLXVOP2HQQ7MA4" Name="acceptParameters" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="acceptParameters()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.client.exceptions.PropertyIsMandatoryException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.client.exceptions.InvalidPropertyValueException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth7335IWC3Y5BELHCZDQ3F25FA2M" Name="getReportParamDialogContext" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getReportParamDialogContext()Lorg.radixware.kernel.common.client.models.IContext.Report;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.IContext.Report"/>
+      </Method>
+      <Method Id="mthTYNQAVRQKRGSRDTCS7NKFB4MRU" Name="getButtons" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getButtons()Lorg.radixware.kernel.common.types.ArrStr;"/>
+        </AccessRules>
+        <ReturnType TypeId="221"/>
+      </Method>
+      <Method Id="mthTAP7QGO3JNDINLFWTFLQZB7AXM" Name="onButtonClicked" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="onButtonClicked(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="buttonTypeName" Id="mprXCB44YNV2BHDLAYWYZG7AODN6A">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthBRTJVBMFPNCMDO45VQAL2E6MOE" Name="afterRead" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="afterRead()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthVF5SAEKGI5EFPE3FLFKCQGJAB4" Name="close" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="close()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthY2H5L35TFNEWNPUHNBJYX73V5A" Name="writeProperties" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="writeProperties()Lorg.radixware.schemas.eas.PropertyList;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.schemas.eas.PropertyList"/>
+      </Method>
+      <Method Id="mth4DAOWGJT4JCB3DW2XAFTFWXXKY" Name="getButtonText" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getButtonText(Ljava.lang.String;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="buttonTypeName" Id="mprOU3HJVLWQZFUPA7R7MKHF2RNP4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthKSBI2CDTOFEMBFCCWHZM2BMA2Y" Name="getReportButtonsConstSetId" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getReportButtonsConstSetId()Lorg.radixware.kernel.common.types.Id;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+      </Method>
+      <Method Id="mth7XJDN32R5NHTPFN7LRKX6PVWUU" Name="getReportPresentationDef" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getReportPresentationDef()Lorg.radixware.kernel.common.client.meta.RadReportPresentationDef;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.RadReportPresentationDef"/>
+      </Method>
+      <Method Id="mthQMFYOB3CTNAYFDKO5P52RJUQ2U" Name="create" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="create(Lorg.radixware.kernel.common.types.Id;Lorg.radixware.kernel.common.client.models.Model;Lorg.radixware.kernel.common.client.models.Model;)Lorg.radixware.kernel.common.client.models.ReportParamDialogModel;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="reportId" Id="mprUIHQOUZ5LFHELOGHSWSOUPXSXE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+          <Parameter Name="reportPubModel" Id="mprSTP422FQG5FPBCZWRPOYLHEFQI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.Model"/>
+          </Parameter>
+          <Parameter Name="parentModel" Id="mprNV3II247CVDBHLBTGBLBURYRSM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.Model"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.ReportParamDialogModel"/>
+      </Method>
+      <Method Id="mthD2IDDMG7PFB4PH5KHCXMVCVPF4" Name="afterCancel" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="afterCancel()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthSHQAMVNPBBGX3M576UL2LSTTEE" Name="getReportView" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getReportView()Lorg.radixware.kernel.common.client.views.IReportParamDialogView;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.views.IReportParamDialogView"/>
+      </Method>
+      <Method Id="mth7RQNGL5J5JFWTAGP4ZRF7UJMLQ" Name="execDialog" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="execDialog()Lorg.radixware.kernel.common.client.views.IDialog.DialogResult;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.views.IDialog.DialogResult"/>
+      </Method>
+      <Method Id="mthMUTJ4CMX45FNXGJLCMYMFAPHOY" Name="createButton" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="createButton(Ljava.lang.String;)Lorg.radixware.kernel.common.client.widgets.IPushButton;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="buttonType" Id="mprFLXKTMRJJFDYDADTOPKOO2QDDY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IPushButton"/>
+      </Method>
+      <Method Id="mthBGA2354I2RBPVGDRT2TTTASOWQ" Name="getReportContextModel" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getReportContextModel()Lorg.radixware.kernel.common.client.models.Model;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.Model"/>
+      </Method>
+      <Method Id="mthD2VFMA6BWJFONHPGBNC7WZ5ZBA" Name="beforeCloseDialog" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="beforeCloseDialog(Lorg.radixware.kernel.common.client.views.IDialog.DialogResult;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="result" Id="mpr23MERSRSVNH7PMJCQB25XCBSSU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.views.IDialog.DialogResult"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthVEFM5ZECLZCPBFP3MEFAD5QN4A" Name="afterSetParent" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="afterSetParent(Lorg.radixware.kernel.common.client.models.items.properties.PropertyRef;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="propertyRef" Id="mprTGD36AFNVFEFTNWAMTINRVPJAU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.PropertyRef"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

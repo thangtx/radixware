@@ -1,0 +1,1424 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="agcYXWA57SVWJDPNDY4FWY6VBBTKA" Name="EasSelectorAddonsTablesGroup" Type="11">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderadcZJQ6U5UGSVEPDFUW5L4B3M7RH4">
+        <xsc:Item>
+          <xsc:Java>import javax.xml.namespace.QName;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLEventWriter;
+import javax.xml.stream.XMLEventFactory;
+import javax.xml.stream.events.Namespace;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.StartElement;
+import javax.xml.stream.events.EndElement;
+import javax.xml.stream.events.XMLEvent;
+</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcPKLFIFYTHFE6DHJQ6VE4QTNO5U"/>
+    </Bodies>
+    <MethodGroup Id="cmgFPFCIJOGL5B63D2HKKMC6KWJ5Y" Name="Root">
+      <Group Id="cmgSB7DHM5UZZFF5IURU22U42UORM" Name="ImportMethods" Members="mthQLKYLNYV5NBA3PLEIYUMSA7VHU mthNZ4XQVEM4BBIBHLZF7DOQHUYVA mthA4VFUSHFORDN5NT25O4ZBNZB4Y mthOD3IPBIHS5CCJJISBZDVZ4VJMA mthSKDDBQG5U5F2BBY5RAWI3OGXNE mthGBHMN5OIUZFYXGV4PELYC5ED5U mthKR3THQLUVJFXZEXDG6V6XKCW4Y mthRL3L3A37HNEHPNQG2O3DUAGNPY"/>
+      <Group Id="cmgM2VH5GQVHZAWFI2R4DYWILS4NM" Name="CommandHandlers" Members="mthcmdGZO5E4KEZZBURGXGH3S5EBQGSE"/>
+    </MethodGroup>
+    <PropertyGroup Id="cpg3CNCMEQAJFHU5GM5FC3JJS2R5M" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthcmdGZO5E4KEZZBURGXGH3S5EBQGSE" Name="onCommand_importFilters" Nature="1" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="input" Id="mprT4HIPYKGPZAHBM53AJHGEHDFHI">
+            <Type TypeId="451" Path="xsdCLQXH4AV3RFFPKLY4MMD43CXAU" extStr="ImportParametersDocument"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.types.FormHandler.NextDialogsRequest"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdCLQXH4AV3RFFPKLY4MMD43CXAU" extStr="ImportResultDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> document = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdCLQXH4AV3RFFPKLY4MMD43CXAU" extStr="ImportResultDocument.Factory"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.newInstance();
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdCLQXH4AV3RFFPKLY4MMD43CXAU" extStr="ImportResultDocument.ImportResult"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> importResult = document.addNewImportResult();
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdCLQXH4AV3RFFPKLY4MMD43CXAU" extStr="ImportResultDocument.ImportResult.RejectedFilters"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> rejectedFilters = 
+    importResult.addNewRejectedFilters();
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcFileInResource____________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xmlFile = null;
+XMLEventReader reader = null;
+int importedCount = 0;
+try
+{    
+    xmlFile = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcFileInResource____________ mthLNZ6KV7C2NE6DAM254AJ3HZLKI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(getArte(), input.ImportParameters.FilePath, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFIH6I56MHTNRDCGPABIFNQAABA aciEWBEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);    
+    final long fileSize = xmlFile.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcFileInResource____________ mthQM2B2EPUXZADPNQ57MSMMU43TU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    reader = XMLInputFactory.newInstance().createXMLEventReader(xmlFile);           
+    while (reader.hasNext())
+    {        
+        final XMLEvent event = reader.nextEvent();
+        if (fileSize&lt;event.Location.CharacterOffset){
+            break;
+        }
+        if (event.isStartElement())
+        {			                    
+            final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> nodeName = event.asStartElement().getName().getLocalPart();
+            if (nodeName.equals(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acs3EUSPTZGHVAJ5ON7M3KPHT3WKY aciBJS3OZYYIBF6VITGNMIIGCNTQM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value))
+            {    
+                final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdCLQXH4AV3RFFPKLY4MMD43CXAU" extStr="ImportResultDocument.ImportResult.RejectedFilters.RejectedFilter"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> rejectedFilter = 
+                    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="agcYXWA57SVWJDPNDY4FWY6VBBTKA mthNZ4XQVEM4BBIBHLZF7DOQHUYVA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(reader,event.asStartElement());
+                if (rejectedFilter!=null){
+                    rejectedFilters.addNewRejectedFilter().set(rejectedFilter);
+                    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="agcYXWA57SVWJDPNDY4FWY6VBBTKA mthRL3L3A37HNEHPNQG2O3DUAGNPY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(reader);
+                }
+                else{
+                    importedCount++;
+                }
+            }
+            else if (!nodeName.equals("CustomFilters")){                
+                throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsXOT3PM3P2FHCJA37MAAWWBZ4G4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+            }
+        }
+        else if (!event.isEndElement() &amp;&amp; !event.isStartDocument() &amp;&amp; !event.isEndDocument()){
+            throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls7RADPNADSFB6JM3RWAUPNL6IMM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        }
+    }
+}
+catch(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> exception){
+    //no processing here
+}
+catch(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcWGDHFHONYFCQFIQSELYRVS7DJ4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> exception){
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc5LUISDZ63BEF7O6K6AOQJQLKSA mthHSD5OI6KLJGFNC5D372W3OQIEA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(exception.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(),exception, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(exception));
+}
+catch(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcTYUDRQZMVJFTZNOQKKR2LEJUDU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> exception){
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc5LUISDZ63BEF7O6K6AOQJQLKSA mthHSD5OI6KLJGFNC5D372W3OQIEA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(exception.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(),exception,</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(exception));
+}
+catch(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> exception){
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc5LUISDZ63BEF7O6K6AOQJQLKSA mthHSD5OI6KLJGFNC5D372W3OQIEA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls76MXHP6ZZJEVPLNF3H6IJ5GBVY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,exception,</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(exception));
+}
+catch(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc4C6SVPUO4NC2TJFRZKRSBDAHFY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> exception){
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc5LUISDZ63BEF7O6K6AOQJQLKSA mthHSD5OI6KLJGFNC5D372W3OQIEA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsULCTSQLXRBFRPA76W4UCUT76KE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,exception,</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(exception));
+}
+catch(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcG6PZC4JQPBAI5C7ZFKWL4SWGKA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> exception){
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc5LUISDZ63BEF7O6K6AOQJQLKSA mthHSD5OI6KLJGFNC5D372W3OQIEA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsLRCEYRFCTJHAVCGCHBSY5O7JFA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,exception,</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(exception));
+}
+catch(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcXJP5J6GEPZCERMRA74CCVXC3HI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> exception){
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc5LUISDZ63BEF7O6K6AOQJQLKSA mthHSD5OI6KLJGFNC5D372W3OQIEA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(exception.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(),exception,</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(exception));
+}
+finally{    
+    if (reader!=null){
+        try{
+            reader.close();
+        }
+        catch(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc4C6SVPUO4NC2TJFRZKRSBDAHFY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> exception){
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthD6XIGP2SRPNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(exception),</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci7SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);    
+        }    
+    }
+    else{
+        try{
+            xmlFile.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcFileInResource____________ mthMO7RS5D2BRGJJO5LTTBR24K3TQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+        }
+        catch(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> exception){
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthD6XIGP2SRPNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(exception),</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci7SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);    
+        }
+    }
+}
+importResult.ImportedCount = importedCount;
+if (rejectedFilters.RejectedFilterList==null || rejectedFilters.RejectedFilterList.isEmpty()){
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> message = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsXCJAH4EXNRG57NMLUMZN4DWCUY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcZD7HTRF3JJCKXH65HUPW2OMVU4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> messageBox = 
+        new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcZD7HTRF3JJCKXH65HUPW2OMVU4 mthA27O2EJ6YFC2FCE6NL2Y56HE3I" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsA6YQGK7TJXNRDCHCABIFNQAABA aci4KAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, 
+                                         null, 
+                                         </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsS7F4BA7TJXNRDCHCABIFNQAABA aci3KAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, 
+                                         null,
+                                         String.format(message,importedCount));
+    return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLK6F6YWZHFHXFBOCHN7F3YTZPA mthWX4RH72LYZFKBHU3I76PFR6XPM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(messageBox, null);
+}
+else{
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="afhMDX26PVL6ZB6FGJATJO3JY7M4A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> form = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="afhMDX26PVL6ZB6FGJATJO3JY7M4A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(null);
+    form.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhMDX26PVL6ZB6FGJATJO3JY7M4A prdX3LAZYTC6BHXPMEEVB6KLMGONQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = document;
+    return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLK6F6YWZHFHXFBOCHN7F3YTZPA mthWX4RH72LYZFKBHU3I76PFR6XPM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(null, form);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthRL3L3A37HNEHPNQG2O3DUAGNPY" Name="skeepElement" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="reader" Id="mprSIMCI372IJHJBETFU4U2NWGQKQ">
+            <Type TypeId="400" extStr="javax.xml.stream.XMLEventReader"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axc4C6SVPUO4NC2TJFRZKRSBDAHFY"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>int innerElementsCount = 0;
+XMLEvent event;
+while (reader.hasNext()){
+    event = reader.nextEvent();
+    if (event.isStartElement()){
+        innerElementsCount++;
+    }
+    else if (event.isEndElement()){
+        if (innerElementsCount==0){
+            return;
+        }
+        else{
+            innerElementsCount--;
+        }
+    }
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthQLKYLNYV5NBA3PLEIYUMSA7VHU" Name="goToChildElement" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="reader" Id="mprK4AOEVPKJJDH5PWUXDZQEK25CE">
+            <Type TypeId="400" extStr="javax.xml.stream.XMLEventReader"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="javax.xml.stream.events.StartElement"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axc4C6SVPUO4NC2TJFRZKRSBDAHFY"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>XMLEvent event;
+while (reader.hasNext()){            
+    event = reader.nextEvent();
+    if (event.isEndElement()){
+        return null;
+    }
+    else if (event.isStartElement()){
+        return event.asStartElement();
+    }
+}
+return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthGBHMN5OIUZFYXGV4PELYC5ED5U" Name="readAttrValue" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="element" Id="mprWQ2HDMXYD5CWVED6CNHTHNWPOY">
+            <Type TypeId="400" extStr="javax.xml.stream.events.StartElement"/>
+          </Parameter>
+          <Parameter Name="attrName" Id="mprORMDHUV67RCRZCJMWHABQ7ZVZY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final Attribute attr = element.getAttributeByName(new QName(null,attrName));
+return attr==null ? null : attr.getValue();
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthKR3THQLUVJFXZEXDG6V6XKCW4Y" Name="readDrawSubElements" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="reader" Id="mprIMI4TBK4NFERFHT7ZOUTDCMQ7M">
+            <Type TypeId="400" extStr="javax.xml.stream.XMLEventReader"/>
+          </Parameter>
+          <Parameter Name="out" Id="mprFJHYQ7KD35CR7K67ZGBIJTOZV4">
+            <Type TypeId="400" extStr="java.io.Writer"/>
+          </Parameter>
+          <Parameter Name="nsPrefix" Id="mpr5WILGJINAZAHXHRKP2PA32CFLM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="nsUri" Id="mprARJGB3ALTRA4RGV2YA7YYGLSR4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axc4C6SVPUO4NC2TJFRZKRSBDAHFY"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final XMLEventFactory eventFactory = XMLEventFactory.newInstance();
+final XMLEventWriter writer = XMLOutputFactory.newFactory().createXMLEventWriter(out);
+final Namespace xscmlNs = 
+    eventFactory.createNamespace(nsPrefix,nsUri);
+final StartElement startFragment = 
+    eventFactory.createStartElement(new QName("xml-fragment"), null, java.util.Collections.singleton(xscmlNs).iterator());
+final EndElement endFragment = 
+    eventFactory.createEndElement(new QName("xml-fragment"), null);
+try{
+    XMLEvent event;
+    int innerElementsCount = 0;
+    writer.add(startFragment);
+    while (reader.hasNext()){
+        event = reader.nextEvent();
+        if (event.isStartElement()){
+            innerElementsCount++;
+        }
+        else if (event.isEndElement()){
+            if (innerElementsCount==0){
+                writer.flush();
+                break;
+            }
+            else{
+                innerElementsCount--;
+            }
+        }            
+        writer.add(event);
+    }
+    writer.add(endFragment);
+}
+finally{
+    writer.close();    
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthNZ4XQVEM4BBIBHLZF7DOQHUYVA" Name="importFilter" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="reader" Id="mprSFJAT6CEUFBFRFQJCE6LNECTVQ">
+            <Type TypeId="400" extStr="javax.xml.stream.XMLEventReader"/>
+          </Parameter>
+          <Parameter Name="filterElement" Id="mpr3GMB46BRGFHWJDM7VSTU2JCGMY">
+            <Type TypeId="400" extStr="javax.xml.stream.events.StartElement"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451" Path="xsdCLQXH4AV3RFFPKLY4MMD43CXAU" extStr="ImportResultDocument.ImportResult.RejectedFilters.RejectedFilter"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+          <Exception TypeId="411" Path="axcG6PZC4JQPBAI5C7ZFKWL4SWGKA"/>
+          <Exception TypeId="411" Path="axc4C6SVPUO4NC2TJFRZKRSBDAHFY"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>String guid = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="agcYXWA57SVWJDPNDY4FWY6VBBTKA mthGBHMN5OIUZFYXGV4PELYC5ED5U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(filterElement,</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acs3EUSPTZGHVAJ5ON7M3KPHT3WKY aciLOEX7PLS7BBSZMQJ4KNZFQULZA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value);
+if (guid==null || guid.isEmpty()){
+    guid = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthRYDSIBOGWFEI7C7Z5R6TIUROUA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsHL2QKDVQX5FARACANDWKNIZ5OU aciSGPSG5ZAOJFXJE6W66MOGJ6K5U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>).toString();
+}
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> filterId = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(guid);
+
+String name = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="agcYXWA57SVWJDPNDY4FWY6VBBTKA mthGBHMN5OIUZFYXGV4PELYC5ED5U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(filterElement, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acs3EUSPTZGHVAJ5ON7M3KPHT3WKY aciOVH7CE55NZBU5GEDCRPJXOXE7I" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value);
+if (name==null || name.isEmpty()){
+    name = guid;
+}
+
+final String tableGuid = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="agcYXWA57SVWJDPNDY4FWY6VBBTKA mthGBHMN5OIUZFYXGV4PELYC5ED5U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(filterElement, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acs3EUSPTZGHVAJ5ON7M3KPHT3WKY aciJRJSNJS7FBGPFPU5VDCAMOWCRI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value);
+if (tableGuid==null || tableGuid.isEmpty()){    
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="agcYXWA57SVWJDPNDY4FWY6VBBTKA mthSKDDBQG5U5F2BBY5RAWI3OGXNE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(filterId,name,null,null, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls63UJHMBDEZBQZN6SHXYZRPAKUU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> tableId = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(tableGuid);
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> tableName;
+try{            
+    tableName = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthJ22YS76JKFBLHMS32FAYSH3QNI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getTableDef(tableId).Name;
+}
+catch(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6THFSBVNKFE5XHP4ROUPNLKMJI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> error){
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="agcYXWA57SVWJDPNDY4FWY6VBBTKA mthSKDDBQG5U5F2BBY5RAWI3OGXNE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(filterId, name, tableId, null, String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsHMBDEPFFYFHOHJGZI4M5GZFMEQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,tableGuid));
+}
+
+final String baseFilterGuid = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="agcYXWA57SVWJDPNDY4FWY6VBBTKA mthGBHMN5OIUZFYXGV4PELYC5ED5U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(filterElement, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acs3EUSPTZGHVAJ5ON7M3KPHT3WKY aci6MLWDGRKEVEC7DYIBVAJTZUFPA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value);
+if (baseFilterGuid!=null &amp;&amp; !baseFilterGuid.isEmpty()){
+    if (!</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="agcYXWA57SVWJDPNDY4FWY6VBBTKA mthA4VFUSHFORDN5NT25O4ZBNZB4Y" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(tableId, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(baseFilterGuid))){
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> reason = String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsI277RDD5RZFY3BDENQUK6WC4YU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, baseFilterGuid);
+        return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="agcYXWA57SVWJDPNDY4FWY6VBBTKA mthSKDDBQG5U5F2BBY5RAWI3OGXNE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(filterId, name, tableId, tableName, reason);
+    }
+}
+
+final String isActiveStr = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="agcYXWA57SVWJDPNDY4FWY6VBBTKA mthGBHMN5OIUZFYXGV4PELYC5ED5U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(filterElement, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acs3EUSPTZGHVAJ5ON7M3KPHT3WKY aciCHYNPDIXZBAHDP24FEBL7HFLKE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value);
+final Boolean isActive = isActiveStr==null ? Boolean.TRUE : Boolean.valueOf(isActiveStr);
+
+final String selPresentationsStr = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="agcYXWA57SVWJDPNDY4FWY6VBBTKA mthGBHMN5OIUZFYXGV4PELYC5ED5U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(filterElement, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acs3EUSPTZGHVAJ5ON7M3KPHT3WKY aciJH6W42IYNVCIVKDV3Y7GUG657Y" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value);
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> selPresentations;
+if (selPresentationsStr!=null){
+    if (selPresentationsStr.isEmpty()){
+        selPresentations = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    }
+    else{
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>[] selPresentationsArr = selPresentationsStr.split(" ");
+        selPresentations = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(selPresentationsArr);
+        for (int i=selPresentations.size()-1; i>=0; i--){
+            if (!</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="agcYXWA57SVWJDPNDY4FWY6VBBTKA mthOD3IPBIHS5CCJJISBZDVZ4VJMA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(tableId, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(selPresentations.get(i)))){
+                selPresentations.remove(i);
+            }
+        }
+    }
+}
+else{
+    selPresentations=null;
+}
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="27"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> conditionClob = null, parametersClob = null;
+try{
+    for (StartElement subElement = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="agcYXWA57SVWJDPNDY4FWY6VBBTKA mthQLKYLNYV5NBA3PLEIYUMSA7VHU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(reader); subElement!=null; subElement = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="agcYXWA57SVWJDPNDY4FWY6VBBTKA mthQLKYLNYV5NBA3PLEIYUMSA7VHU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(reader)){
+        if (subElement.getName().getLocalPart().equals(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acs3EUSPTZGHVAJ5ON7M3KPHT3WKY aciO7Z5ZFPNYJHM3JIAHN3P7Q3Z2I" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value)){
+            conditionClob = getArte().DbConnection.createTemporaryClob();
+            final java.io.Writer conditionWriter = conditionClob.setCharacterStream(1);
+            try{
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="agcYXWA57SVWJDPNDY4FWY6VBBTKA mthKR3THQLUVJFXZEXDG6V6XKCW4Y" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(reader, conditionWriter, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acs3EUSPTZGHVAJ5ON7M3KPHT3WKY aciYRIQ7IWPMFDUNBEBR77HGNTSQY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acs3EUSPTZGHVAJ5ON7M3KPHT3WKY aciTWQ5C2ITEZBJXJFCC36T76IECE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value);
+                conditionWriter.flush();
+            }
+            finally{
+                conditionWriter.close();
+            }
+        }
+        else if (subElement.getName().getLocalPart().equals(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acs3EUSPTZGHVAJ5ON7M3KPHT3WKY aci4LCX5HORHZC5TOCIZP2RF3LIVU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value)){
+            parametersClob = getArte().DbConnection.createTemporaryClob();
+            final java.io.Writer parametersWriter = parametersClob.setCharacterStream(1);
+            try{
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="agcYXWA57SVWJDPNDY4FWY6VBBTKA mthKR3THQLUVJFXZEXDG6V6XKCW4Y" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(reader, parametersWriter, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acs3EUSPTZGHVAJ5ON7M3KPHT3WKY aci4A4KVSFR6NH2RDP5V6XFO2RFGU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acs3EUSPTZGHVAJ5ON7M3KPHT3WKY aciMTAQHY2NJRAQHFHLKIF3Z7BXA4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value);
+                parametersWriter.flush();
+            }
+            finally{
+                parametersWriter.close();
+            }
+        }
+        else{
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="agcYXWA57SVWJDPNDY4FWY6VBBTKA mthRL3L3A37HNEHPNQG2O3DUAGNPY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(reader);
+        }
+    }        
+
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="ssc7PITQFS5HFD43IQGA6VGR3O2QI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="ssc7PITQFS5HFD43IQGA6VGR3O2QI mth_stmt_execute_____________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(guid,
+                                                tableGuid,
+                                                name,
+                                                isActive,
+                                                selPresentations==null ? null : </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcRGCAH2OFZVFETKEAS4A2YGFWB4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcRGCAH2OFZVFETKEAS4A2YGFWB4 mthESYN6NJAKBEV3HV6MRLYZ6NCBM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(selPresentations,</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciSZ7UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>),
+                                                baseFilterGuid,
+                                                conditionClob,
+                                                parametersClob,
+                                                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthJQUPUAH4RPNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(),
+                                                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthH5UTIPGXTPNRDISQABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()
+                                                );
+}
+finally{
+    if (conditionClob!=null)
+        conditionClob.free();
+        
+    if (parametersClob!=null)
+        parametersClob.free();
+}
+
+return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthSKDDBQG5U5F2BBY5RAWI3OGXNE" Name="newRejectedFilter" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="filterId" Id="mprCAEYIE2ANZFFTLYZSGAUPZKUYY">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="filterName" Id="mprUKWZEXFJP5GYVDZLNSJY7TXCYM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="tableId" Id="mprNB3DKDPK3FC53AFSLE2L2CHGWM">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="tableName" Id="mprIWWRDSWJDFGUTNHU3YIZPQYV7A">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="reason" Id="mprTJ75QIEYT5C3TMSCAFXA4NWZ6A">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451" Path="xsdCLQXH4AV3RFFPKLY4MMD43CXAU" extStr="ImportResultDocument.ImportResult.RejectedFilters.RejectedFilter"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdCLQXH4AV3RFFPKLY4MMD43CXAU" extStr="ImportResultDocument.ImportResult.RejectedFilters.RejectedFilter"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> rejectedFilter = 
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdCLQXH4AV3RFFPKLY4MMD43CXAU" extStr="ImportResultDocument.ImportResult.RejectedFilters.RejectedFilter.Factory"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.newInstance();
+rejectedFilter.Id = filterId;
+rejectedFilter.Title = filterName;
+if (tableId!=null)
+    rejectedFilter.TableId = tableId;
+if (tableName!=null)    
+    rejectedFilter.TableName = tableName;
+rejectedFilter.Reason = reason;
+return rejectedFilter;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthOD3IPBIHS5CCJJISBZDVZ4VJMA" Name="isSelectorPresentationExists" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="tableId" Id="mprL57AFZUHDFGK7FGI25HVY6LXKY">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="presentationId" Id="mpr6UKHTZSL2VC4BIZEA7MVSJRL4A">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final java.util.Collection&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcB72UJA5VUBF67BJLQSMCSA6L7Y"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> classes;
+try{
+    classes = getArte().DefManager.getAllClassDefsBasedOnTableByTabId(tableId);
+}
+catch(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6THFSBVNKFE5XHP4ROUPNLKMJI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> err){
+    return false;
+}
+for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcB72UJA5VUBF67BJLQSMCSA6L7Y"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> classDef: classes){    
+    for(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcZK3KMMZERZB2HNEKQVBOQ2QSE4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> selPresentation: classDef.Presentation.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc4V2O6LISRZFZTI2GWIPBWIIFUA mthHNNGP6M7OBHRDNWY56GAZ4LTQA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()){
+        if (selPresentation.getId().equals(presentationId)){
+            return true;
+        }
+    }   
+}
+return false;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthA4VFUSHFORDN5NT25O4ZBNZB4Y" Name="isAdsFilterExists" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="tableId" Id="mprSCV2MJPKKNEB5EM3AQWNRNEU7E">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="filterId" Id="mpr7OGA4H4OLVBARHLLG6PQYGSXME">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final java.util.Collection&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcB72UJA5VUBF67BJLQSMCSA6L7Y"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> classes;
+try{
+    classes = getArte().DefManager.getAllClassDefsBasedOnTableByTabId(tableId);
+}
+catch(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6THFSBVNKFE5XHP4ROUPNLKMJI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> err){
+    return false;
+}
+for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcB72UJA5VUBF67BJLQSMCSA6L7Y"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> classDef: classes){
+    for(org.radixware.kernel.server.meta.presentations.RadFilterDef filter: classDef.Presentation.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc4V2O6LISRZFZTI2GWIPBWIIFUA mthMD3H5CJJMZEOTKMOQBDOUDBH6Q" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()){
+        if (filter.getId().equals(filterId)){
+            return true;
+        }
+    }   
+}
+return false;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblYXWA57SVWJDPNDY4FWY6VBBTKA"/>
+    <Presentations>
+      <Commands>
+        <Command Id="cmd2SMPSNMZ4BF25HOMGG3YUWWW4A" Name="moveUp" TitleId="mlsPUVWVKSFU5CF3MT2DKRPMOJ2IQ" Nature="0" IconId="imgU72DZZSNEZAWHGSLWNRIFA4MW4" IsVisible="true" IsConfirmationRequired="false" ClientEnvironment="explorer" Accessibility="0" Scope="2">
+          <AccessRules IsPublished="false"/>
+        </Command>
+        <Command Id="cmdIP6CV6SZSVDQLD5GA5C3EREHYU" Name="moveDown" TitleId="mlsCKICSB74HZDMFOZ5QL7PFHNSVQ" Nature="0" IconId="imgXXQ4APUH2FGA7B63EQSIKA46V4" IsVisible="true" IsConfirmationRequired="false" ClientEnvironment="explorer" Accessibility="0" Scope="2">
+          <AccessRules IsPublished="false"/>
+        </Command>
+        <Command Id="cmd52H5JW7SIRDKFHDPUIUN7NMRAE" Name="exportAllFilters" TitleId="mlsU5O4AXPPLVCTNKITFTEAOWV22M" Nature="0" IconId="imgYGRKUM6D5NFB7HJSZFG3KGBC6M" IsVisible="true" IsConfirmationRequired="false" ClientEnvironment="explorer" Accessibility="0" Scope="2">
+          <AccessRules IsPublished="false"/>
+        </Command>
+        <Command Id="cmdGZO5E4KEZZBURGXGH3S5EBQGSE" Name="importFilters" TitleId="mlsZUMAWVGXENH7BLJ33ZZ53K2WZM" Nature="3" IconId="imgEVEBHW62BFDDBLQVX2YPL7ZERM" IsVisible="true" IsConfirmationRequired="false" ClientEnvironment="explorer" Accessibility="0" Scope="2">
+          <AccessRules IsPublished="false"/>
+          <InType TypeId="451" Path="xsdCLQXH4AV3RFFPKLY4MMD43CXAU" extStr="ImportParametersDocument"/>
+          <OutType TypeId="400" extStr="org.radixware.kernel.server.types.FormHandler.NextDialogsRequest"/>
+        </Command>
+      </Commands>
+    </Presentations>
+    <Extends TypeId="411" Path="pdcEntityGroup_______________">
+      <xsc:GenericArguments>
+        <xsc:Argument Alias="?">
+          <xsc:Type TypeId="32" Path="aecYXWA57SVWJDPNDY4FWY6VBBTKA"/>
+        </xsc:Argument>
+      </xsc:GenericArguments>
+    </Extends>
+  </AdsClassDefinition>
+</AdsDefinition>

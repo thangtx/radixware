@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsContextlessCommandDefinition Id="clcPPJBWPUZDBAOBG7VYPZWDSWM74" Name="FillNamesAtRoleListCmd" Nature="2" IsVisible="true" IsConfirmationRequired="false">
+    <InType TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument"/>
+    <OutType TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument"/>
+    <Source>
+      <xsc:Item>
+        <xsc:Java>for (int i = 0;i&lt;input.RoleList.RoleList.size();i++)
+    {
+        </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument.RoleList.Role"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> r = input.RoleList.RoleList.get(i);
+        boolean isMustRemove = r.Id == null;
+        if (!isMustRemove)
+        {
+            try
+            {
+                r.Name = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcKXBE5RCT2DNRDISQAAAAAAAAAA"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="adcKXBE5RCT2DNRDISQAAAAAAAAAA mthHBUYQUTG5VEORJDVTMGTT6FZXM" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(r.Id);
+            }
+            catch(org.radixware.kernel.common.exceptions.DefinitionNotFoundError ex)
+            {
+                isMustRemove = true;
+            }
+            catch(org.radixware.kernel.server.exceptions.DatabaseError ex)
+            {
+                isMustRemove = true;
+            }
+        }
+        if (isMustRemove){
+            input.RoleList.RoleList.remove(i);
+            i--;
+        }
+    }
+return input;</xsc:Java>
+      </xsc:Item>
+    </Source>
+  </AdsContextlessCommandDefinition>
+</AdsDefinition>

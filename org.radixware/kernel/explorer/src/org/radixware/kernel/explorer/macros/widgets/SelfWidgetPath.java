@@ -1,0 +1,34 @@
+/*
+ * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. This Source Code is distributed
+ * WITHOUT ANY WARRANTY; including any implied warranties but not limited to
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * Mozilla Public License, v. 2.0. for more details.
+ */
+
+package org.radixware.kernel.explorer.macros.widgets;
+
+import java.util.Collections;
+
+
+final class SelfWidgetPath extends QWidgetPath{
+
+    private static final SelfWidgetPath INSTANCE = new SelfWidgetPath();
+
+    private SelfWidgetPath(){
+        super(Collections.<QWidgetDescriptor>emptyList());
+    }
+
+    public static SelfWidgetPath getInstance(){
+        return INSTANCE;
+    }
+
+    @Override
+    public boolean isSelf(){
+        return true;
+    }
+
+}

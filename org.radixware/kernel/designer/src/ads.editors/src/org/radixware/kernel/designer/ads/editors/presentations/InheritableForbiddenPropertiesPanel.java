@@ -1,0 +1,165 @@
+/*
+ * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. This Source Code is distributed
+ * WITHOUT ANY WARRANTY; including any implied warranties but not limited to
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * Mozilla Public License, v. 2.0. for more details.
+ */
+
+/*
+ * InheritableForbiddenPropertiesPanel.java
+ *
+ * Created on 06.04.2010, 16:28:42
+ */
+
+package org.radixware.kernel.designer.ads.editors.presentations;
+
+import java.awt.Color;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.LinkedList;
+import java.util.List;
+import org.radixware.kernel.common.defs.ExtendableDefinitions.EScope;
+import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
+import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsEditorPresentationDef;
+import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.designer.common.dialogs.chooseobject.ConfigureDefinitionListCfg;
+import org.radixware.kernel.designer.common.dialogs.chooseobject.ConfigureDefinitionTable;
+import org.radixware.kernel.designer.common.dialogs.chooseobject.ConfigureDefinitionTable.DefBooleanValueChangeEvent;
+
+/**
+ *
+ * @deprecated
+ */
+@Deprecated
+class InheritableForbiddenPropertiesPanel extends javax.swing.JPanel {
+
+    private ConfigureDefinitionTable.DefBooleanValueChangeListener propListListener = new ConfigureDefinitionTable.DefBooleanValueChangeListener() {
+
+        @Override
+        public void onEvent(DefBooleanValueChangeEvent e) {
+            InheritableForbiddenPropertiesPanel.this.onPropListChange(e);
+        }
+
+    };
+
+    /** Creates new form InheritableForbiddenPropertiesPanel */
+    public InheritableForbiddenPropertiesPanel() {
+        initComponents();
+        propList.addConfigurableDefinitionIsCheckedListener(propListListener);
+        inheritBox.addItemListener(new ItemListener() {
+
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                presentation.setPropertyPresentationAttributesInherited(e.getStateChange() == ItemEvent.SELECTED);
+                update();
+            }
+        });
+        defaultForeground = inheritBox.getForeground();
+    }
+
+    private AdsEditorPresentationDef presentation;
+    public void open(AdsEditorPresentationDef presentation){
+        this.presentation = presentation;
+        update();
+    }
+
+    private boolean isUpdate = false;
+    private Color defaultForeground;
+    public void update(){
+        isUpdate = true;
+
+        boolean readonly = presentation.isReadOnly();
+        boolean inherited = false;//presentation.isForbiddenPropertiesInherited();
+//        AdsEditorPresentationDef.ForbiddenProps props = null;//presentation.getForbiddenProperties();
+
+        List<AdsPropertyDef> allProps = presentation.getOwnerClass().getProperties().get(EScope.ALL);
+        List<Id> allIds = new LinkedList<Id>();
+        for (AdsPropertyDef p : allProps){
+            allIds.add(p.getId());
+        }
+
+        ConfigureDefinitionListCfg cfg = ConfigureDefinitionListCfg.Factory.newInstanceWithEnabledIds(allProps, allIds);
+//        propList.open(props.getForbiddenPropIds(), cfg);
+
+        propList.setEnabled(!readonly && !inherited);
+
+        boolean inheritBoxEnbaled = presentation.getBasePresentationId() != null ||
+                              presentation.getHierarchy().findOverridden() != null ||
+                              presentation.getHierarchy().findOverwritten() != null;
+
+        if (inheritBoxEnbaled){
+            inheritBox.setEnabled(!readonly && inheritBoxEnbaled);
+            inheritBox.setForeground(defaultForeground);
+        } else {
+            if (inherited){
+                inheritBox.setEnabled(true);
+                inheritBox.setForeground(Color.RED);
+            } else {
+                inheritBox.setEnabled(false);
+                inheritBox.setForeground(defaultForeground);
+            }
+        }
+        inheritBox.setSelected(inherited);
+
+        isUpdate = false;
+    }
+
+    private void onPropListChange(DefBooleanValueChangeEvent e){
+//        if (!isUpdate){
+//            boolean selected = e.getNewValue();
+//            //AdsPropertyDef prop = (AdsPropertyDef) e.getRadixObject();
+////            if (selected){
+////                //presentation.getForbiddenProperties().addProperty(prop);
+////            } else {
+////                //presentation.getForbiddenProperties().removeProperty(prop);
+////            }
+//        }
+    }
+
+    /** This method is called from within the constructor to
+     * initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is
+     * always regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        inheritBox = new javax.swing.JCheckBox();
+        propList = new org.radixware.kernel.designer.common.dialogs.chooseobject.ConfigureDefinitionListPanel();
+
+        inheritBox.setText(org.openide.util.NbBundle.getMessage(InheritableForbiddenPropertiesPanel.class, "ForbiddenPropsTip")); // NOI18N
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(propList, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(inheritBox))
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(inheritBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(propList, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+    }// </editor-fold>//GEN-END:initComponents
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox inheritBox;
+    private org.radixware.kernel.designer.common.dialogs.chooseobject.ConfigureDefinitionListPanel propList;
+    // End of variables declaration//GEN-END:variables
+
+}

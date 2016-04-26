@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="accEJTH3UDMVBFSJHO3DCTO6VOCN4" Name="GetLibUserFuncLastUpdateTimeCursor" Type="4">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderaccEJTH3UDMVBFSJHO3DCTO6VOCN4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaccEJTH3UDMVBFSJHO3DCTO6VOCN4"/>
+    </Bodies>
+    <MethodGroup Id="cmg327BXVRRUFH4PKWIGBLICSKQY4" Name="Root"/>
+    <PropertyGroup Id="cpgSHFUAHUFO5GMJOJFGAYZMCHUGI" Name="Root"/>
+    <Properties>
+      <Property Id="prfZHRC6EXA6RE5POFTYRKXUJSB7Y" Name="lastUpdateTime" Nature="3" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="12"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prmPSRZLPPTTJDD5ECG4TGSC6ZNUU" Name="libName" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="open" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="libName" Id="mprPSRZLPPTTJDD5ECG4TGSC6ZNUU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="accEJTH3UDMVBFSJHO3DCTO6VOCN4"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>select </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblAM6HEX43SFCQTMG23G7JHOBCMA" PropId="colLV5REFFT4RA57HGSXFMORBOKSY" Owner="TABLE">
+            <xsc:TableAlias>LIB</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>  </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accEJTH3UDMVBFSJHO3DCTO6VOCN4" PropId="prfZHRC6EXA6RE5POFTYRKXUJSB7Y" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+  from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblAM6HEX43SFCQTMG23G7JHOBCMA">
+            <xsc:TableAlias>LIB</xsc:TableAlias>
+          </xsc:TableSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> 
+ where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblAM6HEX43SFCQTMG23G7JHOBCMA" PropId="colLSUHVNJK2FEMPFDMOHXBTSONXA" Owner="TABLE">
+            <xsc:TableAlias>LIB</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmPSRZLPPTTJDD5ECG4TGSC6ZNUU"/>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblAM6HEX43SFCQTMG23G7JHOBCMA" Alias="LIB"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="411" Path="pdcCursor____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

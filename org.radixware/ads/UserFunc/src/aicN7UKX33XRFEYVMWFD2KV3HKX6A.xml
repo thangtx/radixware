@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicN7UKX33XRFEYVMWFD2KV3HKX6A" Name="IUserFuncLocator" Type="5" Environment="explorer">
+    <AccessRules IsPublished="false" IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.explorer.editors.jmleditor.JmlEditor.IUserFuncLocator"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderaicN7UKX33XRFEYVMWFD2KV3HKX6A"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaicN7UKX33XRFEYVMWFD2KV3HKX6A"/>
+    </Bodies>
+    <MethodGroup Id="cmgM5Z4O4SDTFFV7GQLXYDQWLV5XA" Name="Root"/>
+    <PropertyGroup Id="cpgOPVWM3IEANEFVBLMEKJ4BYUIBI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth5O5R3YIKIFC4PI3KXAAZPPMP7M" Name="enshureObjectIsOpened" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="enshureObjectIsOpened(JLjava.lang.String;ZLorg.radixware.kernel.explorer.editors.jmleditor.JmlEditor.IPostOpenAction;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="id" Id="mpr2S7JDJIXZBDJRJJREMJUEDU7KE">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="currentVersionName" Id="mprZJSSAALZUBCZJJQMXQQLZJOXXI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="showModal" Id="mprNIBJ3THXX5BFLPUN5AHFIQMFWM">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="postOpenHook" Id="mpr2GATZOLHW5H7ZF5ZRNYD33JRKQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.editors.jmleditor.JmlEditor.IPostOpenAction"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthPB2665RRAJFRDL6437PHTNSFXE" Name="findUserFunc" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="findUserFunc(JLjava.lang.String;)Lorg.radixware.kernel.common.defs.ads.userfunc.AdsUserFuncDef;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="id" Id="mprZXAN6RKVJZHT7ME2Z7OFQJ3UUI">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="currentVersionName" Id="mpr4SMKB6AXIVHFVJP6YGV6LMWS2U">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.defs.ads.userfunc.AdsUserFuncDef"/>
+      </Method>
+      <Method Id="mthYPHY67MOIBFVHARPKVH2TEXKKU" Name="getCurrentVersionName" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getCurrentVersionName()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthVEW7SPTBN5FA3KY2WXDD5KHFS4" Name="getUserFuncDisplayName" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getUserFuncDisplayName(J)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="id" Id="mprE2W2KKDJXRD6TKGHA45UYT6NWI">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthRSAGQPJ7UNFH5AHNFVU54KAGBI" Name="moveCursorToProblem" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="moveCursorToProblem(Lorg.radixware.kernel.explorer.editors.jmleditor.JmlProblemList.ProblemItem;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="problem" Id="mprS22WUKYX7NFSHLIB4BG7RTE6TM">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.editors.jmleditor.JmlProblemList.ProblemItem"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth3DPIZMTAQBDC3B7FNNJHV7KCLA" Name="getEditorIfAny" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getEditorIfAny()Lorg.radixware.kernel.explorer.editors.jmleditor.JmlEditor;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.editors.jmleditor.JmlEditor"/>
+      </Method>
+      <Method Id="mthCXNNVUUI5NAPRPWG5NFBJWIIB4" Name="moveCursorToPosition" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="moveCursorToPosition([I)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="line_col" Id="mprHRB65FQ5VVDXRLO4N4ZORTK63U">
+            <Type TypeId="401" extStr="int" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

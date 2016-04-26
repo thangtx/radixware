@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="accC4J7B2ZEVNG65LXFVSI5JZSYCE" Name="GetPipelineNodeCursor" Type="4">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderadcDAP6O7FU5BHOBHNFTOTUGZ5UJY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcNMMJ7IFB2FGMBPQAJGIH3CHAQU"/>
+    </Bodies>
+    <MethodGroup Id="cmgUIXOA47YUFELJETYFIU7GLKIPE" Name="Root"/>
+    <PropertyGroup Id="cpgXDHH2JMJJ5FNVIFSNHRPVLBZZ4" Name="Root"/>
+    <Properties>
+      <Property Id="prfYAOEKW4WV5C27G4ILABBO74GBE" Name="nodeId" Nature="3" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4" IsPresentable="false">
+          <Editing EditPossibility="1" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prmLTYNXPL5GFGZ5HPMZHCASWPE5U" Name="entityGuid" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmJLZNMWRVPRC6HFKPJ57EJII7II" Name="entityPid" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="open" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="entityGuid" Id="mprLTYNXPL5GFGZ5HPMZHCASWPE5U">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="entityPid" Id="mprJLZNMWRVPRC6HFKPJ57EJII7II">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="accC4J7B2ZEVNG65LXFVSI5JZSYCE"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="true">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>SELECT </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblPNJV5QTXIBGJPBHK64RO3LH73A" PropId="colQ4QH3CFLQFH4ZENFIHVYOWNBVA" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accC4J7B2ZEVNG65LXFVSI5JZSYCE" PropId="prfYAOEKW4WV5C27G4ILABBO74GBE" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+ FROM </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblPNJV5QTXIBGJPBHK64RO3LH73A"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+ WHERE </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblPNJV5QTXIBGJPBHK64RO3LH73A" PropId="colN73KKVWQDVG6XJXW6NBQ3SJ4MQ" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmLTYNXPL5GFGZ5HPMZHCASWPE5U"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> 
+ AND </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblPNJV5QTXIBGJPBHK64RO3LH73A" PropId="col42OIA6GTPNDYBOOTAJXXB5JAFY" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmJLZNMWRVPRC6HFKPJ57EJII7II"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+ ORDER BY </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblPNJV5QTXIBGJPBHK64RO3LH73A" PropId="colQ4QH3CFLQFH4ZENFIHVYOWNBVA" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> ASC
+
+   </xsc:Sql>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblPNJV5QTXIBGJPBHK64RO3LH73A"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="411" Path="pdcCursor____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

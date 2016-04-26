@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="axcHFUH6YOA4NF6LJSVWQO52AVLCI" Name="ModelException" Type="8" Environment="common-client">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.exceptions.ModelException"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcUHKMNKJR2NDLXIFJT5ABXRP3CU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcGU6P4KKNUBCYTGDTCOXQZDN7FM"/>
+    </Bodies>
+    <MethodGroup Id="cmgHMJR5D2TD5CV5OJIZGQ3VH6KF4" Name="Root"/>
+    <PropertyGroup Id="cpgWNEEVZODGVAOLEO353LSVVY4BI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthV4KXWWKBXFA5DE5RHNAS66MMLQ" Name="ModelException" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.models.Model;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="model" Id="mprPXCPHIFL3NDZBHA2VRSMNZY764">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.Model"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth2LNAFK34A5HN7LEPS25S6PNLGU" Name="create" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="create(Lorg.radixware.kernel.common.client.models.Model;Lorg.radixware.kernel.common.exceptions.ServiceCallFault;)Lorg.radixware.kernel.common.client.exceptions.ModelException;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="sourceModel" Id="mprKQYUYWZKJVHWPOYSJZH7ME4DXI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.Model"/>
+          </Parameter>
+          <Parameter Name="fault" Id="mprOJZW7XHCLBFSTPV37PCL725M4U">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceCallFault"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.exceptions.ModelException"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

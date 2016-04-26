@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcUZMJJEPNJNE35DNQ3C6GVQG4MA" Name="LRole" Type="3" Environment="explorer">
+    <AccessRules IsFinal="true" IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcG5ZPQRCGKNEEFLA76ZEJJF7HKI">
+        <xsc:Item>
+          <xsc:Java>import com.trolltech.qt.core.*;
+</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcLDWODOC235FDXLC7RUZYZGXL44"/>
+    </Bodies>
+    <MethodGroup Id="cmg4RPULN4MRVDMJKJ44HVYCM6TNA" Name="Root"/>
+    <PropertyGroup Id="cpg5SFIXZAYHNCGHH5KC4VURDOWNA" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthWFR3PPJXK5FAJFOH23F5IVB5ZQ" Name="LRole" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprRKONUOJTDREGRIQYL2BHVO3OQA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="xRole" Id="mprHDOWJ4ODYNDRLDW2JSFUWCO3SM">
+            <Type TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="Role"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(userSession, xRole);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthUSJQ4YMWTBG4ZKGIYPMHZUVAPQ" Name="center" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.core.QPointF"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return scenePos().add(new QPointF(DIAMETER/2, DIAMETER/2));</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthQIBXOSBTORBDTJUUAZPXVFRTGE" Name="paint" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="painter" Id="mprRPC4Q5FF2RDFLMXGX4JHF4SRFM">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QPainter"/>
+          </Parameter>
+          <Parameter Name="option" Id="mprGZTPRBZZS5AARA6IOCWEEVUV6A">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QStyleOptionGraphicsItem"/>
+          </Parameter>
+          <Parameter Name="widget" Id="mprBVOSDEAYWJG2PIS6S65K2JCGHA">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final QRectF pinRect = BOUNDING_RECT.adjusted(0, 0, -(BOUNDING_RECT.width() - DIAMETER), 0);
+final QRectF textRect = BOUNDING_RECT.adjusted(DIAMETER + 2, 0, 0, 0);
+        
+if (parentItem().isSelected()) {
+    painter.setPen(PEN_SELECTED);
+} else {
+    painter.setPen(PEN_NORMAL);
+}
+
+painter.setBrush(BRUSH_NORMAL);
+painter.drawEllipse(pinRect);
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcCW52PS3PIRC5XHFOH7LKMEYVSY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcCW52PS3PIRC5XHFOH7LKMEYVSY mthPLRHYJ7GEJBPVDQIF3BNINM7MM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(userSession,painter, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU mthYOYCJBF3JNEYTMHH2YJM33I4RY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), pinRect, ICON_SIZE, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU mth5HK6S2XVFJCSJF5AN4B3N2XOII" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI mth6UQLVK7LNRDOXDAZNL47YPAFHY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+
+painter.setPen(PEN_LABEL);
+painter.setFont(FONT_LABEL);
+
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> name = xRole == null ? "" : xRole.Name;
+painter.drawText(textRect, Qt.AlignmentFlag.AlignLeft.value(), name);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth5TPVEJRE4JFALBH5PH2AXOUWII" Name="LRole" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprRJW6Z3MQRNGPNOT5KTVKBKMRQ4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="description" Id="mprGYK2AKJUKRGRRECAB4JVCX7NTM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="connectorId" Id="mprLXHR6VQTLZB75I7YEVNOG2MCAU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(userSession,description,connectorId);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU"/>
+  </AdsClassDefinition>
+</AdsDefinition>

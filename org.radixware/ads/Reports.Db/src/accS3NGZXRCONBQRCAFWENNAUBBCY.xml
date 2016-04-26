@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="accS3NGZXRCONBQRCAFWENNAUBBCY" Name="ReportPubCursor" Type="4">
+    <AccessRules/>
+    <Headers>
+      <Src Name="Headeradc2TM55XX4XZH73BMDKRJSCCEMAU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcLBKBX7FFXFEWFNYOVBGR6TVLZY"/>
+    </Bodies>
+    <MethodGroup Id="cmgYZJQPYNPAZGZ5L3H744LQ3AAFM" Name="Root"/>
+    <PropertyGroup Id="cpgNTCYTNJZYBFYPKBFRT4PQOD5RY" Name="Root"/>
+    <Properties>
+      <Property Id="prfASGS4PZ6SVFCRDULD3WQDCTHDE" Name="Id" Nature="3" IsConst="true" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4" IsPresentable="false">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prfDIQ6CA2L5NEFDOSZOGJUTKZX2I" Name="reportPub" Nature="10" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="31" Path="aecUNC67IF5OBCX7NOPNLQOCUG374"/>
+        <Presentation InheritanceMask="21" IsPresentable="false">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+        <FieldToColumnMap>
+          <Item ColumnId="col5Z77DJW25NE3NOMCZ6G7JSIGSQ" FieldId="prfASGS4PZ6SVFCRDULD3WQDCTHDE"/>
+        </FieldToColumnMap>
+      </Property>
+      <Property Id="prmODGULYN5DZCCBHOYABJOXGOTSA" Name="pubList" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="31" Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="open" Nature="15" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="pubList" Id="mprODGULYN5DZCCBHOYABJOXGOTSA">
+            <Type TypeId="31" Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="accS3NGZXRCONBQRCAFWENNAUBBCY"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="true">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>select /*+ INDEX(</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblUNC67IF5OBCX7NOPNLQOCUG374"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:DbName Path="tblUNC67IF5OBCX7NOPNLQOCUG374 idx2CNZEI3MOFAKXMI53YGZT6VIL4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>) */
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblUNC67IF5OBCX7NOPNLQOCUG374" PropId="col5Z77DJW25NE3NOMCZ6G7JSIGSQ" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accS3NGZXRCONBQRCAFWENNAUBBCY" PropId="prfASGS4PZ6SVFCRDULD3WQDCTHDE" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+from
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblUNC67IF5OBCX7NOPNLQOCUG374"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+where
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblUNC67IF5OBCX7NOPNLQOCUG374" PropId="colQXFVM3NF5JBVPM44EQV6TLOEB4" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmODGULYN5DZCCBHOYABJOXGOTSA"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+order by
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblUNC67IF5OBCX7NOPNLQOCUG374" PropId="colKRIJCTPH4BBTJACPINFNMGHFOU" Owner="TABLE"/>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblUNC67IF5OBCX7NOPNLQOCUG374"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="411" Path="pdcCursor____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

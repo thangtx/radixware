@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcMMRW3JO4LNCUBG4HSZSI4R2VOU" Name="ImageManager" DescriptionId="mls3ZT34QMXGBGGJJACBNYYPBJ2YA" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcA5XVP7MQBBBD3IVME2ZPCG2SB4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcHED5ZRAIUJBXBIJW5SEBO2K32M"/>
+    </Bodies>
+    <MethodGroup Id="cmgAYTS5TGJRVAWTEOTJU7OGIBN5A" Name="Root"/>
+    <PropertyGroup Id="cpgETKHT3WZMRB4VCWVGQSMFLVT2M" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthKCPBJ3GJR5A2LOLLJOXGGFLBVQ" Name="loadIcon" DescriptionId="mlsTYSV3EN2VJAYRDXRHVE7UJGKRE" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="iconId" DescriptionId="mlsP7M4WHILBJHJDP333EX5CLFIDE" Id="mprL53TUUFLIFBTFE4W7AKD5YJLSU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QIcon" DescriptionId="mlsMFSLZS2BUFGSVLCYQP3HRIDZWA"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return (com.trolltech.qt.gui.QIcon)</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getInstance().getImageManager().loadIcon(iconId);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth2TGNKDP7NVEMFOV5RMBMNJMYCA" Name="loadSvgIcon" DescriptionId="mlsXPDINUBJMVHSLPZCASNBZKVWDI" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="iconPath" DescriptionId="mlsRH3SP37NBNDC7KJA4NMDKG4FSQ" Id="mprOTA46TO2AJBX5LEJDGOUTHP2IU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="backgroundColor" DescriptionId="mlsKNU7YEX36BFFNKZ46H33VZUGHY" Id="mpr7J2VVIO4RNFYZPZTIQ7GRQZXMY">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QColor"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QIcon" DescriptionId="mlsSPI76GOB2FG2JPGDZE5FHB5RP4"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return (com.trolltech.qt.gui.QIcon) </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthDN7Q3CISY5EBNIQRPEVSF2VAFI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(iconPath, backgroundColor);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

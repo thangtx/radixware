@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclSXUJDJWNC5EK7EEBQDZL6N7K4Y" Name="UserFunc.IsCorrelated" Type="2" ClientEnvironment="explorer">
+    <AccessRules IsDeprecated="true"/>
+    <Headers>
+      <Src Name="HeaderadcNBLCTHG2G5BNLCZNDDZUICY43Q"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcEXSILLTJPJEH7JIGFNRHZHWOEE"/>
+    </Bodies>
+    <MethodGroup Id="cmgO6T2LKXXJJGBTAHWLHRM2BB5XU" Name="Root"/>
+    <PropertyGroup Id="cpgXAVAOWTR4NAN3H3IVS2XPTQ374" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthFOOX7DTCW5GA5CUK2VYOOVAC3Q" Name="getMethodId" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <ReturnType TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclSXUJDJWNC5EK7EEBQDZL6N7K4Y mthJQTJRQPNLBAFJGTUHYKLRVFMBM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthJQTJRQPNLBAFJGTUHYKLRVFMBM" Name="isCorrelated" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="rq" Id="mpr3OOEQPUVIRHP3KXBXHOD75RYYY">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="rqParsingVars" Id="mprTKDW3V4SLRGWJOCA6JZV7L5OAY">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="rs" Id="mprBAPXWXHVPFFNTKDMJJJQJMJCAA">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="rsParsingVars" Id="mpr7L7PG2KZE5FXHMAXRKK6P3QT2U">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axc5FZRS2QUOVEJLO4MN66G5SU3CI"/>
+          <Exception TypeId="411" Path="axcJUFSBLVXVZEYDIHHN4G3GICTXI"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="1"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> b = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="1"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM mthTPAFKDKW4TOBDIECAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(new Object[] {rq, rqParsingVars, rs, rsParsingVars});
+    return (b == null) ? false : b.booleanValue();
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcJUFSBLVXVZEYDIHHN4G3GICTXI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+    throw e;
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc5FZRS2QUOVEJLO4MN66G5SU3CI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+    throw e;
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+    if (e instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcXJP5J6GEPZCERMRA74CCVXC3HI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)
+        throw (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcXJP5J6GEPZCERMRA74CCVXC3HI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) e;
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcWYWATQSPTFGLVAJPCFEERQFAFY mth2WATDQIFTFEU3KUT2DYGDYORUA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(this, "IsCorrelated user function error", e);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthF7CNIGWIWZEQRI4LH7KNDKQLLI" Name="isCorrelated" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="netHub" Id="mprY4ZECTJNOFFWTE4QZ4FIOFYHHU">
+            <Type TypeId="411" Path="aclASDVUU5IOJBFLHENNRCBIS5ZSY"/>
+          </Parameter>
+          <Parameter Name="rq" Id="mprQR6NPEN445CTHFRHPFEXQHCV24">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="rqParsingVars" Id="mprWU52PULYAJCCDM6TSIR5FVMX3Y">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="rs" Id="mprNDI5EZMGAZAPZFJG5JR6RFIYL4">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="rsParsingVars" Id="mprD6CRI2FHSBBCNNAZOCFXIJVJC4">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axc5FZRS2QUOVEJLO4MN66G5SU3CI"/>
+          <Exception TypeId="411" Path="axcJUFSBLVXVZEYDIHHN4G3GICTXI"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclSXUJDJWNC5EK7EEBQDZL6N7K4Y mthJQTJRQPNLBAFJGTUHYKLRVFMBM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(rq, rqParsingVars, rs, rsParsingVars);
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcJUFSBLVXVZEYDIHHN4G3GICTXI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+    netHub.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A mthQ7MQNDFPEVCSZM46CIFMM4ISAI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("IsCorrelated pipeline exception: " + e.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() + "\n\n" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e));
+    throw e;
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc5FZRS2QUOVEJLO4MN66G5SU3CI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+    netHub.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A mthQ7MQNDFPEVCSZM46CIFMM4ISAI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("IsCorrelated format error: " + e.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() + "\n\n" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e));
+    throw e;
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcXJP5J6GEPZCERMRA74CCVXC3HI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+    netHub.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A mthQ7MQNDFPEVCSZM46CIFMM4ISAI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("IsCorrelated exception: " + e.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() + "\n\n" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e));
+    throw e;
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+    <Presentations ObjectTitleId="mlsV3R2OTQPEBBWVJG5KDL6CBX6UM">
+      <ClassCatalogs>
+        <ClassCatalog Id="eccZMCDFRDL4DOBDIEAAALOMT5GDM" Name="All">
+          <ClassRef Order="810.0"/>
+        </ClassCatalog>
+      </ClassCatalogs>
+    </Presentations>
+    <Extends TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+  </AdsClassDefinition>
+</AdsDefinition>

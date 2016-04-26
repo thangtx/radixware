@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcPGM3MLLDCNC2BDRCTZKRWWTUNA" Name="FileUploader" Type="3" Environment="web">
+    <AccessRules IsFinal="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.wps.rwt.uploading.FileUploader"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcPGM3MLLDCNC2BDRCTZKRWWTUNA"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcPGM3MLLDCNC2BDRCTZKRWWTUNA"/>
+    </Bodies>
+    <MethodGroup Id="cmgGODBFEDGJBHYPNN2RPKDBZY3JI" Name="Root"/>
+    <PropertyGroup Id="cpgRHNPNCPBIRHB3JFFNNVWQEHJSE" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthH7YKKAI2AFDHZLL5XIZDQ3EIW4" Name="addSelectFileListener" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="addSelectFileListener(Lorg.radixware.wps.rwt.uploading.FileUploader.SelectFileListener;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="listener" Id="mpr737KCGEURRGBHNKJJYA2DPD3KM">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.uploading.FileUploader.SelectFileListener"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthJMJ7GNDNZNCXZLO46SBJJDYAHI" Name="addStartUploadListener" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="addStartUploadListener(Lorg.radixware.wps.rwt.uploading.FileUploader.StartUploadListener;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="listener" Id="mprIIYSUWGWUNB2HCXB2K467H3VTY">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.uploading.FileUploader.StartUploadListener"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthK34IBTQUBND35I5LDIQNBKLK54" Name="addUploadCompleteListener" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="addUploadCompleteListener(Lorg.radixware.wps.rwt.uploading.FileUploader.UploadCompleteListener;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="listener" Id="mpr2JRMALWA2VH4XOX7BNEPHPKDYE">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.uploading.FileUploader.UploadCompleteListener"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthUAFEST7JBRC7ZKKECRKCDNLT7Y" Name="dispose" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="dispose()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthTPL4ODEOYFHZ3GDA7Q2OHOODM4" Name="FileUploader" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.wps.rwt.UIObject;Lorg.radixware.wps.rwt.uploading.IUploadedDataReader;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprFSS637JEZZG4NP6HEJTBH5AMGQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="contextObject" Id="mprNV36UBDAMZGMVNCUBK26ZBXTQM">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.UIObject"/>
+          </Parameter>
+          <Parameter Name="reader" Id="mprM75JJKHZZBDGXJLAM2WK4WH3AE">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.uploading.IUploadedDataReader"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthMVRR3DQHSVFRHHSWKVNJ2YOXQ4" Name="getAcceptedMimeType" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getAcceptedMimeType()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthMAFCR7TGI5AKZOL742YGSN35JE" Name="getContextObject" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getContextObject()Lorg.radixware.wps.rwt.UIObject;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.rwt.UIObject"/>
+      </Method>
+      <Method Id="mthR4C7TWA5RZHF5ICUWTHWLNDFFY" Name="getSelectedFileName" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getSelectedFileName()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mth3TABR2OQARHARK26OQLYYVIBVE" Name="getSelectedFileSize" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getSelectedFileSize()Ljava.lang.Long;"/>
+        </AccessRules>
+        <ReturnType TypeId="2"/>
+      </Method>
+      <Method Id="mthRHWT6A7V2NBUDPLWPNQAZZ7STA" Name="isFileSelected" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isFileSelected()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthLDQJRJBQ7BAEXMHXVWL5MW4K5Q" Name="isUploadAutomaticallyStarted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isUploadAutomaticallyStarted()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthGX6MXUKD4VFRXKCG5SNDBAKGQU" Name="removeSelectFileListener" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="removeSelectFileListener(Lorg.radixware.wps.rwt.uploading.FileUploader.SelectFileListener;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="listener" Id="mprDC463TKZHRDYFH32BSA5BNKJGE">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.uploading.FileUploader.SelectFileListener"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthUBALAD5DPFB63BVOFJHCQA6QBM" Name="removeStartUploadListener" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="removeStartUploadListener(Lorg.radixware.wps.rwt.uploading.FileUploader.StartUploadListener;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="listener" Id="mprUQV4IQDWVRCGHAW6NZQCVXHFDQ">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.uploading.FileUploader.StartUploadListener"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthDUU466J63FH2VIJB6JBB4PU5AQ" Name="removeUploadCompleteListener" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="removeUploadCompleteListener(Lorg.radixware.wps.rwt.uploading.FileUploader.UploadCompleteListener;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="listener" Id="mpr32A6HC22GJCFLKIQT4K3VE2EQE">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.uploading.FileUploader.UploadCompleteListener"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthY2GB7TJG3FCDZECORZRIL7C35I" Name="setAcceptedMimeType" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setAcceptedMimeType(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="mimeType" Id="mpr4ERNM57FPVDE3JIUVTVZKFXLTI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth7WDECS7AMNEM3P37C4NELN73CI" Name="setStartUploadAutomatically" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setStartUploadAutomatically(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="startAuto" Id="mprCYTGL4FGVRFGDCVQRXPO5LX5OM">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthV4OFCBRCZNFFNLWUHVHFVLMUMA" Name="setUploadedDataReader" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setUploadedDataReader(Lorg.radixware.wps.rwt.uploading.IUploadedDataReader;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="reader" Id="mprLFXF7FIQYZG6JM6QOEBXVSLISM">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.uploading.IUploadedDataReader"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthXI5GR76DT5DDFCPJI4GIRT5C34" Name="uploadAndReadSelectedFile" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="uploadAndReadSelectedFile(Lorg.radixware.wps.rwt.uploading.IUploadedDataReader;Z)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="reader" Id="mprET6VROPWKRGAXJIFGLYL6MCZK4">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.uploading.IUploadedDataReader"/>
+          </Parameter>
+          <Parameter Name="cancellable" Id="mprVNRDHNJBGFBFZHYPCYEVBWVOHA">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.io.IOException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthOV5HNRTRWFFDBE5723NOCTDF4U" Name="uploadAsync" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="uploadAsync(Lorg.radixware.wps.rwt.uploading.IUploadedDataReader;)Lorg.radixware.wps.rwt.uploading.UploadHandler;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="reader" Id="mprZRK3SUF42BCE7O6OMQ2WLCLRDQ">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.uploading.IUploadedDataReader"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.rwt.uploading.UploadHandler"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.wps.rwt.uploading.UploadException"/>
+        </ThrownExceptions>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

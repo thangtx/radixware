@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:det="http://schemas.radixware.org/faultdetail.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://schemas.radixware.org/faultdetail.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="Exception" mixed="false">
+		<xs:all>
+			<xs:element name="Class" type="xs:string"/>
+			<xs:element name="Stack" type="xs:string"/>
+			<xs:element name="Message" type="xs:string"/>
+		</xs:all>
+	</xs:complexType>
+	<xs:element name="Exception" type="det:Exception"/>
+	<xs:complexType name="Trace">
+		<xs:sequence>
+			<xs:element name="Item" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute name="Level" type="xs:string"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="Trace" type="det:Trace"/>
+	<xs:element name="Message" type="xs:string"/>
+</xs:schema>

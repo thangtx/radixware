@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:mess="http://schemas.radixware.org/nethub.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:t="http://schemas.radixware.org/types.xsd" targetNamespace="http://schemas.radixware.org/nethub.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+	<!-- -->
+	<xs:annotation>
+		<xs:appinfo source="http://schemas.radixware.org/designinfo.xsd">
+			<TransparentDef/>
+		</xs:appinfo>
+	</xs:annotation>
+	<xs:simpleType name="ExceptionEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="FormatError"/>
+			<xs:enumeration value="InvalidRequest"/>
+			<xs:enumeration value="ServerException"/>
+			<xs:enumeration value="ApplicationError"/>
+			<xs:enumeration value="OutRqLimitExeeded"/>
+			<xs:enumeration value="ExtSysCallTimeout"/>
+		</xs:restriction>
+	</xs:simpleType>        
+	<xs:element name="OnRecvRs">
+		<xs:complexType>
+			<xs:attribute name="IsRequest" type="t:Bool" use="required"/>
+			<xs:attribute name="UniqueKey" type="t:Str"/>
+			<xs:attribute name="RqMess" type="t:BinBase64"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="OnRecvRq">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="RqMess" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:all>
+							<xs:element name="ParsingVars" type="t:MapStrStr"/>
+						</xs:all>
+						<xs:attribute name="Mess" type="t:BinBase64" use="required"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="Mess" type="t:BinBase64" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- Messages -->
+	<xs:complexType name="InvokeRq">
+		<xs:all>
+			<xs:element name="ParsingVars" type="t:MapStrStr"/>
+		</xs:all>
+		<xs:attribute name="Body" type="t:BinBase64" use="required"/>
+		<xs:attribute name="Stan" type="t:Int" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="InvokeRs">
+		<xs:attribute name="Body" type="t:BinBase64" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="SendRq">
+		<xs:attribute name="Body" type="t:BinBase64" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="SendRs"/>
+	<xs:complexType name="ReconnectRq"/>
+	<xs:complexType name="ReconnectRs"/>
+	<xs:complexType name="Invoke">
+		<xs:choice>
+			<xs:element name="InvokeRq" type="mess:InvokeRq"/>
+			<xs:element name="InvokeRs" type="mess:InvokeRs"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="Send">
+		<xs:choice>
+			<xs:element name="SendRq" type="mess:SendRq"/>
+			<xs:element name="SendRs" type="mess:SendRs"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="Reconnect">
+		<xs:choice>
+			<xs:element name="ReconnectRq" type="mess:ReconnectRq"/>
+			<xs:element name="ReconnectRs" type="mess:ReconnectRs"/>
+		</xs:choice>
+	</xs:complexType>
+</xs:schema>

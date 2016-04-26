@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="accAWFZDTH3KNGRLDZJY563FCBPEU" Name="CalendarItemsCursor" Type="4">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderadcDXQU4MPPCJBG3G4WGGJPK3VSF4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcZUGSOLZERBE77AOPSAVZ36ZTJM"/>
+    </Bodies>
+    <MethodGroup Id="cmg6DRXX4BOIVFCVHBXGXM6GXJXHU" Name="Root"/>
+    <PropertyGroup Id="cpgK32G4BCFDZCDDDIACAHWAESDVI" Name="Root"/>
+    <Properties>
+      <Property Id="prfI47KJERILRDVPL4ZXUHXRDMHRM" Name="id" Nature="3" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="0" IsPresentable="false">
+          <Editing/>
+        </Presentation>
+      </Property>
+      <Property Id="prfCRHZWA6VCNGX5CWE2DG7YE4KAM" Name="seq" Nature="3" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="0" IsPresentable="false">
+          <Editing/>
+        </Presentation>
+      </Property>
+      <Property Id="prmPEWEM6ZSMBEIHPNVPMOXASGR3Y" Name="parCalendarId" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="open" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="parCalendarId" Id="mprPEWEM6ZSMBEIHPNVPMOXASGR3Y">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="accAWFZDTH3KNGRLDZJY563FCBPEU"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="true">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>Select </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblCRD53OZ5I3OBDCIOAALOMT5GDM" PropId="colMF3T2LPMKXOBDCI6AALOMT5GDM" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accAWFZDTH3KNGRLDZJY563FCBPEU" PropId="prfI47KJERILRDVPL4ZXUHXRDMHRM" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblCRD53OZ5I3OBDCIOAALOMT5GDM" PropId="colOCF4R7J5I3OBDCIOAALOMT5GDM" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accAWFZDTH3KNGRLDZJY563FCBPEU" PropId="prfCRHZWA6VCNGX5CWE2DG7YE4KAM" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+From </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblCRD53OZ5I3OBDCIOAALOMT5GDM"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+where  </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblCRD53OZ5I3OBDCIOAALOMT5GDM" PropId="colKRZR7QR5I3OBDCIOAALOMT5GDM" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmPEWEM6ZSMBEIHPNVPMOXASGR3Y"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+order by </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblCRD53OZ5I3OBDCIOAALOMT5GDM" PropId="colOCF4R7J5I3OBDCIOAALOMT5GDM" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> 
+   </xsc:Sql>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblCRD53OZ5I3OBDCIOAALOMT5GDM"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="411" Path="pdcCursor____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

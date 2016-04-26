@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdELZC64YVKJCLHLFW2FA6Y4VWM4" Name="ImpExpXsd" TargetNamespace="http://schemas.radixware.org/sb-impExp.xsd" Environment="common"><xs:schema targetNamespace="http://schemas.radixware.org/sb-impExp.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xscml="http://schemas.radixware.org/xscml.xsd" xmlns:rcmn="http://schemas.radixware.org/common.xsd" xmlns:this="http://schemas.radixware.org/sb-impExp.xsd" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:sbd="http://schemas.radixware.org/sb-diagram.xsd" xmlns:userFcn="http://schemas.radixware.org/userfunc-impexp.xsd">
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/common.xsd" schemaLocation="common.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/sb-diagram.xsd" schemaLocation="sb-diagram.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/xscml.xsd" schemaLocation="xscml.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/userfunc-impexp.xsd" schemaLocation="userfunc-impexp.xsd"/>
+        
+    <xs:complexType name="Entity">
+        <xs:complexContent>
+            <xs:extension base="rcmn:ImpExpEntity"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Node">
+        <xs:complexContent>
+            <xs:extension base="this:Entity">
+                <xs:sequence>
+                    <xs:element name="Title" type="types:Str" nillable="false" minOccurs="0"/>
+                    <xs:element name="ReferenceProps" type="rcmn:EditableProperties" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="EntityId" type="types:Str" use="required"/>
+                <xs:attribute name="EntityPid" type="types:Str" use="required"/>
+                <xs:attribute name="ExtGuid" type="types:Str"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="PipelineNode">
+        <xs:complexContent>
+            <xs:extension base="this:Node">
+                <xs:sequence>
+                    <xs:element name="Description" type="types:Str" nillable="false" minOccurs="0"/>
+                    <xs:element name="Params" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Param" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element name="Value" type="types:Str" minOccurs="0"/>
+                                        </xs:sequence>
+                                        <xs:attribute name="Name" type="types:Str" use="required"/>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Connectors" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Connector" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element name="Title" type="types:Str" minOccurs="0"/>
+                                            <xs:element name="RqType" type="types:Str"/>
+                                            <xs:element name="RsType" type="types:Str"/>
+                                        </xs:sequence>
+                                        <xs:attribute name="Role" type="types:Str" use="required"/>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="TransformStages" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="TransformStage" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:complexContent>
+                                            <xs:extension base="this:Entity">
+                                                <xs:sequence>
+                                                    <xs:element name="Title" type="types:Str" nillable="false" minOccurs="0"/>
+                                                    <xs:element name="Seq" type="types:Int"/>
+                                                    <xs:element name="XPathTable" minOccurs="0">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="Item" minOccurs="0" maxOccurs="unbounded">
+                                                                    <xs:complexType>
+                                                                        <xs:sequence>
+                                                                            <xs:element name="Title" type="types:Str" nillable="false" minOccurs="0"/>
+                                                                            <xs:element name="Seq" type="types:Int"/>
+                                                                            <xs:element name="SrcXPath" type="types:Str" nillable="false" minOccurs="0"/>
+                                                                            <xs:element name="DstXPath" type="types:Str" nillable="false" minOccurs="0"/>
+                                                                            <xs:element name="IsRequest" type="types:Bool"/>
+                                                                        </xs:sequence>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:extension>
+                                        </xs:complexContent>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:simpleType name="PortSecurityProtocol">
+        <xs:annotation>
+            <xs:documentation>Enum EPortSecurityProtocol</xs:documentation>
+            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                <types:class classId="acsOQBHNCGYX7NRDB6TAALOMT5GDM">org.radixware.ads.mdlSYSTEM____________________.common.acsOQBHNCGYX7NRDB6TAALOMT5GDM</types:class>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:restriction base="types:IntEnum"/>
+    </xs:simpleType>
+    <xs:simpleType name="LinkLevelProtocolKind">
+        <xs:annotation>
+            <xs:documentation>Enum ELinkLevelProtocolKind</xs:documentation>
+            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                <types:class classId="acsEQC6IAMF2DNRDB7AAALOMT5GDM">org.radixware.ads.mdlN2ZONVKHYRD7LF7PLAWMZ25JQY.common.acsEQC6IAMF2DNRDB7AAALOMT5GDM</types:class>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:restriction base="types:IntEnum"/>
+    </xs:simpleType>
+    <xs:simpleType name="ClientAuthentication">
+        <xs:annotation>
+            <xs:documentation>Enum EClientAuthentication</xs:documentation>
+            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                <types:class classId="acs5YMQPO4VDRHS3IIM4EK3AHKYVM">org.radixware.kernel.common.enums.EClientAuthentication</types:class>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:restriction base="types:IntEnum"/>
+    </xs:simpleType>
+    <xs:complexType name="NetChannel">
+        <xs:sequence>
+            <xs:element name="Title" type="types:Str" nillable="false" minOccurs="0"/>
+            <xs:element name="Address" type="types:Str" nillable="false"/>
+            <xs:element name="LinkLevelProtocolKind" type="this:LinkLevelProtocolKind" nillable="false"/>
+            <xs:element name="RequestFrame" type="types:Str" nillable="false"/>
+            <xs:element name="ResponseFrame" type="types:Str" nillable="false"/>
+            <xs:element name="RecvTimeout" type="types:Int" nillable="false"/>
+            <xs:element name="SendTimeout" type="types:Int" nillable="false"/>
+            <xs:element name="KeepConnectTimeout" type="types:Int" nillable="false" minOccurs="0"/>
+            <xs:element name="MaxSessionCount" type="types:Int" nillable="false" minOccurs="0"/>
+            <xs:element name="GuiTraceProfile" type="types:Str" nillable="false"/>
+            <xs:element name="FileTraceProfile" type="types:Str" nillable="false"/>
+            <xs:element name="DbTraceProfile" type="types:Str" nillable="false"/>
+            <xs:element name="SecurityProtocol" type="this:PortSecurityProtocol" nillable="false"/>
+            <xs:element name="CheckClientCert" type="this:ClientAuthentication" nillable="false"/>
+            <xs:element name="ServerKeyAliases" type="types:Str" nillable="false" minOccurs="0"/>
+            <xs:element name="ClientCertAliases" type="types:Str" nillable="false" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="ClassGuid" type="types:Str" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="MessageQueueProcessor">
+        <xs:sequence>
+            <xs:element name="Title" type="types:Str" nillable="false" minOccurs="0"/>
+            <xs:element name="DbTraceProfile" type="types:Str" nillable="false" minOccurs="0"/>
+            <xs:element name="ParallelThreads" type="types:Int" nillable="false"/>
+            <xs:element name="AasCallTimeoutMs" type="types:Int" nillable="false"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="MessageQueue">
+        <xs:sequence>
+            <xs:element name="Title" type="types:Str" nillable="false" minOccurs="0"/>
+            <xs:element name="classGuid" type="types:Str" nillable="false" minOccurs="1"/>
+            <xs:element name="QueueKind" type="types:Str" nillable="false" minOccurs="1"/>
+            <xs:element name="QueueName" type="types:Str" nillable="false" minOccurs="1"/>
+            <xs:element name="BrokerAddress" type="types:Str" nillable="false" minOccurs="1"/>
+            <xs:element name="PartitionName" type="types:Str" nillable="false" minOccurs="0"/>
+            <xs:element name="ConsumerKey" type="types:Str" nillable="false" minOccurs="0"/>
+            <xs:element name="Login" type="types:Str" nillable="false" minOccurs="0"/>
+            <xs:element name="Password" type="types:Str" nillable="false" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:simpleType name="UnitType">
+        <xs:annotation>
+            <xs:documentation>Enum EUnitType</xs:documentation>
+            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                <types:class classId="acsLSG35D4GIHNRDJIEACQMTAIZT4">org.radixware.ads.mdlSYSTEM____________________.common.acsLSG35D4GIHNRDJIEACQMTAIZT4</types:class>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:restriction base="types:IntEnum"/>
+    </xs:simpleType>
+    <xs:complexType name="Unit">
+        <xs:sequence>
+            <xs:element name="Type" type="this:UnitType" nillable="false"/>
+            <xs:element name="Use" type="types:Bool" nillable="false"/>
+            <xs:element name="GuiTraceProfile" type="types:Str" nillable="false"/>
+            <xs:element name="FileTraceProfile" type="types:Str" nillable="false"/>
+            <xs:element name="DbTraceProfile" type="types:Str" nillable="false"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:simpleType name="ServiceAccessibility">
+        <xs:annotation>
+            <xs:documentation>Enum EServiceAccessibility</xs:documentation>
+            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                <types:class classId="acs3A7RUNYYRJCKPBZVNZD23FALXI">org.radixware.kernel.common.enums.EServiceAccessibility</types:class>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:restriction base="types:CharEnum"/>
+    </xs:simpleType>
+    <xs:complexType name="ServiceUnit">
+        <xs:complexContent>
+            <xs:extension base="this:Unit">
+                <xs:sequence>
+                    <xs:element name="Sap" type="this:Sap"/>
+                    <xs:element name="SapPropsXml" type="types:Str" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Sap">
+        <xs:sequence>
+            <xs:element name="Title" type="types:Str" nillable="false" minOccurs="0"/>
+            <xs:element name="Notes" type="types:Str" nillable="false" minOccurs="0"/>
+            <xs:element name="Address" type="types:Str" nillable="false"/>
+            <xs:element name="CheckClientCert" type="this:ClientAuthentication" nillable="false"/>
+            <xs:element name="SecurityProtocol" type="this:PortSecurityProtocol" nillable="false"/>
+            <xs:element name="ClientKeyAliases" type="types:Str" nillable="false" minOccurs="0"/>
+            <xs:element name="ServerKeyAliases" type="types:Str" nillable="false" minOccurs="0"/>
+            <xs:element name="ClientCertAliases" type="types:Str" nillable="false" minOccurs="0"/>
+            <xs:element name="ServerCertAliases" type="types:Str" nillable="false" minOccurs="0"/>
+            <xs:element name="Accessibility" type="this:ServiceAccessibility" nillable="false"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="NetHubUnit">
+        <xs:complexContent>
+            <xs:extension base="this:ServiceUnit">
+                <xs:sequence>
+                    <xs:element name="InSeanceCnt" type="types:Int" nillable="false"/>
+                    <xs:element name="OutSeanceCnt" type="types:Int" nillable="false"/>
+                    <xs:element name="EchoTestPeriod" type="types:Int" nillable="false" minOccurs="0"/>
+                    <xs:element name="ReconnectNoEchoCnt" type="types:Int" nillable="false" minOccurs="0"/>
+                    <xs:element name="ExtPortIsServer" type="types:Bool" nillable="false"/>
+                    <xs:element name="ExtPortAddress" type="types:Str" nillable="false"/>
+                    <xs:element name="ExtPortFrame" type="types:Str" nillable="false"/>
+                    <xs:element name="OutTimeout" type="types:Int" nillable="false"/>
+                    <xs:element name="ToProcessConnect" type="types:Bool" nillable="false"/>
+                    <xs:element name="ToProcessDisconnect" type="types:Bool" nillable="false"/>
+                    <xs:element name="ToProcessDuplicatedRq" type="types:Bool" nillable="false"/>
+                    <xs:element name="ToProcessUncorrelatedRs" type="types:Bool" nillable="false"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:simpleType name="PersoCommChannelKind">
+        <xs:annotation>
+            <xs:documentation>Enum EPersoCommChannelKind</xs:documentation>
+            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                <types:class classId="acsZ5EEISSCVXOBDCLUAALOMT5GDM">org.radixware.ads.mdlU6XJ2RXD4ZAJPBS2QB6WDAD3JQ.common.acsZ5EEISSCVXOBDCLUAALOMT5GDM</types:class>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:restriction base="types:StrEnum"/>
+    </xs:simpleType>
+    <xs:simpleType name="PersoCommImportance">
+        <xs:annotation>
+            <xs:documentation>Enum EPersoCommImportance</xs:documentation>
+            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                <types:class classId="acsTUGILCRUVXOBDCLUAALOMT5GDM">org.radixware.kernel.common.enums.EPersoCommImportance</types:class>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:restriction base="types:IntEnum"/>
+    </xs:simpleType>
+    <xs:simpleType name="Encoding">
+        <xs:annotation>
+            <xs:documentation>Enum Encoding</xs:documentation>
+            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                <types:class classId="acsVXR524YMLLOBDB6NAAN7YHKUNI">org.radixware.ads.mdlXYRYD6JFXBFV5OH6CM64X7Y7GA.common.acsVXR524YMLLOBDB6NAAN7YHKUNI</types:class>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:restriction base="types:StrEnum"/>
+    </xs:simpleType>
+    <xs:complexType name="PersoComm">
+        <xs:complexContent>
+            <xs:extension base="this:ServiceUnit">
+                <xs:sequence>
+                    <xs:element name="Kind" type="this:PersoCommChannelKind" nillable="false"/>
+                    <xs:element name="MinImportance" type="this:PersoCommImportance" nillable="false"/>
+                    <xs:element name="MaxImportance" type="this:PersoCommImportance" nillable="false"/>
+                    <xs:element name="SendPeriod" type="types:Int" nillable="false" minOccurs="0"/>
+                    <xs:element name="RecvPeriod" type="types:Int" nillable="false" minOccurs="0"/>
+                    <xs:element name="SendAddress" type="types:Str" nillable="false"/>
+                    <xs:element name="RecvAddress" type="types:Str" nillable="false"/>
+                    <xs:element name="MessAddressRegexp" type="types:Str" nillable="false"/>
+                    <xs:element name="RoutingPriority" type="types:Int" nillable="false"/>
+                    <xs:element name="Encoding" type="this:Encoding" nillable="false" minOccurs="0"/>
+                    <xs:element name="SendTimeout" type="types:Int" nillable="false" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:simpleType name="JmsMessageFormat">
+        <xs:annotation>
+            <xs:documentation>Enum EJmsMessageFormat</xs:documentation>
+            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                <types:class classId="acsQEYA5D55Q5C7VDLY3SYRSDJ3HA">org.radixware.kernel.common.enums.EJmsMessageFormat</types:class>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:restriction base="types:IntEnum"/>
+    </xs:simpleType>
+    <xs:complexType name="JmsHubUnit">
+        <xs:complexContent>
+            <xs:extension base="this:ServiceUnit">
+                <xs:sequence>
+                    <xs:element name="JmsMessFormat" type="this:JmsMessageFormat" nillable="false"/>
+                    <xs:element name="JmsConnectProps" type="types:Str" nillable="false" minOccurs="0"/>
+                    <xs:element name="JmsMessProps" type="types:Str" nillable="false" minOccurs="0"/>
+                    <xs:element name="JmsLogin" type="types:Str" nillable="false" minOccurs="0"/>
+                    <xs:element name="JmsPassword" type="types:Str" nillable="false" minOccurs="0"/>
+                    <xs:element name="MsRqQueueName" type="types:Str" nillable="false"/>
+                    <xs:element name="MsRsQueueName" type="types:Str" nillable="false" minOccurs="0"/>
+                    <xs:element name="InSeanceCnt" type="types:Int" nillable="false" minOccurs="0"/>
+                    <xs:element name="OutSeanceCnt" type="types:Int" nillable="false" minOccurs="0"/>
+                    <xs:element name="RsTimeout" type="types:Int" nillable="false" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ServiceServer">
+        <xs:complexContent>
+            <xs:extension base="this:ServiceUnit">
+                <xs:sequence>
+                    <xs:element name="ServiceUri" type="types:Str" nillable="false"/>
+                    <xs:element name="HighArteInstCount" type="types:Int" nillable="false"/>
+                    <xs:element name="BusyArteInstCount" type="types:Int" nillable="false" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Pipeline">
+        <xs:complexContent>
+            <xs:extension base="this:Entity">
+                <xs:sequence>
+                    <xs:element name="Title" type="types:Str" nillable="false" minOccurs="0"/>
+                    <xs:element name="Description" type="types:Str" nillable="false" minOccurs="0"/>
+                    <xs:element name="Diagram" type="sbd:Diagram" nillable="false" minOccurs="0"/>
+                    <xs:element name="TraceProfile" type="types:Str" nillable="false" minOccurs="0"/>
+                    <xs:element name="Checked" type="types:Bool" nillable="false" minOccurs="0"/>
+                    <xs:element name="TransformerStartNode" type="types:Str" nillable="false" minOccurs="0"/>
+                    <xs:element name="TransformerEndNode" type="types:Str" nillable="false" minOccurs="0"/>
+                    <xs:element name="PipelineNodes" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Node" type="this:PipelineNode" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="OtherNodes" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Node" type="this:Node" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Params" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Param" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element name="Value" type="types:Str" minOccurs="0"/>
+                                        </xs:sequence>
+                                        <xs:attribute name="Name" type="types:Str" use="required"/>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="UserFuncLibGroup" type="userFcn:UserFuncLibGroup" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="ExtGuid" type="types:Str" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="Pipeline" type="this:Pipeline"/>
+    <xs:complexType name="PipelineGroup">
+        <xs:sequence>
+            <xs:element name="Item " type="this:Pipeline" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="PipelineGroup" type="this:PipelineGroup"/>
+    <xs:simpleType name="DataSchemeType">
+        <xs:annotation>
+            <xs:documentation>Enum DataSchemeType</xs:documentation>
+            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                <types:class classId="acs4IA2QHCBZRDDDIHZCZHABTQDH4">org.radixware.ads.mdlSYSTEM____________________.common.acs4IA2QHCBZRDDDIHZCZHABTQDH4</types:class>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:restriction base="types:StrEnum"/>
+    </xs:simpleType>
+    <xs:complexType name="DataScheme">
+        <xs:all>
+            <xs:element name="Uri" type="types:Str"/>
+            <xs:element name="Type" type="this:DataSchemeType"/>
+            <xs:element name="Title" type="types:Str" minOccurs="0"/>
+            <xs:element name="Description" type="types:Str" minOccurs="0"/>
+            <xs:element name="Scheme" type="xs:anyType" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="DataSchemeGroup">
+        <xs:sequence>
+            <xs:element name="Item" type="this:DataScheme" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="DataScheme" type="this:DataScheme"/>
+    <xs:element name="DataSchemeGroup" type="this:DataSchemeGroup"/>
+</xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

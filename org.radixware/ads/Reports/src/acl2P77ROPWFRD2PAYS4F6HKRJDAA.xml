@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="acl2P77ROPWFRD2PAYS4F6HKRJDAA" Name="ReportPub.Contextless" Type="2">
+    <AccessRules/>
+    <Headers>
+      <Src Name="HeaderadcBN5RBAZJ6NHFFIMFIKIUMH43SE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcQ5V6OY7W3JDVZCYIWNG36YKIYA"/>
+    </Bodies>
+    <MethodGroup Id="cmg377ICMGCSJETTAO3UOVXEC6Q44" Name="Root"/>
+    <PropertyGroup Id="cpgLD2ZUHIKV5E3PDNHLU54VXJYHI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthHR2SSO3ZF5D5FC5YCVP3AP5YPA" Name="check" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="contextObject" Id="mpr7SYRVSDN2ZHM5OKWYKEZU6UIYM">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="isPreExecCheck" Id="mpr6TOTYOABWNHNBI6KVNPAUAAPYQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return true;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthU2QN6PMEORASHGRBEXZDXVR2JI" Name="getContextObjectClassId" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthcmd6V5675GOJFC3RCYKK3XRE34PN4" Name="onCommand_generateReport" Nature="1" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="input" Id="mpr7BDLJN3RXRFNNOORNTUZFDG5SE">
+            <Type TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="GenerateReportRqDocument"/>
+          </Parameter>
+          <Parameter Name="newPropValHandlersById" Id="mprIECW5WA3P5CCJI2R5UWIQLTFOI">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.PropValHandlersByIdMap"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java> </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecUNC67IF5OBCX7NOPNLQOCUG374 mthAK3L7LWYAVC5DIXCO5HLBYKAQE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(null /*context*/, input);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblUNC67IF5OBCX7NOPNLQOCUG374"/>
+    <Presentations ObjectTitleId="mlsZPWB3BTQRVBKXIJHINFAMBXYIQ">
+      <Commands>
+        <Command Id="cmd6V5675GOJFC3RCYKK3XRE34PN4" Name="GenerateReport" TitleId="mlsK3EI4PJ3FJBFRCQMUBRPGRRL3M" Nature="2" IconId="img3627K6GYUFGXFJYWMVCBQAPHUA" IsVisible="true" IsConfirmationRequired="false" Accessibility="3" Scope="3">
+          <InType TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="GenerateReportRqDocument"/>
+        </Command>
+      </Commands>
+      <ClassCatalogs>
+        <ClassCatalog Id="ecc3RVGTAHLYVFYNLXVNXJQYIGNPE" Name="Contextless">
+          <ClassRef Order="10.0"/>
+        </ClassCatalog>
+      </ClassCatalogs>
+      <EditorPresentations>
+        <EditorPresentation Id="eprPE2EAOJOQVE2BLM3DM6DBZYI7I" Name="General" BasePresentationId="eprFP5NARHOA5E7LNMKWHBCS5Y3FM" InheritanceMask="40114" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprFP5NARHOA5E7LNMKWHBCS5Y3FM">
+          <Model Id="aemPE2EAOJOQVE2BLM3DM6DBZYI7I" Name="General:Model" Type="15">
+            <AccessRules/>
+            <Headers>
+              <Src Name="HeaderadcAFDCGA7N35FXRIHFZZXWGTXUOE"/>
+            </Headers>
+            <Bodies>
+              <Src Name="BodyadcWC2I7SL6VBHEDEABX7NCUVPR6E"/>
+            </Bodies>
+            <MethodGroup Id="cmgLBHP7XVNTFDTLJ6ZNQOOJ2PHVE" Name="Root"/>
+            <PropertyGroup Id="cpgVZVLNIGXZ5AORARHXXA3UGHA74" Name="Root"/>
+            <Properties/>
+            <Methods>
+              <Method Id="mthcmd6V5675GOJFC3RCYKK3XRE34PN4" Name="onCommand_GenerateReport" Nature="1" Environment="common-client" IsOverride="false">
+                <AccessRules IsPublished="false"/>
+                <Parameters>
+                  <Parameter Name="command" Id="mprWJ42MDAGFNEAHMYWAEI3VPNQKQ">
+                    <Type TypeId="411" Path="acl2P77ROPWFRD2PAYS4F6HKRJDAA cmd6V5675GOJFC3RCYKK3XRE34PN4"/>
+                  </Parameter>
+                </Parameters>
+                <Sources>
+                  <Src>
+                    <xsc:Item>
+                      <xsc:Java>this.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecUNC67IF5OBCX7NOPNLQOCUG374 eprFP5NARHOA5E7LNMKWHBCS5Y3FM aemFP5NARHOA5E7LNMKWHBCS5Y3FM mthNTRVW6B64ZANVNTQC3SQSORKPE" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(this.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthBN46PMVUBFADVFFMPLGSSR7ZRM" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="acl2P77ROPWFRD2PAYS4F6HKRJDAA cmd6V5675GOJFC3RCYKK3XRE34PN4"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>), null, null);
+</xsc:Java>
+                    </xsc:Item>
+                  </Src>
+                </Sources>
+              </Method>
+            </Methods>
+          </Model>
+          <ChildExplorerItems/>
+          <ObjectTitleFormat Id="etfZT5Y3XIZLZH2RCREJZUZUQSFQE"/>
+        </EditorPresentation>
+      </EditorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="aecUNC67IF5OBCX7NOPNLQOCUG374"/>
+  </AdsClassDefinition>
+</AdsDefinition>

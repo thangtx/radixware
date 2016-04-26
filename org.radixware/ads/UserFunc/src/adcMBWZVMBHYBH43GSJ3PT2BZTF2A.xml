@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcMBWZVMBHYBH43GSJ3PT2BZTF2A" Name="LibUserFuncUtils" Type="3" Environment="common-client">
+    <AccessRules IsPublished="false" IsAbstract="true">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcMBWZVMBHYBH43GSJ3PT2BZTF2A"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcMBWZVMBHYBH43GSJ3PT2BZTF2A"/>
+    </Bodies>
+    <MethodGroup Id="cmg63H27L6JRFGA7A3WKHMFKPVVXU" Name="Root"/>
+    <PropertyGroup Id="cpgJULF3AXH2BDY5BWFQRGT57KYZE" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthVGVGGX7ECJDFNCRL3AZNK2VXIQ" Name="getAllowedLibNamesByPipelineId" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="env" Id="mprRE3WPRMWHZAXXH3SYFLG2JQGA4">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
+          <Parameter Name="pipelineId" Id="mprNKJRJV76BJCXHDOJCCLNAPLMWM">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.Map">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="21"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="21"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if(pipelineId == null) {
+    return null;
+}
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="IntDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xPipelineIdDoc = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="IntDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Factory.newInstance();
+xPipelineIdDoc.Int = pipelineId;
+try {
+    org.apache.xmlbeans.XmlObject response = env.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthRKLGSF7BNFDPXMXNAQP6UIV3GU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicLRZ7XIGZKRHTPC55UBYRMASNMU mthBSX6P4OE4JB43PN6JQGUGR2AGM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="clcCXP2432PUFHBBKG2CRAZSGMSHY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, xPipelineIdDoc, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStrDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.class);
+    if (response != null) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStrDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xDoc = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStrDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) response;
+        if (xDoc != null &amp;&amp; xDoc.MapStrStr != null) {
+            java.util.Map&lt;String, String> libName2PipelineIdMap = new java.util.HashMap&lt;>();
+            for (org.radixware.schemas.types.MapStrStr.Entry entry : xDoc.MapStrStr.EntryList) {
+                libName2PipelineIdMap.put(entry.Key, entry.Value);
+            }
+            return libName2PipelineIdMap;
+        }
+    }
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+    env.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthLUUYWKLT5FCADGRMSBQMZYWYGE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcACRZP2N7KJHLTPMFXSTA2VAWSA mthPJAN2KFX3RBSVEELIMDEP6Y57M" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Error on sending contextless command for obtain allowed user function libraries names.", ex);
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcWSBFK4LYMVHTXL55MVC44THTGE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+    env.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthLUUYWKLT5FCADGRMSBQMZYWYGE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcACRZP2N7KJHLTPMFXSTA2VAWSA mthPJAN2KFX3RBSVEELIMDEP6Y57M" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Error on sending contextless command for obtain allowed user function libraries names.", ex);
+}
+return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

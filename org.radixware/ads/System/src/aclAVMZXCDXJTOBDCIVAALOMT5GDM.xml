@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclAVMZXCDXJTOBDCIVAALOMT5GDM" Name="Task.ContinualMaintenance" Type="2" ClientEnvironment="explorer">
+    <AccessRules Access="4" IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderadcXXCCAUYIMVFWDJ3GTXIIHYPBXA"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc5L4K3U47NBA6FEKNCJ6EMY7GUQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgKASADUOKEJEWRLV4SKSJ2KOH2Y" Name="Root"/>
+    <PropertyGroup Id="cpg54BFJN63Y5GTJO7NPXPYJHB6WA" Name="Root"/>
+    <Properties>
+      <Property Id="colYQWRAN7SK5GA3EGFI6TEPHYWL4" Name="expiredPolicy" Nature="0" IsConst="false" IsOverride="true">
+        <AccessRules/>
+        <Type TypeId="2" Path="acsMX5WQ6IW55D5BMVQYQBOPJEMSQ"/>
+        <InitialValue>
+          <ValAsStr>0</ValAsStr>
+        </InitialValue>
+        <Presentation InheritanceMask="61">
+          <Editing NotNull="true" EditPossibility="1" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthN36NOGMSW5EGZIX2JAVCBWM2RU" Name="execute" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="prevExecTime" Id="mprVKFF4XX5O5B4NNJLZWZQT5IEQ4">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="curExecTime" Id="mprORV5IZZ4ZNGX5IJWSI4PQAGPHI">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcHKSHRNIAVLOBDCLSAALOMT5GDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcHKSHRNIAVLOBDCLSAALOMT5GDM mthPS65LVIAVLOBDCLSAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthKIF62UYHLRDRPPGLIIMJRLXSUI" Name="isSingletone" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return true;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthTMY4LSZKOVENHEHZ2G7FKDNXUU" Name="canBeManual" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return false;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+    <Presentations ObjectTitleId="mlsXAUVQOK4OXOBDFKUAAMPGXUWTQ">
+      <ClassCatalogs>
+        <ClassCatalog Id="eccVXWRKQLYJTOBDCIVAALOMT5GDM" Name="Default">
+          <ClassRef Order="100.0"/>
+        </ClassCatalog>
+      </ClassCatalogs>
+    </Presentations>
+    <Extends TypeId="411" Path="aclZDLN466RV5FE3BQIWSX56ZAETQ"/>
+  </AdsClassDefinition>
+</AdsDefinition>

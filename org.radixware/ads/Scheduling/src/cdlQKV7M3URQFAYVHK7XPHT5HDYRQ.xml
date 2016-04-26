@@ -1,0 +1,968 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsCustomDialogDefinition Id="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ" Name="TaskImportDialog">
+    <AccessRules IsPublished="false"/>
+    <ui:ui>
+      <ui:widget name="Dialog" id="wdgXCVJTVS6JZFXRM2H6LRN24MICM" class="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ" weight="0.0">
+        <ui:property name="geometry">
+          <ui:rect>
+            <ui:x>0</ui:x>
+            <ui:y>0</ui:y>
+            <ui:width>400</ui:width>
+            <ui:height>293</ui:height>
+          </ui:rect>
+        </ui:property>
+        <ui:property name="windowTitle">
+          <ui:mlstringid>mlsFHN3GEHW6RA6BMYSDS2SNVFPNA</ui:mlstringid>
+        </ui:property>
+        <ui:layout class="QVBoxLayout" name="verticalLayout">
+          <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+            <ui:layout class="QHBoxLayout" name="horizontalLayout">
+              <ui:property name="layoutLeftMargin">
+                <ui:int>0</ui:int>
+              </ui:property>
+              <ui:property name="layoutTopMargin">
+                <ui:int>0</ui:int>
+              </ui:property>
+              <ui:property name="layoutRightMargin">
+                <ui:int>0</ui:int>
+              </ui:property>
+              <ui:property name="layoutBottomMargin">
+                <ui:int>0</ui:int>
+              </ui:property>
+              <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                <ui:spacer name="spacer">
+                  <ui:property name="orientation">
+                    <ui:enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</ui:enum>
+                  </ui:property>
+                  <ui:property name="sizeHint">
+                    <ui:size>
+                      <ui:width>40</ui:width>
+                      <ui:height>20</ui:height>
+                    </ui:size>
+                  </ui:property>
+                </ui:spacer>
+              </ui:item>
+              <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                <ui:widget name="pbCheck" id="wdgGFADIIFUQFGJPAGCZBOIXJTHR4" class="QPushButton" weight="0.0">
+                  <ui:property name="text">
+                    <ui:mlstringid>mlsSX65JW3KGNELPEZT2D5MYH3BSE</ui:mlstringid>
+                  </ui:property>
+                  <ui:property name="geometry">
+                    <ui:rect>
+                      <ui:x>26</ui:x>
+                      <ui:y>2</ui:y>
+                      <ui:width>100</ui:width>
+                      <ui:height>23</ui:height>
+                    </ui:rect>
+                  </ui:property>
+                  <ui:property name="objectName">
+                    <ui:string>pbCheck</ui:string>
+                  </ui:property>
+                </ui:widget>
+              </ui:item>
+              <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                <ui:widget name="pbUncheck" id="wdgLKUXRAH2ZZG4TDXL3AVII2CJVY" class="QPushButton" weight="0.0">
+                  <ui:property name="text">
+                    <ui:mlstringid>mlsOBTOIMEHAVBZHF24PSU3FLZABY</ui:mlstringid>
+                  </ui:property>
+                  <ui:property name="objectName">
+                    <ui:string>pbUncheck</ui:string>
+                  </ui:property>
+                </ui:widget>
+              </ui:item>
+            </ui:layout>
+          </ui:item>
+          <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+            <ui:widget name="tableWidget" id="wdgF5UTNQ5NMNEKFLI45JF2VZGYBI" class="QTableWidget" weight="0.0">
+              <ui:property name="columnCount">
+                <ui:int>4</ui:int>
+              </ui:property>
+              <ui:property name="rowCount">
+                <ui:int>0</ui:int>
+              </ui:property>
+              <ui:column>
+                <ui:property name="text">
+                  <ui:mlstringid>mlsIJKX4CGBWVGJHAR2LBFWOJ6RJI</ui:mlstringid>
+                </ui:property>
+              </ui:column>
+              <ui:column>
+                <ui:property name="text">
+                  <ui:mlstringid>mlsZ6X7ACCHSBBKHNLFMJG3EZDHBI</ui:mlstringid>
+                </ui:property>
+              </ui:column>
+              <ui:column>
+                <ui:property name="text">
+                  <ui:mlstringid>mlsBHS7DYEHEJG3FO7BHOCRIAXNEQ</ui:mlstringid>
+                </ui:property>
+              </ui:column>
+              <ui:column>
+                <ui:property name="text">
+                  <ui:mlstringid>mls3UUAWYSGFBDTNPIA4JUCOA532Q</ui:mlstringid>
+                </ui:property>
+              </ui:column>
+            </ui:widget>
+          </ui:item>
+          <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+            <ui:widget name="buttonBox" id="wdgT5BFNDNQJJBJHH4HLB4INEYHHU" class="QDialogButtonBox" weight="0.0">
+              <ui:property name="standardButtons">
+                <ui:set>com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Ok | com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Cancel</ui:set>
+              </ui:property>
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>55</ui:x>
+                  <ui:y>244</ui:y>
+                  <ui:width>156</ui:width>
+                  <ui:height>23</ui:height>
+                </ui:rect>
+              </ui:property>
+            </ui:widget>
+          </ui:item>
+        </ui:layout>
+      </ui:widget>
+      <ui:connections>
+        <ui:connection>
+          <ui:sender>wdgXCVJTVS6JZFXRM2H6LRN24MICM</ui:sender>
+          <ui:signal>opened(com.trolltech.qt.gui.QWidget widget)</ui:signal>
+          <ui:slot>mth4QQMN6HQ4FBOHH4B2L7YTLRIXQ</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgT5BFNDNQJJBJHH4HLB4INEYHHU</ui:sender>
+          <ui:signal>accepted()</ui:signal>
+          <ui:slot>mthA3ARPERLIZAKFGNWPZER36DXLI</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgT5BFNDNQJJBJHH4HLB4INEYHHU</ui:sender>
+          <ui:signal>rejected()</ui:signal>
+          <ui:slot>mthGZ5ZK5QMVNDNPIWXE4YAOCA4RI</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgGFADIIFUQFGJPAGCZBOIXJTHR4</ui:sender>
+          <ui:signal>clicked(Bool checked)</ui:signal>
+          <ui:slot>mthWQVYUQZXDZGFTI5F7L3XRZETV4</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgLKUXRAH2ZZG4TDXL3AVII2CJVY</ui:sender>
+          <ui:signal>clicked(Bool checked)</ui:signal>
+          <ui:slot>mthY7JYKPQVARGJHIXGPREVY7PJOM</ui:slot>
+        </ui:connection>
+      </ui:connections>
+    </ui:ui>
+    <EmbeddedModel Id="admQKV7M3URQFAYVHK7XPHT5HDYRQ" Name="TaskImportDialog:Model" Type="16">
+      <AccessRules IsPublished="false"/>
+      <Headers>
+        <Src Name="HeaderadmU3RGQRTNURHUHNAIMTP2JHOIWM"/>
+      </Headers>
+      <Bodies>
+        <Src Name="BodyadmU3RGQRTNURHUHNAIMTP2JHOIWM"/>
+      </Bodies>
+      <MethodGroup Id="cmg5VRCJYP6JREUXCSITVCR3ZF6NU" Name="Root"/>
+      <PropertyGroup Id="cpgCYC2SRVAXJFLTNXA62MMZMJ2YU" Name="Root"/>
+      <Properties>
+        <Property Id="prdVESKKVJR2FGFRJLQGLSUJ7H3XM" Name="importTaskCheckBoxes" Nature="2" IsConst="false" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Type TypeId="400" extStr="com.trolltech.qt.gui.QCheckBox" Dimension="1"/>
+        </Property>
+        <Property Id="prdVIAKAYWWZ5DC7L65THAD5GDIVU" Name="taskSet" Nature="2" IsConst="false" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="451" Path="xsdRBK6FQVUEZG7NDZEERZZ34YGQI" extStr="TaskSet"/>
+        </Property>
+        <Property Id="prdNC4W4QICAZB27FOV3AKIV7VUOI" Name="scheduleEditors" Nature="2" IsConst="false" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Type TypeId="411" Path="adcZGJT7DMN2BCOBGRK4YCNJ3YBMI" Dimension="1"/>
+        </Property>
+        <Property Id="prdHSTOU3ANUNDXTEU6RKJEIZCO2E" Name="scheduleWidgets" Nature="2" IsConst="false" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget" Dimension="1"/>
+        </Property>
+        <Property Id="prdOFPXLI3R45HNXLIRSB7QGLDKWY" Name="requireSchedules" Nature="2" IsConst="false" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="401" extStr="boolean"/>
+        </Property>
+      </Properties>
+      <Methods>
+        <Method Id="mth4QQMN6HQ4FBOHH4B2L7YTLRIXQ" Name="Dialog_opened" CompilerWarnings="67108967" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="widget" Id="mprP66KYH5K2JAIFGKPV5EZWTOXXM">
+              <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdVIAKAYWWZ5DC7L65THAD5GDIVU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> == null) 
+    return;
+
+final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdRBK6FQVUEZG7NDZEERZZ34YGQI" extStr="Task"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>[] xTasks = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdVIAKAYWWZ5DC7L65THAD5GDIVU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.TaskArray;
+if (xTasks == null) 
+    return;
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ wdgF5UTNQ5NMNEKFLI45JF2VZGYBI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.horizontalHeader().setResizeMode(0, com.trolltech.qt.gui.QHeaderView.ResizeMode.ResizeToContents);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ wdgF5UTNQ5NMNEKFLI45JF2VZGYBI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.horizontalHeader().setResizeMode(1, com.trolltech.qt.gui.QHeaderView.ResizeMode.Stretch);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ wdgF5UTNQ5NMNEKFLI45JF2VZGYBI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.horizontalHeader().setResizeMode(2, com.trolltech.qt.gui.QHeaderView.ResizeMode.ResizeToContents);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ wdgF5UTNQ5NMNEKFLI45JF2VZGYBI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.horizontalHeader().setResizeMode(3, com.trolltech.qt.gui.QHeaderView.ResizeMode.ResizeToContents);
+
+if (!</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdOFPXLI3R45HNXLIRSB7QGLDKWY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ wdgF5UTNQ5NMNEKFLI45JF2VZGYBI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setColumnHidden(3, true);
+}
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ wdgF5UTNQ5NMNEKFLI45JF2VZGYBI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setRowCount(xTasks.length);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdVESKKVJR2FGFRJLQGLSUJ7H3XM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = new com.trolltech.qt.gui.QCheckBox[xTasks.length];
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdNC4W4QICAZB27FOV3AKIV7VUOI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcZGJT7DMN2BCOBGRK4YCNJ3YBMI"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>[xTasks.length];
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdHSTOU3ANUNDXTEU6RKJEIZCO2E" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>[xTasks.length];
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdRZ3FCEGYPNBLNK7FFBK5K4WRWU" extStr="EventScheduleGroupDocument"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> allSchedules;
+
+final long startMillis = System.currentTimeMillis();
+try {
+    allSchedules = (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdRZ3FCEGYPNBLNK7FFBK5K4WRWU" extStr="EventScheduleGroupDocument"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthRKLGSF7BNFDPXMXNAQP6UIV3GU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicLRZ7XIGZKRHTPC55UBYRMASNMU mthBSX6P4OE4JB43PN6JQGUGR2AGM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="clcD5X3UYLGVBACJLQNDDUCPBAWEI"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, null, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdRZ3FCEGYPNBLNK7FFBK5K4WRWU" extStr="EventScheduleGroupDocument"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.class);
+} catch (Exception ex) {
+    throw new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>("Error", ex);
+}
+
+try {
+    
+  //это что за чудо изачем ????
+    if (!org.apache.xml.security.Init.isInitialized()) 
+        org.apache.xml.security.Init.init();
+    org.apache.xml.security.c14n.Canonicalizer canonicalizer = org.apache.xml.security.c14n.Canonicalizer.getInstance(org.apache.xml.security.c14n.Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
+    final byte[][] canonicalSchedulesFromDb = new byte[allSchedules.EventScheduleGroup.EventList.size()][];
+    for (int i = 0; i &lt; allSchedules.EventScheduleGroup.EventList.size(); i++) 
+        canonicalSchedulesFromDb[i] = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ mthF5ZCRECET5AM5K7D4O2636WK74" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(allSchedules.EventScheduleGroup.EventList.get(i), canonicalizer);
+    
+    for (int i = 0; i &lt; xTasks.length; i++) {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ wdgF5UTNQ5NMNEKFLI45JF2VZGYBI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setItem(i, 0, new com.trolltech.qt.gui.QTableWidgetItem("#" + (i + 1)));
+
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ wdgF5UTNQ5NMNEKFLI45JF2VZGYBI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setItem(i, 1, new com.trolltech.qt.gui.QTableWidgetItem(xTasks[i].Title == null ? </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsMGZDWL7IPBGZ3KUKXCTYUVPOQE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> : xTasks[i].Title));
+
+        com.trolltech.qt.gui.QCheckBox importTaskCheckBox = new com.trolltech.qt.gui.QCheckBox();
+        importTaskCheckBox.setChecked(true);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ wdgF5UTNQ5NMNEKFLI45JF2VZGYBI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setCellWidget(i, 2, importTaskCheckBox);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdVESKKVJR2FGFRJLQGLSUJ7H3XM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>[i] = importTaskCheckBox;
+
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcZGJT7DMN2BCOBGRK4YCNJ3YBMI"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> scheduleEditor = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcZGJT7DMN2BCOBGRK4YCNJ3YBMI mth5QJ7OHGU4JE67PCUA2LM2AJYLA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(), widget, true, false);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdNC4W4QICAZB27FOV3AKIV7VUOI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>[i] = scheduleEditor;
+        scheduleEditor.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcZGJT7DMN2BCOBGRK4YCNJ3YBMI mth7VAUNRPKZBBU3FKQUJAVKDJIKI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecLSU45NKDI3OBDCIOAALOMT5GDM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecLSU45NKDI3OBDCIOAALOMT5GDM sprUXEORII5JPOBDCITAALOMT5GDM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+        scheduleEditor.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc577BIS4VOZF6LHBG5OV7JJ5SVY mthTO6ONFI5HZGLHLKMX2S74HCJ5U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+        scheduleEditor.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mth6ZCRIE3UFBHPRN4CJFG7O6D22Y" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(com.trolltech.qt.gui.QSizePolicy.Policy.Expanding, com.trolltech.qt.gui.QSizePolicy.Policy.Minimum);
+        scheduleEditor.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthP3IQU36KFZCYXI32HNR5D52EFY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(300);
+
+        if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdOFPXLI3R45HNXLIRSB7QGLDKWY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> &amp;&amp; xTasks[i].ScheduleGuid != null) {
+            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="2"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> existingId = null;
+            String existingTitle = null;
+            for (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdRZ3FCEGYPNBLNK7FFBK5K4WRWU" extStr="EventSchedule"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> s : allSchedules.EventScheduleGroup.EventList) {
+                if (xTasks[i].ScheduleGuid == s.Guid) {
+                    existingId = s.Id;
+                    existingTitle = s.Title;
+                }
+            }
+
+            if (existingId != null) {
+                scheduleEditor.setValue(new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcMAFGMZHRDZDVHHM3M45BT2NNSY mthG5TYQ3QG5VAKZH3QYDEYB5D7TQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecLSU45NKDI3OBDCIOAALOMT5GDM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, existingId.toString(), existingTitle == null ? "#" + existingId : existingTitle));
+            }
+        }
+
+
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ wdgF5UTNQ5NMNEKFLI45JF2VZGYBI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setCellWidget(i, 3, scheduleEditor);
+
+        scheduleEditor.valueChanged.connect(this, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ mthHW5KBC5YZVAJTLZ4GVPFLC2GHQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcELH54EKVCJAATNTLFHHCSVHPZU mthCX6FRHR4VNG37LJWH7N6THCMMA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>() + "()");
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdVESKKVJR2FGFRJLQGLSUJ7H3XM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>[i].stateChanged.connect(this, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ mthHW5KBC5YZVAJTLZ4GVPFLC2GHQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcELH54EKVCJAATNTLFHHCSVHPZU mthCX6FRHR4VNG37LJWH7N6THCMMA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>() + "()");
+
+        if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdOFPXLI3R45HNXLIRSB7QGLDKWY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+            importTaskCheckBox.toggled.connect(scheduleEditor, "setEnabled(boolean)");
+        }
+
+    }
+    
+    for (int i = 0; i &lt; </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ wdgF5UTNQ5NMNEKFLI45JF2VZGYBI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.rowCount(); i++) {
+        for (int j = 0; j &lt; </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ wdgF5UTNQ5NMNEKFLI45JF2VZGYBI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.columnCount(); j++) {
+            com.trolltech.qt.gui.QTableWidgetItem item = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ wdgF5UTNQ5NMNEKFLI45JF2VZGYBI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.item(i, j);
+            if (item != null) {
+                com.trolltech.qt.core.Qt.ItemFlags flags = new com.trolltech.qt.core.Qt.ItemFlags(com.trolltech.qt.core.Qt.ItemFlag.ItemIsEnabled);
+                item.setFlags(flags);
+            }
+        }
+    }
+} catch (Exception ex) {
+    throw new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>("Error", ex);
+}
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ wdgF5UTNQ5NMNEKFLI45JF2VZGYBI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.resizeColumnsToContents();
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ mthHW5KBC5YZVAJTLZ4GVPFLC2GHQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthA3ARPERLIZAKFGNWPZER36DXLI" Name="buttonBox_accepted" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ mthQT2D4SJQEFFJNFJQIPX36DABNY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ wdgXCVJTVS6JZFXRM2H6LRN24MICM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.accept();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthGZ5ZK5QMVNDNPIWXE4YAOCA4RI" Name="buttonBox_rejected" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ wdgXCVJTVS6JZFXRM2H6LRN24MICM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.reject();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthQT2D4SJQEFFJNFJQIPX36DABNY" Name="applyChanges" Nature="0" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdVIAKAYWWZ5DC7L65THAD5GDIVU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> == null) {
+    return;
+}
+for (int i = 0; i &lt; </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdVESKKVJR2FGFRJLQGLSUJ7H3XM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.length; i++) {
+    if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdVESKKVJR2FGFRJLQGLSUJ7H3XM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>[i].isChecked() &amp;&amp; </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdOFPXLI3R45HNXLIRSB7QGLDKWY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+        if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdNC4W4QICAZB27FOV3AKIV7VUOI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>[i].getValue() == null) {
+            throw new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(String.format(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsW3ND6KBMCJH6ZN4QQIKN32KQYY"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, (i + 1)));
+        }
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdVIAKAYWWZ5DC7L65THAD5GDIVU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.TaskList.get(i).ScheduleId = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="2"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.valueOf(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdNC4W4QICAZB27FOV3AKIV7VUOI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>[i].getValue().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcMAFGMZHRDZDVHHM3M45BT2NNSY mthYPYFHIGJRVHTPIDYMEWIGA35OI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc6MUJT675HNGATDJ477ZWLDUOHM mthJ4YIWLZDFRFJHGGWOEYKWOCHLU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>());
+    }
+}
+
+for (int i = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdVESKKVJR2FGFRJLQGLSUJ7H3XM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.length - 1; i >= 0; i--) {
+    if (!</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdVESKKVJR2FGFRJLQGLSUJ7H3XM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>[i].isChecked()) {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdVIAKAYWWZ5DC7L65THAD5GDIVU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.TaskList.remove(i);
+    }
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthF5ZCRECET5AM5K7D4O2636WK74" Name="canonicalizeSchedule" Nature="0" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="xSchedule" Id="mpr4XHJNJFRZJHXTDCZFWS3GMHK4M">
+              <Type TypeId="451" Path="xsdRZ3FCEGYPNBLNK7FFBK5K4WRWU" extStr="EventSchedule"/>
+            </Parameter>
+            <Parameter Name="canonicalizer" Id="mpr2Z6L5TPWGRDNDC5NVOMT2RTPFY">
+              <Type TypeId="400" extStr="org.apache.xml.security.c14n.Canonicalizer"/>
+            </Parameter>
+          </Parameters>
+          <ReturnType TypeId="401" extStr="byte" Dimension="1"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>try {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdRZ3FCEGYPNBLNK7FFBK5K4WRWU" extStr="EventScheduleDocument"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> xDoc = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdRZ3FCEGYPNBLNK7FFBK5K4WRWU" extStr="EventScheduleDocument.Factory"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.newInstance();
+    xDoc.EventSchedule = xSchedule;
+    final java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
+    final org.apache.xmlbeans.XmlOptions xopts = new org.apache.xmlbeans.XmlOptions();
+    xopts.setSavePrettyPrint();
+    xDoc.save(bos, xopts);
+    return canonicalizer.canonicalize(bos.toByteArray());
+} catch (Exception ex) {
+    throw new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>("Error", ex);
+}
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthHW5KBC5YZVAJTLZ4GVPFLC2GHQ" Name="checkValues" Nature="0" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdVESKKVJR2FGFRJLQGLSUJ7H3XM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> == null) {
+    return;
+}
+boolean hasReadyItems = false;
+for (int i = 0; i &lt; </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdVESKKVJR2FGFRJLQGLSUJ7H3XM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.length; i++) {
+    if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdVESKKVJR2FGFRJLQGLSUJ7H3XM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>[i].isChecked()) {
+        if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdOFPXLI3R45HNXLIRSB7QGLDKWY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> &amp;&amp; </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdNC4W4QICAZB27FOV3AKIV7VUOI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>[i].getValue() == null) {
+            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ wdgT5BFNDNQJJBJHH4HLB4INEYHHU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.button(com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Ok).setEnabled(false);
+            return;
+        } else {
+            hasReadyItems = true;
+        }
+    }
+}
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ wdgT5BFNDNQJJBJHH4HLB4INEYHHU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.button(com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Ok).setEnabled(hasReadyItems);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthWQVYUQZXDZGFTI5F7L3XRZETV4" Name="pbCheck_clicked" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="checked" Id="mprPAQ4EURQYVDU3MWZQ3T7VWZN3I">
+              <Type TypeId="1"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdVESKKVJR2FGFRJLQGLSUJ7H3XM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> != null) {
+    for (com.trolltech.qt.gui.QCheckBox cb : </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdVESKKVJR2FGFRJLQGLSUJ7H3XM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+        cb.setChecked(true);
+    }
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthY7JYKPQVARGJHIXGPREVY7PJOM" Name="pbUncheck_clicked" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="checked" Id="mprBGRQIAJJRFG4LDDCDN4MPKHKFY">
+              <Type TypeId="1"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdVESKKVJR2FGFRJLQGLSUJ7H3XM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> != null) {
+    for (com.trolltech.qt.gui.QCheckBox cb : </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQKV7M3URQFAYVHK7XPHT5HDYRQ admQKV7M3URQFAYVHK7XPHT5HDYRQ prdVESKKVJR2FGFRJLQGLSUJ7H3XM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+        cb.setChecked(false);
+    }
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+      </Methods>
+    </EmbeddedModel>
+  </AdsCustomDialogDefinition>
+</AdsDefinition>

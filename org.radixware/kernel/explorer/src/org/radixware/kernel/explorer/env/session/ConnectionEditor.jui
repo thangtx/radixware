@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0" language="jambi">
+ <class>ConnectionEditor</class>
+ <widget class="QDialog" name="ConnectionEditor">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>358</width>
+    <height>413</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Connection Options</string>
+  </property>
+  <property name="modal">
+   <bool>false</bool>
+  </property>
+  <widget class="QTabWidget" name="tabWidget">
+   <property name="geometry">
+    <rect>
+     <x>9</x>
+     <y>43</y>
+     <width>319</width>
+     <height>361</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="currentIndex">
+    <number>0</number>
+   </property>
+   <property name="usesScrollButtons">
+    <bool>false</bool>
+   </property>
+   <widget class="QWidget" name="tab_options">
+    <attribute name="title">
+     <string>Main Options</string>
+    </attribute>
+    <layout class="QGridLayout" name="optionsLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="userNameLabel">
+       <property name="text">
+        <string>&amp;User name:</string>
+       </property>
+       <property name="buddy">
+        <cstring>userNameData</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="userNameData">
+       <property name="minimumSize">
+        <size>
+         <width>200</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>com.trolltech.qt.core.Qt.FocusPolicy.StrongFocus</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="initialAddressLabel">
+       <property name="text">
+        <string>&amp;Servers:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QWidget" name="manifestWidget" native="true">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>23</height>
+        </size>
+       </property>
+       <layout class="QHBoxLayout">
+        <property name="margin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLineEdit" name="stationNameData">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="focusPolicy">
+           <enum>com.trolltech.qt.core.Qt.FocusPolicy.StrongFocus</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="languageLabel">
+       <property name="text">
+        <string>&amp;Language:</string>
+       </property>
+       <property name="buddy">
+        <cstring>languageData</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QComboBox" name="languageData">
+       <property name="minimumSize">
+        <size>
+         <width>200</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>com.trolltech.qt.core.Qt.FocusPolicy.WheelFocus</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="eventSeverityLabel">
+       <property name="text">
+        <string>&amp;Trace level:</string>
+       </property>
+       <property name="buddy">
+        <cstring>eventSeverityData</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QComboBox" name="eventSeverityData">
+       <property name="minimumSize">
+        <size>
+         <width>200</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>com.trolltech.qt.core.Qt.FocusPolicy.WheelFocus</enum>
+       </property>
+       <property name="currentIndex">
+        <number>5</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>Debug</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Event</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Warning</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Error</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Alarm</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>None</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="8" column="0">
+      <widget class="QLabel" name="explorerRootLabel">
+       <property name="text">
+        <string>Explorer &amp;root:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="stationNameLabel">
+       <property name="text">
+        <string>St&amp;ation name:</string>
+       </property>
+       <property name="buddy">
+        <cstring>stationNameData</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="0">
+      <widget class="QLabel" name="commentLabel">
+       <property name="text">
+        <string>Comm&amp;ent:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="countryLabel">
+       <property name="text">
+        <string>Cou&amp;ntry:</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="tab_encryption">
+    <attribute name="title">
+     <string>Security</string>
+    </attribute>
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <layout class="QVBoxLayout" name="ltSecurity">
+       <item>
+        <layout class="QHBoxLayout" name="ltAuthType">
+         <property name="sizeConstraint">
+          <enum>com.trolltech.qt.gui.QLayout.SizeConstraint.SetMinimumSize</enum>
+         </property>
+         <item>
+          <widget class="QLabel" name="lblAuthType">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Authentication type:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="cmbAuthType">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="sslGroupBox">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="title">
+          <string>Use TLS &amp;Encryption</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QGroupBox" name="gbKeyStoreType">
+            <property name="title">
+             <string>Key Store Type:</string>
+            </property>
+            <layout class="QVBoxLayout" name="vlKeyStoreType">
+             <item>
+              <widget class="QRadioButton" name="rbFileKeyStore">
+               <property name="text">
+                <string>&amp;File</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QRadioButton" name="rbPKCS11KeyStore">
+               <property name="text">
+                <string>&amp;PKCS#11</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="gbSSLAdvanced">
+            <property name="title">
+             <string>Advanced:</string>
+            </property>
+            <layout class="QHBoxLayout" name="hlSSLAdvansed">
+             <item>
+              <widget class="QPushButton" name="pbCertificateManager">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Cert&amp;ificates</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pbPkcs11Config">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>PKCS#11 &amp;Settings</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="krbGroupBox">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="title">
+          <string>Kerberos</string>
+         </property>
+         <property name="checkable">
+          <bool>false</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>EAS principal name:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="leEasPrincipalName"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QWidget" name="connectionNameWidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>9</x>
+     <y>9</y>
+     <width>359</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout">
+    <property name="margin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="QLabel" name="connectionNameLabel">
+      <property name="text">
+       <string>&amp;Connection name:</string>
+      </property>
+      <property name="buddy">
+       <cstring>connectionNameData</cstring>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="connectionNameData">
+      <property name="focusPolicy">
+       <enum>com.trolltech.qt.core.Qt.FocusPolicy.StrongFocus</enum>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <tabstops>
+  <tabstop>connectionNameData</tabstop>
+  <tabstop>userNameData</tabstop>
+  <tabstop>stationNameData</tabstop>
+  <tabstop>languageData</tabstop>
+  <tabstop>eventSeverityData</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcOQHC7VO5QBB7ROPFHF2NPF52C4" Name="Comment" Type="3" Environment="explorer">
+    <AccessRules IsFinal="true" IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcOAMFN7LGJ5APDO4HYVSTHYLDHM">
+        <xsc:Item>
+          <xsc:Java>import com.trolltech.qt.core.*;
+import com.trolltech.qt.gui.*;
+import com.trolltech.qt.gui.QDialog.DialogCode;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcHPW2U4MB2NCEZF775NM7CD2TW4">
+        <xsc:Item>
+          <xsc:Java>static final QRectF MIN_RECT = new QRectF(0, 0, 80, 40);
+
+static final QPen PEN_NORMAL = new QPen(QColor.black, 1);
+static final QPen PEN_SELECTED = new QPen(QColor.red, 1);
+
+static final QFont FONT_LABEL = new QFont("Arial", 8);
+static final QColor PEN_LABEL = QColor.black;
+        
+static final QLinearGradient GRADIENT_SUNKEN;
+static final QLinearGradient GRADIENT_NORMAL;
+
+static {
+    GRADIENT_SUNKEN = new QLinearGradient(0, 0, 0, MIN_RECT.height());
+    GRADIENT_SUNKEN.setColorAt(0, QColor.white);
+    GRADIENT_SUNKEN.setColorAt(1, QColor.fromRgb(255, 250, 210));
+
+    GRADIENT_NORMAL = new QLinearGradient(0, 0, 0, MIN_RECT.height());
+    GRADIENT_NORMAL.setColorAt(0, QColor.white);
+    GRADIENT_NORMAL.setColorAt(1, QColor.fromRgb(255, 250, 210));
+}
+
+private </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> text;
+private QRectF textRect = null;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmg6KYHP7CZA5A2FN34X2JKLB4UKY" Name="Root"/>
+    <PropertyGroup Id="cpgEVNNO2JMANG6LI2RPKFNHMDJYA" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthM5O2URG2XNHNBBSJRWD2OVZ5CQ" Name="Comment" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mpr3RUINIGIPZHVLKAPJ2XZXY235Y">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="graph" Id="mprZ7T64V3ZCRC7DPNLQVLSSJR7NU">
+            <Type TypeId="411" Path="adcHMXIRC2KYZFDRHIIULJ2M6YRLM"/>
+          </Parameter>
+          <Parameter Name="text" Id="mprOAW7C7UGKVGCTMX4LDOH7HUJ3Q">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(userSession, graph);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcOQHC7VO5QBB7ROPFHF2NPF52C4 mth6G4RXJMMWNCJFC4FORVCXFWG6M" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(text);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth6G4RXJMMWNCJFC4FORVCXFWG6M" Name="setText" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="text" Id="mprV6S3CA7SMVBH5MM3ESNNKU73D4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this.text = text;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcOQHC7VO5QBB7ROPFHF2NPF52C4 mthOCZG2UNRGBCKVLHQTNAPDBAOZE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth27G4A73A7VDTNHL6YOPRHWE2KY" Name="text" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return text;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthTAM67XGXQJF4BPIDODFI3CYOSE" Name="adjust" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthFPUNTBY2E5EC7FNXLTMGOWHNYQ" Name="delete" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>scene().removeItem(this);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthNZX7AXISEVB75E6Q4GKNT5QFFQ" Name="edit" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="cdlHPIXBEFC5JCONLOP5LBP6L23OU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> dlg = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="cdlHPIXBEFC5JCONLOP5LBP6L23OU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(userSession);
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="cdlHPIXBEFC5JCONLOP5LBP6L23OU admHPIXBEFC5JCONLOP5LBP6L23OU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> model = dlg.getModel();
+model.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdlHPIXBEFC5JCONLOP5LBP6L23OU admHPIXBEFC5JCONLOP5LBP6L23OU prdUHL3OVXO6NFU5CGCHXAL3BUR3A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcOQHC7VO5QBB7ROPFHF2NPF52C4 mth27G4A73A7VDTNHL6YOPRHWE2KY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+if (dlg.exec() == DialogCode.Accepted.value()) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcOQHC7VO5QBB7ROPFHF2NPF52C4 mth6G4RXJMMWNCJFC4FORVCXFWG6M" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(model.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdlHPIXBEFC5JCONLOP5LBP6L23OU admHPIXBEFC5JCONLOP5LBP6L23OU prdUHL3OVXO6NFU5CGCHXAL3BUR3A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    return true;
+} else
+    return false;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthUWISQNC5SFDNRFSCWDZQFUK6QI" Name="duplicate" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="411" Path="adcS75H6U36SFG2LDRZX5GM3WS47Q"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcOQHC7VO5QBB7ROPFHF2NPF52C4 mthM5O2URG2XNHNBBSJRWD2OVZ5CQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(userSession, graph, text);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthGU2ZXB2HKNCTDI4Z3TNDWTJDP4" Name="Comment" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprP2PCVAZFWJHPXPZNVPHWFUEIZU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="graph" Id="mprFGANNGHY6RBK3DFCDU3FVAHPLQ">
+            <Type TypeId="411" Path="adcHMXIRC2KYZFDRHIIULJ2M6YRLM"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this(userSession, graph, "");</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthOCZG2UNRGBCKVLHQTNAPDBAOZE" Name="calcTextRect" Nature="0" IsOverride="false">
+        <AccessRules Access="2"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QFontMetricsF"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> fm = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QFontMetricsF"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(FONT_LABEL);
+textRect = fm.boundingRect(null, Qt.AlignmentFlag.AlignLeft.value() | Qt.AlignmentFlag.AlignTop.value(), text);
+GRADIENT_SUNKEN.setFinalStop(0, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcOQHC7VO5QBB7ROPFHF2NPF52C4 mthMKOX4CWENJFS7LPD6QQZ2PTQRQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().height());
+GRADIENT_NORMAL.setFinalStop(0, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcOQHC7VO5QBB7ROPFHF2NPF52C4 mthMKOX4CWENJFS7LPD6QQZ2PTQRQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().height());</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthIYB6YKIL6BFDZPPKLPSN4YZZAU" Name="isApi" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return false;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthMKOX4CWENJFS7LPD6QQZ2PTQRQ" Name="boundingRect" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.core.QRectF"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return textRect.adjusted(0, 0, 20, 20).united(MIN_RECT);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthQIBXOSBTORBDTJUUAZPXVFRTGE" Name="paint" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="painter" Id="mprOUNTNHJWTVB5DG4SW4P47OO6G4">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QPainter"/>
+          </Parameter>
+          <Parameter Name="option" Id="mprDKK4R22MJNB45BXJC3F4Z6WEQI">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QStyleOptionGraphicsItem"/>
+          </Parameter>
+          <Parameter Name="widget" Id="mprJOKIQ7XF3BBN3EYNFULZCNEYC4">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if ((option.state().isSet(QStyle.StateFlag.State_Sunken))) {
+    painter.setBrush(GRADIENT_SUNKEN);
+} else {
+    painter.setBrush(GRADIENT_NORMAL);
+}
+
+if ((option.state().isSet(QStyle.StateFlag.State_Selected))) {
+    painter.setPen(PEN_SELECTED);
+} else {
+    painter.setPen(PEN_NORMAL);
+}
+
+final QRectF boundingRect = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcOQHC7VO5QBB7ROPFHF2NPF52C4 mthMKOX4CWENJFS7LPD6QQZ2PTQRQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+painter.drawRoundRect(boundingRect, 5, 5);
+
+final QRectF rect = textRect.clone();
+rect.moveTo((boundingRect.width() - rect.width())/2.0, (boundingRect.height() - rect.height())/2.0);
+
+painter.setPen(PEN_LABEL);
+painter.setFont(FONT_LABEL);
+painter.drawText(rect, Qt.AlignmentFlag.AlignLeft.value() | Qt.AlignmentFlag.AlignTop.value(), text);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="adcS75H6U36SFG2LDRZX5GM3WS47Q"/>
+  </AdsClassDefinition>
+</AdsDefinition>

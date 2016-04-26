@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsParagraphDefinition Id="parTQIB66DFRFFWTBHCXQZIZ7J36I" Name="UserDefinitions" TitleId="mlsL3C4232FTZHBDKWQSYJBWRP4YA" IsRoot="true" ClientEnvironment="explorer">
+    <AccessRules IsPublished="false"/>
+    <ChildExplorerItems>
+      <Item>
+        <Entity Id="xpi3VM4ZHDQ65FMJDJL2PFTU5LSH4" Name="AppRole" InheritanceMask="16560" IsVisibleInTree="true" ClassId="aecM7J46MP6F3PBDIJEABQAQH3XQ4" SelectorPresentationId="sprOBP7OWB2JNC67FC7U7RDMNFMMA" Restrictions="0" EnabledCommands="">
+          <AccessRules IsPublished="false"/>
+          <Condition>
+            <ConditionWhere/>
+            <ConditionFrom/>
+          </Condition>
+        </Entity>
+      </Item>
+      <Item>
+        <ParagraphLink Id="prlSI3HBNPNCZEQNNSH3JHGP5KQS4" Name="CommonReports" InheritanceMask="128" ParagraphId="parJBNNV3AJ5ZE2VHWA3WC23XBATM">
+          <AccessRules IsPublished="false"/>
+        </ParagraphLink>
+      </Item>
+      <Item>
+        <ParagraphLink Id="prlHAVCGRKIKFD7JENFCUELHEQRIU" Name="UserFunctions" InheritanceMask="128" ParagraphId="par5UZKDFKZJVHFLDKBN5EWRP5HTA">
+          <AccessRules IsPublished="false"/>
+        </ParagraphLink>
+      </Item>
+      <Item>
+        <Entity Id="xpiLVBW5CU6NVFRHDRGRBSLVNPWLM" Name="UserReportModule" InheritanceMask="16560" IsVisibleInTree="true" ClassId="aecN7LNYTJYXBDC7MTGOI4IP2THFA" SelectorPresentationId="spr3HCXXWUYUZCIXHM67P6TTSJFKI" Restrictions="0" EnabledCommands="">
+          <AccessRules IsPublished="false"/>
+          <Condition>
+            <ConditionWhere/>
+            <ConditionFrom/>
+          </Condition>
+        </Entity>
+      </Item>
+    </ChildExplorerItems>
+    <Model Id="apmTQIB66DFRFFWTBHCXQZIZ7J36I" Name="UserDefinitions:Model" Type="13">
+      <AccessRules IsPublished="false"/>
+      <Headers>
+        <Src Name="HeaderapmTQIB66DFRFFWTBHCXQZIZ7J36I"/>
+      </Headers>
+      <Bodies>
+        <Src Name="BodyapmTQIB66DFRFFWTBHCXQZIZ7J36I"/>
+      </Bodies>
+      <MethodGroup Id="cmgZTDM3GCG2NBURLHKYAPOT5CS34" Name="Root"/>
+      <PropertyGroup Id="cpgYUTMZXNY6VFP7L3XXV2IGLY47A" Name="Root"/>
+      <Properties/>
+      <Methods>
+        <Method Id="mthL2FTHDDWUFA3DMUUAFGSE33GKU" Name="afterInsertChildItem" Nature="0" IsOverride="true">
+          <AccessRules/>
+          <Parameters>
+            <Parameter Name="childItem" Id="mpr6EG3RGZBNBE2XJU44VOIDA3TKU">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.client.views.IExplorerItemView"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>super.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthL2FTHDDWUFA3DMUUAFGSE33GKU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(childItem);
+if (!</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthY43VYOUOR5H2ZF2A2FAXYK5HQ4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().isExtendedMetaInformationAccessible()
+    &amp;&amp; childItem.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicSPJLTZQOTZHCXFRMIPCCX3F36U mthI67VRT4VXJDTJAOJVOJJHAUPWY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>()==</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parTQIB66DFRFFWTBHCXQZIZ7J36I prlHAVCGRKIKFD7JENFCUELHEQRIU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>){
+    childItem.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicSPJLTZQOTZHCXFRMIPCCX3F36U mthQOSWNWS2XZESJMASQWUNKWG6IQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(false);
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+      </Methods>
+    </Model>
+  </AdsParagraphDefinition>
+</AdsDefinition>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcB2AD534UJJCC7HGTB7H5MKRYAA" Name="UserCache" DescriptionId="mlsZCS6ORCY7ZE6BPXPZZGHP3R7IM" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcB2AD534UJJCC7HGTB7H5MKRYAA"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcB2AD534UJJCC7HGTB7H5MKRYAA"/>
+    </Bodies>
+    <MethodGroup Id="cmgLQPXNVEC4VFQZJ4WQD2AGKLQ3E" Name="Root"/>
+    <PropertyGroup Id="cpgFBBHR7WKCNDLPNCNOFHAOEMMDY" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthSRJPA73DRRDQBJXAVYSNMCCGE4" Name="get" DescriptionId="mlsSG5FDCEWWRFYHFOAW63UUGOZZY" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="key" DescriptionId="mlsT5CQ5QEAZZH6NO3ISRL2MO3W2E" Id="mprXJF45Q7U3JAPHBWVM7HXQPNHBI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aicXXJAMYMIXNAB5GVEZKDMHKLT7M"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthJ22YS76JKFBLHMS32FAYSH3QNI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().ReleaseCache.UserCache.get(key, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicXXJAMYMIXNAB5GVEZKDMHKLT7M"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.class);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthAWZOKNLOKFHA7NNLYAWFFNFXBM" Name="put" DescriptionId="mlsBWMEMRFIFRDWLKNYJQ3OXEJ7PA" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="key" DescriptionId="mlsRBLMYMKRIBB5NAAU6UQPCTLJO4" Id="mprAVFBGOLP4NFMJPZWCLPFRQYWV4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="object" DescriptionId="mlsYVZTM72YOVBJ3DZDSX5EO3RTCA" Id="mprUTZ4MS3J6VASTF4EOL4HD3Q5NY">
+            <Type TypeId="411" Path="aicXXJAMYMIXNAB5GVEZKDMHKLT7M"/>
+          </Parameter>
+          <Parameter Name="storeDurationSec" DescriptionId="mlsXGWN7YZ3KND5PEEQK55JZ3KCCU" Id="mprJ5LQGFP4DZG2HICFBYXP7JKUOU">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsZCC3IO7QORDOFO5ZNOKHPQASWY"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthJ22YS76JKFBLHMS32FAYSH3QNI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().ReleaseCache.UserCache.putExpiringSinceCreation(key, object, storeDurationSec == null ? -1 : storeDurationSec.intValue());</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth43PIBA3SQJAXJP4HZS6N5ZVW6U" Name="remove" DescriptionId="mlsZHLYEK3XFFFJJDRRXBR6LCZMZQ" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="key" DescriptionId="mlsSGERER6LVVFYRGDMNWXCM4VIAY" Id="mpr3R7TXZJMNRFEREPS7SUBFTRH3Y">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthJ22YS76JKFBLHMS32FAYSH3QNI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().ReleaseCache.UserCache.remove(key);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

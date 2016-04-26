@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdU6ZSYRIMGBDQNNFCRHRGVSAR6A" Name="AuditSchemeExpImpXsd" TargetNamespace="http://schemas.radixware.org/audit-impexp.xsd" Environment="common"><ads:AccessRules IsPublished="false"/><xs:schema targetNamespace="http://schemas.radixware.org/audit-impexp.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:this="http://schemas.radixware.org/audit-impexp.xsd" xmlns:t="http://schemas.radixware.org/types.xsd">
+  <xs:import namespace="http://schemas.radixware.org/types.xsd"/>
+  <xs:element name="Scheme">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Item" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:attribute name="SaveData" type="t:Bool"/>
+            <xs:attribute name="TableGuid" type="t:Str"/>
+            <xs:attribute name="EventType" type="t:Str"/>
+            <xs:attribute name="StoreDuration" type="t:Int"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="Scheme" type="t:Str"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="agcRDXQVFY6PLNRDANMABIFNQAABA" Name="ProcessGroup" Type="11">
+    <AccessRules/>
+    <Headers>
+      <Src Name="Headeradc3YLBCLEKK5DJVERR7632LRAM3Y"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc76APPOVWHNDJLF3X3DSXDCAXTA"/>
+    </Bodies>
+    <MethodGroup Id="cmgUZKGFG5Z45BZ3I7TOQLKPRHUDY" Name="Root">
+      <Group Id="cmgN3EO6YOWCBDIVF3X3RJ6D3WJXE" Name="Commands" Members="mthcmdDXK6WN3WM3OBDBEZABIFNQAABA mthcmdR7P2AFE3M3OBDBEZABIFNQAABA"/>
+    </MethodGroup>
+    <PropertyGroup Id="cpgYFEWKE46NRG2FG3LRWOBFA2CQU" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthcmdDXK6WN3WM3OBDBEZABIFNQAABA" Name="onCommand_StartProcessCapture" Nature="1" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="input" Id="mprWF757Y7C4ZBXJCHHU2T4XYXB5E">
+            <Type TypeId="451"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Task Assignee="" Behavior="DoNothing" ControlDate="2001-01-01" CreateDate="2001-01-01" DueDate="2001-01-01" Priority="Ordinal" Type="ToDo"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>
+return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthcmdR7P2AFE3M3OBDBEZABIFNQAABA" Name="onCommand_StartProcess" Nature="1" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="input" Id="mprJTY3SYJDURB4HG3RKU5ZL6NN2M">
+            <Type TypeId="451"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Task Assignee="" Behavior="DoNothing" ControlDate="2001-01-01" CreateDate="2001-01-01" DueDate="2001-01-01" Priority="Ordinal" Type="ToDo"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>
+return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblRDXQVFY6PLNRDANMABIFNQAABA"/>
+    <Presentations>
+      <Commands>
+        <Command Id="cmdDXK6WN3WM3OBDBEZABIFNQAABA" Name="StartProcessCapture" TitleId="mls3HMFEV24OXOBDFKUAAMPGXUWTQ" Nature="2" IconId="imgE2K7URPZ6AWNJQYTVSJDGEFICDWYG3VV" IsVisible="true" IsConfirmationRequired="false" Accessibility="0" Scope="2">
+          <InType TypeId="451"/>
+          <OutType TypeId="451"/>
+        </Command>
+        <Command Id="cmdR7P2AFE3M3OBDBEZABIFNQAABA" Name="StartProcess" TitleId="mls3LMFEV24OXOBDFKUAAMPGXUWTQ" Nature="2" IconId="imgWZZPS3ZBBNFVNHFNSKTITBMHQE" IsVisible="true" IsConfirmationRequired="false" Accessibility="0" Scope="2">
+          <InType TypeId="451"/>
+          <OutType TypeId="451"/>
+        </Command>
+      </Commands>
+    </Presentations>
+    <Extends TypeId="411" Path="pdcEntityGroup_______________">
+      <xsc:GenericArguments>
+        <xsc:Argument Alias="?">
+          <xsc:Type TypeId="411" Path="aecRDXQVFY6PLNRDANMABIFNQAABA"/>
+        </xsc:Argument>
+      </xsc:GenericArguments>
+    </Extends>
+  </AdsClassDefinition>
+</AdsDefinition>

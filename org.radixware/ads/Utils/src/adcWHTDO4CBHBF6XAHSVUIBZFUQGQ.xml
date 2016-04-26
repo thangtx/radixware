@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcWHTDO4CBHBF6XAHSVUIBZFUQGQ" Name="LocalTracer" Type="3" Environment="common">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.trace.LocalTracer"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcWHTDO4CBHBF6XAHSVUIBZFUQGQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcWHTDO4CBHBF6XAHSVUIBZFUQGQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgCYJCEEAQTVE3DPCL4VTEEWRQMA" Name="Root"/>
+    <PropertyGroup Id="cpg74KEMCEGSNASBMUUUDAG2LYDAM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthBQ6I5WPBI5GGTBAR5OHWNQKAIA" Name="debug" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="debug(Ljava.lang.String;Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="message" Id="mprUH2KYWQ4NJGGVCU4OKCEHK4BHI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="isSensitive" Id="mprEP7PUHYPSRA53OVSLLHLKUE46I">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthZKTPJLGY5JE7DBUIEQL5R3EODM" Name="getMinSeverity" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getMinSeverity()J"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="long"/>
+      </Method>
+      <Method Id="mth3ZA27FGOSVBZPDWPGI7D5PSJOY" Name="getMinSeverity" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getMinSeverity(Ljava.lang.String;)J"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="eventSource" Id="mprA3ZO5I53VVFMVDBNNAEWG7VFNQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="long"/>
+      </Method>
+      <Method Id="mthTELJMQM7HBAY5A5BCNEOF4LBFQ" Name="LocalTracer" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthKJPQTOGT7JAYDHM7LMB47A24GM" Name="put" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="put(Lorg.radixware.kernel.common.enums.EEventSeverity;Ljava.lang.String;Ljava.lang.String;Ljava.util.List&lt;Ljava.lang.String;>;Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="severity" Id="mprLT2A5GJLK5DBHLRY7FIAWA7L5M">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EEventSeverity"/>
+          </Parameter>
+          <Parameter Name="localizedMess" Id="mprTJF4NJWAQ5G6NL6A2ZWFSOAKE4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="code" Id="mprUSCFFCY6QVGLRGAV2NTSJNT7QY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="words" Id="mprDU5WLTHFB5BLVLGWZQMEJLRK4A">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="isSensitive" Id="mprVOKDEXIDGNHKFBVAOP6HNFJUCQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

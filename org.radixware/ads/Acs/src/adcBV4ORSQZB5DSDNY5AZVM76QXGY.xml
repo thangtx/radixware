@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcBV4ORSQZB5DSDNY5AZVM76QXGY" Name="UDSAppRoleLoader" Type="3" Environment="server">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcBV4ORSQZB5DSDNY5AZVM76QXGY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcBV4ORSQZB5DSDNY5AZVM76QXGY">
+        <xsc:Item>
+          <xsc:Java>private static final </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> ROLES_MODULE_ID= </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>("mldAPP_ROLES_SERVER_UDS_BRIDGE");</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmgONPKIFWYZJHH7IYEXQVQ6XCQH4" Name="Root"/>
+    <PropertyGroup Id="cpgYIRRBKYFKZEUBBQVGOIPX2D54A" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthJMTTTGYUQRFDVDGF4YBTBKIHMQ" Name="listDefinitions" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="moduleRepo" Id="mprC4BOQKJFT5EHLGINSKYS33EUDA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.builder.api.userext.UDSAdsModuleRepository"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.repository.ads.fs.IRepositoryAdsDefinition" Dimension="1"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="accTY3P4PQOUBAFRI2MVCG5SQVNDU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> cursor = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="accTY3P4PQOUBAFRI2MVCG5SQVNDU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accTY3P4PQOUBAFRI2MVCG5SQVNDU mth_stmt_execute_____________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+
+java.util.List&lt;org.radixware.kernel.common.repository.ads.fs.IRepositoryAdsDefinition> result = new java.util.ArrayList&lt;>();
+try {
+    while (cursor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecM7J46MP6F3PBDIJEABQAQH3XQ4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> role = cursor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accTY3P4PQOUBAFRI2MVCG5SQVNDU prf4Z4JZOFUKFCUHM3LWKYFLZXKW4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="AdsDefinitionDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xDef = role.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecM7J46MP6F3PBDIJEABQAQH3XQ4 colGQVSU7TJYRFCZFU7TADGWIRGHY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+        if (xDef != null &amp;&amp; xDef.AdsDefinition != null &amp;&amp; xDef.AdsDefinition.AdsRoleDefinition != null) {
+            try {
+                org.radixware.schemas.adsdef.RoleDefinition xRole = org.radixware.schemas.adsdef.RoleDefinition.Factory.newInstance();
+                xRole.set(xDef.AdsDefinition.AdsRoleDefinition);
+                xRole.Id = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.loadFrom(role.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecM7J46MP6F3PBDIJEABQAQH3XQ4 col6FMTUQ76F3PBDIJEABQAQH3XQ4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+                org.radixware.kernel.common.defs.ads.rights.AdsRoleDef roleDef = org.radixware.kernel.common.defs.ads.rights.AdsRoleDef.Factory.loadFrom(xRole, xDef.AdsDefinition.FormatVersion);
+                if(roleDef != null){
+                    org.radixware.kernel.common.repository.ads.fs.FSRepositoryAdsDefinition repo = new org.radixware.kernel.common.repository.ads.fs.FSRepositoryAdsDefinition(roleDef,false);
+                    result.add(repo);
+                }
+            } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+            }
+        }
+
+    }
+} finally {
+    cursor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mth_stmt_close_______________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+}
+return result.toArray(new org.radixware.kernel.common.repository.ads.fs.IRepositoryAdsDefinition[result.size()]);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthX4NPH5Y2CZB4DJP5KRTLRO5U3A" Name="listModuleIds" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.types.Id" Dimension="1"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>[]{
+    ROLES_MODULE_ID
+};</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthM7UT76BQLBAG5F3GCLWFDTUJ2Q" Name="loadDefinitionToModuleContext" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="module" Id="mprRQEYRHDOMFAVXCPZYFMLOJESRM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.builder.api.userext.UDSAdsModule"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return false;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth7TEO2C7Y55CBZPEVWFJCGS2KPA" Name="listImages" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprYC7YE7VXMVHQ3LSOGTB6ICLQ44">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.builder.api.userext.UDSAdsModuleRepository"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.repository.ads.fs.IRepositoryAdsImageDefinition" Dimension="1"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return new org.radixware.kernel.common.repository.ads.fs.IRepositoryAdsImageDefinition[0];</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthUGVSL275C5ETXMF4ERPZLXABCU" Name="getImageData" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="moduleRepo" Id="mprNQFILXIMMJAELGA2YM4WWVFUTQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.builder.api.userext.UDSAdsModuleRepository"/>
+          </Parameter>
+          <Parameter Name="imageId" Id="mprXIQ6NY2MLFHTPNWAHOC45C7RFM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.io.InputStream"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return  null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Implements>
+      <Interface TypeId="411" Path="aicL25TZFEZONEQJJWZHDTE3THUJY"/>
+    </Implements>
+  </AdsClassDefinition>
+</AdsDefinition>

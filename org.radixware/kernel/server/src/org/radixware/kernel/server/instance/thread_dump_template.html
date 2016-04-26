@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>${INSTANCE_NAME}</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <style>
+            #statusBar {
+                margin-bottom: 10px;
+            }
+            #statusBar * {
+                font-weight: bold;
+            }
+            ul {
+                list-style-type: none;
+            }
+            td, th {
+                vertical-align:top;
+                white-space: nowrap;
+            }
+            td.noWrapText {
+                word-wrap: normal;
+                white-space: nowrap;
+            }
+            td.wrapText {
+                word-wrap: break-word;
+                white-space: normal;
+            }
+            .snapshotSelector {
+                border-spacing: 0px;
+                margin-bottom: 15px;
+            }
+            .snapshot {
+                display: none;
+            }
+            .snapshotTime {
+                display: none;
+            }
+            .snapshotMenu {
+                margin-bottom: 15px;
+            }
+            .genericInfo {
+                display: block;
+            }
+            .genericInfoTable {
+                table-layout: fixed;
+                width: 500px;
+            }
+            .genericInfoTable td {
+                padding-bottom: 1em;
+            }
+            .genericInfoColNames {
+                width: 20%;
+            }
+            .threadDumpInfo {
+                display: none;
+            }
+
+            .legend li {
+                display: inline;
+            }
+
+            li:before {
+                content:'\25CF';
+            }
+            li.NEW {
+                color : black;
+            }
+            li.RUNNABLE {
+                color : green;
+            }
+            li.BLOCKED {
+                color : lightcoral;
+            }
+            li.TIMED_WAITING {
+                color : slateblue;
+            }
+            li.WAITING {
+                color : #F1DF00;
+            }
+            li.TERMINATED {
+                color : red;
+            }
+            .threadDetails {
+                display:none;
+                color: black;
+            }
+
+            a.closed, a.opened {
+                text-decoration: none;
+            }
+            .opened:before {
+                content:'\25BC';
+                color: black;
+                font-size: 11px;
+            }
+            .closed:before {
+                content:'\25BA';
+                color: black;
+                font-size: 11px;
+            }
+        </style>
+    <body>
+        <div id="statusBar"><span>${INSTANCE_NAME}</span><span id="snapshotNumberAndTime"></span></div>
+
+        <table class="snapshotSelector">
+            ${SNAPSHOT_SELECTOR}
+        </table>
+
+        ${SNAPSHOT_LIST}
+
+        <script>
+            window.onload = function() {
+                var firstSnapshotBtn = document.getElementById("snapshotBtn1");
+                if ("createEvent" in document) {
+                    var evt = document.createEvent("HTMLEvents");
+                    evt.initEvent("change", false, true);
+                    firstSnapshotBtn.dispatchEvent(evt);
+                } else {
+                    firstSnapshotBtn.fireEvent("onchange");
+                }
+                firstSnapshotBtn.checked = true;
+            };
+
+            function toggleThreadDetails(event) {
+                event.preventDefault();
+                var target = event.target || event.srcElement;
+                var parent = target.parentNode;
+
+                if (parent.className === "opened") {
+                    parent.className = "closed";
+                } else {
+                    parent.className = "opened";
+                }
+
+                var threadInfo = parent.getElementsByClassName("threadDetails")[0];
+                if (threadInfo !== null) {
+                    if (threadInfo.style.display === 'block') {
+                        threadInfo.style.display = 'none';
+                    } else {
+                        threadInfo.style.display = 'block';
+                    }
+                }
+            }
+
+            function collapseAll(event) {
+                var target = event.target || event.srcElement;
+                var threadDump = target.parentNode;
+
+                var spanList = threadDump.getElementsByTagName('span');
+                for (var i = 0; i < spanList.length; i++) {
+                    if (spanList[i].className === "opened") {
+                        spanList[i].className = "closed";
+                    } else if (spanList[i].className === "threadDetails") {
+                        spanList[i].style.display = 'none';
+                    }
+                }
+            }
+
+            function expandAll(event) {
+                var target = event.target || event.srcElement;
+                var threadDump = target.parentNode;
+
+                var spanList = threadDump.getElementsByTagName('span');
+                for (var i = 0; i < spanList.length; i++) {
+                    if (spanList[i].className === "closed") {
+                        spanList[i].className = "opened";
+                    } else if (spanList[i].className === "threadDetails") {
+                        spanList[i].style.display = 'block';
+                    }
+                }
+            }
+
+            function snapshotSelect(event) {
+                var target = event.target || event.srcElement;
+                var selectedSnapshotNumber = +target.value;
+
+                var snapshots = document.getElementsByClassName("snapshot");
+                for (var i = 0; i < snapshots.length; i++) {
+                    if (i === selectedSnapshotNumber - 1) {
+                        snapshots[i].style.display = "block";
+                        var snapshotTime = snapshots[i].getElementsByClassName("snapshotTime")[0];
+                        document.getElementById("snapshotNumberAndTime").innerHTML = " | Snapshot #" + selectedSnapshotNumber + " | " + snapshotTime.innerHTML;
+                    } else {
+                        snapshots[i].style.display = "none";
+                    }
+                }
+            }
+
+            function selectGenericInfo(event) {
+                var target = event.target || event.srcElement;
+                var snapshot = target.parentNode.parentNode;
+                var diagnosticInfo = snapshot.getElementsByClassName("diagnosticInfo")[0];
+
+                for (var i = 0; i < diagnosticInfo.children.length; i++) {
+                    if (diagnosticInfo.children[i].className === "genericInfo") {
+                        diagnosticInfo.children[i].style.display = "block";
+                    } else {
+                        diagnosticInfo.children[i].style.display = "none";
+                    }
+                }
+            }
+
+            function selectThreadDumpInfo(event) {
+                var target = event.target || event.srcElement;
+                var snapshot = target.parentNode.parentNode;
+                var diagnosticInfo = snapshot.getElementsByClassName("diagnosticInfo")[0];
+
+                for (var i = 0; i < diagnosticInfo.children.length; i++) {
+                    if (diagnosticInfo.children[i].className === "threadDumpInfo") {
+                        diagnosticInfo.children[i].style.display = "block";
+                    } else {
+                        diagnosticInfo.children[i].style.display = "none";
+                    }
+                }
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsWebCustomDialogDefinition Id="cdlP476NP4BC5FMHGPKKXIRCECUFE" Name="CommentDlgWeb">
+    <AccessRules IsPublished="false"/>
+    <ui:ui>
+      <ui:widget name="widget" id="wdg7QEI2STSPVB5HCH7Q2HDUBQ3PE" class="cdlP476NP4BC5FMHGPKKXIRCECUFE" weight="0.0">
+        <ui:property name="geometry">
+          <ui:rect>
+            <ui:x>0</ui:x>
+            <ui:y>0</ui:y>
+            <ui:width>430</ui:width>
+            <ui:height>261</ui:height>
+          </ui:rect>
+        </ui:property>
+        <ui:property name="standardButtons">
+          <ui:set>com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Ok | com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Cancel</ui:set>
+        </ui:property>
+        <ui:property name="windowTitle">
+          <ui:mlstringid>mls55S3UPUCZBDYBDG5MUJVQV44YI</ui:mlstringid>
+        </ui:property>
+        <ui:widget name="widget" id="wdgWKPFSVUGANACPLX7HIVANJK4GQ" class="org.radixware.wps.rwt.TextArea" weight="0.0">
+          <ui:property name="text">
+            <ui:string/>
+          </ui:property>
+          <ui:property name="geometry">
+            <ui:rect>
+              <ui:x>5</ui:x>
+              <ui:y>5</ui:y>
+              <ui:width>420</ui:width>
+              <ui:height>221</ui:height>
+            </ui:rect>
+          </ui:property>
+          <ui:property name="anchor">
+            <ui:anchor>
+              <ui:Bottom Part="1.0" Offset="-5"/>
+              <ui:Right Part="1.0" Offset="-5"/>
+            </ui:anchor>
+          </ui:property>
+        </ui:widget>
+      </ui:widget>
+    </ui:ui>
+    <EmbeddedModel Id="admP476NP4BC5FMHGPKKXIRCECUFE" Name="CommentDlgWeb:Model" Type="16">
+      <AccessRules IsPublished="false"/>
+      <Headers>
+        <Src Name="HeaderadcZTQ5ZKEV3FBGVK5JZS66J27FOY"/>
+      </Headers>
+      <Bodies>
+        <Src Name="BodyadcIYT7FWCDEVBK7GMB42AW6CC4QA"/>
+      </Bodies>
+      <MethodGroup Id="cmg632P3DGLLNCUDPMBBYTCG5JMMU" Name="Root"/>
+      <PropertyGroup Id="cpgQGTU2374EVBFDGKOD4AVWLJOGY" Name="Root"/>
+      <Properties>
+        <Property Id="prdFAMVSOKB6NAGPE5N3TZAPFLYIU" Name="comment" Nature="2" IsConst="false" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="21"/>
+          <GetterSources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlP476NP4BC5FMHGPKKXIRCECUFE wdgWKPFSVUGANACPLX7HIVANJK4GQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Text;</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </GetterSources>
+        </Property>
+      </Properties>
+      <Methods/>
+    </EmbeddedModel>
+  </AdsWebCustomDialogDefinition>
+</AdsDefinition>

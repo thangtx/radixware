@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcP4A3ZAD7BVDU7GEAW5QCJQXLTQ" Name="PropValHandlersByIdMap" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.server.types.PropValHandlersByIdMap"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcZZ2TZ3XNEJCN7GHE6KZQCUVNBI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcFNW2BC4HNBG7TMOQ5ARCBGKVFM"/>
+    </Bodies>
+    <MethodGroup Id="cmgSYFYEQNQSBFW3FQEAZZ7HC6XKI" Name="Root"/>
+    <PropertyGroup Id="cpgOOOLQB6E2FEMHGUTCSML6AG7OI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthT3WUIEIXZ5FNXNYMXCWMHRFTBE" Name="PropValHandlersByIdMap" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthM2U6G4ADCJDXBKTDBBBIOAJ5QI" Name="PropValHandlersByIdMap" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.util.Map&lt;Lorg.radixware.kernel.common.types.Id;Lorg.radixware.kernel.server.types.PropValHandler;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="map" Id="mpr2CCYES42GZADVPAUC4ANKFFNVI">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.server.types.PropValHandler"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthN5BQPVWL6ZBWXPTALATA5HHFNU" Name="clear" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="clear()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthRGXQJHGI35DRLOQAHMCJHTUQVU" Name="containsKey" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="containsKey(Ljava.lang.Object;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="id" Id="mprKKF7OFLTNBF2XMDV5UQESG2LAI">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth6J5AYTWU6VCWNJM5J42UYA3LXA" Name="containsValue" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="containsValue(Ljava.lang.Object;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="value" Id="mprTTYKUGXLU5BIBGO4G4LMMT4UMQ">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthUHOUMG4F35GO3H5KOCRBDHFJSM" Name="entrySet" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="entrySet()Ljava.util.Set&lt;Ljava.util.Map.Entry&lt;Lorg.radixware.kernel.common.types.Id;Lorg.radixware.kernel.server.types.PropValHandler;>;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.Set">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="java.util.Map.Entry">
+                <xsc:GenericArguments>
+                  <xsc:Argument Alias="?">
+                    <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+                  </xsc:Argument>
+                  <xsc:Argument Alias="?">
+                    <xsc:Type TypeId="400" extStr="org.radixware.kernel.server.types.PropValHandler"/>
+                  </xsc:Argument>
+                </xsc:GenericArguments>
+              </xsc:Type>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthW4SUC4F6HBFZ5FKHBO73F425BY" Name="get" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="get(Ljava.lang.Object;)Lorg.radixware.kernel.server.types.PropValHandler;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="id" Id="mprA3AZVM4LO5ET5AIRJI24UFXWHY">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.types.PropValHandler"/>
+      </Method>
+      <Method Id="mthODGSSQZI25HSBMVQSPL2LKMERY" Name="isEmpty" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isEmpty()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthEFQYT7EQQ5H5RKTVYUGZ2FYZOI" Name="keySet" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="keySet()Ljava.util.Set&lt;Lorg.radixware.kernel.common.types.Id;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.Set">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mth2YKDZJLIQNC2TJMGKGOE2BDJFE" Name="put" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="put(Lorg.radixware.kernel.common.types.Id;Lorg.radixware.kernel.server.types.PropValHandler;)Lorg.radixware.kernel.server.types.PropValHandler;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="id" Id="mprKYTYFBJATZAABDEDZAEYALDNL4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+          <Parameter Name="val" Id="mpr5ATVGQPVS5EXNFO3B6MCN573HY">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.PropValHandler"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.types.PropValHandler"/>
+      </Method>
+      <Method Id="mthGG7ZQYZBD5EJZPTSTFJVLSLNNQ" Name="putAll" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="putAll(Ljava.util.Map&lt;+Lorg.radixware.kernel.common.types.Id;+Lorg.radixware.kernel.server.types.PropValHandler;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="map" Id="mprE2Q4PXYEPFAODL2R35ZBJU65WI">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument DerivationRule="extends" Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+                </xsc:Argument>
+                <xsc:Argument DerivationRule="extends" Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.server.types.PropValHandler"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthPJS6QGUPNBFWPOQOD446WQPHMI" Name="remove" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="remove(Ljava.lang.Object;)Lorg.radixware.kernel.server.types.PropValHandler;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="id" Id="mprC67EYD5RYVHYDA25IX7YQJOJQM">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.types.PropValHandler"/>
+      </Method>
+      <Method Id="mthGNCQSU7J7FCJ5P5IYQSNPP5HKM" Name="size" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="size()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthDS2UX76PUZGLDE25IRUWKOEDII" Name="toString" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="toString()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mth2MV5BZSW4RGD3F6A5TQ2FSJPO4" Name="values" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="values()Ljava.util.Collection&lt;Lorg.radixware.kernel.server.types.PropValHandler;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.Collection">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.server.types.PropValHandler"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

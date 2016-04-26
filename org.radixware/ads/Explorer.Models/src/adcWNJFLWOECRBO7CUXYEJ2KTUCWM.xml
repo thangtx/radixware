@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcWNJFLWOECRBO7CUXYEJ2KTUCWM" Name="ResponseListener" Type="3" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.models.ResponseListener"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcURQREGPBY5GOTF44O4ZSZTGM6Y"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcAIBCHD6CQBD4XG72HYHM6TNIMQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgF4RLBLU4DJBCJPAFRHO7VYOQ6I" Name="Root"/>
+    <PropertyGroup Id="cpgORKTQTLQ7ZASLBQHYKKPLUCBPM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthT2K44KSOABAG3F6EM3D5QJ6NU4" Name="aboutToCloseActiveRequestHandle" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="aboutToCloseActiveRequestHandle(Lorg.radixware.kernel.common.client.eas.RequestHandle;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="handler" Id="mprPZ3PJFN5AJC67IWFA3L2XNLDHA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.eas.RequestHandle"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthUGETIERAGFCBRMHC2PFZSXMB5E" Name="closeActiveRequestHandles" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="closeActiveRequestHandles(Z)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="forced" Id="mpr4U3RAV4OK5DAXCRYCZRBXEJKPA">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthFVRRXF3SIRFR7LWOISWF4WLNLA" Name="onCommandResponse" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="onCommandResponse(Lorg.radixware.kernel.common.types.Id;Lorg.apache.xmlbeans.XmlObject;Ljava.lang.Object;Lorg.radixware.kernel.common.client.eas.CommandRequestHandle;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="commandId" Id="mprNYNEBAB47RHGVIRBCUCLQ66L2I">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+          <Parameter Name="output" Id="mpr6K7PMDDPJ5GWNFIYTCTWLQW464">
+            <Type TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+          </Parameter>
+          <Parameter Name="userData" Id="mprG6LW2PAQ2NBGBIM2GHF3BBF7BA">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+          <Parameter Name="handler" Id="mpr6LQD2UCWDNATNLLYO3QACADGAM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.eas.CommandRequestHandle"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth32FSFRN2YJEJRBEUI3OQ2IYU6U" Name="onRequestCancelled" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="onRequestCancelled(Lorg.apache.xmlbeans.XmlObject;Lorg.radixware.kernel.common.client.eas.RequestHandle;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="request" Id="mprB5WKITKFTVAF5IJIP6LYCFZUJE">
+            <Type TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+          </Parameter>
+          <Parameter Name="handler" Id="mprRICVCMBRJJATRASZRMMX6HW3ZQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.eas.RequestHandle"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthUN2BVBHQGVF7PK7MJZGUB2LDWM" Name="onResponseReceived" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="onResponseReceived(Lorg.apache.xmlbeans.XmlObject;Lorg.radixware.kernel.common.client.eas.RequestHandle;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="response" Id="mpr7V7DLOXNEFGRZJV6ZNRL2MF7HM">
+            <Type TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+          </Parameter>
+          <Parameter Name="handler" Id="mprEYEUZM7YTBDCJLYLMBDJPFUKOU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.eas.RequestHandle"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthYBU5DNISH5BVNDKIZRREQ7JKZQ" Name="onServiceClientException" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="onServiceClientException(Lorg.radixware.kernel.common.exceptions.ServiceClientException;Lorg.radixware.kernel.common.client.eas.RequestHandle;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="exception" Id="mprTJFU63L675CZTLVJODOZ5CSOCI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+          </Parameter>
+          <Parameter Name="handler" Id="mprADMHUQNCTNERDL42NLOGPDE5UY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.eas.RequestHandle"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth7EN44C52PBEMRGK3U6KH6OVN2Y" Name="registerRequestHandle" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="registerRequestHandle(Lorg.radixware.kernel.common.client.eas.RequestHandle;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="handler" Id="mprBBKHECNNORBPJGWX6YOKRIDRHM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.eas.RequestHandle"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthZS5G4XLNIZBZLMM4VL5SG2MRPY" Name="unregisterRequestHandle" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="unregisterRequestHandle(Lorg.radixware.kernel.common.client.eas.RequestHandle;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="handler" Id="mprQWHW6XRPYVEZJJ2H3Z73LTGWYA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.eas.RequestHandle"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthD53HOGLZTZBGZCDARPJH266GJY" Name="sendContextlessCommandAsync" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="sendContextlessCommandAsync(Lorg.radixware.kernel.common.types.Id;Lorg.apache.xmlbeans.XmlObject;Ljava.lang.Class&lt;+Lorg.apache.xmlbeans.XmlObject;>;Ljava.lang.Object;)Lorg.radixware.kernel.common.client.eas.CommandRequestHandle;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="commandId" Id="mprYN4TSJXDCVA75JCWWZC4HQCQWE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+          <Parameter Name="input" Id="mprPQGJMHJ7KZDPRLOGWYWREHPFZE">
+            <Type TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+          </Parameter>
+          <Parameter Name="expectedOutputClass" Id="mprI5AMQNXDPFFLRFOAMTEV6GHQQ4">
+            <Type TypeId="400" extStr="java.lang.Class">
+              <xsc:GenericArguments>
+                <xsc:Argument DerivationRule="extends" Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="userData" Id="mprZMBS4U252JCHFCMKI7NNARGG2E">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.eas.CommandRequestHandle"/>
+      </Method>
+      <Method Id="mthLJ6KWRZSXRFFBEYDJC2XEWOTRA" Name="getApplication" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getApplication()Lorg.radixware.kernel.common.client.IClientApplication;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.IClientApplication"/>
+      </Method>
+      <Method Id="mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Name="getEnvironment" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getEnvironment()Lorg.radixware.kernel.common.client.IClientEnvironment;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+      </Method>
+      <Method Id="mthRMIT7ILW3VBLNPDGF4ZIJKWPQE" Name="ResponseListener" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="env" Id="mpr5TAWZ6ZAC5G5RJD5RTKZSIMXDI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthQUNJ7XX5YRAD3IATZL2NOHHFCA" Name="sendContextlessCommandAsync" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="sendContextlessCommandAsync(Lorg.radixware.kernel.common.types.Id;Lorg.apache.xmlbeans.XmlObject;Ljava.lang.Class&lt;+Lorg.apache.xmlbeans.XmlObject;>;Ljava.lang.Object;I)Lorg.radixware.kernel.common.client.eas.CommandRequestHandle;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="commandId" Id="mprETOYIG7CKZCNNG3KTEWYR2QBYU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+          <Parameter Name="input" Id="mpr4AQO6MIAXZEHRCZYEWO7IFKMZY">
+            <Type TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+          </Parameter>
+          <Parameter Name="expectedOutputClass" Id="mprVNGJQ4C6IREYJOHUTAKLIQJBFE">
+            <Type TypeId="400" extStr="java.lang.Class">
+              <xsc:GenericArguments>
+                <xsc:Argument DerivationRule="extends" Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="userData" Id="mprAIJTIX3WDVGKBMEILQ2V4LXW5M">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+          <Parameter Name="timeoutSec" Id="mprJRLMLXLAQBGKRFPHJKNKL5BU4Q">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.eas.CommandRequestHandle"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

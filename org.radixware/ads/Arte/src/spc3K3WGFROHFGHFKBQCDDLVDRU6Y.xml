@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="spc3K3WGFROHFGHFKBQCDDLVDRU6Y" Name="GetSessionLockOwnerProc" Type="10">
+    <AccessRules>
+      <Transparence Extendable="true" PublishedName="org.radixware.kernel.server.types.SqlClass"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headerspc3K3WGFROHFGHFKBQCDDLVDRU6Y"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyspc3K3WGFROHFGHFKBQCDDLVDRU6Y"/>
+    </Bodies>
+    <MethodGroup Id="cmgABC3P6OXPVA6HP37PRLEHIETF4" Name="Root"/>
+    <PropertyGroup Id="cpgFR5PBIQE7RA45KQUQWEIYDQ6FY" Name="Root"/>
+    <Properties>
+      <Property Id="prmLYAZVGJXLVHEZD37O5WIPKXCYY" Name="pEntityId" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmT7AYT2POXVGDJDLFFZ3AGBP5JE" Name="pPid" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmUZWZ3HKPSRCCZD2H5HDMWO4VG4" Name="oSid" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prm5ZZDXCYVBRC2TNC7X4X5EBPEAE" Name="oModule" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prm2AYWMKVPANFXFDM4KCXDNQNMYU" Name="oAction" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="execute" Nature="15" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="pEntityId" Id="mprLYAZVGJXLVHEZD37O5WIPKXCYY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="pPid" Id="mprT7AYT2POXVGDJDLFFZ3AGBP5JE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="spc3K3WGFROHFGHFKBQCDDLVDRU6Y"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>declare
+    lockId varchar2(100);
+    lockName varchar2(100);
+    sid integer;
+    module varchar2(100);
+    action varchar2(100);
+begin
+    lockName := </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:DbFuncCall FuncId="dfnSXCCRH7ANFE6JIWWLPUPD4DJIQ"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>(</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmLYAZVGJXLVHEZD37O5WIPKXCYY"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmT7AYT2POXVGDJDLFFZ3AGBP5JE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>);
+    select lockId into lockId from sys.dbms_lock_allocated where name = lockName;
+    select sid, module, action into sid, module, action from v$session where sid = (select session_id from dba_lock where lock_id1 = lockId);
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmUZWZ3HKPSRCCZD2H5HDMWO4VG4" Direction="1"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> := sid;
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prm5ZZDXCYVBRC2TNC7X4X5EBPEAE" Direction="1"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> := module;
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prm2AYWMKVPANFXFDM4KCXDNQNMYU" Direction="1"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> := action;
+exception when NO_DATA_FOUND then null;
+end;</xsc:Sql>
+        </xsc:Item>
+      </Source>
+    </Sql>
+    <Extends TypeId="400" extStr="org.radixware.kernel.server.types.SqlClass"/>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdHIRRUVHGXVHC3NL745JABUZIXA" Name="CommandsXsd" TargetNamespace="http://schemas.tranzaxis.com/schedulingCommands.xsd" Environment="common"><ads:AccessRules Access="4" IsPublished="false"/><xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://schemas.tranzaxis.com/schedulingCommands.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:t="http://schemas.radixware.org/types.xsd" xmlns:this="http://schemas.tranzaxis.com/schedulingCommands.xsd">
+
+  
+			<xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+
+  
+			<xs:simpleType name="COper">
+    
+				<xs:annotation>
+      
+					<xs:documentation>Enum Scheduling::Oper</xs:documentation>
+      
+					<xs:appinfo source="http://schemas.radixware.org/types.xsd">
+        
+						<t:class>acsVA7VVTUNEBFXLNKSXHQ4A75NVY</t:class>
+      
+					</xs:appinfo>
+    
+				</xs:annotation>
+    
+				<xs:restriction base="t:CharEnum"/>
+  
+			</xs:simpleType>
+
+  <!--****************** Requests - Responses ************************-->
+
+  <xs:element name="CalculateCalendarDatesRq">
+    
+				<xs:complexType>
+      
+					<xs:attribute name="Id" type="t:Int" use="optional"/>
+      
+					<xs:attribute name="From" type="t:DateTime" use="required"/>
+      
+					<xs:attribute name="To" type="t:DateTime" use="required"/>
+      
+					<xs:attribute name="StartDate" type="t:DateTime" use="optional"/>
+    
+				</xs:complexType>
+  
+			</xs:element>
+
+  
+			<xs:element name="CalculateCalendarDatesRs">
+    
+				<xs:complexType>
+      
+					<xs:attribute name="Dates" use="required">
+        
+						<xs:simpleType>
+          
+							<xs:list itemType="t:DateTime"/>
+        
+						</xs:simpleType>
+      
+					</xs:attribute>
+    
+				</xs:complexType>
+  
+			</xs:element>
+
+  
+			<xs:element name="GetDateDetailsRq">
+    
+				<xs:complexType>
+      
+					<xs:attribute name="Date" type="t:DateTime" use="required"/>
+      
+					<xs:attribute name="StartDate" type="t:DateTime" use="optional"/>
+    
+				</xs:complexType>
+  
+			</xs:element>
+
+  
+			<xs:element name="GetDateDetailsRs">
+    
+				<xs:complexType>
+      
+					<xs:sequence maxOccurs="unbounded" minOccurs="0">
+        
+						<xs:element name="Element">
+          
+							<xs:complexType>
+            
+								<xs:attribute name="Oper" type="this:COper" use="required"/>
+            
+								<xs:attribute name="Title" type="t:Str" use="required"/>
+          
+							</xs:complexType>
+        
+						</xs:element>
+      
+					</xs:sequence>
+    
+				</xs:complexType>
+  
+			</xs:element>
+
+  
+			<xs:element name="AddAbsDateRq">
+    
+				<xs:complexType>
+      
+					<xs:attribute name="Date" type="t:DateTime" use="required"/>
+      
+					<xs:attribute name="Oper" type="this:COper" use="required"/>
+    
+				</xs:complexType>
+  
+			</xs:element>
+
+
+		</xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

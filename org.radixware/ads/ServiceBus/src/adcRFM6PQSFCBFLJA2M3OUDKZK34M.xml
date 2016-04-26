@@ -1,0 +1,487 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcRFM6PQSFCBFLJA2M3OUDKZK34M" Name="SbCommonUtil" Type="3" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcRCDFSGAR6RAFFMLEM3CFJG3EJU">
+        <xsc:Item>
+          <xsc:Java>import java.util.*;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcRL73GYTUTBD43OZ44VS66SERAM">
+        <xsc:Item>
+          <xsc:Java>public static final </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> BINARY_TYPE = "http://schemas.radixware.org/types.xsd#" + </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="BinBase64"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.type.ShortJavaName;
+public static final </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> ENVELOPE_TYPE = "http://schemas.xmlsoap.org/soap/envelope/#" + </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="451" Path="xsdMDPCOEZ5HNGO7GBCTAJ4CIE5QQ" extStr="Envelope"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.type.ShortJavaName;
+public static final </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> PERSOCOMM_TYPE = "http://schemas.radixware.org/personalcommunications.xsd#Message";
+public static final </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> VOID_TYPE = "http://schemas.radixware.org/types.xsd#" + </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="Void"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.type.ShortJavaName;
+
+final private static </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> trim(</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> s, </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> trimStr) {
+    </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> newStr = s;
+    while (newStr.startsWith(trimStr)) {
+        newStr = newStr.substring(trimStr.length());
+    }
+    while (newStr.endsWith(trimStr)) {
+        newStr = newStr.substring(0, newStr.length() - trimStr.length());
+    }
+    return newStr;    
+}
+
+final private static List&lt;</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>> split(</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> s, </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> splitStr) {
+    final List&lt;</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>> parts = new ArrayList&lt;</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>>(Arrays.asList(s.split(splitStr)));
+    for (int i=0; i&lt;parts.size();) {
+        if (parts.get(i).isEmpty()) {
+            parts.remove(i);
+        } else {
+            i++;
+        }
+    }
+    return parts;
+}</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmgZ7T6NB6Y2JBLTDUU5LJQTUSDQM" Name="Root"/>
+    <PropertyGroup Id="cpgROEGHJO7HBHC7NJ3V2MKMHTR64" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthKY2DDEXY5RHZZNNHYLU4T3KEUQ" Name="getConnectionId" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="entityId" Id="mprJ7URPJQ5ENBUVBEWHCTKBDCH74">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="entityPid" Id="mprUZ7R236XIJHOFOFHBCLQQE253Y">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="role" Id="mprA5NV67N47RGPRF567SQ6TPBDIA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return entityId + "\n" + entityPid + "\n" + role;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthWDU4RYMYZZGI3BJXOGYQEJ6BHQ" Name="getNamespace" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="type" Id="mprHO3XOCCY4BCB3MLUPS6SHXWU5Q">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (type != null) {
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>[] s = type.split("#");
+    if (s.length == 2) {
+        return s[0];
+    }
+}
+return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthTFJIWWZLL5DH7BMCHRUQPEORJI" Name="parseXPath" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="xpath" Id="mprMPKBJAMBLVBBLGNNPDHF4XP4BE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="javax.xml.namespace.QName"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (xpath == null)
+    return new ArrayList&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="400" extStr="javax.xml.namespace.QName"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();
+
+xpath = xpath.trim();
+if (xpath == "/" || xpath == "//" || xpath == "$this")
+    return new ArrayList&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="400" extStr="javax.xml.namespace.QName"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();
+
+List&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> parts = split(xpath, " ");
+int size = parts.size();
+
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> err = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsYLCI64PKFVEF5AJOP7IVAJL6DQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + xpath + "\n";
+final Map&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> prefix2Ns = new HashMap&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();
+if (size > 1) { // namespaces
+    for (int i = 0; i &lt; size - 1;) {
+        if (parts.get(i).toLowerCase() != "declare") {
+            throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ mth3IJGQPORMVEO7HQLJ7TDK2VWME" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(err + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls4JDVJENS3NDY3KLIPS7R3SBCSQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        }
+        if (i + 2 >= size - 1) {
+            throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ mth3IJGQPORMVEO7HQLJ7TDK2VWME" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(err + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsH3DMBROVZFH3BH3FBULM65WQXI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        }
+        if (parts.get(i + 1).toLowerCase() != "namespace") {
+            throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ mth3IJGQPORMVEO7HQLJ7TDK2VWME" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(err + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls2YPO2UFMEFB45OHXIAGB4QWCD4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        }
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>[] s = parts.get(i + 2).split("=");
+        if (s.length != 2) {
+            throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ mth3IJGQPORMVEO7HQLJ7TDK2VWME" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(err + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsWWMWRF36FBAKFJ6QKFXQZRRJNI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        }
+        prefix2Ns.put(s[0], trim(s[1], "'"));
+        i += 3;
+    }
+}
+
+parts = split(parts.get(parts.size() - 1), "/");
+size = parts.size();
+
+final List&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="400" extStr="javax.xml.namespace.QName"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> elems = new ArrayList&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="400" extStr="javax.xml.namespace.QName"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();
+for (int i = 0; i &lt; size; i++) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> part = parts.get(i);
+    if (part.contains("[")) {
+        part = part.substring(0, part.indexOf("["));
+    }
+    if (i == 0 &amp;&amp; part == "$this")
+        continue;
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>[] s = part.split(":");
+    if (s.length > 1) {
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ns = prefix2Ns.get(s[0]);
+        if (ns == null) {
+            throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ mth3IJGQPORMVEO7HQLJ7TDK2VWME" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(err + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsDVXCL6DSXNHGDARY66QTSRCU74"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + s[0]);
+        }
+        elems.add(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcZEGS4Z5DYFG2FO2DOFDBUSHC6M mthQ66EGB3R6NCE7NTLJHD7KEPGGE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ns, s[1], s[0]));
+    } else {
+        elems.add(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcZEGS4Z5DYFG2FO2DOFDBUSHC6M mthCFWVBKS6IFH2DEDTNFBWBVXBXQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(s[0]));
+    }
+}
+
+return elems;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth5DPRPYZBGRCKFIT4TI4ZV2VL4U" Name="getElement" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="type" Id="mprTC43OXQIBRHYJJKASHEENHMZ7Q">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (type != null) {
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>[] s = type.split("#");
+    if (s.length == 2) {
+        return s[1];
+    }
+}
+return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthWYZNXNSWHJDTHL2W3Q4SYMUCAA" Name="copyXml" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="xml" Id="mpr4FPFTGDEYFD7LHICA4TGG6FO7U">
+            <Type TypeId="451"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (xml == null)
+    return null;
+return xml.copy();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

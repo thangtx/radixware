@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="accVLI5757OLNETTOGSCOGGDTPRP4" Name="CurUserAllRolesInAllAreasCursor" Type="4">
+    <AccessRules/>
+    <Headers>
+      <Src Name="HeaderadcK7S5NU3J7RHQBEKYM5CZT2YAMM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcPLO4677AHVFNXFMIC3YL23J474"/>
+    </Bodies>
+    <MethodGroup Id="cmgPI5MKWC5GVEZFEX6IO4ZYVLMSQ" Name="Root"/>
+    <PropertyGroup Id="cpgBSACEIW55RGKRCB74DTC4RC4XA" Name="Root"/>
+    <Properties>
+      <Property Id="prfPX6WFOCZBFD3PEKYJ2HQJL76OE" Name="roles" Nature="3" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+        <Presentation InheritanceMask="4" IsPresentable="false">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="open" Nature="15" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="411" Path="accVLI5757OLNETTOGSCOGGDTPRP4"/>
+      </Method>
+      <Method Id="mthD4SSWMLQFBHILDYAKXXNGGE4OQ" Name="execute" Nature="0" IsOverride="false">
+        <AccessRules Access="4" IsFinal="true" IsPublished="false" IsStatic="true"/>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="accVLI5757OLNETTOGSCOGGDTPRP4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> cursor = null;
+final String result;
+
+try {
+    cursor = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="accVLI5757OLNETTOGSCOGGDTPRP4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accVLI5757OLNETTOGSCOGGDTPRP4 mth_stmt_execute_____________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    cursor.next();
+    result = cursor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accVLI5757OLNETTOGSCOGGDTPRP4 prfPX6WFOCZBFD3PEKYJ2HQJL76OE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+}finally {
+    if (cursor!=null) {
+        cursor.close();
+    }
+}
+
+return result;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="true">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>select
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:DbFuncCall FuncId="dfnBE2DLHT2YDORDIE4ABQAQH3XQ4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accVLI5757OLNETTOGSCOGGDTPRP4" PropId="prfPX6WFOCZBFD3PEKYJ2HQJL76OE" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+from 
+    DUAL</xsc:Sql>
+        </xsc:Item>
+      </Source>
+    </Sql>
+    <Extends TypeId="411" Path="pdcCursor____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

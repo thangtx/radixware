@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsWebCustomPropEditorDefinition Id="cpeDPJZYTP5U5AZHJI724SY2T5B6A" Name="TraceProfileDlgWeb">
+    <AccessRules IsPublished="false"/>
+    <ui:ui>
+      <ui:widget name="traceProfileDialog" id="wdg6MDKYGX7A5ERNLL3OHRKSF334E" class="cpeDPJZYTP5U5AZHJI724SY2T5B6A" weight="0.0">
+        <ui:property name="geometry">
+          <ui:rect>
+            <ui:x>0</ui:x>
+            <ui:y>0</ui:y>
+            <ui:width>451</ui:width>
+            <ui:height>462</ui:height>
+          </ui:rect>
+        </ui:property>
+        <ui:property name="standardButtons">
+          <ui:set>com.trolltech.qt.gui.QDialogButtonBox.StandardButton.NoButton</ui:set>
+        </ui:property>
+        <ui:property name="objectName">
+          <ui:string>traceProfileDialog</ui:string>
+        </ui:property>
+        <ui:property name="buttonBoxVisible">
+          <ui:bool>true</ui:bool>
+        </ui:property>
+      </ui:widget>
+      <ui:connections>
+        <ui:connection>
+          <ui:sender>wdg6MDKYGX7A5ERNLL3OHRKSF334E</ui:sender>
+          <ui:signal>opened()</ui:signal>
+          <ui:slot>mthGAAJKWTYG5CTLEQ56CNIPR3GLU</ui:slot>
+          <ui:interface>org.radixware.wps.views.dialog.RwtDialog.RwtDialogListener</ui:interface>
+          <ui:registrator>addDialogListener</ui:registrator>
+          <ui:returnType>void</ui:returnType>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdg6MDKYGX7A5ERNLL3OHRKSF334E</ui:sender>
+          <ui:signal>onClose(org.radixware.kernel.common.enums.EDialogButtonType,org.radixware.kernel.common.client.views.IDialog.DialogResult)</ui:signal>
+          <ui:slot>mth7YRXULVXMVG6VMVAX7Z7BK3HU4</ui:slot>
+          <ui:interface>org.radixware.wps.rwt.Dialog.CloseButtonListener</ui:interface>
+          <ui:registrator>addCloseButtonListener</ui:registrator>
+          <ui:returnType>void</ui:returnType>
+        </ui:connection>
+      </ui:connections>
+    </ui:ui>
+    <EmbeddedModel Id="armDPJZYTP5U5AZHJI724SY2T5B6A" Name="TraceProfileDlgWeb:Model" Type="17">
+      <AccessRules IsPublished="false"/>
+      <Headers>
+        <Src Name="HeaderadcOCADNEPADFEFPDODJGLPKVXZ4I"/>
+      </Headers>
+      <Bodies>
+        <Src Name="BodyadcHYFP2DM255CGJIINRLVLTZA4JM"/>
+      </Bodies>
+      <MethodGroup Id="cmgIBVGKWIRDFDB5H53DJ4UUKWSAU" Name="Root"/>
+      <PropertyGroup Id="cpgNHFO2YBU4VGF3CQERJZN65FU2M" Name="Root"/>
+      <Properties>
+        <Property Id="prdQPSS7SQVCFD6XCYDD43W2Q3QEU" Name="traceProfileEditor" Nature="2" IsConst="false" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Type TypeId="411" Path="adcI7WAD2D2DJD2JPSZYI6O4QYUO4"/>
+        </Property>
+      </Properties>
+      <Methods>
+        <Method Id="mthGAAJKWTYG5CTLEQ56CNIPR3GLU" Name="widget_opened" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcYPRT23KRRVAX7AN3727VBD5VI4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> profileProp = getSourceProperty();
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeDPJZYTP5U5AZHJI724SY2T5B6A armDPJZYTP5U5AZHJI724SY2T5B6A prdQPSS7SQVCFD6XCYDD43W2Q3QEU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcI7WAD2D2DJD2JPSZYI6O4QYUO4 mthDBOX22JQ5NDTDL6XUPDZOGGJV4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(Environment,profileProp.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthRW4PMU4LZZBPHNXA6VCQA6DQNQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>());
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeDPJZYTP5U5AZHJI724SY2T5B6A armDPJZYTP5U5AZHJI724SY2T5B6A prdQPSS7SQVCFD6XCYDD43W2Q3QEU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcP2R7IHUBPFDGFNCMJF7KXYRMLM mthZHPQ72SADVHNLEPD4QTQINR3S4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(9);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeDPJZYTP5U5AZHJI724SY2T5B6A armDPJZYTP5U5AZHJI724SY2T5B6A prdQPSS7SQVCFD6XCYDD43W2Q3QEU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcP2R7IHUBPFDGFNCMJF7KXYRMLM mthAYD7UHHTHZHEZHHZWGGP45C7BE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(3);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeDPJZYTP5U5AZHJI724SY2T5B6A armDPJZYTP5U5AZHJI724SY2T5B6A prdQPSS7SQVCFD6XCYDD43W2Q3QEU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcP2R7IHUBPFDGFNCMJF7KXYRMLM mthZETTGL6GGZD7ZGGTSSUV33YLCQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>("tree");
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeDPJZYTP5U5AZHJI724SY2T5B6A wdg6MDKYGX7A5ERNLL3OHRKSF334E" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.add(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeDPJZYTP5U5AZHJI724SY2T5B6A armDPJZYTP5U5AZHJI724SY2T5B6A prdQPSS7SQVCFD6XCYDD43W2Q3QEU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeDPJZYTP5U5AZHJI724SY2T5B6A armDPJZYTP5U5AZHJI724SY2T5B6A prdQPSS7SQVCFD6XCYDD43W2Q3QEU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Anchors.Bottom = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcXNLYESCJHZAIRFYZEEE445LHUQ mthZM44DW3QIFDQRBPCEQ2CQX7XFY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(1.0f,-3);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeDPJZYTP5U5AZHJI724SY2T5B6A armDPJZYTP5U5AZHJI724SY2T5B6A prdQPSS7SQVCFD6XCYDD43W2Q3QEU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Anchors.Right = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcXNLYESCJHZAIRFYZEEE445LHUQ mthZM44DW3QIFDQRBPCEQ2CQX7XFY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(1.0f,-3);
+
+if (profileProp.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthLSANOBLXINHNPFDVOGRUZDVNV4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>()!=null){
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeDPJZYTP5U5AZHJI724SY2T5B6A armDPJZYTP5U5AZHJI724SY2T5B6A prdQPSS7SQVCFD6XCYDD43W2Q3QEU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setTraceProfile(profileProp.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mth7OXSCLQHDFCWJNUZN7LX5OO7VE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>());
+}
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeDPJZYTP5U5AZHJI724SY2T5B6A wdg6MDKYGX7A5ERNLL3OHRKSF334E" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.clearCloseActions();
+if (profileProp.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthRW4PMU4LZZBPHNXA6VCQA6DQNQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>()){
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeDPJZYTP5U5AZHJI724SY2T5B6A wdg6MDKYGX7A5ERNLL3OHRKSF334E" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.addCloseAction(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsS7F4BA7TJXNRDCHCABIFNQAABA aci22AUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+}else{
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeDPJZYTP5U5AZHJI724SY2T5B6A wdg6MDKYGX7A5ERNLL3OHRKSF334E" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.addCloseAction(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsS7F4BA7TJXNRDCHCABIFNQAABA aci3KAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeDPJZYTP5U5AZHJI724SY2T5B6A wdg6MDKYGX7A5ERNLL3OHRKSF334E" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.addCloseAction(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsS7F4BA7TJXNRDCHCABIFNQAABA aci2WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+}
+
+if (!profileProp.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthGEEY3STCEFENZPTET7RC7O4LJM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>() &amp;&amp; !profileProp.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthRW4PMU4LZZBPHNXA6VCQA6DQNQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>()){
+    final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcBMMGI4COB5DCPCZ3BWRAAP7T3A"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> pushButton = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeDPJZYTP5U5AZHJI724SY2T5B6A wdg6MDKYGX7A5ERNLL3OHRKSF334E" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.addCustomAction(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mls5YGG54T4BFE6XC7EHW4ZXAF4DE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcZA5WTBL2H5DSZH3DEKE7F65TSU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.LEFT);
+    pushButton.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcARXODDBCB5ATVAVXSIHCSKCTW4 mthC2G6ZZFWIVDRLOJXHHZFISMKKY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(Environment.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthRFQCEXJDNJDINHW32QFZAVEBV4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc53GYAPZQEBEQLNPUG64TNAO5F4 mthZIKIJPZTQFHYXCEWHV6RNLN4CQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="img4F7PNQFL3RDF3ADULVZL3H2IIE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>));
+    pushButton.addClickHandler(new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="aicLWIRNOTCIFB57GLGUOK73A6RLQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>() {
+
+        public void onClick(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="aicTU7SIC2MARGJTLFUMXQS6CG5ME"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> b) {
+            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcYPRT23KRRVAX7AN3727VBD5VI4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> profileProp = getSourceProperty();
+            profileProp.setValueObject(null);
+            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeDPJZYTP5U5AZHJI724SY2T5B6A wdg6MDKYGX7A5ERNLL3OHRKSF334E" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.close(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcDAOFOPE66ZA5ZP7ALHOOPQIQ6I"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.ACCEPTED);
+        }
+    });
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth7YRXULVXMVG6VMVAX7Z7BK3HU4" Name="widget_onClose" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="button" Id="mpr26L46VH3ZRFZNEJSBPU27EDZ2M">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EDialogButtonType"/>
+            </Parameter>
+            <Parameter Name="result" Id="mpr3FJHIZSMKVC2XM74QX5QRVWAZQ">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.client.views.IDialog.DialogResult"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if (button == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsS7F4BA7TJXNRDCHCABIFNQAABA aci3KAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> ) {
+    SourceProperty.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthZBTI63XF4RBXJJXOH54ZV3GT6I" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeDPJZYTP5U5AZHJI724SY2T5B6A armDPJZYTP5U5AZHJI724SY2T5B6A prdQPSS7SQVCFD6XCYDD43W2Q3QEU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.TraceProfile);
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+      </Methods>
+    </EmbeddedModel>
+  </AdsWebCustomPropEditorDefinition>
+</AdsDefinition>

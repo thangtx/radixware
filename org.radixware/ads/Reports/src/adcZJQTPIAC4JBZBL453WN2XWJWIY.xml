@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcZJQTPIAC4JBZBL453WN2XWJWIY" Name="CommonReportContext" Type="3" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcJ7XZ4MQEYNFDZLH3MGNDS5WVCM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcNPGDUFWEV5EBPEV6MCFB5TAB2U"/>
+    </Bodies>
+    <MethodGroup Id="cmgVRAUJYWNRVGJNDQZGM5FRDJ3X4" Name="Root"/>
+    <PropertyGroup Id="cpgI7J72XIIP5ANVOTQEIVSPK7TXE" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth3YOXXEMIA5A57DA5LSRC57UMQE" Name="getContextClassId" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="parJBNNV3AJ5ZE2VHWA3WC23XBATM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth6KVP5LQUDNECBDB7RJ5KIBSBYQ" Name="getContextId" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return null; // contextless</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthC6N5HGED6FGDTB2IVPTYZPITNQ" Name="getParentContext" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="411" Path="aic7HTUN45DRJBV3FWNY7QQ4I5YQM"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return null; // no parent context</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Implements>
+      <Interface TypeId="411" Path="aic7HTUN45DRJBV3FWNY7QQ4I5YQM"/>
+    </Implements>
+  </AdsClassDefinition>
+</AdsDefinition>

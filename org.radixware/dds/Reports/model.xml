@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Model xmlns="http://schemas.radixware.org/ddsdef.xsd" xmlns:com="http://schemas.radixware.org/commondef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" Id="prjSCK7YASNWFBSPFELZFLRCIAH6E" DbNamePrefix="RDX">
+  <Tables>
+    <Table Id="tblQ5T72ARKKBHHNBHOH3LPATQA6M" Name="ReportPubList" DbName="RDX_REPORTPUBLIST" UserExtMask="65536">
+      <Columns>
+        <Column Id="colQ3B6R3LVVBGDZFTHVOYGQXIGW4" Name="id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID" SequenceId="sqnNGGFXNPD45DERFSPZ5VL2WZQUI"/>
+        <Column Id="colYKEM5Q2LR5BORNW7UDQGGHK7BU" Name="classGuid" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="true" DbName="CLASSGUID"/>
+        <Column Id="colWZ4H7UJ6RFA6FMTXPZBFRNV52M" Name="pubContextClassGuid" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="true" DbName="PUBCONTEXTCLASSGUID"/>
+        <Column Id="colULDE4U54JZHEFOCELCQKPNYX6M" Name="contextPid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="CONTEXTPID"/>
+        <Column Id="colLZJGEHVT2ZGKTBYIF7MQCY6FMA" Name="lastUpdateTime" ValType="12" Length="0" Precision="6" DbType="TIMESTAMP(6)" NotNull="true" DbName="LASTUPDATETIME"/>
+        <Column Id="col3HPYVDGDE5HGJN2DFHFEN354VQ" Name="lastUpdateUserName" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="true" DbName="LASTUPDATEUSERNAME"/>
+      </Columns>
+      <PrimaryKey Id="idx64OTI4SUPJB2FONZRL7EBQKUMM" Name="PrimaryKey" DbName="PK_RDX_REPORTPUBLIST" Unique="true">
+        <Columns>
+          <Column ColumnId="colQ3B6R3LVVBGDZFTHVOYGQXIGW4" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unq32ETOEWCFBDWDFMGXQLP5FIUG4" DbName="PK_RDX_REPORTPUBLIST" Rely="true"/>
+      </PrimaryKey>
+      <Indices>
+        <Index Id="idxI7DWYVFJDNCJJDWRWKYR37EJIQ" Name="Context" DbName="IDX_RDX_REPORTPUBLIST_CONTEXT">
+          <Columns>
+            <Column ColumnId="colYKEM5Q2LR5BORNW7UDQGGHK7BU" Order="Asc"/>
+            <Column ColumnId="colWZ4H7UJ6RFA6FMTXPZBFRNV52M" Order="Asc"/>
+            <Column ColumnId="colULDE4U54JZHEFOCELCQKPNYX6M" Order="Asc"/>
+          </Columns>
+          <UniqueConstraint Id="unqRJKHCXVYZBGP3FUZDQCFENERNE" DbName="UNQ_RDX_REPORTPUBLIST_CONTEXT" Rely="true"/>
+        </Index>
+      </Indices>
+      <Placement PosX="96" PosY="51"/>
+    </Table>
+    <Table Id="tbl34F7JPGYHJEJHBCE7ISQKJN3IY" Name="ReportPubTopic" DbName="RDX_REPORTPUBTOPIC">
+      <Columns>
+        <Column Id="colOLKKTSVUOJHDTGFXOHQDX2Q46Y" Name="id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID" SequenceId="sqnABOZFVJO35D3HMGWMGKRC2OWY4"/>
+        <Column Id="colJSSZIPYLFBEFHKBHWRTCBFRAM4" Name="listId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="LISTID"/>
+        <Column Id="colFVRRJS5GRVFQZPUTC4IMSP24GM" Name="parentTopicId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="PARENTTOPICID"/>
+        <Column Id="colU5NMWBAWSBHGZES7JGA7YRAQEM" Name="seq" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="SEQ"/>
+        <Column Id="colGHAOYWUEDBGLHITBO7A7G3XCPM" Name="inheritedTopicId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="INHERITEDTOPICID"/>
+        <Column Id="colKASE5XKEAZCI7LZUZKMA5IJ4PE" Name="title" ValType="21" Length="200" DbType="VARCHAR2(200 char)" NotNull="true" DbName="TITLE"/>
+        <Column Id="col6GT7SSV73ZBDLPFK2N2BCUQDYQ" Name="description" ValType="21" Length="2000" DbType="VARCHAR2(2000 char)" NotNull="false" DbName="DESCRIPTION"/>
+      </Columns>
+      <PrimaryKey Id="idxRZSDGGHOYVBRDPR5F3DZHXPXQA" Name="PrimaryKey" DbName="PK_RDX_REPORTPUBTOPIC" Unique="true">
+        <Columns>
+          <Column ColumnId="colOLKKTSVUOJHDTGFXOHQDX2Q46Y" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unq4BPWN3E34VHKDDM3HYZD4AXKXY" DbName="PK_RDX_REPORTPUBTOPIC" Rely="true"/>
+      </PrimaryKey>
+      <Indices>
+        <Index Id="idxW536LNBNSZEZXDD5CZIKGDASWY" Name="List" DbName="IDX_RDX_REPORTPUBTOPIC_LIST">
+          <Columns>
+            <Column ColumnId="colJSSZIPYLFBEFHKBHWRTCBFRAM4" Order="Asc"/>
+          </Columns>
+        </Index>
+      </Indices>
+      <Placement PosX="324" PosY="279"/>
+    </Table>
+    <Table Id="tblUNC67IF5OBCX7NOPNLQOCUG374" Name="ReportPub" DbName="RDX_REPORTPUB" UserExtMask="65568">
+      <Columns>
+        <Column Id="col5Z77DJW25NE3NOMCZ6G7JSIGSQ" Name="Id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID" SequenceId="sqnFBY62QEI7ZCW7MDNZ4J5CVUE5Y"/>
+        <Column Id="col2GB4IHLRWVAHTCYF3F2KNK2WBU" Name="classGuid" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="true" DbName="CLASSGUID"/>
+        <Column Id="colQXFVM3NF5JBVPM44EQV6TLOEB4" Name="listId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="LISTID"/>
+        <Column Id="colNNK3L4L6SJFGZBFKG64XTIGTBM" Name="parentTopicId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="PARENTTOPICID"/>
+        <Column Id="colKRIJCTPH4BBTJACPINFNMGHFOU" Name="seq" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="SEQ"/>
+        <Column Id="colLOAH3AWYW5DLBHJSUCBMFDJEHY" Name="isEnabled" ValType="1" Length="1" Precision="1" DbType="NUMBER(1,0)" NotNull="true" DbName="ISENABLED">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>1</com:Value>
+          </DefaultVal>
+        </Column>
+        <Column Id="col2BK2KKPDYJCOFIAHL23AZ4XOCE" Name="inheritedPubId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="INHERITEDPUBID"/>
+        <Column Id="colXU7SJ5KBINF27AV7GLWZLCIO4E" Name="title" ValType="21" Length="2000" DbType="VARCHAR2(2000 char)" NotNull="false" DbName="TITLE"/>
+        <Column Id="colNCCJD67UNVD4LM7B3IKHJPER5Y" Name="description" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="DESCRIPTION"/>
+        <Column Id="colAQV2RHG7LRHZVJ2KHGLJI2HVEQ" Name="reportClassGuid" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="false" DbName="REPORTCLASSGUID"/>
+        <Column Id="colCFIB7BM27NH67GFPFCDMY7Y7OQ" Name="userRoleGuids" ValType="221" Length="0" DbType="CLOB" NotNull="false" DbName="USERROLEGUIDS"/>
+        <Column Id="colVP3HR4T4VRDJXE2SQKI3CUOSJI" Name="isForCustomer" ValType="1" Length="1" Precision="1" DbType="NUMBER(1,0)" NotNull="true" DbName="ISFORCUSTOMER">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>0</com:Value>
+          </DefaultVal>
+        </Column>
+        <Column Id="colWN7EWE5K45C4HNELVSOXTYA2RM" Name="paramBinding" ValType="27" Length="0" DbType="CLOB" NotNull="false" DbName="PARAMBINDING"/>
+        <Column Id="col7FRUCC2LRVCFDN26X3OA73GNIY" Name="format" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="false" DbName="FORMAT"/>
+        <Column Id="colX5QBHA4M3NABRLT52FMFOWQVYQ" Name="printOnly" ValType="1" Length="1" Precision="1" DbType="NUMBER(1,0)" NotNull="true" DbName="PRINTONLY">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>0</com:Value>
+          </DefaultVal>
+        </Column>
+      </Columns>
+      <PrimaryKey Id="idxYZWEIB3HT5E75ENTSGD74MZLNE" Name="PrimaryKey" DbName="PK_RDX_REPORTPUB" Unique="true">
+        <Columns>
+          <Column ColumnId="col5Z77DJW25NE3NOMCZ6G7JSIGSQ" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqSUMVMFYKERHVFI42P6LKMZHWZE" DbName="PK_RDX_REPORTPUB" Rely="true"/>
+      </PrimaryKey>
+      <Indices>
+        <Index Id="idx2CNZEI3MOFAKXMI53YGZT6VIL4" Name="List" DbName="IDX_RDX_REPORTPUB_LIST">
+          <Columns>
+            <Column ColumnId="colQXFVM3NF5JBVPM44EQV6TLOEB4" Order="Asc"/>
+          </Columns>
+        </Index>
+      </Indices>
+      <Triggers>
+        <Trigger Id="trgARA237234ZH4PKNRJ5NLCW73SQ" Name="UserPropOwn" DbName="UPO_UNC67IF5OBCX7NOPNLQOCUG374" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+   RDX_ENTITY.UserPropOnDelOwner('tblUNC67IF5OBCX7NOPNLQOCUG374', :old.ID);
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+      </Triggers>
+      <Placement PosX="36" PosY="268"/>
+    </Table>
+    <Table Id="tbl72TT5CRGUJEY3L2OOOKZHO3L2M" Name="ReportParam" DbName="RDX_REPORTPARAM" UserExtMask="65568">
+      <Columns>
+        <Column Id="colOGWYNEBFO5BNTE6XQLKPFAZ3CY" Name="id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID" SequenceId="sqn3RULU3LH7VHR7OPBVTICJRY7ZY"/>
+        <Column Id="colPBLHLVVEUBGJ7OD24EVEPDNZJU" Name="classGuid" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="true" DbName="CLASSGUID"/>
+        <Column Id="colPAEUQ3ALXFDFLIZDLKK52LKUKA" Name="parentId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="PARENTID"/>
+        <Column Id="colZKB7AM3R2JDILKAIZEWZGDVIAY" Name="lastUpdateTime" ValType="12" Length="0" Precision="6" DbType="TIMESTAMP(6)" NotNull="true" DbName="LASTUPDATETIME"/>
+        <Column Id="colIUFE5UCZWZELHFY2RZT7JSLVO4" Name="lastUpdateUserName" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="true" DbName="LASTUPDATEUSERNAME"/>
+      </Columns>
+      <PrimaryKey Id="idxHE5DJ4JHZ5ETRLVJWPEX6HE4FQ" Name="PrimaryKey" DbName="PK_RDX_REPORTPARAM" Unique="true">
+        <Columns>
+          <Column ColumnId="colOGWYNEBFO5BNTE6XQLKPFAZ3CY" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqN4PU73RHINATPBBHIZHCVOANBE" DbName="PK_RDX_REPORTPARAM" Rely="true"/>
+      </PrimaryKey>
+      <Triggers>
+        <Trigger Id="trg2LJ25GRGKJFG7N2COYDTFZ4RFI" Name="UserPropOwn" DbName="UPO_72TT5CRGUJEY3L2OOOKZHO3L2M" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+   RDX_ENTITY.UserPropOnDelOwner('tbl72TT5CRGUJEY3L2OOOKZHO3L2M', :old.ID);
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+      </Triggers>
+      <Placement PosX="339" PosY="58"/>
+    </Table>
+    <Table Id="tblM2NL42YXRRA5ZH27LCKIW5CQNI" Name="UserReportVersion" DbName="RDX_USERREPORTVERSION">
+      <Columns>
+        <Column Id="col443263VQHJDJTPL4VY3PNWTNCE" Name="reportGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="REPORTGUID"/>
+        <Column Id="colT7D35GBIUBGHLHVAUNSMFGFCJM" Name="version" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="VERSION" SequenceId="sqn5AEBBOZCDRHXFCC5Y6FOZCJEKA"/>
+        <Column Id="colFE5OD3ZALVENPLKO63SWMLOFXA" Name="lastUpdateTime" ValType="12" Length="0" Precision="6" DbType="TIMESTAMP(6)" NotNull="false" DbName="LASTUPDATETIME"/>
+        <Column Id="colJFWEA3OFWFBENHJROC57MS5FYM" Name="lastUpdateUserName" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="false" DbName="LASTUPDATEUSERNAME" TemplateId="cdmBHOWDKCA6FDZVJ35M73O6CZJ6A"/>
+        <Column Id="col3FPD27GEFBBTPFKKRBBVO5ODS4" Name="reportSource" ValType="27" Length="0" DbType="CLOB" NotNull="false" DbName="REPORTSOURCE"/>
+        <Column Id="colTV4V72I4NZDNHP2S3DMDKGZMEQ" Name="reportBinary" ValType="28" Length="0" DbType="BLOB" NotNull="false" DbName="REPORTBINARY"/>
+        <Column Id="colFCOKOL7E3JD3PDNES4EAW35XTE" Name="reportClassGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="REPORTCLASSGUID"/>
+      </Columns>
+      <PrimaryKey Id="idxY2C4ZQLNC5GKRKU2DPGFLBMGPE" Name="PrimaryKey" DbName="PK_RDX_USERREPORTVERSION" Unique="true">
+        <Columns>
+          <Column ColumnId="col443263VQHJDJTPL4VY3PNWTNCE" Order="Asc"/>
+          <Column ColumnId="colT7D35GBIUBGHLHVAUNSMFGFCJM" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqEESWC3VZTVGEXGDLCW4GZL457I" DbName="PK_RDX_USERREPORTVERSION" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="978" PosY="237"/>
+    </Table>
+    <Table Id="tblRHH7SYO5I5EFRGYIBOSVUXKD7U" Name="UserReport" DbName="RDX_USERREPORT">
+      <Columns>
+        <Column Id="colJENVO3VYOBBRXCG3GAOQDPK72Y" Name="guid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="GUID"/>
+        <Column Id="colIE7QFFHT6VAJZMYY6E5NAFR57M" Name="moduleGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="MODULEGUID"/>
+        <Column Id="colUVEMGNNQCVCRLKP7GTOHJKGL7I" Name="title" ValType="21" Length="2000" DbType="VARCHAR2(2000 char)" NotNull="false" DbName="TITLE"/>
+        <Column Id="colRFGZDGVYONGERF2WDQ5THDREOE" Name="curVersion" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="CURVERSION"/>
+        <Column Id="colSAPAWW6RG5HJLMVL34K2YQKHKY" Name="descirption" ValType="21" Length="2000" DbType="VARCHAR2(2000 char)" NotNull="false" DbName="DESCIRPTION"/>
+        <Column Id="colMLR5RZCEI5DXRPTXTCRC46763A" Name="contextParameterType" ValType="27" Length="0" DbType="CLOB" NotNull="false" DbName="CONTEXTPARAMETERTYPE"/>
+        <Column Id="col4V6ACMPQZVGUDIUW2BJMXKSFJU" Name="lastUpdateTime" ValType="12" Length="0" Precision="6" DbType="TIMESTAMP(6)" NotNull="false" DbName="LASTUPDATETIME"/>
+        <Column Id="colVU7VPPUTCFHAZIJVOZS3LW5E2I" Name="lastUpdateUserName" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="false" DbName="LASTUPDATEUSERNAME" TemplateId="cdmBHOWDKCA6FDZVJ35M73O6CZJ6A"/>
+        <Column Id="colS4YCAONUQVCXXJX2JRQCLCRFKA" Name="formatVersion" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="FORMATVERSION">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>0</com:Value>
+          </DefaultVal>
+        </Column>
+      </Columns>
+      <PrimaryKey Id="idxTXLPT3DWLVBFXDEVGS4QRDEIDA" Name="PrimaryKey" DbName="PK_RDX_USERREPORT" Unique="true">
+        <Columns>
+          <Column ColumnId="colJENVO3VYOBBRXCG3GAOQDPK72Y" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqDQEG2ROKPZEFTERVMGFH542QTA" DbName="PK_RDX_USERREPORT" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="681" PosY="291"/>
+    </Table>
+    <Table Id="tblN7LNYTJYXBDC7MTGOI4IP2THFA" Name="UserReportModule" DbName="RDX_USERREPORTMODULE">
+      <Columns>
+        <Column Id="colHL2DQINMTBFYBKFSXNSK43NHY4" Name="guid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="GUID"/>
+        <Column Id="colAW4TWZKC4ZCUJI4QSCYEBQ3DTA" Name="title" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="TITLE" TemplateId="cdmVKEXNOQQ5ZGI3KZWQLOMROTKWE"/>
+        <Column Id="colGI2BEXFEXRCZZHEQ3HDSNPNN34" Name="description" ValType="27" Length="0" DbType="CLOB" NotNull="false" DbName="DESCRIPTION"/>
+        <Column Id="colTD5STVFJWZCWTAEXMFGIDXXUHU" Name="images" ValType="28" Length="0" DbType="BLOB" NotNull="false" DbName="IMAGES"/>
+        <Column Id="colJIQZ4KJI75DQVKCF22MJY6QZMQ" Name="formatVersion" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="FORMATVERSION">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>0</com:Value>
+          </DefaultVal>
+        </Column>
+      </Columns>
+      <PrimaryKey Id="idxZ56WTVCRLFAJHI3W5FQM5WVZAI" Name="PrimaryKey" DbName="PK_RDX_USERREPORTMODULE" Unique="true">
+        <Columns>
+          <Column ColumnId="colHL2DQINMTBFYBKFSXNSK43NHY4" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unq6Q6VL2EOHZGTDC65OAVKIN2U2A" DbName="PK_RDX_USERREPORTMODULE" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="730" PosY="122"/>
+    </Table>
+  </Tables>
+  <ExtTables>
+    <ExtTable Id="tbe75M2FC46GRGRXP7SMTGMZCWYWE" TableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4">
+      <Placement PosX="967" PosY="459"/>
+    </ExtTable>
+  </ExtTables>
+  <References>
+    <Reference Id="refXPXHRZKMBVBGNPKHUIH3HU4J64" AutoDbName="false" DbName="FK_RDX_RPTPUBTOPIC_RPTPUBLIST" Type="LINK" ChildTableId="tbl34F7JPGYHJEJHBCE7ISQKJN3IY" ParentTableId="tblQ5T72ARKKBHHNBHOH3LPATQA6M" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unq32ETOEWCFBDWDFMGXQLP5FIUG4">
+      <Columns>
+        <Item ChildColumnId="colJSSZIPYLFBEFHKBHWRTCBFRAM4" ParentColumnId="colQ3B6R3LVVBGDZFTHVOYGQXIGW4"/>
+      </Columns>
+    </Reference>
+    <Reference Id="ref33FTUNJWBNG7XILKNQF3VKWVRA" AutoDbName="false" DbName="FK_RDX_REPORTPUB_RPTPUBTOPIC" Type="LINK" ChildTableId="tblUNC67IF5OBCX7NOPNLQOCUG374" ParentTableId="tbl34F7JPGYHJEJHBCE7ISQKJN3IY" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unq4BPWN3E34VHKDDM3HYZD4AXKXY">
+      <Columns>
+        <Item ChildColumnId="colNNK3L4L6SJFGZBFKG64XTIGTBM" ParentColumnId="colOLKKTSVUOJHDTGFXOHQDX2Q46Y"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refJLB3T4LDYNGENHZH4FUXEMEU7E" DbName="FK_RDX_REPORTPUB_REPORTPUBLIST" Type="LINK" ChildTableId="tblUNC67IF5OBCX7NOPNLQOCUG374" ParentTableId="tblQ5T72ARKKBHHNBHOH3LPATQA6M" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unq32ETOEWCFBDWDFMGXQLP5FIUG4">
+      <Columns>
+        <Item ChildColumnId="colQXFVM3NF5JBVPM44EQV6TLOEB4" ParentColumnId="colQ3B6R3LVVBGDZFTHVOYGQXIGW4"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refWSIMMLZIYJDLRFTRXCGLFQEYRI" AutoDbName="false" DbName="FK_REPORTPUBTOPIC_INHERIT" Type="LINK" ChildTableId="tbl34F7JPGYHJEJHBCE7ISQKJN3IY" ParentTableId="tbl34F7JPGYHJEJHBCE7ISQKJN3IY" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unq4BPWN3E34VHKDDM3HYZD4AXKXY">
+      <Columns>
+        <Item ChildColumnId="colGHAOYWUEDBGLHITBO7A7G3XCPM" ParentColumnId="colOLKKTSVUOJHDTGFXOHQDX2Q46Y"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refDFMXRCYUJRFBZJXXTHVPDY4PEQ" AutoDbName="false" DbName="FK_REPORTPUBTOPIC_PARENT" Type="LINK" ChildTableId="tbl34F7JPGYHJEJHBCE7ISQKJN3IY" ParentTableId="tbl34F7JPGYHJEJHBCE7ISQKJN3IY" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unq4BPWN3E34VHKDDM3HYZD4AXKXY">
+      <Columns>
+        <Item ChildColumnId="colFVRRJS5GRVFQZPUTC4IMSP24GM" ParentColumnId="colOLKKTSVUOJHDTGFXOHQDX2Q46Y"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refBOVOJ7JCA5DABMRYFMKTL2IMRQ" AutoDbName="false" DbName="FK_REPORTPUB_INHERIT" Type="LINK" ChildTableId="tblUNC67IF5OBCX7NOPNLQOCUG374" ParentTableId="tblUNC67IF5OBCX7NOPNLQOCUG374" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqSUMVMFYKERHVFI42P6LKMZHWZE">
+      <Columns>
+        <Item ChildColumnId="col2BK2KKPDYJCOFIAHL23AZ4XOCE" ParentColumnId="col5Z77DJW25NE3NOMCZ6G7JSIGSQ"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refOPBI4OKMQ5EUVBN47EGKQXCLQI" DbName="FK_RDX_REPORTPARAM_REPORTPARAM" Type="LINK" ChildTableId="tbl72TT5CRGUJEY3L2OOOKZHO3L2M" ParentTableId="tbl72TT5CRGUJEY3L2OOOKZHO3L2M" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqN4PU73RHINATPBBHIZHCVOANBE">
+      <Columns>
+        <Item ChildColumnId="colPAEUQ3ALXFDFLIZDLKK52LKUKA" ParentColumnId="colOGWYNEBFO5BNTE6XQLKPFAZ3CY"/>
+      </Columns>
+    </Reference>
+    <Reference Id="ref652JVAU3R5ERFEAOH2QYSBTMR4" DbName="FK_RDX_USERREPORT_USER" Type="LINK" ChildTableId="tblRHH7SYO5I5EFRGYIBOSVUXKD7U" ParentTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ExtParentTableId="tbe75M2FC46GRGRXP7SMTGMZCWYWE" ConfirmDelete="true" DeleteMode="SET_NULL" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqSY4KIOLTGLNRDHRZABQAQH3XQ4">
+      <Columns>
+        <Item ChildColumnId="colVU7VPPUTCFHAZIJVOZS3LW5E2I" ParentColumnId="colEF6ODCYWY3NBDGMCABQAQH3XQ4"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refFKTLCBCHPFBBDMZ7KLWKFPLSVQ" DbName="FK_RDX_USERREPORTVERSION_USERR" Type="LINK" ChildTableId="tblM2NL42YXRRA5ZH27LCKIW5CQNI" ParentTableId="tblRHH7SYO5I5EFRGYIBOSVUXKD7U" ConfirmDelete="false" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqDQEG2ROKPZEFTERVMGFH542QTA">
+      <Columns>
+        <Item ChildColumnId="col443263VQHJDJTPL4VY3PNWTNCE" ParentColumnId="colJENVO3VYOBBRXCG3GAOQDPK72Y"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refUBNH2Q6WFFEA3M67GRBYQMML3I" DbName="FK_RDX_USERREPORTVERSION_USER" Type="LINK" ChildTableId="tblM2NL42YXRRA5ZH27LCKIW5CQNI" ParentTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ExtParentTableId="tbe75M2FC46GRGRXP7SMTGMZCWYWE" ConfirmDelete="true" DeleteMode="SET_NULL" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqSY4KIOLTGLNRDHRZABQAQH3XQ4">
+      <Columns>
+        <Item ChildColumnId="colJFWEA3OFWFBENHJROC57MS5FYM" ParentColumnId="colEF6ODCYWY3NBDGMCABQAQH3XQ4"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refSC2JFGD3GFFENGINX22X66YUEA" AutoDbName="false" DbName="FK_RDX_USERRPT_USERRPTMODULE" Type="LINK" ChildTableId="tblRHH7SYO5I5EFRGYIBOSVUXKD7U" ParentTableId="tblN7LNYTJYXBDC7MTGOI4IP2THFA" ConfirmDelete="false" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unq6Q6VL2EOHZGTDC65OAVKIN2U2A">
+      <Columns>
+        <Item ChildColumnId="colIE7QFFHT6VAJZMYY6E5NAFR57M" ParentColumnId="colHL2DQINMTBFYBKFSXNSK43NHY4"/>
+      </Columns>
+    </Reference>
+  </References>
+  <Sequences>
+    <Sequence Id="sqnNGGFXNPD45DERFSPZ5VL2WZQUI" Name="ReportPubListId" DbName="SQN_RDX_REPORTPUBLISTID" Cycle="false" Order="true" Cache="20">
+      <Placement PosX="220" PosY="696"/>
+    </Sequence>
+    <Sequence Id="sqnABOZFVJO35D3HMGWMGKRC2OWY4" Name="ReportPubTopicId" DbName="SQN_RDX_REPORTPUBTOPICID" Cycle="false" Order="true" Cache="20">
+      <Placement PosX="207" PosY="542"/>
+    </Sequence>
+    <Sequence Id="sqnFBY62QEI7ZCW7MDNZ4J5CVUE5Y" Name="ReportPubId" DbName="SQN_RDX_REPORTPUBID" Cycle="false" Order="true" Cache="20">
+      <Placement PosX="229" PosY="615"/>
+    </Sequence>
+    <Sequence Id="sqn3RULU3LH7VHR7OPBVTICJRY7ZY" Name="ReportParamId" DbName="SQN_RDX_REPORTPARAMID" Cycle="false" Order="true" Cache="20">
+      <Placement PosX="215" PosY="463"/>
+    </Sequence>
+    <Sequence Id="sqn5AEBBOZCDRHXFCC5Y6FOZCJEKA" Name="UserReportVersionId" DbName="SQN_RDX_USERREPORTVERSIONID" Cycle="false" Order="true" Cache="20">
+      <Placement PosX="958" PosY="118"/>
+    </Sequence>
+  </Sequences>
+  <Labels>
+    <Label Id="lblQU7Q7XW5GFGRTPV3ZANYBPMXMY">
+      <Placement PosX="728" PosY="46"/>
+      <Font Bold="true" Italic="false" Size="36"/>
+      <Text>User-Defined Reports</Text>
+    </Label>
+  </Labels>
+</Model>

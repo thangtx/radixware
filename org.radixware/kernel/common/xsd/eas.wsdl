@@ -1,0 +1,960 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mess="http://schemas.radixware.org/eas.xsd" xmlns:wsdl="http://schemas.radixware.org/eas.wsdl" xmlns:ns="http://schemas.radixware.org/xscml.xsd" xmlns:ns1="http://schemas.radixware.org/types.xsd" xmlns:ns2="http://schemas.radixware.org/editmask.xsd" targetNamespace="http://schemas.radixware.org/eas.wsdl">
+	<types>
+		<xs:schema elementFormDefault="unqualified" attributeFormDefault="unqualified" targetNamespace="http://schemas.radixware.org/eas.wsdl">
+			<xs:import namespace="http://schemas.radixware.org/eas.xsd" schemaLocation="eas.xsd"/>
+			<xs:element name="CreateSession" type="mess:CreateSessionMess"/>
+                        <xs:element name="Login" type="mess:LoginMess"/>
+			<xs:element name="Test" type="mess:TestMess"/>
+			<xs:element name="ReadManifest" type="mess:ReadManifestMess"/>
+			<xs:element name="ListInstantiatableClasses" type="mess:ListInstantiatableClassesMess"/>
+			<xs:element name="ChangePassword" type="mess:ChangePasswordMess"/>
+			<xs:element name="GetPasswordRequirements" type="mess:GetPasswordRequirementsMess"/>
+			<xs:element name="ListVisibleExplorerItems" type="mess:ListVisibleExplorerItemsMess"/>
+                        <xs:element name="ListEdPresVisibleExpItems" type="mess:ListEdPresVisibleExpItemsMess"/>
+			<xs:element name="Read" type="mess:ReadMess"/>
+			<xs:element name="PrepareCreate" type="mess:PrepareCreateMess"/>
+			<xs:element name="Select" type="mess:SelectMess"/>
+			<xs:element name="Command" type="mess:CommandMess"/>
+			<xs:element name="ContextlessCommand" type="mess:ContextlessCommandMess"/>
+			<xs:element name="Create" type="mess:CreateMess"/>
+			<xs:element name="Delete" type="mess:DeleteMess"/>
+			<xs:element name="Update" type="mess:UpdateMess"/>
+			<xs:element name="SetParent" type="mess:SetParentMess"/>
+			<xs:element name="GetObjectTitles" type="mess:GetObjectTitlesMess"/>
+                        <xs:element name="CloseSession" type="mess:CloseSessionMess"/>
+			<xs:element name="ProgressDialogStartProcess" type="mess:ProgressDialogStartProcessMess"/>
+			<xs:element name="ProgressDialogSet" type="mess:ProgressDialogSetMess"/>
+			<xs:element name="ProgressDialogTrace" type="mess:ProgressDialogTraceMess"/>
+			<xs:element name="ProgressDialogFinishProcess" type="mess:ProgressDialogFinishProcessMess"/>
+			<xs:element name="MessageDialogOpen" type="mess:MessageDialogOpenMess"/>
+			<xs:element name="MessageDialogWaitButton" type="mess:MessageDialogWaitButtonMess"/>
+			<xs:element name="FileSelect" type="mess:FileSelectMess"/>
+			<xs:element name="FileAccess" type="mess:FileAccessMess"/>
+			<xs:element name="FileOpen" type="mess:FileOpenMess"/>
+			<xs:element name="FileClose" type="mess:FileCloseMess"/>
+			<xs:element name="FileRead" type="mess:FileReadMess"/>
+			<xs:element name="FileWrite" type="mess:FileWriteMess"/>
+			<xs:element name="FileSeek" type="mess:FileSeekMess"/>
+			<xs:element name="FileDelete" type="mess:FileDeleteMess"/>
+			<xs:element name="FileMove" type="mess:FileMoveMess"/>
+			<xs:element name="FileCopy" type="mess:FileCopyMess"/>
+			<xs:element name="FileSize" type="mess:FileSizeMess"/>
+			<xs:element name="FileDirSelect" type="mess:FileDirSelectMess"/>
+			<xs:element name="FileDirRead" type="mess:FileDirReadMess"/>
+			<xs:element name="FileDirCreate" type="mess:FileDirCreateMess"/>
+			<xs:element name="FileDirDelete" type="mess:FileDirDeleteMess"/>
+			<xs:element name="FileDirMove" type="mess:FileDirMoveMess"/>
+                        <xs:element name="ClientMethodInvocation" type="mess:ClientMethodInvocationMess"/>
+                        <xs:element name="GetSecurityToken" type="mess:GetSecurityTokenMess"/>
+		</xs:schema>
+	</types>
+	<message name="CreateSessionRq">
+		<part name="CreateSessionRq" type="mess:CreateSessionRq"/>
+	</message>
+	<message name="CreateSessionRs">
+		<part name="CreateSessionRs" type="mess:CreateSessionRs"/>
+	</message>
+	<message name="LoginRq">
+		<part name="LoginRq" type="mess:LoginRq"/>
+	</message>
+	<message name="LoginRs">
+		<part name="LoginRs" type="mess:LoginRs"/>
+	</message>        
+	<message name="TestRq">
+		<part name="TestRq" type="mess:TestRq"/>
+	</message>
+	<message name="TestRs">
+		<part name="TestRs" type="mess:TestRs"/>
+	</message>
+	<message name="ReadManifestRq">
+		<part name="ReadManifestRq" type="mess:ReadManifestRq"/>
+	</message>
+	<message name="ReadManifestRs">
+		<part name="ReadManifestRs" type="mess:ReadManifestRs"/>
+	</message>
+	<message name="ListInstantiatableClassesRq">
+		<part name="ListInstantiatableClassesRq" type="mess:ListInstantiatableClassesRq"/>
+	</message>
+	<message name="ListInstantiatableClassesRs">
+		<part name="ListInstantiatableClassesRs" type="mess:ListInstantiatableClassesRs"/>
+	</message>
+	<message name="ChangePasswordRq">
+		<part name="ChangePasswordRq" type="mess:ChangePasswordRq"/>
+	</message>
+	<message name="ChangePasswordRs">
+		<part name="ChangePasswordRs" type="mess:ChangePasswordRs"/>
+	</message>
+	<message name="GetPasswordRequirementsRq">
+		<part name="GetPasswordRequirementsRq" type="mess:GetPasswordRequirementsRq"/>
+	</message>
+	<message name="GetPasswordRequirementsRs">
+		<part name="GetPasswordRequirementsRs" type="mess:GetPasswordRequirementsRs"/>
+	</message>
+	<message name="ListEdPresVisibleExpItemsRq">
+		<part name="ListEdPresVisibleExpItemsRq" type="mess:ListEdPresVisibleExpItemsRq"/>
+	</message>
+	<message name="ListEdPresVisibleExpItemsRs">
+		<part name="ListEdPresVisibleExpItemsRs" type="mess:ListEdPresVisibleExpItemsRs"/>
+	</message>
+	<message name="ListVisibleExplorerItemsRs">
+		<part name="ListVisibleExplorerItemsRs" type="mess:ListVisibleExplorerItemsRs"/>
+	</message>
+	<message name="ListVisibleExplorerItemsRq">
+		<part name="ListVisibleExplorerItemsRq" type="mess:ListVisibleExplorerItemsRq"/>
+	</message>
+	<message name="ReadRq">
+		<part name="ReadRq" type="mess:ReadRq"/>
+	</message>
+	<message name="ReadRs">
+		<part name="ReadRs" type="mess:ReadRs"/>
+	</message>
+	<message name="PrepareCreateRq">
+		<part name="PrepareCreateRq" type="mess:PrepareCreateRq"/>
+	</message>
+	<message name="PrepareCreateRs">
+		<part name="PrepareCreateRs" type="mess:PrepareCreateRs"/>
+	</message>
+	<message name="SelectRq">
+		<part name="SelectRq" type="mess:SelectRq"/>
+	</message>
+	<message name="SelectRs">
+		<part name="SelectRs" type="mess:SelectRs"/>
+	</message>
+	<message name="CommandRq">
+		<part name="CommandRq" type="mess:CommandRq"/>
+	</message>
+	<message name="CommandRs">
+		<part name="CommandRs" type="mess:CommandRs"/>
+	</message>
+	<message name="ContextlessCommandRq">
+		<part name="ContextlessCommandRq" type="mess:ContextlessCommandRq"/>
+	</message>
+	<message name="ContextlessCommandRs">
+		<part name="ContextlessCommandRs" type="mess:ContextlessCommandRs"/>
+	</message>
+	<message name="CreateRq">
+		<part name="CreateRq" type="mess:CreateRq"/>
+	</message>
+	<message name="CreateRs">
+		<part name="CreateRs" type="mess:CreateRs"/>
+	</message>
+	<message name="DeleteRq">
+		<part name="DeleteRq" type="mess:DeleteRq"/>
+	</message>
+	<message name="DeleteRs">
+		<part name="DeleteRs" type="mess:DeleteRs"/>
+	</message>
+	<message name="UpdateRq">
+		<part name="UpdateRq" type="mess:UpdateRq"/>
+	</message>
+	<message name="UpdateRs">
+		<part name="UpdateRs" type="mess:UpdateRs"/>
+	</message>
+	<message name="SetParentRq">
+		<part name="SetParentRq" type="mess:SetParentRq"/>
+	</message>
+	<message name="SetParentRs">
+		<part name="SetParentRs" type="mess:SetParentRs"/>
+	</message>
+	<message name="GetObjectTitlesRq">
+		<part name="GetObjectTitlesRq" type="mess:GetObjectTitlesRq"/>
+	</message>
+	<message name="GetObjectTitlesRs">
+		<part name="GetObjectTitlesRs" type="mess:GetObjectTitlesRs"/>
+	</message>
+	<message name="CloseSessionRq">
+		<part name="CloseSessionRq" type="mess:CloseSessionRq"/>
+	</message>
+	<message name="CloseSessionRs">
+		<part name="CloseSessionRs" type="mess:CloseSessionRs"/>
+	</message>
+	<message name="ProgressDialogStartProcessRq">
+		<part name="ProgressDialogStartProcessRq" type="mess:ProgressDialogStartProcessRq"/>
+	</message>
+	<message name="ProgressDialogStartProcessRs">
+		<part name="ProgressDialogStartProcessRs" type="mess:ProgressDialogStartProcessRs"/>
+	</message>
+	<message name="ProgressDialogSetRq">
+		<part name="ProgressDialogSetRq" type="mess:ProgressDialogSetRq"/>
+	</message>
+	<message name="ProgressDialogSetRs">
+		<part name="ProgressDialogSetRs" type="mess:ProgressDialogSetRs"/>
+	</message>
+	<message name="ProgressDialogTraceRq">
+		<part name="ProgressDialogTraceRq" type="mess:ProgressDialogTraceRq"/>
+	</message>
+	<message name="ProgressDialogTraceRs">
+		<part name="ProgressDialogTraceRs" type="mess:ProgressDialogTraceRs"/>
+	</message>
+	<message name="ProgressDialogFinishProcessRq">
+		<part name="ProgressDialogFinishProcessRq" type="mess:ProgressDialogFinishProcessRq"/>
+	</message>
+	<message name="ProgressDialogFinishProcessRs">
+		<part name="ProgressDialogFinishProcessRs" type="mess:ProgressDialogFinishProcessRs"/>
+	</message>
+	<message name="MessageDialogOpenRq">
+		<part name="MessageDialogOpenRq" type="mess:MessageDialogOpenRq"/>
+	</message>
+	<message name="MessageDialogOpenRs">
+		<part name="MessageDialogOpenRs" type="mess:MessageDialogOpenRs"/>
+	</message>
+	<message name="MessageDialogWaitButtonRq">
+		<part name="MessageDialogWaitButtonRq" type="mess:MessageDialogWaitButtonRq"/>
+	</message>
+	<message name="MessageDialogWaitButtonRs">
+		<part name="MessageDialogWaitButtonRs" type="mess:MessageDialogWaitButtonRs"/>
+	</message>
+	<message name="FileSelectRq">
+		<part name="FileSelectRq" type="mess:FileSelectRq"/>
+	</message>
+	<message name="FileSelectRs">
+		<part name="FileSelectRs" type="mess:FileSelectRs"/>
+	</message>
+	<message name="FileAccessRq">
+		<part name="FileAccessRq" type="mess:FileAccessRq"/>
+	</message>
+	<message name="FileAccessRs">
+		<part name="FileAccessRs" type="mess:FileAccessRs"/>
+	</message>
+	<message name="FileOpenRq">
+		<part name="FileOpenRq" type="mess:FileOpenRq"/>
+	</message>
+	<message name="FileOpenRs">
+		<part name="FileOpenRs" type="mess:FileOpenRs"/>
+	</message>
+	<message name="FileCloseRq">
+		<part name="FileCloseRq" type="mess:FileCloseRq"/>
+	</message>
+	<message name="FileCloseRs">
+		<part name="FileCloseRs" type="mess:FileCloseRs"/>
+	</message>
+	<message name="FileReadRq">
+		<part name="FileReadRq" type="mess:FileReadRq"/>
+	</message>
+	<message name="FileReadRs">
+		<part name="FileReadRs" type="mess:FileReadRs"/>
+	</message>
+	<message name="FileWriteRq">
+		<part name="FileWriteRq" type="mess:FileWriteRq"/>
+	</message>
+	<message name="FileWriteRs">
+		<part name="FileWriteRs" type="mess:FileWriteRs"/>
+	</message>
+	<message name="FileSeekRq">
+		<part name="FileSeekRq" type="mess:FileSeekRq"/>
+	</message>
+	<message name="FileSeekRs">
+		<part name="FileSeekRs" type="mess:FileSeekRs"/>
+	</message>
+	<message name="FileDeleteRq">
+		<part name="FileDeleteRq" type="mess:FileDeleteRq"/>
+	</message>
+	<message name="FileDeleteRs">
+		<part name="FileDeleteRs" type="mess:FileDeleteRs"/>
+	</message>
+	<message name="FileMoveRq">
+		<part name="FileMoveRq" type="mess:FileMoveRq"/>
+	</message>
+	<message name="FileMoveRs">
+		<part name="FileMoveRs" type="mess:FileMoveRs"/>
+	</message>
+	<message name="FileCopyRq">
+		<part name="FileCopyRq" type="mess:FileCopyRq"/>
+	</message>
+	<message name="FileCopyRs">
+		<part name="FileCopyRs" type="mess:FileCopyRs"/>
+	</message>
+	<message name="FileSizeRq">
+		<part name="FileSizeRq" type="mess:FileSizeRq"/>
+	</message>
+	<message name="FileSizeRs">
+		<part name="FileSizeRs" type="mess:FileSizeRs"/>
+	</message>
+	<message name="FileDirSelectRq">
+		<part name="FileDirSelectRq" type="mess:FileDirSelectRq"/>
+	</message>
+	<message name="FileDirSelectRs">
+		<part name="FileDirSelectRs" type="mess:FileDirSelectRs"/>
+	</message>
+	<message name="FileDirReadRq">
+		<part name="FileDirReadRq" type="mess:FileDirReadRq"/>
+	</message>
+	<message name="FileDirReadRs">
+		<part name="FileDirReadRs" type="mess:FileDirReadRs"/>
+	</message>
+	<message name="FileDirCreateRq">
+		<part name="FileDirCreateRq" type="mess:FileDirCreateRq"/>
+	</message>
+	<message name="FileDirCreateRs">
+		<part name="FileDirCreateRs" type="mess:FileDirCreateRs"/>
+	</message>
+	<message name="FileDirDeleteRq">
+		<part name="FileDirDeleteRq" type="mess:FileDirDeleteRq"/>
+	</message>
+	<message name="FileDirDeleteRs">
+		<part name="FileDirDeleteRs" type="mess:FileDirDeleteRs"/>
+	</message>
+	<message name="FileDirMoveRq">
+		<part name="FileDirMoveRq" type="mess:FileDirMoveRq"/>
+	</message>
+	<message name="FileDirMoveRs">
+		<part name="FileDirMoveRs" type="mess:FileDirMoveRs"/>
+	</message>
+	<message name="ClientMethodInvocationRq">
+		<part name="ClientMethodInvocationRq" type="mess:ClientMethodInvocationRq"/>
+	</message>
+	<message name="ClientMethodInvocationRs">
+		<part name="ClientMethodInvocationRs" type="mess:ClientMethodInvocationRs"/>
+	</message>
+	<portType name="EAS">
+		<operation name="GetObjectTitles">
+			<input message="wsdl:GetObjectTitlesRq"/>
+			<output message="wsdl:GetObjectTitlesRs"/>
+		</operation>
+		<operation name="ListInstantiatableClasses">
+			<input message="wsdl:ListInstantiatableClassesRq"/>
+			<output message="wsdl:ListInstantiatableClassesRs"/>
+		</operation>
+		<operation name="ChangePassword">
+			<input message="wsdl:ChangePasswordRq"/>
+			<output message="wsdl:ChangePasswordRs"/>
+		</operation>
+		<operation name="PasswordRequirements">
+			<input message="wsdl:PasswordRequirementsRq"/>
+			<output message="wsdl:PasswordRequirementsRs"/>
+		</operation>
+		<operation name="ListEdPresVisibleExpItems">
+			<input message="wsdl:ListEdPresVisibleExpItemsRq"/>
+			<output message="wsdl:ListEdPresVisibleExpItemsRs"/>
+		</operation>
+		<operation name="ListVisibleExplorerItems">
+			<input message="wsdl:ListVisibleExplorerItemsRq"/>
+			<output message="wsdl:ListVisibleExplorerItemsRs"/>
+		</operation>                
+		<operation name="CreateSession">
+			<input message="wsdl:CreateSessionRq"/>
+			<output message="wsdl:CreateSessionRs"/>
+		</operation>
+		<operation name="Test">
+			<input message="wsdl:TestRq"/>
+			<output message="wsdl:TestRs"/>
+		</operation>
+		<operation name="ReadManifest">
+			<input message="wsdl:ReadManifestRq"/>
+			<output message="wsdl:ReadManifestRs"/>
+		</operation>
+		<operation name="Read">
+			<input message="wsdl:ReadRq"/>
+			<output message="wsdl:ReadRs"/>
+		</operation>
+		<operation name="PrepareCreate">
+			<input message="wsdl:PrepareCreateRq"/>
+			<output message="wsdl:PrepareCreateRs"/>
+		</operation>
+		<operation name="Select">
+			<input message="wsdl:SelectRq"/>
+			<output message="wsdl:SelectRs"/>
+		</operation>
+		<operation name="Command">
+			<input message="wsdl:CommandRq"/>
+			<output message="wsdl:CommandRs"/>
+		</operation>
+		<operation name="ContextlessCommand">
+			<input message="wsdl:ContextlessCommandRq"/>
+			<output message="wsdl:ContextlessCommandRs"/>
+		</operation>
+		<operation name="Create">
+			<input message="wsdl:CreateRq"/>
+			<output message="wsdl:CreateRs"/>
+		</operation>
+		<operation name="Delete">
+			<input message="wsdl:DeleteRq"/>
+			<output message="wsdl:DeleteRs"/>
+		</operation>
+		<operation name="Update">
+			<input message="wsdl:UpdateRq"/>
+			<output message="wsdl:UpdateRs"/>
+		</operation>
+		<operation name="SetParent">
+			<input message="wsdl:SetParentRq"/>
+			<output message="wsdl:SetParentRs"/>
+		</operation>
+		<operation name="ProgressDialogStartProcess">
+			<input message="wsdl:ProgressDialogStartProcessRq"/>
+			<output message="wsdl:ProgressDialogStartProcessRs"/>
+		</operation>
+		<operation name="ProgressDialogSet">
+			<input message="wsdl:ProgressDialogSetRq"/>
+			<output message="wsdl:ProgressDialogSetRs"/>
+		</operation>
+		<operation name="ProgressDialogTrace">
+			<input message="wsdl:ProgressDialogTraceRq"/>
+			<output message="wsdl:ProgressDialogTraceRs"/>
+		</operation>
+		<operation name="ProgressDialogFinishProcess">
+			<input message="wsdl:ProgressDialogFinishProcessRq"/>
+			<output message="wsdl:ProgressDialogFinishProcessRs"/>
+		</operation>
+		<operation name="MessageDialogOpen">
+			<input message="wsdl:MessageDialogOpenRq"/>
+			<output message="wsdl:MessageDialogOpenRs"/>
+		</operation>
+		<operation name="MessageDialogWaitButton">
+			<input message="wsdl:MessageDialogWaitButtonRq"/>
+			<output message="wsdl:MessageDialogWaitButtonRs"/>
+		</operation>
+		<operation name="FileSelect">
+			<input message="wsdl:FileSelectRq"/>
+			<output message="wsdl:FileSelectRs"/>
+		</operation>
+		<operation name="FileAccess">
+			<input message="wsdl:FileAccessRq"/>
+			<output message="wsdl:FileAccessRs"/>
+		</operation>
+		<operation name="FileOpen">
+			<input message="wsdl:FileOpenRq"/>
+			<output message="wsdl:FileOpenRs"/>
+		</operation>
+		<operation name="FileClose">
+			<input message="wsdl:FileCloseRq"/>
+			<output message="wsdl:FileCloseRs"/>
+		</operation>
+		<operation name="FileRead">
+			<input message="wsdl:FileReadRq"/>
+			<output message="wsdl:FileReadRs"/>
+		</operation>
+		<operation name="FileWrite">
+			<input message="wsdl:FileWriteRq"/>
+			<output message="wsdl:FileWriteRs"/>
+		</operation>
+		<operation name="FileSeek">
+			<input message="wsdl:FileSeekRq"/>
+			<output message="wsdl:FileSeekRs"/>
+		</operation>
+		<operation name="FileDelete">
+			<input message="wsdl:FileDeleteRq"/>
+			<output message="wsdl:FileDeleteRs"/>
+		</operation>
+		<operation name="FileMove">
+			<input message="wsdl:FileMoveRq"/>
+			<output message="wsdl:FileMoveRs"/>
+		</operation>
+		<operation name="FileCopy">
+			<input message="wsdl:FileCopyRq"/>
+			<output message="wsdl:FileCopyRs"/>
+		</operation>
+		<operation name="FileSize">
+			<input message="wsdl:FileSizeRq"/>
+			<output message="wsdl:FileSizeRs"/>
+		</operation>
+		<operation name="FileDirSelect">
+			<input message="wsdl:FileDirSelectRq"/>
+			<output message="wsdl:FileDirSelectRs"/>
+		</operation>
+		<operation name="FileDirRead">
+			<input message="wsdl:FileDirReadRq"/>
+			<output message="wsdl:FileDirReadRs"/>
+		</operation>
+		<operation name="FileDirCreate">
+			<input message="wsdl:FileDirCreateRq"/>
+			<output message="wsdl:FileDirCreateRs"/>
+		</operation>
+		<operation name="FileDirDelete">
+			<input message="wsdl:FileDirDeleteRq"/>
+			<output message="wsdl:FileDirDeleteRs"/>
+		</operation>
+		<operation name="FileDirMove">
+			<input message="wsdl:FileDirMoveRq"/>
+			<output message="wsdl:FileDirMoveRs"/>
+		</operation>
+		<operation name="GetSecurityToken">
+			<input message="wsdl:GetSecurityTokenRq"/>
+			<output message="wsdl:GetSecurityTokenRs"/>
+		</operation>
+		<operation name="ProveCertificateOwnership">
+			<input message="wsdl:ProveCertificateOwnershipRq"/>
+			<output message="wsdl:ProveCertificateOwnershipRs"/>
+		</operation>                
+	</portType>
+	<binding name="EAS" type="wsdl:EAS">
+		<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<operation name="GetObjectTitles">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#GetObjectTitles" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="ListInstantiatableClasses">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#ListInstantiatableClasses" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="ChangePassword">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#ChangePassword" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="PasswordRequirements">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#PasswordRequirements" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="ListEdPresVisibleExpItems">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#ListEdPresVisibleExpItems" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="ListVisibleExplorerItems">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#ListVisibleExplorerItems" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>                
+		<operation name="CreateSession">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#CreateSession" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="Test">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#Test" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="ReadManifest">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#ReadManifest" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="Read">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#Read" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="PrepareCreate">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#PrepareCreate" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="Select">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#Select" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="Command">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#Command" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="ContextlessCommand">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#ContextlessCommand" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="Create">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#Create" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="Delete">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#Delete" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="Update">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#Update" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="SetParent">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#SetParent" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="CloseSession">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#CloseSession" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>                
+		<operation name="ProgressDialogStartProcess">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#ProgressDialogStartProcess" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="ProgressDialogSet">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#ProgressDialogSet" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="ProgressDialogTrace">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#ProgressDialogTrace" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="ProgressDialogFinishProcess">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#ProgressDialogFinishProcess" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="MessageDialogOpen">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#MessageDialogOpen" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="MessageDialogWaitButton">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#MessageDialogWaitButton" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="FileSelect">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#FileSelect" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="FileAccess">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#FileAccess" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="FileOpen">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#FileOpen" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="FileClose">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#FileClose" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="FileRead">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#FileRead" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="FileWrite">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#FileWrite" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="FileSeek">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#FileSeek" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="FileDelete">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#FileDelete" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="FileMove">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#FileMove" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="FileCopy">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#FileCopy" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="FileSize">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#FileSize" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="FileDirSelect">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#FileDirSelect" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="FileDirRead">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#FileDirRead" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="FileDirCreate">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#FileDirCreate" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="FileDirDelete">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#FileDirDelete" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="FileDirMove">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#FileDirMove" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="ClientMethodInvocation">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#ClientMethodInvocation" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>                
+		<operation name="GetSecurityToken">
+			<soap:operation soapAction="http://schemas.radixware.org/eas.wsdl#GetSecurityToken" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="wsdl:Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+	</binding>
+	<service name="RadixExplorerAccessService">
+		<port name="EAS" binding="wsdl:EAS">
+			<soap:address location="http://eas.radixware.org:0"/>
+		</port>
+	</service>
+</definitions>

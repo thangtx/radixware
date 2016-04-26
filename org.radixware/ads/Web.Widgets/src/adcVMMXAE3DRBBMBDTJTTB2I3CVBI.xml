@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcVMMXAE3DRBBMBDTJTTB2I3CVBI" Name="RwtSelectorGrid" Type="3" Environment="web">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.wps.views.selector.RwtSelectorGrid"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcVMMXAE3DRBBMBDTJTTB2I3CVBI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcVMMXAE3DRBBMBDTJTTB2I3CVBI"/>
+    </Bodies>
+    <MethodGroup Id="cmg7VK6HAYEE5HEJLBBDP7QUPQSGI" Name="Root"/>
+    <PropertyGroup Id="cpgCCCPRK67XZAXJHLN42IPA64U5A" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthG6JZALBRKRFEBBRINRBB2FOV44" Name="getColumnId" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getColumnId(Lorg.radixware.kernel.common.types.Id;)Lorg.radixware.kernel.common.types.Id;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="propertyId" Id="mprCX67B4U4JNDO3BVLMXB2MMGWFI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+      </Method>
+      <Method Id="mth46LRQOM3WVHT3EDLQLNBTYJ5F4" Name="getEntity" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getEntity(Lorg.radixware.wps.rwt.Grid.Row;)Lorg.radixware.kernel.common.client.models.EntityModel;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="row" Id="mprQUA4LKBJNZHPXO3R44GOYYCOOQ">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.Grid.Row"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+      </Method>
+      <Method Id="mthYFOM3MOBTVFNDB6YUSK6MI77U4" Name="getProperty" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getProperty(Lorg.radixware.kernel.common.client.models.EntityModel;Lorg.radixware.kernel.common.types.Id;)Lorg.radixware.kernel.common.client.models.items.properties.Property;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="entityModel" Id="mprXXPMIAIA6NEKJEEZCCYWAT3D4Q">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+          <Parameter Name="columnId" Id="mprXOOTVFLSIJAU5JNXMFEAFMK3XY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
+      </Method>
+      <Method Id="mthCA5MNODW3BBN7ICDCY4S7DVE2M" Name="getTextOptions" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getTextOptions(Lorg.radixware.kernel.common.client.models.items.properties.Property;)Lorg.radixware.wps.text.WpsTextOptions;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="property" Id="mprRGA3WHGCZRADXGVQFGLSXBC4OU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.text.WpsTextOptions"/>
+      </Method>
+      <Method Id="mthHS2ZFSGSA5BYTEK43KGIOERWSU" Name="RwtSelectorGrid" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.wps.views.selector.RwtSelector;Lorg.radixware.kernel.common.client.models.GroupModel;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="selector" Id="mprHKCPFNPWWBFPHCWC5ZHDPSHNRQ">
+            <Type TypeId="400" extStr="org.radixware.wps.views.selector.RwtSelector"/>
+          </Parameter>
+          <Parameter Name="groupModel" Id="mprMPI56G66GVHCFPAWEQPT7SBGEQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthSHNUZSDMSZG3FLLZQRIFABXYQU" Name="selectFirstRow" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="selectFirstRow()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthHKPN5F4UJNEULLEIJVRAD3JMRI" Name="selectLastRow" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="selectLastRow()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthPAPEANTC3ZFPLPSRTYDGQ5C76E" Name="selectNextRow" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="selectNextRow()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthXSGLQQ3BSVDHPKVFOHN67IIECU" Name="selectPrevRow" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="selectPrevRow()V"/>
+        </AccessRules>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

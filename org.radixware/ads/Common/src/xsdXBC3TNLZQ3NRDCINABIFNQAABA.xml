@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdXBC3TNLZQ3NRDCINABIFNQAABA" Name="CommonXsd" TargetNamespace="http://schemas.radixware.org/common.xsd" Environment="common"><xs:schema targetNamespace="http://schemas.radixware.org/common.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:defs="http://schemas.radixware.org/adsdef.xsd" xmlns:reports="http://schemas.radixware.org/reports.xsd" xmlns:t="http://schemas.radixware.org/types.xsd" xmlns:this="http://schemas.radixware.org/common.xsd" xmlns:xscml="http://schemas.radixware.org/xscml.xsd">
+	<xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+	<xs:import namespace="http://schemas.radixware.org/xscml.xsd" schemaLocation="xscml.xsd"/>
+	<xs:import namespace="http://schemas.radixware.org/reports.xsd" schemaLocation="reports.xsd"/>
+	<xs:import namespace="http://schemas.radixware.org/adsdef.xsd" schemaLocation="radix:/adsdef-min.xsd"/>
+	<!--**************************** CONSTANTS ****************************-->
+	<xs:simpleType name="ValType">
+		<xs:annotation>
+			<xs:documentation>Enum EValType</xs:documentation>
+			<xs:appinfo source="http://schemas.radixware.org/types.xsd">
+				<t:class classId="acsEFO5RTQOG7NRDJH2ACQMTAIZT4">org.radixware.kernel.common.enums.EValType</t:class>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="t:IntEnum"/>
+	</xs:simpleType>
+	<xs:simpleType name="PropNature">
+		<xs:annotation>
+			<xs:documentation>Enum EPropNature</xs:documentation>
+			<xs:appinfo source="http://schemas.radixware.org/types.xsd">
+				<t:class classId="acsCZO5RTQOG7NRDJH2ACQMTAIZT4">org.radixware.kernel.common.enums.EPropNature</t:class>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="t:IntEnum"/>
+	</xs:simpleType>
+	<xs:simpleType name="Access">
+		<xs:annotation>
+			<xs:documentation>Enum EAccess</xs:documentation>
+			<xs:appinfo source="http://schemas.radixware.org/types.xsd">
+				<t:class classId="acsBJO5RTQOG7NRDJH2ACQMTAIZT4">org.radixware.kernel.common.enums.EAccess</t:class>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="t:IntEnum"/>
+	</xs:simpleType>
+	<xs:simpleType name="ClassType">
+		<xs:annotation>
+			<xs:documentation>Enum EClassType</xs:documentation>
+			<xs:appinfo source="http://schemas.radixware.org/types.xsd">
+				<t:class classId="acsBRO5RTQOG7NRDJH2ACQMTAIZT4">org.radixware.kernel.common.enums.EClassType</t:class>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="t:IntEnum"/>
+	</xs:simpleType>
+	<!--**************************** META INFO ****************************-->
+	<xs:complexType name="DomainList">
+		<xs:sequence>
+			<xs:element name="Domain" type="this:Domain" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Domain">
+		<xs:annotation>
+			<xs:documentation>Domain with subdomains</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ChildDomain" type="this:Domain" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="Guid" type="t:Id" use="required"/>
+		<xs:attribute name="Name" type="t:Str" use="required"/>
+		<xs:attribute name="Title" type="t:Str"/>
+	</xs:complexType>
+	<xs:complexType name="JavaClass">
+		<xs:attribute name="DacId" type="t:Id"/>
+		<xs:attribute name="QName" type="t:Str"/>
+		<xs:attribute name="PrimitiveType" type="t:Str"/>
+	</xs:complexType>
+	<xs:complexType name="DataType">
+		<xs:sequence>
+			<xs:element name="ValClass" type="this:JavaClass" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="ValType" type="this:ValType" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="ClassInfo">
+		<xs:sequence>
+			<xs:element name="Title" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="Id" type="t:Id" use="required"/>
+		<xs:attribute name="Name" type="t:Str" use="required"/>
+		<xs:attribute name="Type" type="this:ClassType" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="ClassRestriction">
+		<xs:sequence>
+			<xs:element name="SuperClass" type="this:JavaClass" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Если указан, то нужны только наследники. Может называть интерфейс - тогда и наследники, и реализующие интерфейс классы</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SkipSuperClass" type="this:JavaClass" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Если указан, класс и наследники не нужны</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="ClassTypes">
+			<xs:simpleType>
+				<xs:list itemType="this:ClassType"/>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="Abstract" type="t:Bool"/>
+		<xs:attribute name="Deprecated" type="t:Bool"/>
+		<xs:attribute name="Domains">
+			<xs:simpleType>
+				<xs:list itemType="t:Id"/>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ClassList">
+		<xs:sequence>
+			<xs:element name="ClassInfo" type="this:ClassInfo" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="MethodInfo">
+		<xs:sequence>
+			<xs:element name="ReturnType" type="xscml:TypeDeclaration" minOccurs="0"/>
+			<xs:element name="Parameter" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Type" type="xscml:TypeDeclaration" minOccurs="0"/>
+					</xs:sequence>
+					<xs:attribute name="Name" type="t:Str"/>
+					<xs:attribute name="Id" type="t:Id" use="optional"/>
+					<xs:attribute name="ClassName" type="t:Str" use="required"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="Name" type="t:Str" use="required">
+			<xs:annotation>
+				<xs:documentation>Имя метода</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Title" type="t:Str" use="required">
+			<xs:annotation>
+				<xs:documentation>Название (совпадает с именем, если не из DAC)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Static" type="t:Bool" use="required"/>
+		<xs:attribute name="Access" type="this:Access" use="required"/>
+		<xs:attribute name="DeclaringClassName" type="t:Str" use="required"/>
+		<xs:attribute name="ReturnClassName" type="t:Str" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="MethodRestriction">
+		<xs:sequence>
+			<xs:element name="ParamTypes" type="this:DataType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Список разрешенных типов параметров</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ReturnTypes" type="this:DataType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Список разрешенных возвращаемых типов</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="StartFromClass" type="this:JavaClass" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Если указан, то нужны методы, начиная с него</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="Access">
+			<xs:simpleType>
+				<xs:list itemType="this:Access"/>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="Static" type="t:Bool">
+			<xs:annotation>
+				<xs:documentation>Да, нет, любые</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="MethodList">
+		<xs:sequence>
+			<xs:element name="MethodInfo" type="this:MethodInfo" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PropertyInfo">
+		<xs:attribute name="Id" type="t:Str" use="required"/>
+		<xs:attribute name="Name" type="t:Str" use="required"/>
+		<xs:attribute name="Nature" type="this:PropNature" use="required"/>
+		<xs:attribute name="ValType" type="this:ValType" use="required"/>
+		<xs:attribute name="Static" type="t:Bool"/>
+		<xs:attribute name="Access" type="this:Access" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="PropertyList">
+		<xs:sequence>
+			<xs:element name="PropertyInfo" type="this:PropertyInfo" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PropertyRestriction">
+		<xs:sequence>
+			<xs:element name="Types" type="this:DataType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Список разрешенных типов</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="Access">
+			<xs:simpleType>
+				<xs:list itemType="this:Access"/>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="Nature">
+			<xs:simpleType>
+				<xs:list itemType="this:PropNature"/>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="Static" type="t:Bool"/>
+	</xs:complexType>
+	<xs:complexType name="EditableProperty">
+		<xs:sequence>
+			<xs:element name="Value" type="t:Str" minOccurs="0"/>
+			<xs:element name="Condition" type="xscml:Sqml" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="Id" type="t:Id" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="EditableProperties">
+		<xs:sequence>
+			<xs:element name="Item" type="this:EditableProperty" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--**************************** COMMON TYPES ****************************-->
+	<xs:complexType name="MoneyValue">
+		<xs:attribute name="Amt" type="t:Num" use="required"/>
+		<xs:attribute name="Ccy" type="t:Int" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="ArrayStr">
+		<xs:sequence>
+			<xs:element name="Values">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Item" minOccurs="0" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:attribute name="Value" type="t:Str" use="required"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+					<xs:attribute name="nil" type="t:Bool"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Map">
+		<xs:sequence>
+			<xs:element name="Entry" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:choice minOccurs="0">
+						<xs:element name="BoolVal" type="t:Bool"/>
+						<xs:element name="CharVal" type="t:Char"/>
+						<xs:element name="StrVal" type="t:Str"/>
+						<xs:element name="IntVal" type="t:Int"/>
+						<xs:element name="NumVal" type="t:Num"/>
+						<xs:element name="DateTimeVal" type="t:DateTime"/>
+						<xs:element name="BinHexVal" type="t:BinHex"/>
+						<xs:element name="XmlVal" type="xs:anyType"/>
+					</xs:choice>
+					<xs:attribute name="Key" type="t:Str" use="required"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!--**************************** USER PROPS IMP-EXP ****************************-->
+	<xs:complexType name="UserFunc">
+		<xs:sequence>
+			<xs:element name="Description" type="xs:string" minOccurs="0"/>
+			<xs:element name="JavaSrc" type="xscml:JmlType" minOccurs="0"/>
+			<xs:element name="MethodId" type="t:Id" minOccurs="0"/>
+			<xs:element name="MethodProfile" type="xscml:JmlFuncProfile" minOccurs="0"/>
+			<xs:element name="ExtSrc" type="t:Str" minOccurs="0"/>
+			<xs:element name="Strings" type="defs:LocalizingBundleDefinition" minOccurs="0"/>
+			<xs:element name="Binding" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="ParamsBinding" type="reports:ParametersBindingType"/>
+					</xs:sequence>
+					<xs:attribute name="Use" type="xs:boolean" use="optional" default="false"/>
+					<xs:attribute name="LibFunc" type="xs:string" use="required"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="ClassGUID" type="t:Str" use="required"/>
+		<xs:attribute name="Title" type="t:Str" use="optional"/>
+		<xs:attribute name="OwnerPid" type="t:Str" use="optional"/>
+		<xs:attribute name="OwnerEntityId" type="t:Str" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="UserProp">
+		<xs:choice>
+			<xs:element name="Value" type="t:Str" minOccurs="0"/>
+			<xs:element name="Func" type="this:UserFunc" minOccurs="0"/>
+			<xs:element name="Obj" minOccurs="0">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="xs:anyType">
+							<xs:attribute name="ClassId" type="t:Id" use="required"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="Id" type="t:Id" use="required"/>
+		<xs:attribute name="OwnVal" type="t:Bool" use="optional" default="true"/>
+	</xs:complexType>
+	<xs:complexType name="UserProps">
+		<xs:sequence>
+			<xs:element name="UserProp" type="this:UserProp" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ImpExpEntity">
+		<xs:sequence>
+			<xs:element name="UserProps" type="this:UserProps" minOccurs="0"/>
+			<xs:element name="Ext" type="xs:anyType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="ClassId" type="t:Id" use="required"/>
+	</xs:complexType>
+</xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

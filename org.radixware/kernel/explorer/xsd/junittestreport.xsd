@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:this="http://schemas.radixware.org/junittestreport.xsd" targetNamespace="http://schemas.radixware.org/junittestreport.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+    <xs:complexType name="TestSuites">
+        <xs:sequence>
+            <xs:element name="testsuite" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="properties" maxOccurs="1" minOccurs="0">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="property" minOccurs="0" maxOccurs="unbounded">
+                                        <xs:complexType>
+                                            <xs:attribute name="name" type="xs:string"/>
+                                            <xs:attribute name="value" type="xs:string"/>
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="testcase">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element ref="this:error" minOccurs="0" maxOccurs="1"/>
+                                    <xs:element ref="this:failure" minOccurs="0" maxOccurs="1"/>
+                                    <xs:element ref="this:system-err" minOccurs="0" maxOccurs="1"/>
+                                    <xs:element ref="this:system-out" minOccurs="0" maxOccurs="1"/>
+                                </xs:sequence>
+                                <xs:attribute name="classname" type="xs:string" />
+                                <xs:attribute name="name" type="xs:string" />
+                                <xs:attribute name="time" type="xs:string" />
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="errors" type="xs:integer"/>
+                    <xs:attribute name="failures" type="xs:integer"/>
+                    <xs:attribute name="hostname" type="xs:string" use="optional"/>
+                    <xs:attribute name="name" type="xs:string"/>
+                    <xs:attribute name="tests" type="xs:integer"/>
+                    <xs:attribute name="time" type="xs:double"/>
+                    <xs:attribute name="timestamp" type="xs:dateTime" use="optional"/>
+                    <xs:attribute name="id" type="xs:string" use="optional"/>
+                    <xs:attribute name="package" type="xs:string"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="failure">
+        <xs:complexType mixed="true">
+            <xs:attribute name="type" type="xs:string" use="optional"/>
+            <xs:attribute name="message" type="xs:string" use="optional"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="error">
+        <xs:complexType mixed="true">
+            <xs:attribute name="type" type="xs:string" use="optional"/>
+            <xs:attribute name="message" type="xs:string" use="optional"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="system-err">
+        <xs:complexType mixed="true"/>
+    </xs:element>
+
+    <xs:element name="system-out">
+        <xs:complexType mixed="true"/>
+    </xs:element>
+        
+    <xs:element name="testsuites" type="this:TestSuites"/>
+
+</xs:schema>

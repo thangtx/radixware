@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc5NG3BBIVAZBONOBABM62NGY74A" Name="GroupModelReader" Type="3" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.models.GroupModelReader"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcYDHAVRJ7XZCIVIC2XG2ABXMFS4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcSEWDWMKGD5EUJNII4SMILKGI3E"/>
+    </Bodies>
+    <MethodGroup Id="cmgPICVYRA5ENCSPPCH4RRANZEUFM" Name="Root"/>
+    <PropertyGroup Id="cpg7MGHTOLGQBASVCALLE5MISSUAQ" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthEM7W7VYUVFBHJJLIFUUS7SK7MY" Name="wasException" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="wasException()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthAUMBFHMFVVDRPALRCLVGSWNJ54" Name="getTotalEntitiesCount" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getTotalEntitiesCount()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthDUJXDQKH7ZA6VA6UCZRELPDK7A" Name="wasInterrupted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="wasInterrupted()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthNQTSH7RGSJACXIZ7JO5IQZS3BM" Name="getServiceClientException" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getServiceClientException()Lorg.radixware.kernel.common.exceptions.ServiceClientException;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+      </Method>
+      <Method Id="mthAR4I7KCOKBGORDVGL6JZD3EAAU" Name="loadEntireGroup" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="loadEntireGroup()V"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthR35L2QVNJ5AUXF5GEUVVV6PKNA" Name="iterator" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="iterator()Ljava.util.Iterator&lt;Lorg.radixware.kernel.common.client.models.EntityModel;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.Iterator">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthZLXVTU67AVCI5LB5GENQ2ZJNDY" Name="GroupModelReader" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.models.GroupModel;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="groupModel" Id="mprZ4ZIE25VCBFH3OE77VNS4UHNAE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthCPDWVYNJBBFHLCKUDRINQW5SJI" Name="GroupModelReader" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.models.GroupModel;Ljava.util.EnumSet&lt;Lorg.radixware.kernel.common.client.models.GroupModelReader.EReadingFlags;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="groupModel" Id="mprM4URP332DBEQJHZ7GSWEEODEUM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+          </Parameter>
+          <Parameter Name="readFlags" Id="mpr5MQZMX6H3RC6PA7QYGZD7S5EQI">
+            <Type TypeId="400" extStr="java.util.EnumSet">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModelReader.EReadingFlags"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth3XBMWCUNBBCSRCJUD73XPZSDIA" Name="wasBrokenEntities" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="wasBrokenEntities()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth2EWFKNFKMJHODG2JDGZBQNH5DQ" Name="getFirstEntityModel" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getFirstEntityModel()Lorg.radixware.kernel.common.client.models.EntityModel;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthPDRJKCNIYREJXLUQTLQUZ27XIM" Name="loadEntireGroup" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="loadEntireGroup(I)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="readPageSize" Id="mprBJXHYGP5XND27LMKJSGX4BVGIM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+        </ThrownExceptions>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aic2MHE6ENWBRGJRACZTYLADGAXFE" Name="IUploadedDataReader" Type="5" Environment="web">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.wps.rwt.uploading.IUploadedDataReader"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeraic2MHE6ENWBRGJRACZTYLADGAXFE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyaic2MHE6ENWBRGJRACZTYLADGAXFE"/>
+    </Bodies>
+    <MethodGroup Id="cmgRQTF7Z6NXFH65E6PZU4BXAKQLE" Name="Root"/>
+    <PropertyGroup Id="cpg66SNHB3JLNBPBHGLKXGRZC352A" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthKRUIODWNLBCPJA4DBRSJL5LILI" Name="readData" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="readData(Ljava.io.InputStream;Ljava.lang.String;J)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="reader" Id="mprZ7PJXMFNKBBTNLVOZDNTB2CBUI">
+            <Type TypeId="400" extStr="java.io.InputStream"/>
+          </Parameter>
+          <Parameter Name="fileName" Id="mpr5WPVK5SBDRFXDNTPJLMFZAODZA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="fileSize" Id="mprGPCE6QHQGNAYVDSFHBJ3HHCQPU">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdCLQXH4AV3RFFPKLY4MMD43CXAU" Name="SelectorAddonsImpExpXsd" TargetNamespace="http://schemas.radixware.org/saddons_imp_exp" Environment="common"><ads:AccessRules IsPublished="false"/><xs:schema targetNamespace="http://schemas.radixware.org/saddons_imp_exp" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:t="http://schemas.radixware.org/types.xsd" xmlns:this="http://schemas.radixware.org/saddons_imp_exp.xsd" xmlns:xscml="http://schemas.radixware.org/xscml.xsd">
+  <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+  <xs:element name="ExportParameters">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="FilePath" type="t:Str" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="tableGuid" type="t:Str" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ImportParameters">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="FilePath" type="t:Str" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ImportResult">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="RejectedFilters" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="RejectedFilter" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Reason" type="t:Str" minOccurs="1" maxOccurs="1"/>
+                  </xs:sequence>
+                  <xs:attribute name="Id" type="t:Id" use="required"/>
+                  <xs:attribute name="Title" type="t:Str" use="required"/>
+                  <xs:attribute name="TableId" type="t:Id" use="required"/>
+                  <xs:attribute name="TableName" type="t:Str" use="required"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="ImportedCount" type="t:Int" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

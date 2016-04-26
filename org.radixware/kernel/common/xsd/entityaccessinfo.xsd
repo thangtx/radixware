@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:this="http://schemas.radixware.org/entityaccessinfo.xsd" xmlns:types="http://schemas.radixware.org/types.xsd" targetNamespace="http://schemas.radixware.org/entityaccessinfo.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+
+    <xs:complexType name="Coordinate"> 
+        <xs:attribute type="types:Str" name="apKey" default=""/>
+        <xs:attribute type="types:Int" name="apMode" />
+        
+    </xs:complexType>
+
+    <xs:complexType name="Area">
+        <xs:sequence>
+            <xs:element name="Coordinates" type="this:Coordinate"  maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute type="types:Str" name="roleId" />
+    </xs:complexType>
+
+    <xs:complexType name="Group">
+        
+        <xs:sequence>
+            <xs:element name="Areas" type="this:Area" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute type="xs:boolean" name="isOwn"/>
+        <xs:attribute type="types:Str" name="name" />
+    </xs:complexType>
+
+    <xs:complexType name="AcsEntityAccessRq">
+        <xs:attribute type="types:Id" name="presentationId" />
+        <xs:attribute type="types:Str" name="username" use="required" />
+        <xs:attribute type="types:Str" name="objectPid" />
+        <xs:attribute type="types:Id" name="classId" use="required"/>
+    </xs:complexType>
+        
+    <xs:complexType name="AcsEntityAccessResp">
+        <xs:sequence>
+            <xs:sequence>
+                <xs:element name="ApfNames" type="types:Str" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:element type="this:Group" name="Groups" maxOccurs="unbounded"/>
+        </xs:sequence>
+        
+    </xs:complexType>
+    
+    <xs:complexType name="AcsAreaTestRequest">
+        <xs:attribute type="types:Id" name="objectId" use="required"/>
+        <xs:attribute type="types:Id" name="entClassId" use="required"/>
+    </xs:complexType>
+    
+    <xs:complexType name="AcsAreaTestResponse">
+        <xs:attribute name="Result" type="xs:boolean" use="required"/>
+    </xs:complexType>
+    
+    <xs:element name="EntityAccessInfoRq" type="this:AcsEntityAccessRq" />
+    <xs:element name="EntityAccessInfoRp" type="this:AcsEntityAccessResp"/>
+    <xs:element name="AreaTestInfoRequest" type="this:AcsAreaTestRequest" />
+    <xs:element name="AreaTestInfoResponse" type="this:AcsAreaTestResponse"/>
+</xs:schema>

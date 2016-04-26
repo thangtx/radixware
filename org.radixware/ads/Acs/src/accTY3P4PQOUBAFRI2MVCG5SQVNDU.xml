@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="accTY3P4PQOUBAFRI2MVCG5SQVNDU" Name="ListAppRolesCursor" Type="4">
+    <AccessRules Access="4" IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderaccTY3P4PQOUBAFRI2MVCG5SQVNDU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaccTY3P4PQOUBAFRI2MVCG5SQVNDU"/>
+    </Bodies>
+    <MethodGroup Id="cmgUO42NU42CFB5DJG7YMFJXJRIOA" Name="Root"/>
+    <PropertyGroup Id="cpgRHVCPN42K5ESPM6XG2GY2UBRGQ" Name="Root"/>
+    <Properties>
+      <Property Id="prfSBG5BZ27EZHPXJPOX5TE6R6NLY" Name="guid" Nature="3" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prf4Z4JZOFUKFCUHM3LWKYFLZXKW4" Name="appRoleRef" Nature="10" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="31" Path="aecM7J46MP6F3PBDIJEABQAQH3XQ4"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+        <FieldToColumnMap>
+          <Item ColumnId="col6FMTUQ76F3PBDIJEABQAQH3XQ4" FieldId="prfSBG5BZ27EZHPXJPOX5TE6R6NLY"/>
+        </FieldToColumnMap>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="open" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <ReturnType TypeId="411" Path="accTY3P4PQOUBAFRI2MVCG5SQVNDU"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="true">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>select </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accTY3P4PQOUBAFRI2MVCG5SQVNDU" PropId="prfSBG5BZ27EZHPXJPOX5TE6R6NLY" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblM7J46MP6F3PBDIJEABQAQH3XQ4">
+            <xsc:TableAlias>AR</xsc:TableAlias>
+          </xsc:TableSqlName>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblM7J46MP6F3PBDIJEABQAQH3XQ4" Alias="AR"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="411" Path="pdcCursor____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

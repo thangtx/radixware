@@ -1,0 +1,7 @@
+inkscape ..\..\..\..\..\..\..\..\..\..\..\designer\src\common.resources\src\org\radixware\kernel\designer\resources\icons\ads\msdl\field.svg --export-png=field.png --export-width=16 --export-height=16
+inkscape ..\..\..\..\..\..\..\..\..\..\..\designer\src\common.resources\src\org\radixware\kernel\designer\resources\icons\ads\msdl\fields.svg --export-png=fields.png --export-width=16 --export-height=16
+inkscape ..\..\..\..\..\..\..\..\..\..\..\designer\src\common.resources\src\org\radixware\kernel\designer\resources\icons\arrow\up.svg --export-png=up.png --export-width=16 --export-height=16
+inkscape ..\..\..\..\..\..\..\..\..\..\..\designer\src\common.resources\src\org\radixware\kernel\designer\resources\icons\arrow\down.svg --export-png=down.png --export-width=16 --export-height=16
+inkscape ..\..\..\..\..\..\..\..\..\..\..\designer\src\common.resources\src\org\radixware\kernel\designer\resources\icons\create\add.svg --export-png=add.png --export-width=16 --export-height=16
+inkscape ..\..\..\..\..\..\..\..\..\..\..\designer\src\common.resources\src\org\radixware\kernel\designer\resources\icons\delete\delete.svg --export-png=delete.png --export-width=16 --export-height=16
+inkscape ..\..\..\..\..\..\..\..\..\..\..\designer\src\common.resources\src\org\radixware\kernel\designer\resources\icons\ads\msdl\msdl_scheme.svg --export-png=msdl_scheme.png --export-width=16 --export-height=16

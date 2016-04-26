@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="accH5UWBHBIEFEUZCDY5UR26HJXEU" Name="UserFuncCountCursor" Type="4">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderaccH5UWBHBIEFEUZCDY5UR26HJXEU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaccH5UWBHBIEFEUZCDY5UR26HJXEU"/>
+    </Bodies>
+    <MethodGroup Id="cmgQTK4WSFSOFCH3LIYVZALEWT6MQ" Name="Root"/>
+    <PropertyGroup Id="cpgAYNRVKAY75ESLESYWIIUGRI76U" Name="Root"/>
+    <Properties>
+      <Property Id="prfO6PHCXL2JFATNM44G5WWQ2S5YQ" Name="count" Nature="3" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="open" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <ReturnType TypeId="411" Path="accH5UWBHBIEFEUZCDY5UR26HJXEU"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="true">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>select count(*) </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accH5UWBHBIEFEUZCDY5UR26HJXEU" PropId="prfO6PHCXL2JFATNM44G5WWQ2S5YQ" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="411" Path="pdcCursor____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

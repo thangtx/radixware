@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aic27UUMTWDWFHTHJVYITWZNDT6YI" Name="IValEditor" Type="5" Environment="web">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.wps.views.editors.valeditors.IValEditor"/>
+    </AccessRules>
+    <TypeArguments>
+      <xsc:Argument DerivationRule="extends" Alias="T">
+        <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+      </xsc:Argument>
+      <xsc:Argument DerivationRule="extends" Alias="V">
+        <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
+      </xsc:Argument>
+    </TypeArguments>
+    <Headers>
+      <Src Name="Headeraic27UUMTWDWFHTHJVYITWZNDT6YI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyaic27UUMTWDWFHTHJVYITWZNDT6YI"/>
+    </Bodies>
+    <MethodGroup Id="cmgFI47KBJR25AZ5FYK2C4RE3LFQM" Name="Root"/>
+    <PropertyGroup Id="cpg6WFUQGVPL5EE3GMLJPNXZ6FAUM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthTXLCA2JKSFAWPPNOUS7LJR7C4E" Name="addButton" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="addButton(Lorg.radixware.kernel.common.client.widgets.IButton;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="button" Id="mpr5J5IOHGFJNETZNLEVXPBNWPGQE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IButton"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthSFHPU4SI3ZDWFO4XQRNQ5TSMRQ" Name="getController" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getController()Lorg.radixware.wps.views.editors.valeditors.ValEditorController&lt;TT;TV;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.views.editors.valeditors.ValEditorController">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="T" IsArgumentType="true"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="V" IsArgumentType="true"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthRRQWGRZO2ZDS5GD7GWYKECNSJM" Name="getValidationResult" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getValidationResult()Lorg.radixware.kernel.common.client.meta.mask.validators.ValidationResult;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.validators.ValidationResult"/>
+      </Method>
+      <Method Id="mth3PVDW43X3JG75NWI67YYFGUJNY" Name="getValue" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getValue()TT;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="T" IsArgumentType="true"/>
+      </Method>
+      <Method Id="mthHA7EC7S775BDLKVY2D34G5SUUY" Name="isReadOnly" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="isReadOnly()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthVHVSJMAGZZEVXP75X2XTRXXFFY" Name="refresh" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="refresh()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthYEGAJPCM4BA2FOI3XHWMTJA7RQ" Name="setReadOnly" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setReadOnly(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isReadOnly" Id="mprX2R5HDYV3RCTXC7BKAVSP6RZDU">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthCGCVQOSOTZEDRIUEBDMTHNJIPU" Name="setToolTip" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setToolTip(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="toolTip" Id="mpr2HW3GVH3XVBQ3CE27JVOYCDSLU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthAC4XVOBB35C5PAQ7ZO66LACAKA" Name="setValidationResult" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setValidationResult(Lorg.radixware.kernel.common.client.meta.mask.validators.ValidationResult;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="validationResult" Id="mprHW754NF355HLDJ7ABFWSTO36XY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.validators.ValidationResult"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthTZOFZPXTUVGJTOSOR4QFMSIBFA" Name="setValue" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setValue(TT;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="value" Id="mprWAHA46TI4VBVFGI3MWT3RECFIM">
+            <Type TypeId="400" extStr="T" IsArgumentType="true"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthGFXXVDPGFFFHVLNXAIKIBAWK6M" Name="getTextOptionsMarkers" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getTextOptionsMarkers()Ljava.util.EnumSet&lt;Lorg.radixware.kernel.common.client.enums.ETextOptionsMarker;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.EnumSet">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.ETextOptionsMarker"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthHOEFNCSK7ZGJ3OSOPOY5VIPYL4" Name="getTextOptions" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getTextOptions()Lorg.radixware.wps.text.WpsTextOptions;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.text.WpsTextOptions"/>
+      </Method>
+      <Method Id="mthFUYGO2NBX5CEFD3RACMAUAJ774" Name="addTextOptionsMarkers" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="addTextOptionsMarkers([Lorg.radixware.kernel.common.client.enums.ETextOptionsMarker;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="markers" Id="mprGJKXE2OOCNFDLKDOGX4KZ3U53Q">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.ETextOptionsMarker" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthOEIAZM6AGJD7RNCM4ZPP6G7FQ4" Name="removeTextOptionsMarkers" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="removeTextOptionsMarkers([Lorg.radixware.kernel.common.client.enums.ETextOptionsMarker;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="markers" Id="mprSPJG6Y4IORC5NE5ZRAV5RZ7GS4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.ETextOptionsMarker" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthIZIFK5RDMBDMBEG7DABDDRVZDU" Name="setTextOptionsMarkers" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setTextOptionsMarkers([Lorg.radixware.kernel.common.client.enums.ETextOptionsMarker;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="markers" Id="mprI73VVILE7FD6PPR2T3SSPXWJ2Q">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.ETextOptionsMarker" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth6YA777KVGFABHNJMTALFIW33Z4" Name="refreshTextOptions" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="refreshTextOptions()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthOLDSKBHS4FHGLNYF6G4CT7LXGA" Name="setDefaultTextOptions" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setDefaultTextOptions(Lorg.radixware.wps.text.WpsTextOptions;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="options" Id="mprWQ2ZMJ3SZVENJIL26SMIXGHOEE">
+            <Type TypeId="400" extStr="org.radixware.wps.text.WpsTextOptions"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthFBGMMM72YZAYXLN3TF6LWI2HV4" Name="setTextOptions" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setTextOptions(Lorg.radixware.wps.text.WpsTextOptions;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="options" Id="mprMXTWHBSHTRAE3OR4ZQGYH6L3F4">
+            <Type TypeId="400" extStr="org.radixware.wps.text.WpsTextOptions"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthRMFK3C6KAFAK5MYKP3KMBQHJEI" Name="setTextOptionsForMarker" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setTextOptionsForMarker(Lorg.radixware.kernel.common.client.enums.ETextOptionsMarker;Lorg.radixware.wps.text.WpsTextOptions;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="marker" Id="mpr6XWSBGOCP5FURLOE5WBCWCWRB4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.ETextOptionsMarker"/>
+          </Parameter>
+          <Parameter Name="options" Id="mprZRSPSA365RCEBEEP4HIPXCTVDE">
+            <Type TypeId="400" extStr="org.radixware.wps.text.WpsTextOptions"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthGBDO5AJYF5H2LFLH7RRTVGHZQU" Name="setTextOptionsProvider" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setTextOptionsProvider(Lorg.radixware.kernel.common.client.text.ITextOptionsProvider;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="provider" Id="mprN2BM4MIGNVHKROLRB3IOBQVJKY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.text.ITextOptionsProvider"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthIATPL4BQJBAPVJ6HTBPBLLIBDI" Name="getInitialValue" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getInitialValue()TT;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="T" IsArgumentType="true"/>
+      </Method>
+      <Method Id="mthN4M7BAIVAVE7DGVLPRQVJHTS6A" Name="setInitialValue" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setInitialValue(TT;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="value" Id="mprA2NADFMEDVARNHP23QI3C6YI7E">
+            <Type TypeId="400" extStr="T" IsArgumentType="true"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcF2CZ54J5NBEILO3XC6RRIUWO5A" Name="IncrementalXmlStreamReader" Type="3" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.utils.IncrementalXmlStreamReader"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcAQED334YXZBKDMMCTRGLNAYG4E"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcVPKGSJKBBBCVXDBANAOC72XOH4"/>
+    </Bodies>
+    <MethodGroup Id="cmgP5XF3V25SZEIJBRXOY5H6CKMUU" Name="Root"/>
+    <PropertyGroup Id="cpgYX365Z3GTNFXPNGPEJTFKUD5FI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthDT37E5KX2VA77IJH3ZCY6ZAOUY" Name="close" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="close()V"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="javax.xml.stream.XMLStreamException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthE3X37XJQDJAO3JR37JVZ4DMITM" Name="IncrementalXmlStreamReader" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljavax.xml.stream.XMLStreamReader;[Ljavax.xml.namespace.QName;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parent" Id="mprEG7J3KDNV5EY5JF5NZVXEDZFSI">
+            <Type TypeId="400" extStr="javax.xml.stream.XMLStreamReader"/>
+          </Parameter>
+          <Parameter Name="branch" Id="mpr32UUDDVMWRGEXFNKUTSS2YDRLY">
+            <Type TypeId="400" extStr="javax.xml.namespace.QName" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthHSHGMBU2ANG5PIMJMJLGQE4WRM" Name="IncrementalXmlStreamReader" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljavax.xml.stream.XMLStreamReader;Ljava.util.List&lt;Ljavax.xml.namespace.QName;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parent" Id="mprLTYSM3OA4FCJ3MGRMG46ZTJNU4">
+            <Type TypeId="400" extStr="javax.xml.stream.XMLStreamReader"/>
+          </Parameter>
+          <Parameter Name="branch" Id="mprYNWKKAZMQFFCBJCESAPWAUUKFI">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="javax.xml.namespace.QName"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthMTUQQTN7PBBSJAUMIZMZIAOZ2E" Name="getAttributeCount" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getAttributeCount()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthSW7L2CESMJEFFBDBK6L2WJMENM" Name="getAttributeLocalName" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getAttributeLocalName(I)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="i" Id="mprH5RGGAMKTVB6HBZTIHPFIATBPM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthBLCWWKO6MZERXAZTZDZCBTHJKU" Name="getAttributeName" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getAttributeName(I)Ljavax.xml.namespace.QName;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="i" Id="mprO4VXV47MJFE4FGTPFJVHYD4IRI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="javax.xml.namespace.QName"/>
+      </Method>
+      <Method Id="mthPS7RM7FIRNE4BNKQ7Y6B5IQTVM" Name="getAttributeNamespace" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getAttributeNamespace(I)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="i" Id="mpr3GKW3YUAH5BLLGCEE26N2D3YHQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthCOHJIG2ZXVETTO3MOUDC4AZUZA" Name="getAttributePrefix" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getAttributePrefix(I)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="i" Id="mpr2CASFYTODND4JGZAKFNKRAORGQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthN6NMKFPWX5E6FLFTJRELEIDLLY" Name="getAttributeType" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getAttributeType(I)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="i" Id="mprDNTCMU7XBRFF7LU4EKRNFLH2CA">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthLSH4HJ2Y5JHVHHEH5KAXTPNSWA" Name="getAttributeValue" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getAttributeValue(I)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="i" Id="mprQKI7HQXUEBDIZAXXPPJPEYLS64">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mth7MPUCE7KBRDONI5PWL6SCBG6QU" Name="getCharacterEncodingScheme" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getCharacterEncodingScheme()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthSV7ES4H44NHILARRCGKQ645LE4" Name="getElementText" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getElementText()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="javax.xml.stream.XMLStreamException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthEHOKTYQZYJH3LIK5AICMGSJ3UU" Name="getEncoding" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getEncoding()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthTIDDW5P2AZGB3GYOFPDDYPCFQE" Name="getEventType" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getEventType()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthHQ5UYEA25NEDZA5MQZWKH234O4" Name="getLocalName" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getLocalName()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthGWHG75X3VRFO3KNHK2GSUX6JZQ" Name="getLocation" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getLocation()Ljavax.xml.stream.Location;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="javax.xml.stream.Location"/>
+      </Method>
+      <Method Id="mthNNIUDTSXB5FPRJPRK2IA7ATZ6I" Name="getName" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getName()Ljavax.xml.namespace.QName;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="javax.xml.namespace.QName"/>
+      </Method>
+      <Method Id="mthOXLCARRNABADFMUK5BURXPZL34" Name="getNamespaceContext" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getNamespaceContext()Ljavax.xml.namespace.NamespaceContext;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="javax.xml.namespace.NamespaceContext"/>
+      </Method>
+      <Method Id="mthCIW2HI3DJJAXXN26ZIYZFV4ACQ" Name="getNamespaceCount" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getNamespaceCount()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthUORYJELE4BFY5P5FMUAWF2ZNFY" Name="getNamespacePrefix" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getNamespacePrefix(I)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="i" Id="mprBOAPPI6V3VHSJKN3U3OTASHZG4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthUT2UL7IRYFCYPMRTCG4R3VRU2A" Name="getNamespaceURI" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getNamespaceURI(I)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="i" Id="mprO5T4Q6REZNBNNJE53LTWCCSIG4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthLZ4YT3LOJ5HBTKWSYJSYC3TRFQ" Name="getPIData" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getPIData()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthXNAK4MLA4JAERP3CK2WYBLBODI" Name="getPITarget" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getPITarget()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthQK3E6HUD7BB6BAR5BXKSBN5MRM" Name="getPrefix" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getPrefix()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthEQQJ6LNO3BC5TM6XQQJUPCGRNA" Name="getProperty" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getProperty(Ljava.lang.String;)Ljava.lang.Object;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprQJQO7IKNX5H35LUM3M4G7E3KEE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcFGLHWXKG3BB7TLTAJY2WUTIWIU"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthIBBDYEOGNBHX3N2KFT3OEIMN24" Name="getText" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getText()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthKRBACA43KVB2TBXXO54IYHBMBM" Name="getTextCharacters" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getTextCharacters()[C"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="char" Dimension="1"/>
+      </Method>
+      <Method Id="mthH2GVKBDTD5FLNF3L6SSF35EUII" Name="getTextLength" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getTextLength()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthWQQU27BC4BCXDA4UD3T226HPQE" Name="getTextStart" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getTextStart()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthIZ73JKVTUZHHZNEFB2OCRXTE4E" Name="getVersion" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getVersion()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthQQZXISU3MNESZHV3E2R3SQVTUE" Name="hasName" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="hasName()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthR6RXAT6RPVEHVB4IVTIAB2ZYBU" Name="hasNext" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="hasNext()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="javax.xml.stream.XMLStreamException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthN6CDXAHBJNEEVDNTUXKWJN5HKA" Name="hasText" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="hasText()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthV7VMBQ5PCFGO5BDRVFK2P34WYA" Name="isAttributeSpecified" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isAttributeSpecified(I)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprW3DZSOJ2TZBKXM2266TAIWV77E">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth3W7JXHML2ZB37M7N75ZHCHYCPU" Name="isCharacters" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isCharacters()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthSWUEJFDW4REH7HZUWCOA6TXO4A" Name="isEndElement" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isEndElement()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthEG7WOU7HC5EJFICNXODPTIED3Q" Name="isStandalone" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isStandalone()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthWWTBGKJDBJGTVEA7JLLYJWJZDM" Name="isStartElement" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isStartElement()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthXCQXM4HYLREILFPXY26I3QDFPM" Name="isWhiteSpace" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isWhiteSpace()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthCX7RV3HHOZAANNJAH7V3YOKTDY" Name="next" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="next()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="javax.xml.stream.XMLStreamException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthTVXS3KH3EVHKPE555DLWRKDIXM" Name="nextTag" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="nextTag()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="javax.xml.stream.XMLStreamException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthFHM5TVDWFNA35E7A4MYLQAGQRE" Name="require" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="require(ILjava.lang.String;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprLFAXGTFUWBEY5NWFHHVE7R3YBQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="arg1" Id="mprSVXZNSWDJZECJGH6TIFKQD76SY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="arg2" Id="mprVP5S3CSJQVCY7DKIBQKFTJ4K6A">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="javax.xml.stream.XMLStreamException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthUNBRXADPBJFQLIZF7RWOTYFVXQ" Name="standaloneSet" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="standaloneSet()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthVBPPRJNXTZFELPS7VT4KMAA7GA" Name="hasNextItem" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="hasNextItem()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="javax.xml.stream.XMLStreamException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthE5EYUFFWYJHDBLCRI2C6DZ2TPA" Name="IncrementalXmlStreamReader" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljavax.xml.stream.XMLStreamReader;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parentReader" Id="mprVXL6OATEOBFJZBKGBVLQ7GV2SY">
+            <Type TypeId="400" extStr="javax.xml.stream.XMLStreamReader"/>
+          </Parameter>
+          <Parameter Name="branchAsXpath" Id="mpr4SNEDOP3SNFVJFYV4RXP2KTFM4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

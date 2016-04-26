@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdQPSHUV6S7BBMZE5Z5BLZEL5YTQ" Name="ReportFormXsd" TargetNamespace="http://schemas.radixware.org/report_form.xsd" Environment="common"><ads:AccessRules Access="4" IsPublished="false"/><xs:schema targetNamespace="http://schemas.radixware.org/report_form.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:this="http://schemas.radixware.org/report_form.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:t="http://schemas.radixware.org/types.xsd" xmlns:tt="http://schemas.radixware.org/adsdef.xsd">
+  <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+  <xs:import namespace="http://schemas.radixware.org/adsdef.xsd" schemaLocation="adsdef.xsd"/>
+  <xs:element name="Report">
+    <xs:complexType>
+      <xs:attribute name="GUID" type="t:Str"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ReportForm">
+    <xs:complexType>
+      <xs:sequence>  
+          <xs:element name="Form" type="tt:Report"/>
+      </xs:sequence>  
+    </xs:complexType>
+  </xs:element>
+</xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

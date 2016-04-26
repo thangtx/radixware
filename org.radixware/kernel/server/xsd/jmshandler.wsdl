@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:jms="http://schemas.radixware.org/jmshandler.xsd" xmlns:wsdl="http://schemas.radixware.org/jmshandler.wsdl" xmlns:ns="http://schemas.radixware.org/types.xsd" targetNamespace="http://schemas.radixware.org/jmshandler.wsdl">
+	<types>
+		<xs:schema xmlns:wsdl="http://schemas.radixware.org/jmshandler.wsdl" xmlns:types="http://schemas.radixware.org/types.xsd" targetNamespace="http://schemas.radixware.org/jmshandler.wsdl">
+			<xs:import namespace="http://schemas.radixware.org/jmshandler.xsd" schemaLocation="jmshandler.xsd"/>
+			<xs:element name="ProcessText" type="jms:ProcessText"/>
+			<xs:element name="ProcessBin" type="jms:ProcessBin"/>
+		</xs:schema>
+	</types>
+	<message name="ProcessTextRq">
+		<part name="ProcessTextRq" type="jms:ProcessTextRq"/>
+	</message>
+	<message name="ProcessTextRs">
+		<part name="ProcessTextRs" type="jms:ProcessTextRs"/>
+	</message>
+	<message name="ProcessBinRq">
+		<part name="ProcessBinRq" type="jms:ProcessBinRq"/>
+	</message>
+	<message name="ProcessBinRs">
+		<part name="ProcessBinRs" type="jms:ProcessBinRs"/>
+	</message>
+	<portType name="jmshandler">
+		<operation name="ProcessText">
+			<input message="wsdl:ProcessTextRq"/>
+			<output message="wsdl:ProcessTextRs"/>
+		</operation>
+		<operation name="ProcessBin">
+			<input message="wsdl:ProcessBinRq"/>
+			<output message="wsdl:ProcessBinRs"/>
+		</operation>
+	</portType>
+	<binding name="jmshandler" type="wsdl:jmshandler">
+		<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<operation name="ProcessText">
+			<soap:operation soapAction="http://schemas.radixware.org/jmshandler.wsdl#ProcessText" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+			</output>
+		</operation>
+		<operation name="ProcessBin">
+			<soap:operation soapAction="http://schemas.radixware.org/jmshandler.wsdl#ProcessBin" style="rpc"/>
+			<input>
+				<soap:body use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+			</output>
+		</operation>
+	</binding>
+	<service name="jmshandler">
+		<port name="jmshandler" binding="wsdl:jmshandler">
+			<soap:address location="http://"/>
+		</port>
+	</service>
+</definitions>

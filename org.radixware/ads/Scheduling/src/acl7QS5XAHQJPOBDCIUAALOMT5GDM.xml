@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="acl7QS5XAHQJPOBDCIUAALOMT5GDM" Name="Unit.JobScheduler" Type="2">
+    <AccessRules/>
+    <Headers>
+      <Src Name="HeaderadcFRHPDWEPZFFS7AVP2DASPQWDDE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcEUAD4MVHRFCBFILO3MDYALZJYU"/>
+    </Bodies>
+    <MethodGroup Id="cmgOCA2GLQ6UVC4FITXMWAAMCOLPA" Name="Root"/>
+    <PropertyGroup Id="cpgBZR2II6IBJH5XACHNIBK6OMU24" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthD77F2HBL2FGSVPJHR3SEAMPWMA" Name="afterInit" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="src" Id="mprDCFKQFCRZBCQ3LQLNZER7QAGG4">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
+          </Parameter>
+          <Parameter Name="phase" Id="mprXPWISNYC7NDXFKBWNRYNM62RCI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EEntityInitializationPhase"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthD77F2HBL2FGSVPJHR3SEAMPWMA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(src, phase);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E colEWJT6TIHR5VDBNSIAAUMFADAIA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsLSG35D4GIHNRDJIEACQMTAIZT4 aciK6BEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;         
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthQIF7CPRFE5GUTIY26PT5SYUD6E" Name="getUsedAddresses" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="400" extStr="java.util.Collection">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E"/>
+    <Presentations ObjectTitleId="mlsVQUVQOK4OXOBDFKUAAMPGXUWTQ">
+      <ClassCatalogs>
+        <ClassCatalog Id="eccKOGFFVPJAHOBDA26AAMPGXSZKU" Name="Default">
+          <ClassRef TopicId="cctIM3THFAESQAESFLHAAJZREMVEY" Order="200.0"/>
+        </ClassCatalog>
+      </ClassCatalogs>
+      <EditorPresentations>
+        <EditorPresentation Id="eprOC2E3IPQJPOBDCIUAALOMT5GDM" Name="Edit" BasePresentationId="epr6CPN5BSZHJAN5NTGR7LYEXFEDQ" InheritanceMask="11442" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprXCFCDDGTRHNRDB5MAALOMT5GDM" ClientEnvironment="explorer">
+          <ChildExplorerItems>
+            <Item>
+              <ChildRef Id="xpiOVSAJIF4R3OBDCKOAALOMT5GDM" Name="SchedulerJob" InheritanceMask="16560" IsVisibleInTree="true" ClassId="aecWZB7K4HLJPOBDCIUAALOMT5GDM" SelectorPresentationId="sprCIQEXEK5GNCKNBTQGKVGWRXCNM" Restrictions="32" EnabledCommands="" ChildReferenceId="refP6PKJLPLJPOBDCIUAALOMT5GDM">
+                <Condition>
+                  <ConditionWhere/>
+                  <ConditionFrom/>
+                </Condition>
+              </ChildRef>
+            </Item>
+          </ChildExplorerItems>
+          <EditorPages>
+            <Page Id="epg2RS4VFH6DXPBDFHQABIFNQAABA" Name="Tasks" Type="3" EmbeddedExplorerItemId="xpiOVSAJIF4R3OBDCKOAALOMT5GDM" IconId="imgZSKPYPT64G4ENTLKOOWJ6OT56KBWJ4YR"/>
+            <PageOrder>
+              <Item PageId="epgOCDVZAOTBXOBDNTPAAMPGXSZKU" Level="1"/>
+              <Item PageId="epg2RS4VFH6DXPBDFHQABIFNQAABA" Level="1"/>
+              <Item PageId="epgUJB2RCH6KZHD5IMTQTE76DQSZA" Level="1"/>
+              <Item PageId="epgJ4BHY7HBLBBBXIIQZEPCKTW2MU" Level="1"/>
+            </PageOrder>
+          </EditorPages>
+          <ObjectTitleFormat Id="etfWWIIKQVNLFEEJC3QLLIKKG42E4"/>
+        </EditorPresentation>
+        <EditorPresentation Id="eprTXL6RDUQSLOBDCKTAALOMT5GDM" Name="Create" BasePresentationId="eprOC2E3IPQJPOBDCIUAALOMT5GDM" InheritanceMask="6288" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprS6PW3X2EKJFUNPGCXYDBACXY7A" ClientEnvironment="explorer">
+          <ChildExplorerItems/>
+          <ObjectTitleFormat Id="etfEOD7UBR7I5AQHBEBFAXMFNRUH4"/>
+        </EditorPresentation>
+      </EditorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="aclDPASXTH4VHOBDCLSAALOMT5GDM"/>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcEFVCX4ZSRZCE3BJ67E26G2YZBE" Name="Node.TransformerStart" Type="3" Environment="explorer">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcEFVCX4ZSRZCE3BJ67E26G2YZBE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcEFVCX4ZSRZCE3BJ67E26G2YZBE"/>
+    </Bodies>
+    <MethodGroup Id="cmg6LG2RBLEJVEXPL3K3GU4GHVKFA" Name="Root"/>
+    <PropertyGroup Id="cpg6HR567UXHZANDNHPSSHWJP76B4" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthD4QYJHMALBDZRMC3IHY4SDIJQQ" Name="Node.TransformerStart" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="env" Id="mprFEIZI7ZKPFC23LAPOUPANAGDDA">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
+          <Parameter Name="graph" Id="mprBRBTQJT4WRFQREQN2QOGDWCDVI">
+            <Type TypeId="411" Path="adcHMXIRC2KYZFDRHIIULJ2M6YRLM"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(env, graph, "start");
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcSXZSUUPDBRHWRCOYSYXCX75IOY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> role = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcSXZSUUPDBRHWRCOYSYXCX75IOY mthA2N4QBKYOBDA3FVW27WGP3KLEI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(userSession, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsAOY3NW7UVFCP7OKJ7BRVSMEJEM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, "begin_transformer_pipeline");
+rRoles.add(role);
+role.setParentItem(this);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI mthKSLCMYMP3RFRNA2FNIXJKJJE6I" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthQHFKYLRZFFCVBAS3ARMTYOZXLQ" Name="getRole" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <ReturnType TypeId="411" Path="adcSXZSUUPDBRHWRCOYSYXCX75IOY"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return rRoles.get(0);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthUERWQXMMCVCDBAUBZHYYE45GPI" Name="outputRole" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="role" Id="mprPS45N2Q7VBDALECRSNRLGYLOQQ">
+            <Type TypeId="411" Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return role == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcEFVCX4ZSRZCE3BJ67E26G2YZBE mthQHFKYLRZFFCVBAS3ARMTYOZXLQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthNZKATTZ2FVGPZOGTSUWFUPLW3Q" Name="getTitle" Nature="0" IsOverride="true">
+        <AccessRules IsPublished="false"/>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls4CXKX7ZZV5HDJOS5JHTN32JNRQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthTMYAHK6Q4VFUDMZKFMBO2CFMZI" Name="getIconId" Nature="0" IsOverride="true">
+        <AccessRules IsPublished="false"/>
+        <ReturnType TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="img7DYRMHBVQ5F7LE5JEWQF73W4WE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="adc7MOZO3YE5NEYRGKQWHJ26KKXOM"/>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="spcMNWS7UJ4NVDVPBPJB2YWICJWCI" Name="DeleteDebugStmt" Type="10">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="true" PublishedName="org.radixware.kernel.server.types.SqlClass"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcVN5K4XEYRBHJHNE7YLEN7QPMCI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcWYTWN4QBERCU3JOS2PGGOASJPI"/>
+    </Bodies>
+    <MethodGroup Id="cmgCLR5U3KVOREIVJDHFASL5YSORU" Name="Root"/>
+    <PropertyGroup Id="cpg7RD2R7D6FJD4TK5DBEE6K2OMAY" Name="Root"/>
+    <Properties>
+      <Property Id="prmGT7AHVFVWNG2ZPTKNTDJ2MVDFA" Name="startTime" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="12"/>
+      </Property>
+      <Property Id="prmZT5N4FS2GRDLVOAX2JLDX3WVIQ" Name="finishTime" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="12"/>
+      </Property>
+      <Property Id="prm47DKCVQPTVGNTBGU5U5K4FKWGY" Name="maxCount" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prmLWTWUVDCWJD4XEQK4H4GSEJ5CM" Name="deletedCount" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="execute" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="startTime" Id="mprGT7AHVFVWNG2ZPTKNTDJ2MVDFA">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="finishTime" Id="mprZT5N4FS2GRDLVOAX2JLDX3WVIQ">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="maxCount" Id="mpr47DKCVQPTVGNTBGU5U5K4FKWGY">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="spcMNWS7UJ4NVDVPBPJB2YWICJWCI"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>declare
+    TYPE eventLogKey is RECORD (
+        raiseTime   </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblACQVZOMVVHWDBROXAAIT4AGD7E" PropId="colWBCRBDFDL2VDBNSNAAYOJ6SINF" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>%TYPE,
+        id          </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblACQVZOMVVHWDBROXAAIT4AGD7E" PropId="colUBCRBDFDL2VDBNSNAAYOJ6SINF" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>%TYPE      
+    );
+    
+    TYPE eventLogKeys is table of eventLogKey;
+    
+    eventLogRecs eventLogKeys; 
+
+    realStartTime timestamp(6);
+    realFinishTime timestamp(6);   
+    lastDeletedRaiseTime timestamp(6);   
+    deletedCount integer;                                     
+begin
+    realStartTime := </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmGT7AHVFVWNG2ZPTKNTDJ2MVDFA"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>;
+    if realStartTime is null then
+        realStartTime := to_date('1', 'J');
+    end if;
+    
+    realFinishTime := </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmZT5N4FS2GRDLVOAX2JLDX3WVIQ"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>;
+    if realFinishTime is null then
+        select max(</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblACQVZOMVVHWDBROXAAIT4AGD7E" PropId="colWBCRBDFDL2VDBNSNAAYOJ6SINF" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>) into realFinishTime from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblACQVZOMVVHWDBROXAAIT4AGD7E"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>;
+    end if;
+    
+    select </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblACQVZOMVVHWDBROXAAIT4AGD7E" PropId="colWBCRBDFDL2VDBNSNAAYOJ6SINF" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblACQVZOMVVHWDBROXAAIT4AGD7E" PropId="colUBCRBDFDL2VDBNSNAAYOJ6SINF" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+        BULK COLLECT INTO eventLogRecs
+        from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblACQVZOMVVHWDBROXAAIT4AGD7E"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+    where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblACQVZOMVVHWDBROXAAIT4AGD7E" PropId="colWBCRBDFDL2VDBNSNAAYOJ6SINF" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> between realStartTime and realFinishTime and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblACQVZOMVVHWDBROXAAIT4AGD7E" PropId="colXBCRBDFDL2VDBNSNAAYOJ6SINF" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:ConstValue EnumId="acsFRO5RTQOG7NRDJH2ACQMTAIZT4" ItemId="aci5SAUJTYZVPORDJHCAANE2UAFXA"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> and rownum &lt;= </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prm47DKCVQPTVGNTBGU5U5K4FKWGY"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>;
+    
+    FORALL indx in 1 .. eventLogRecs.COUNT
+        delete from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblJABJB4OAP3NRDAQSABIFNQAAAE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+        where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblJABJB4OAP3NRDAQSABIFNQAAAE" PropId="colOSK5SVWBP3NRDAQSABIFNQAAAE" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = eventLogRecs(indx).raiseTime and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblJABJB4OAP3NRDAQSABIFNQAAAE" PropId="colXHA62NOBP3NRDAQSABIFNQAAAE" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = eventLogRecs(indx).id;
+        
+    FORALL indx in 1 .. eventLogRecs.COUNT
+        delete from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblACQVZOMVVHWDBROXAAIT4AGD7E"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+        where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblACQVZOMVVHWDBROXAAIT4AGD7E" PropId="colWBCRBDFDL2VDBNSNAAYOJ6SINF" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = eventLogRecs(indx).raiseTime and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblACQVZOMVVHWDBROXAAIT4AGD7E" PropId="colUBCRBDFDL2VDBNSNAAYOJ6SINF" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = eventLogRecs(indx).id;
+    
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmLWTWUVDCWJD4XEQK4H4GSEJ5CM" Direction="1"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> := SQL%ROWCOUNT;
+    
+end;    </xsc:Sql>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblACQVZOMVVHWDBROXAAIT4AGD7E"/>
+        <UsedTable TableId="tblJABJB4OAP3NRDAQSABIFNQAAAE"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="400" extStr="org.radixware.kernel.server.types.SqlClass"/>
+  </AdsClassDefinition>
+</AdsDefinition>

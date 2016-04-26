@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aic4KQLMR655ZFYXFQNTA4YEBPN4Q" Name="ModificationsList.ModifiedObject" Type="5" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.views.ModificationsList.ModifiedObject"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeraic4KQLMR655ZFYXFQNTA4YEBPN4Q"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyaic4KQLMR655ZFYXFQNTA4YEBPN4Q"/>
+    </Bodies>
+    <MethodGroup Id="cmgOTMDPTILN5G4JGNEWOB4P2WF7Y" Name="Root"/>
+    <PropertyGroup Id="cpgUFEPG6PPDREQTCBH27VS4XQQFI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthXVKPDNKM7REGZGM5FJDN3SMQYQ" Name="getChildren" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getChildren()Ljava.util.List&lt;Lorg.radixware.kernel.common.client.views.ModificationsList.ModifiedObject;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.views.ModificationsList.ModifiedObject"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthTESHMPCIEBFGNAEKK3DSFC6EJY" Name="getTitle" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getTitle()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthA7UXGOSQCZCJJJSG5GD3OA5PI4" Name="hasUnsavedData" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="hasUnsavedData()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth4QNANZW4KJGLXEBUCJ2LQ4Q56Y" Name="getSaveConfirmationMessage" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getSaveConfirmationMessage(Lorg.radixware.kernel.common.client.localization.MessageProvider;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="messageProvider" Id="mpr5GCT25XXHBGXRJ3ATTJZNGDGDE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.localization.MessageProvider"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthP6BEECCXZVHMDNCEKJEXWA3RNY" Name="applyChanges" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="applyChanges(Lorg.radixware.kernel.common.client.views.IProgressHandle;Lorg.radixware.kernel.common.client.exceptions.IProblemHandler;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="progressHandle" Id="mprFMTA2FEQ7BHOTMET6EGPQVVF5A">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.views.IProgressHandle"/>
+          </Parameter>
+          <Parameter Name="problemHandle" Id="mprSRKCXDSYSFHWTA7CEYDPO4TYRE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.exceptions.IProblemHandler"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthQQHK2XQCGFGRZDQXN7DQD3ADOE" Name="getCloseConfirmationMessage" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getCloseConfirmationMessage(Lorg.radixware.kernel.common.client.localization.MessageProvider;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="messageProvider" Id="mprVCQHMLSAZBDDJMT3S356TQMYQA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.localization.MessageProvider"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mth6JYO2VC6D5C2RN37WLEEM7OIA4" Name="activate" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="activate()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthJO4Y52XHYVGEPB5ZD2WXQ3KZFE" Name="getIcon" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getIcon()Lorg.radixware.kernel.common.client.types.Icon;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.types.Icon"/>
+      </Method>
+      <Method Id="mth752J352SVZA7NLTJN35G5HPFEI" Name="cancelChanges" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="cancelChanges()V"/>
+        </AccessRules>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

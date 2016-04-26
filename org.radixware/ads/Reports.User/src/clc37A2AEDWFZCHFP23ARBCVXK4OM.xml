@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsContextlessCommandDefinition Id="clc37A2AEDWFZCHFP23ARBCVXK4OM" Name="ReadReportBinary" Nature="2" IsVisible="true" IsConfirmationRequired="true">
+    <AccessRules IsPublished="false"/>
+    <InType TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReadReportRuntimeRqDocument"/>
+    <OutType TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReadReportRuntimeRsDocument"/>
+    <Source>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReadReportRuntimeRsDocument"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> rsDoc = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReadReportRuntimeRsDocument"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.Factory.newInstance();
+</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReadReportRuntimeRq"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> rq = input.ReadReportRuntimeRq;
+</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> reportId = rq.ReportId;
+String fileName = rq.TmpFileName;
+</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> currentClassGuid = rq.ReportClassGuid;
+int result = -1;
+</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="accMS3KHMAZIJHLRM52V7WSHNZ7M4"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> c = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="accMS3KHMAZIJHLRM52V7WSHNZ7M4"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="accMS3KHMAZIJHLRM52V7WSHNZ7M4 mth_stmt_execute_____________" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(reportId.toString());
+</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> reportClassGuid = null;
+if (c.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>() &amp;&amp; c.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="accMS3KHMAZIJHLRM52V7WSHNZ7M4 prfUAMVDV24N5AANJWBQKKFXQ6V6M" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> != null) {
+    reportClassGuid = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthZCNI2JK4DFGNLEBCLZZCIM34TA" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(c.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="accMS3KHMAZIJHLRM52V7WSHNZ7M4 prfATNYVBKYUZCW3LANXC7YVTY6OA" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>);
+    if (currentClassGuid != null &amp;&amp; currentClassGuid == reportClassGuid) {
+        result = 0;
+    } else {
+        </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcFileOutResource___________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> resource = null;
+        try {
+            resource = new </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcFileOutResource___________ mthRTCDLQYWGZCCLBWYK74OTYDKFI" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(), fileName, </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="acsQ2VTKPOMHTNRDCGPABIFNQAABA aciEOBEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>, </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="acsFIH6I56MHTNRDCGPABIFNQAABA aciE2BEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>);
+        } catch (</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="axcWGDHFHONYFCQFIQSELYRVS7DJ4"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> e) {
+            throw new </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>("", e);
+        } catch (</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> e) {
+            throw new </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>("", e);
+        } catch (</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="axcTYUDRQZMVJFTZNOQKKR2LEJUDU"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> e) {
+            throw new </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>("", e);
+        }
+        if (resource != null) {
+            try {
+                java.io.InputStream in = c.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="accMS3KHMAZIJHLRM52V7WSHNZ7M4 prfUAMVDV24N5AANJWBQKKFXQ6V6M" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.getBinaryStream();
+                try {
+                    org.radixware.kernel.common.utils.FileUtils.copyStream(in, resource);
+                    resource.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcFileOutResource___________ mthMYKBQPCQDRGUZLFOSZWBCSQ3EQ" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>();
+                    result = 1;
+                } finally {
+                    try {
+                        in.close();
+                    } catch (</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> e) {
+                        //ignore
+                    }
+                    try {
+                        resource.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcFileOutResource___________ mthSD6ERHNVJVD7NGI4TMJA7Z2JMA" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>();
+                    } catch (</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> e) {
+                        //ignore
+                    }
+
+                }
+
+            } catch (</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> e) {
+                throw new </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>("", e);
+            } catch (</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="axcG6PZC4JQPBAI5C7ZFKWL4SWGKA"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> e) {
+                throw new </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mthHC4GKTKLY5FKHATTJ4SYDRTZ44" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(e);
+            }
+        }
+    }
+}
+</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReadReportRuntimeRs"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> rs = rsDoc.addNewReadReportRuntimeRs();
+rs.Status = result;
+rs.ReportClassGuid = reportClassGuid;
+return rsDoc;
+
+
+
+
+</xsc:Java>
+      </xsc:Item>
+    </Source>
+  </AdsContextlessCommandDefinition>
+</AdsDefinition>

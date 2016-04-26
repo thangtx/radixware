@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc3PATULUBMJDN5IOORQ5QUCAYB4" Name="Resource" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcQS3BZYBCUJBNPDKGN5LHMYAVGA">
+        <xsc:Item>
+          <xsc:Java>import java.io.OutputStream;
+import java.io.InputStream;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcTZOSR7WO25A7VBXL47KSVXHIG4"/>
+    </Bodies>
+    <MethodGroup Id="cmgRBEDEI7PHFG5VKYDM2B6W4CIRM" Name="Root"/>
+    <PropertyGroup Id="cpgZFQV6HCALRHO7IHCH7GXJQQE4Q" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth6345IHZJKJAQ5DONEY64J7RMLY" Name="exportBlobToFile" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="arte" Id="mprXTLHOYJ7CJEY3GYUTDO2E2DHNA">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.arte.Arte"/>
+          </Parameter>
+          <Parameter Name="blob" Id="mprPTAOAW4ZFVBC5BP5WOKSNRPVO4">
+            <Type TypeId="28"/>
+          </Parameter>
+          <Parameter Name="fileName" Id="mprCLZQQZEXDJH4HBPWRYLTDI4IZA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>InputStream blobStream = null;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcFileOutResource___________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> outputStream = null;
+
+try{
+  // Open a stream to read the Blob data  
+  blobStream = blob.getBinaryStream();
+  // Open a file stream to save the Blob data  
+  outputStream = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcFileOutResource___________ mthRTCDLQYWGZCCLBWYK74OTYDKFI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(arte, fileName, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsQ2VTKPOMHTNRDCGPABIFNQAABA aciEOBEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFIH6I56MHTNRDCGPABIFNQAABA aciE6BEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);  
+  // buffer holding bytes to be transferred
+  byte[] buffer = new byte[1024];
+  // Number of bytes read
+  int nbytes = -1; 
+  while ((nbytes = blobStream.read(buffer)) != -1)
+      outputStream.write(buffer, 0, nbytes);  
+  outputStream.flush();
+  outputStream.close();
+  blobStream.close();
+}
+catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e){
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ mthHK7LPCQHYFD4RPXCEYXA5HD2MY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e.getMessage(), e);
+}
+catch(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e){
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ mthHK7LPCQHYFD4RPXCEYXA5HD2MY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e.getMessage(), e);
+}
+catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcG6PZC4JQPBAI5C7ZFKWL4SWGKA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e){
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ mthHK7LPCQHYFD4RPXCEYXA5HD2MY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e.getMessage(), e);
+}
+catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcTYUDRQZMVJFTZNOQKKR2LEJUDU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e){
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ mthHK7LPCQHYFD4RPXCEYXA5HD2MY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e.getMessage(), e);
+}
+catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcWGDHFHONYFCQFIQSELYRVS7DJ4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e){
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ mthHK7LPCQHYFD4RPXCEYXA5HD2MY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e.getMessage(), e);
+}
+finally{
+  try{
+     if (outputStream!=null) 
+        outputStream.close();
+     if (blobStream!=null)   
+        blobStream.close();
+  }
+  catch(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e){
+  }      
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthWL6O5UVW7RAIRB4GMLRWFPZFZ4" Name="importFileToBlob" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="arte" Id="mprTTMPOSVTUFASLBE7KYIY56MDAI">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.arte.Arte"/>
+          </Parameter>
+          <Parameter Name="fileName" Id="mprVZ4VVILDGVGHBMF5YFWBWDDNYQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="maxSize" Id="mprGLZAUCUWWBCQJAYHCKOX55EDOU">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="28"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final double KbSize = 1024d;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="28"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> result = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mth35TKQI3R7DNRDOMIABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();   
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcFileInResource____________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> inputStream = null;
+OutputStream blobStream = null;
+String errorMsg = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsNJ4WZI26RZBGNPIFXHORNBEY64"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> +String.valueOf(maxSize)+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls5D46GVAKLRBVJLK25OAQTG5DHA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+try
+{
+   inputStream =  new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcFileInResource____________ mthLNZ6KV7C2NE6DAM254AJ3HZLKI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(arte, fileName,
+           </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFIH6I56MHTNRDCGPABIFNQAABA aciEWBEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+   if (maxSize!=null)
+   {
+       double curSize = inputStream.available();
+       if (curSize/KbSize > maxSize.doubleValue())
+           throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ mth3IJGQPORMVEO7HQLJ7TDK2VWME" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(errorMsg);                   
+   }
+   blobStream = result.setBinaryStream(1);                 
+   
+   byte[] buffer = new byte[(int)KbSize];//Kb
+   int nbytes = -1;
+   double size = 0;
+   while ((nbytes = inputStream.read(buffer)) != -1) 
+   {
+       blobStream.write(buffer, 0, nbytes); 
+       if (maxSize!=null)
+       {
+           size += nbytes;
+           double res = size/KbSize;
+           if (res>maxSize.doubleValue())
+               throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ mth3IJGQPORMVEO7HQLJ7TDK2VWME" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(errorMsg);                   
+       }
+   }
+   blobStream.flush();
+}  
+catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e){
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ mthHK7LPCQHYFD4RPXCEYXA5HD2MY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e.getMessage(), e);
+}
+catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcTYUDRQZMVJFTZNOQKKR2LEJUDU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e){
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ mthHK7LPCQHYFD4RPXCEYXA5HD2MY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e.getMessage(), e);
+}
+catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcWGDHFHONYFCQFIQSELYRVS7DJ4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e){
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ mthHK7LPCQHYFD4RPXCEYXA5HD2MY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e.getMessage(), e);
+}
+catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e){
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ mthHK7LPCQHYFD4RPXCEYXA5HD2MY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e.getMessage(), e);
+}
+catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcG6PZC4JQPBAI5C7ZFKWL4SWGKA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e){
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ mthHK7LPCQHYFD4RPXCEYXA5HD2MY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e.getMessage(), e);
+}
+finally{
+  try{
+     if (inputStream!=null) 
+        inputStream.close();
+     if (blobStream!=null)   
+        blobStream.close();
+  }
+  catch(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e){
+  }      
+}
+
+return result;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

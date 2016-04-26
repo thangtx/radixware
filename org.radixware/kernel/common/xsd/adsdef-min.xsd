@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           xmlns:common="http://schemas.radixware.org/commondef.xsd" 
+           xmlns:utils="http://schemas.radixware.org/utils.xsd" 
+           
+           xmlns:this="http://schemas.radixware.org/adsdef.xsd" 
+           xmlns:types="http://schemas.radixware.org/types.xsd" 
+           targetNamespace="http://schemas.radixware.org/adsdef.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:import namespace="http://schemas.radixware.org/commondef.xsd" schemaLocation="commondef.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    
+    <xs:complexType name="LocalizedString">
+        <xs:complexContent>
+            <xs:extension base="common:Definition">
+                <xs:sequence>
+                    <xs:element name="Value" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                            <xs:simpleContent>
+                                <xs:extension base="xs:string">
+                                    <xs:attribute name="Language" use="required">
+                                        <xs:simpleType>
+                                            <xs:annotation>
+                                                <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                    <types:class>org.radixware.kernel.common.enums.EIsoLanguage</types:class>
+                                                </xs:appinfo>
+                                            </xs:annotation>
+                                            <xs:restriction base="types:StrEnum"/>
+                                        </xs:simpleType>
+                                    </xs:attribute>
+                                    <xs:attribute name="NeedsCheck" type="xs:boolean"/>
+                                    <xs:attribute name="LastModified" type="types:DateTime"/>
+                                    <xs:attribute name="Author" type="xs:string"/>
+                                    <xs:attribute name="DateChangeOfStatus" type="types:DateTime"/> 
+                                    <xs:attribute name="AuthorChangeOfStatus" type="xs:string"/>                                     
+                                </xs:extension>
+                            </xs:simpleContent>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="SrcKind" use="required">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.ELocalizedStringKind</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:IntEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="SpellCheck" type="xs:boolean" use="optional" default="true"/>
+                <xs:attribute name="EventSeverity">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.EEventSeverity</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:IntEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="EventSource" type="xs:string"/>
+                <xs:attribute name="Version" type="xs:int"/>
+                <xs:attribute name="Creator" type="xs:string"/>
+                <xs:attribute name="CreationDate" type="types:DateTime"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="LocalizingBundleDefinition">
+        <xs:complexContent>
+            <xs:extension base="common:Definition">
+                <xs:sequence>
+                    <xs:element name="String" type="this:LocalizedString" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attribute name="OwnerId" type="xs:string"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+</xs:schema>

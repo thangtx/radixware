@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions 
+    xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+    xmlns:xsd="http://schemas.compassplus.com/inspector.xsd" 
+    xmlns:this="http://schemas.compassplus.com/inspector.wsdl" 
+    targetNamespace="http://schemas.compassplus.com/inspector.wsdl">
+    <types>
+        <xs:schema targetNamespace="http://schemas.compassplus.com/inspector.wsdl">
+            <xs:import namespace="http://schemas.compassplus.com/inspector.xsd" schemaLocation="inspector.xsd"/>
+            <xs:element name="ObjectInfoRq" type="xsd:ObjectInfoRq"/>
+            <xs:element name="ObjectInfoRs">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="ObjectInfo" type="xsd:ObjectInfo" minOccurs="0" maxOccurs="1"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+    </types>
+    <message name="ObjectInfoRq">
+        <part name="ObjectInfoRq" element="this:ObjectInfoRq"/>
+    </message>
+    <message name="ObjectInfoRs">
+        <part name="ObjectInfoRs" element="this:ObjectInfoRs"/>
+    </message>
+    <portType name="InspectorPortType">
+        <operation name="GetObjectInfo">
+            <input message="this:ObjectInfoRq"/>
+            <output message="this:ObjectInfoRs"/>
+        </operation>
+    </portType>
+    <binding name="InspectorBinding" type="this:InspectorPortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="GetObjectInfo">
+            <soap:operation soapAction="http://schemas.compassplus.com/inspector.wsdl#GetObjectInfo" style="document"/>
+            <input name="ObjectInfoRq">
+                <soap:body use="literal"/>
+            </input>
+            <output name="ObjectInfoRs">
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+    <service name="InspectorService">
+        <port name="InspectorServicePort" binding="this:InspectorBinding">
+            <soap:address location="http://"/>
+        </port>
+    </service>
+</definitions>

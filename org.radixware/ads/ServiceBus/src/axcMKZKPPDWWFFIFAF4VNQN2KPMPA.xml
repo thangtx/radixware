@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="axcMKZKPPDWWFFIFAF4VNQN2KPMPA" Name="PipelineException.InvalidRs" Type="8" Environment="server">
+    <AccessRules IsFinal="true">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcS7GOBMUBJZGZFMXJ5C2NBM7AZ4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcZVDDOGSEBFGX3F4JUSYVZB2QQY"/>
+    </Bodies>
+    <MethodGroup Id="cmg3DISBY3IORBRPHIT2BOPG2XCBE" Name="Root"/>
+    <PropertyGroup Id="cpgV4EH55HP6BDL7FRSBAAD3C4EDY" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthM4X5ER47NNCVDNO7HF4362ZPBM" Name="PipelineException.InvalidRs" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="mess" Id="mpr2UOQIU3LJFCYNMVJMOFN3F6BGM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(mess);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth7DQE25SEPJALZHKUOLRA5TVGVE" Name="PipelineException.InvalidRs" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="mess" Id="mprLYKEARRMXZAD7JKJVPAW7CN67Y">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="node" Id="mpr7Z5W7B5C75E53LRKJXFZIIHIKA">
+            <Type TypeId="411" Path="aicC6PFHABKKZBO3N6RNZ66DMI5O4"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(mess, node);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="axcJUFSBLVXVZEYDIHHN4G3GICTXI"/>
+  </AdsClassDefinition>
+</AdsDefinition>

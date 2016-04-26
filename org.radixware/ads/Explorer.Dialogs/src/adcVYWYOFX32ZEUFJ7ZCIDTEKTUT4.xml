@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcVYWYOFX32ZEUFJ7ZCIDTEKTUT4" Name="ArrayEditorDialog" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.explorer.dialogs.ArrayEditorDialog"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc6F247USKIFF4ZF4MDPLJF242RQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcZV55CYVMZFBLJAERMUIEV25MCM"/>
+    </Bodies>
+    <MethodGroup Id="cmgMM3XH6FTRRF55NF2NG6OT7PE5E" Name="Root"/>
+    <PropertyGroup Id="cpgB3OJPYOLZRACZD5FEJ4YPQQJ5U" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthQIBLDUOXQRELXFTUFXDW2XJMFY" Name="isMandatory" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isMandatory()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth2MLSS7LNSJCHLHEOGTP7NCFWBY" Name="getCurrentValue" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getCurrentValue()Lorg.radixware.kernel.common.types.Arr;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.types.Arr"/>
+      </Method>
+      <Method Id="mthMRDQWM35N5GLXJGG5A3FDC2MTE" Name="setReadonly" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setReadonly(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="readonly" Id="mprAFVZA7WBCRFNNMS7YMUV36K7BE">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthSPAPJWLXGZDG5EFXMNICPAHGFM" Name="setItemMoveMode" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setItemMoveMode(Lorg.radixware.kernel.explorer.editors.AbstractArrayEditor.EItemMoveMode;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="newMode" Id="mpr4IBGDVWI7JBVZCIWZYVF7A6EZY">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.editors.AbstractArrayEditor.EItemMoveMode"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthFEVN6EFCJFH2ZDFAV3CZB6WVT4" Name="ArrayEditorDialog" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.client.meta.RadSelectorPresentationDef;ZLcom.trolltech.qt.gui.QWidget;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprDPQ3TMKXGVCTHN5PF5E56UT54A">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="selectorPresentation" Id="mprBSASY3VPRNHNTOXTGGRZJTAT4Q">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.RadSelectorPresentationDef"/>
+          </Parameter>
+          <Parameter Name="readonly" Id="mprLQOWAQZMPJHETLTEIES5LPDMBM">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="parent" Id="mprIPOXG2NNBNF2LLUMEQLOWLHYRM">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthGEX3NBZ4M5F3XPPIETO3Q2MQNA" Name="isDuplicatesEnabled" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isDuplicatesEnabled()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthAVTAOC3IKRC7PBTNPRVAU2FQUM" Name="ArrayEditorDialog" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.enums.EValType;Ljava.lang.Class&lt;*>;ZLcom.trolltech.qt.gui.QWidget;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mpr6BRMRR43YRE57OZQAMD553S3P4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="valType" Id="mprWA2IJXGBAJDARIWTVHKOSYN5QE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+          </Parameter>
+          <Parameter Name="valClass" Id="mprQEWON3UOQZFQZCAVKVNGP4GSQU">
+            <Type TypeId="400" extStr="java.lang.Class">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?"/>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="readOnly" Id="mpr4NPNGAUXYRARFLH4SWUM3UY4NQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="parentWidget" Id="mprWLVGIULRGNAVVM54AG3PYTTMYU">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthSYDAOETOBBDTJP5MOZMKIRY4LU" Name="setMandatory" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setMandatory(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isMandatory" Id="mprZMW7TUEG6VCSLP4LKPG6FHDO7Y">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth6TMGS5KFIZGADOFKU2OQQYGUME" Name="setDuplicatesEnabled" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setDuplicatesEnabled(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isEnabled" Id="mprXY5ZNCMHD5DCHCDK467V4ZBCCU">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthBZOJRCH23FF47IVMKCYOZKCN6U" Name="setEditMask" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setEditMask(Lorg.radixware.kernel.common.client.meta.mask.EditMask;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="editMask" Id="mprRWURFVGVBBCEVNHBK5UFF4AZBQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthDKJC7F2HTBDXHLWYZL67QLGTFU" Name="isReadonly" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isReadonly()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth22T2G762LREB5A7RGHNFOML5TA" Name="getItemMoveMode" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getItemMoveMode()Lorg.radixware.kernel.explorer.editors.AbstractArrayEditor.EItemMoveMode;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.editors.AbstractArrayEditor.EItemMoveMode"/>
+      </Method>
+      <Method Id="mth2KFG3EZV3NCSBJOBNOSXFLGIZA" Name="setCurrentValue" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setCurrentValue(Lorg.radixware.kernel.common.types.Arr;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="value" Id="mprNZ3TKFOTJVATLBEIC3DNTJVINE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Arr"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth3ITMUO6KIZC2VEQ75BE5WPE2TI" Name="getEditMask" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getEditMask()Lorg.radixware.kernel.common.client.meta.mask.EditMask;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
+      </Method>
+      <Method Id="mthKHPUXZSPDNCARF5VZAMLUVWQQY" Name="ArrayEditorDialog" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.models.items.properties.Property;Lcom.trolltech.qt.gui.QWidget;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="property" Id="mprEQFHBTUYC5AWXKJBHC3QZF7LQU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
+          </Parameter>
+          <Parameter Name="parent" Id="mprYBAEQRAW5FBHBHX6SNGWLN4TPQ">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthK56QGZAEVNC4VCNSBEVFO2IW3M" Name="getSelectedValue" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getSelectedValue()Ljava.lang.Object;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+      </Method>
+      <Method Id="mth4WC5I6IR3JHGZKHIWAWXRDLRUE" Name="isEmptyArray" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isEmptyArray()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthGO4AK7ZHN5EPHNHD4IL3IJJ7MM" Name="setEditorReadonly" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setEditorReadonly(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isReadonly" Id="mpr2AHTIR5SKJF5JOBAGHRJUDBADE">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthIODLKPS6EFGPXC55MMVU7CVCIM" Name="setOperationsVisible" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setOperationsVisible(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isVisible" Id="mprXQ4X5F5S3RDI5HB57KGVSRKRU4">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthXO2BEGAUTRDINOOIKS53TD4QYA" Name="isItemMandatory" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isItemMandatory()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthUNXST7WO6VBJVFAHPB6P3XKFSM" Name="setItemMandatory" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setItemMandatory(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isMandatory" Id="mprELNFV4X6ARG2LMEZOTNVCIRTJY">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

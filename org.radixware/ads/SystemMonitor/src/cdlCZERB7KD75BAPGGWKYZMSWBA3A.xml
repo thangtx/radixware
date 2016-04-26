@@ -1,0 +1,1695 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:edit="http://schemas.radixware.org/editmask.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsWebCustomDialogDefinition Id="cdlCZERB7KD75BAPGGWKYZMSWBA3A" Name="DashNewHistDiagramDialogWeb">
+    <AccessRules IsPublished="false"/>
+    <ui:ui>
+      <ui:widget name="DialogWidget" id="wdgMDMJ5XU6LRHHDM64Y4JA3BJBVQ" class="cdlCZERB7KD75BAPGGWKYZMSWBA3A" weight="0.0">
+        <ui:property name="standardButtons">
+          <ui:set>Ok|Cancel</ui:set>
+        </ui:property>
+        <ui:property name="geometry">
+          <ui:rect>
+            <ui:x>0</ui:x>
+            <ui:y>0</ui:y>
+            <ui:width>482</ui:width>
+            <ui:height>431</ui:height>
+          </ui:rect>
+        </ui:property>
+        <ui:property name="windowTitle">
+          <ui:mlstringid>mlsLWE25WSPDFDNHIVXPBSCTT2ROM</ui:mlstringid>
+        </ui:property>
+        <ui:property name="objectName">
+          <ui:string>DialogWidget</ui:string>
+        </ui:property>
+        <ui:widget name="mainLayout" id="wdgLCYZXNCRBZB4PPAWMXN67JF5LE" class="org.radixware.wps.rwt.VerticalBoxContainer" weight="0.0">
+          <ui:property name="geometry">
+            <ui:rect>
+              <ui:x>4</ui:x>
+              <ui:y>4</ui:y>
+              <ui:width>474</ui:width>
+              <ui:height>387</ui:height>
+            </ui:rect>
+          </ui:property>
+          <ui:property name="anchor">
+            <ui:anchor>
+              <ui:Top Part="0.0" Offset="4"/>
+              <ui:Left Part="0.0" Offset="4"/>
+              <ui:Bottom Part="1.0" Offset="-10"/>
+              <ui:Right Part="1.0" Offset="-4"/>
+            </ui:anchor>
+          </ui:property>
+          <ui:property name="objectName">
+            <ui:string>mainLayout</ui:string>
+          </ui:property>
+          <ui:widget name="metricLayout" id="wdgRADTCX4IP5BBNEGUG2LTY2A2EY" class="org.radixware.wps.rwt.LabeledEditGrid" weight="0.0">
+            <ui:property name="geometry">
+              <ui:rect>
+                <ui:x>3</ui:x>
+                <ui:y>3</ui:y>
+                <ui:width>476</ui:width>
+                <ui:height>24</ui:height>
+              </ui:rect>
+            </ui:property>
+            <ui:property name="objectName">
+              <ui:string>metricLayout</ui:string>
+            </ui:property>
+            <ui:widget name="metricNameWidgetEditor" id="wdgYUKEFIALHRH5PDRR7DELXZ23KE" class=" org.radixware.wps.views.editor.property.PropEditor" weight="0.0">
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>80</ui:x>
+                  <ui:y>27</ui:y>
+                  <ui:width>402</ui:width>
+                  <ui:height>17</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>metricNameWidgetEditor</ui:string>
+              </ui:property>
+              <ui:property name="label">
+                <ui:mlstringid>mlsSV5R7QMZD5DTJEFQXCCPBIKW3A</ui:mlstringid>
+              </ui:property>
+              <ui:property name="expand">
+                <ui:bool>true</ui:bool>
+              </ui:property>
+              <ui:property name="gridColumn">
+                <ui:int>0</ui:int>
+              </ui:property>
+              <ui:property name="gridRow">
+                <ui:int>0</ui:int>
+              </ui:property>
+              <ui:property name="colSpan">
+                <ui:int>1</ui:int>
+              </ui:property>
+              <ui:property name="property">
+                <ui:propertyRef>prdKKA2DXBAS5FQFDPXI5ZGSSINDU</ui:propertyRef>
+              </ui:property>
+            </ui:widget>
+            <ui:widget name="widget" id="wdgRCPHZ5JVMVGJHNMSOCKJZ2NS2I" class="org.radixware.wps.rwt.PushButton" weight="0.0">
+              <ui:property name="text">
+                <ui:mlstringid>mlsS3RFRM6Y45H7BKDYOG6ZMJPJIE</ui:mlstringid>
+              </ui:property>
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>172</ui:x>
+                  <ui:y>3</ui:y>
+                  <ui:width>267</ui:width>
+                  <ui:height>17</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="colSpan">
+                <ui:int>1</ui:int>
+              </ui:property>
+              <ui:property name="gridColumn">
+                <ui:int>2</ui:int>
+              </ui:property>
+              <ui:property name="gridRow">
+                <ui:int>0</ui:int>
+              </ui:property>
+            </ui:widget>
+          </ui:widget>
+          <ui:widget name="titleLayout" id="wdgE2C5ZOSWVVGHJG4VNN54DT35G4" class="org.radixware.wps.rwt.LabeledEditGrid" weight="0.0">
+            <ui:property name="geometry">
+              <ui:rect>
+                <ui:x>15</ui:x>
+                <ui:y>92</ui:y>
+                <ui:width>484</ui:width>
+                <ui:height>24</ui:height>
+              </ui:rect>
+            </ui:property>
+            <ui:property name="objectName">
+              <ui:string>titleLayout</ui:string>
+            </ui:property>
+            <ui:widget name="titleWidgetEditor" id="wdg6B2N7AASDNBSPMLPMECWSTR53I" class=" org.radixware.wps.views.editor.property.PropEditor" weight="0.0">
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>37</ui:x>
+                  <ui:y>3</ui:y>
+                  <ui:width>444</ui:width>
+                  <ui:height>19</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="property">
+                <ui:propertyRef>prdCLU3VA2HXVDAZOUCEIBZJPZ3GA</ui:propertyRef>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>titleWidgetEditor</ui:string>
+              </ui:property>
+              <ui:property name="label">
+                <ui:mlstringid>mlsKCQ54Q3KKJAUHALUUH3HJQL4OA</ui:mlstringid>
+              </ui:property>
+              <ui:property name="colSpan">
+                <ui:int>2</ui:int>
+              </ui:property>
+              <ui:property name="gridColumn">
+                <ui:int>0</ui:int>
+              </ui:property>
+              <ui:property name="gridRow">
+                <ui:int>0</ui:int>
+              </ui:property>
+            </ui:widget>
+          </ui:widget>
+          <ui:widget name="rbLastPeriod" id="wdgXIAKGVC4MVBTRFGOT73XSBHMIA" class="org.radixware.wps.rwt.RadioButton" weight="0.0">
+            <ui:property name="text">
+              <ui:mlstringid>mlsQJNFWSVV7ZD3XL4OP456VXPLJI</ui:mlstringid>
+            </ui:property>
+            <ui:property name="geometry">
+              <ui:rect>
+                <ui:x>20</ui:x>
+                <ui:y>69</ui:y>
+                <ui:width>484</ui:width>
+                <ui:height>22</ui:height>
+              </ui:rect>
+            </ui:property>
+            <ui:property name="label">
+              <ui:mlstringid xsi:nil="true"/>
+            </ui:property>
+            <ui:property name="colSpan">
+              <ui:int>2</ui:int>
+            </ui:property>
+            <ui:property name="anchor">
+              <ui:anchor/>
+            </ui:property>
+            <ui:property name="objectName">
+              <ui:string>rbLastPeriod</ui:string>
+            </ui:property>
+            <ui:property name="selected">
+              <ui:bool>false</ui:bool>
+            </ui:property>
+            <ui:property name="gridColumn">
+              <ui:int>0</ui:int>
+            </ui:property>
+            <ui:property name="gridRow">
+              <ui:int>1</ui:int>
+            </ui:property>
+          </ui:widget>
+          <ui:widget name="timePeriodLayout" id="wdgRD3W4ZVVBBEJJAHJ2ML62I5ZH4" class="org.radixware.wps.rwt.LabeledEditGrid" weight="0.0">
+            <ui:property name="geometry">
+              <ui:rect>
+                <ui:x>3</ui:x>
+                <ui:y>77</ui:y>
+                <ui:width>484</ui:width>
+                <ui:height>28</ui:height>
+              </ui:rect>
+            </ui:property>
+            <ui:property name="objectName">
+              <ui:string>timePeriodLayout</ui:string>
+            </ui:property>
+            <ui:widget name="timePeriodWidgetEditor" id="wdgIBHY4FD6KBHFTHC6M2SLSGJJ34" class=" org.radixware.wps.views.editor.property.PropEditor" weight="0.0">
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>-109</ui:x>
+                  <ui:y>2</ui:y>
+                  <ui:width>420</ui:width>
+                  <ui:height>20</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="property">
+                <ui:propertyRef>prdY4L4CP2PL5EVTI7B4VLEMYU5H4</ui:propertyRef>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>timePeriodWidgetEditor</ui:string>
+              </ui:property>
+              <ui:property name="label">
+                <ui:mlstringid>mlsAFUWJSAAQVEUBPKN5YXBYQTXM4</ui:mlstringid>
+              </ui:property>
+              <ui:property name="gridColumn">
+                <ui:int>0</ui:int>
+              </ui:property>
+              <ui:property name="gridRow">
+                <ui:int>0</ui:int>
+              </ui:property>
+              <ui:property name="colSpan">
+                <ui:int>2</ui:int>
+              </ui:property>
+            </ui:widget>
+            <ui:widget name="timeUnitsWidgetEditor" id="wdgY4Q2AM4MYZE4DFJ6VYS325UYK4" class=" org.radixware.wps.views.editor.property.PropEditor" weight="0.0">
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>320</ui:x>
+                  <ui:y>-1</ui:y>
+                  <ui:width>155</ui:width>
+                  <ui:height>20</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="property">
+                <ui:propertyRef>prdPP3ZIU5D7VFG3LFGOFO677LPIU</ui:propertyRef>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>timeUnitsWidgetEditor</ui:string>
+              </ui:property>
+              <ui:property name="colSpan">
+                <ui:int>1</ui:int>
+              </ui:property>
+              <ui:property name="gridColumn">
+                <ui:int>2</ui:int>
+              </ui:property>
+              <ui:property name="gridRow">
+                <ui:int>0</ui:int>
+              </ui:property>
+            </ui:widget>
+          </ui:widget>
+          <ui:widget name="rbInterval" id="wdg2NVRJZHUDFHK5J6VWZLPWIFI3I" class="org.radixware.wps.rwt.RadioButton" weight="0.0">
+            <ui:property name="text">
+              <ui:mlstringid>mlsNAXN7GAMINDG5KXG6CFFD4M4RU</ui:mlstringid>
+            </ui:property>
+            <ui:property name="geometry">
+              <ui:rect>
+                <ui:x>15</ui:x>
+                <ui:y>108</ui:y>
+                <ui:width>484</ui:width>
+                <ui:height>22</ui:height>
+              </ui:rect>
+            </ui:property>
+            <ui:property name="gridColumn">
+              <ui:int>0</ui:int>
+            </ui:property>
+            <ui:property name="gridRow">
+              <ui:int>2</ui:int>
+            </ui:property>
+            <ui:property name="colSpan">
+              <ui:int>1</ui:int>
+            </ui:property>
+            <ui:property name="anchor">
+              <ui:anchor/>
+            </ui:property>
+            <ui:property name="objectName">
+              <ui:string>rbInterval</ui:string>
+            </ui:property>
+            <ui:property name="enabled">
+              <ui:bool>true</ui:bool>
+            </ui:property>
+            <ui:property name="selected">
+              <ui:bool>false</ui:bool>
+            </ui:property>
+          </ui:widget>
+          <ui:widget name="timeIntervalLayout" id="wdgZ6TBY6JKYZHVPPZGYD3QPERUTM" class="org.radixware.wps.rwt.LabeledEditGrid" weight="0.0">
+            <ui:property name="geometry">
+              <ui:rect>
+                <ui:x>2</ui:x>
+                <ui:y>124</ui:y>
+                <ui:width>468</ui:width>
+                <ui:height>27</ui:height>
+              </ui:rect>
+            </ui:property>
+            <ui:property name="objectName">
+              <ui:string>timeIntervalLayout</ui:string>
+            </ui:property>
+            <ui:widget name="dateFromWidgetEditor" id="wdgKGMS2IOFBBDRXFKZ2MNWHDFC5Q" class=" org.radixware.wps.views.editor.property.PropEditor" weight="0.0">
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>-63</ui:x>
+                  <ui:y>1</ui:y>
+                  <ui:width>431</ui:width>
+                  <ui:height>20</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="property">
+                <ui:propertyRef>prdIJO2VPCXEJG5ZLK5WJC5JOY4X4</ui:propertyRef>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>dateFromWidgetEditor</ui:string>
+              </ui:property>
+              <ui:property name="label">
+                <ui:mlstringid>mls7IEXZAULTBBONB3DZP5J6OAKU4</ui:mlstringid>
+              </ui:property>
+              <ui:property name="gridColumn">
+                <ui:int>0</ui:int>
+              </ui:property>
+              <ui:property name="gridRow">
+                <ui:int>0</ui:int>
+              </ui:property>
+              <ui:property name="colSpan">
+                <ui:int>2</ui:int>
+              </ui:property>
+            </ui:widget>
+            <ui:widget name="dateToWidgetEditor" id="wdg6HEKDHO7VVCMFJYRLNSVDQWLQU" class=" org.radixware.wps.views.editor.property.PropEditor" weight="0.0">
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>303</ui:x>
+                  <ui:y>3</ui:y>
+                  <ui:width>175</ui:width>
+                  <ui:height>20</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="property">
+                <ui:propertyRef>prdA4XXVLVCGZCLZPABYYQOUOJ6YM</ui:propertyRef>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>dateToWidgetEditor</ui:string>
+              </ui:property>
+              <ui:property name="label">
+                <ui:mlstringid>mlsVN2Y7JNP6NBOJBC2LQYXOEYFJQ</ui:mlstringid>
+              </ui:property>
+              <ui:property name="gridColumn">
+                <ui:int>2</ui:int>
+              </ui:property>
+              <ui:property name="gridRow">
+                <ui:int>0</ui:int>
+              </ui:property>
+              <ui:property name="colSpan">
+                <ui:int>1</ui:int>
+              </ui:property>
+            </ui:widget>
+          </ui:widget>
+          <ui:widget name="autoRangeCheckBox" id="wdg7O7G2JY3UBFSZJZUMK6VPRJXOE" class="org.radixware.wps.rwt.CheckBox" weight="0.0">
+            <ui:property name="text">
+              <ui:mlstringid>mls5VNZDBFRGFHCHHGILIXBARMYZI</ui:mlstringid>
+            </ui:property>
+            <ui:property name="geometry">
+              <ui:rect>
+                <ui:x>25</ui:x>
+                <ui:y>189</ui:y>
+                <ui:width>90</ui:width>
+                <ui:height>22</ui:height>
+              </ui:rect>
+            </ui:property>
+            <ui:property name="selected">
+              <ui:bool>true</ui:bool>
+            </ui:property>
+            <ui:property name="objectName">
+              <ui:string>autoRangeCheckBox</ui:string>
+            </ui:property>
+          </ui:widget>
+          <ui:widget name="rangeLayout" id="wdgFJOMA3QWBVBUTC63VJAYHDOVLE" class="org.radixware.wps.rwt.LabeledEditGrid" weight="0.0">
+            <ui:property name="geometry">
+              <ui:rect>
+                <ui:x>3</ui:x>
+                <ui:y>172</ui:y>
+                <ui:width>468</ui:width>
+                <ui:height>129</ui:height>
+              </ui:rect>
+            </ui:property>
+            <ui:property name="expand">
+              <ui:bool>true</ui:bool>
+            </ui:property>
+            <ui:property name="objectName">
+              <ui:string>rangeLayout</ui:string>
+            </ui:property>
+            <ui:widget name="minValueWidgetEditor" id="wdgVHDDLPQEHJEITJOWM7LACWRNQI" class=" org.radixware.wps.views.editor.property.PropEditor" weight="0.0">
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>132</ui:x>
+                  <ui:y>8</ui:y>
+                  <ui:width>100</ui:width>
+                  <ui:height>20</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="label">
+                <ui:mlstringid>mlsYQ5DQN3SVNF4XN7G4D3MOQ2Y4U</ui:mlstringid>
+              </ui:property>
+              <ui:property name="gridColumn">
+                <ui:int>0</ui:int>
+              </ui:property>
+              <ui:property name="gridRow">
+                <ui:int>0</ui:int>
+              </ui:property>
+              <ui:property name="colSpan">
+                <ui:int>1</ui:int>
+              </ui:property>
+              <ui:property name="property">
+                <ui:propertyRef>prdJWCX6YJA45HIRH23LDBVOY7CJQ</ui:propertyRef>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>minValueWidgetEditor</ui:string>
+              </ui:property>
+              <ui:property name="enabled">
+                <ui:bool>true</ui:bool>
+              </ui:property>
+            </ui:widget>
+            <ui:widget name="maxValueWidgetEditor" id="wdgVZWVN6HRDNB5XIK6FXFK56GMAU" class=" org.radixware.wps.views.editor.property.PropEditor" weight="0.0">
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>252</ui:x>
+                  <ui:y>2</ui:y>
+                  <ui:width>211</ui:width>
+                  <ui:height>20</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="property">
+                <ui:propertyRef>prdYCDPVCHNEVAM3IRR45BHRHUHQE</ui:propertyRef>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>maxValueWidgetEditor</ui:string>
+              </ui:property>
+              <ui:property name="label">
+                <ui:mlstringid>mlsZKZRJKMVCNDYLJKLD2NMMOVILI</ui:mlstringid>
+              </ui:property>
+              <ui:property name="colSpan">
+                <ui:int>1</ui:int>
+              </ui:property>
+              <ui:property name="gridColumn">
+                <ui:int>1</ui:int>
+              </ui:property>
+              <ui:property name="gridRow">
+                <ui:int>0</ui:int>
+              </ui:property>
+              <ui:property name="enabled">
+                <ui:bool>true</ui:bool>
+              </ui:property>
+            </ui:widget>
+          </ui:widget>
+        </ui:widget>
+      </ui:widget>
+      <ui:connections>
+        <ui:connection>
+          <ui:sender>wdgMDMJ5XU6LRHHDM64Y4JA3BJBVQ</ui:sender>
+          <ui:signal>opened()</ui:signal>
+          <ui:slot>mthAN4KHGZYFVB2FGF3BQHWEVPJ64</ui:slot>
+          <ui:interface>org.radixware.wps.views.dialog.RwtDialog.RwtDialogListener</ui:interface>
+          <ui:registrator>addDialogListener</ui:registrator>
+          <ui:returnType>void</ui:returnType>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgRCPHZ5JVMVGJHNMSOCKJZ2NS2I</ui:sender>
+          <ui:signal>onClick(org.radixware.kernel.common.client.widgets.IButton button)</ui:signal>
+          <ui:slot>mthVQHDYAKK45E7BGRGXX4XY6SSR4</ui:slot>
+          <ui:interface>org.radixware.kernel.common.client.widgets.IButton.ClickHandler</ui:interface>
+          <ui:registrator>addClickHandler</ui:registrator>
+          <ui:returnType>void</ui:returnType>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgXIAKGVC4MVBTRFGOT73XSBHMIA</ui:sender>
+          <ui:signal>onClick(org.radixware.kernel.common.client.widgets.IButton button)</ui:signal>
+          <ui:slot>mthUB5JG6R7TNCB7ONSFBLAX5UFQI</ui:slot>
+          <ui:interface>org.radixware.kernel.common.client.widgets.IButton.ClickHandler</ui:interface>
+          <ui:registrator>addClickHandler</ui:registrator>
+          <ui:returnType>void</ui:returnType>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdg2NVRJZHUDFHK5J6VWZLPWIFI3I</ui:sender>
+          <ui:signal>onClick(org.radixware.kernel.common.client.widgets.IButton button)</ui:signal>
+          <ui:slot>mth4KNTXDVJRRHJJINHOXERA7C3MY</ui:slot>
+          <ui:interface>org.radixware.kernel.common.client.widgets.IButton.ClickHandler</ui:interface>
+          <ui:registrator>addClickHandler</ui:registrator>
+          <ui:returnType>void</ui:returnType>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgMDMJ5XU6LRHHDM64Y4JA3BJBVQ</ui:sender>
+          <ui:signal>beforeClose(org.radixware.kernel.common.enums.EDialogButtonType closeButtonType,org.radixware.kernel.common.client.views.IDialog.DialogResult closeResult)</ui:signal>
+          <ui:slot>mth3FGGVOD7IBAZ5MYUX5TJKXAI4I</ui:slot>
+          <ui:interface>org.radixware.wps.rwt.Dialog.BeforeCloseButtonListener</ui:interface>
+          <ui:registrator>addBeforeCloseListener</ui:registrator>
+          <ui:returnType>boolean</ui:returnType>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdg7O7G2JY3UBFSZJZUMK6VPRJXOE</ui:sender>
+          <ui:signal>onClick(org.radixware.kernel.common.client.widgets.IButton button)</ui:signal>
+          <ui:slot>mthJHUNPRRUQNCJHCZHVH5SEOTWEA</ui:slot>
+          <ui:interface>org.radixware.kernel.common.client.widgets.IButton.ClickHandler</ui:interface>
+          <ui:registrator>addClickHandler</ui:registrator>
+          <ui:returnType>void</ui:returnType>
+        </ui:connection>
+      </ui:connections>
+    </ui:ui>
+    <EmbeddedModel Id="admCZERB7KD75BAPGGWKYZMSWBA3A" Name="DashNewHistDiagramDialogWeb:Model" TitleId="mlsWP7SQBSANZG23NBDNYXP4HGG6E" Type="16">
+      <AccessRules IsPublished="false"/>
+      <Headers>
+        <Src Name="HeaderadmCZERB7KD75BAPGGWKYZMSWBA3A"/>
+      </Headers>
+      <Bodies>
+        <Src Name="BodyadmCZERB7KD75BAPGGWKYZMSWBA3A"/>
+      </Bodies>
+      <MethodGroup Id="cmgM3CQB2JUEFEPJJ2PH62DYL5G5Q" Name="Root"/>
+      <PropertyGroup Id="cpgAHR7E5JGYFFRLFQFTL4HQQS5GE" Name="Root">
+        <Group Id="cpg7LVQL2VOGBGTRDTVAL35Q7UDCY" Name="Props" Members="prdIJO2VPCXEJG5ZLK5WJC5JOY4X4 prdA4XXVLVCGZCLZPABYYQOUOJ6YM prdJBT7C26T65AXVGEFSRG4WFUIDI prdBDWTAEBXRRHLVMU4GU375CN65I prdY4L4CP2PL5EVTI7B4VLEMYU5H4 prdRIO5G3EVGRFGPBDDUWRJIXLDHE prdPP3ZIU5D7VFG3LFGOFO677LPIU prdCLU3VA2HXVDAZOUCEIBZJPZ3GA prdJ4W6MT2BIBDVXLGQXJUK42563Y prdKKA2DXBAS5FQFDPXI5ZGSSINDU prdJWCX6YJA45HIRH23LDBVOY7CJQ prdYCDPVCHNEVAM3IRR45BHRHUHQE"/>
+      </PropertyGroup>
+      <Properties>
+        <Property Id="prdIJO2VPCXEJG5ZLK5WJC5JOY4X4" Name="dateFrom" Nature="8" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="12"/>
+          <DependentItems/>
+          <EmbeddedProperty Id="prdIJO2VPCXEJG5ZLK5WJC5JOY4X4" Name="dateFrom" Nature="2" IsConst="false">
+            <AccessRules IsPublished="false"/>
+            <Type TypeId="12"/>
+            <Presentation InheritanceMask="4">
+              <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+            </Presentation>
+          </EmbeddedProperty>
+        </Property>
+        <Property Id="prdA4XXVLVCGZCLZPABYYQOUOJ6YM" Name="dateTo" Nature="8" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="12"/>
+          <DependentItems/>
+          <EmbeddedProperty Id="prdA4XXVLVCGZCLZPABYYQOUOJ6YM" Name="dateTo" Nature="2" IsConst="false">
+            <AccessRules IsPublished="false"/>
+            <Type TypeId="12"/>
+            <Presentation InheritanceMask="4">
+              <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+            </Presentation>
+          </EmbeddedProperty>
+        </Property>
+        <Property Id="prdJBT7C26T65AXVGEFSRG4WFUIDI" Name="diagramSettings" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="400" extStr="org.radixware.kernel.common.client.dashboard.DiagramSettings"/>
+        </Property>
+        <Property Id="prdBDWTAEBXRRHLVMU4GU375CN65I" Name="metricStateId" Nature="8" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="2"/>
+          <DependentItems/>
+          <EmbeddedProperty Id="prdBDWTAEBXRRHLVMU4GU375CN65I" Name="metricStateId" Nature="2" IsConst="false">
+            <AccessRules IsPublished="false"/>
+            <Type TypeId="2"/>
+            <Presentation TitleId="mlsOVRG2FEQSRALHKFVC7BIVZK2LU" InheritanceMask="4">
+              <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+            </Presentation>
+          </EmbeddedProperty>
+        </Property>
+        <Property Id="prdY4L4CP2PL5EVTI7B4VLEMYU5H4" Name="timePeriod" Nature="8" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="2"/>
+          <DependentItems/>
+          <EmbeddedProperty Id="prdY4L4CP2PL5EVTI7B4VLEMYU5H4" Name="timePeriod" Nature="2" IsConst="false">
+            <AccessRules IsPublished="false"/>
+            <Type TypeId="2"/>
+            <Presentation InheritanceMask="4">
+              <Editing NotNull="true" IsDuplicatesEnabled="true">
+                <EditMask>
+                  <edit:Int MinValue="1" NumberBase="10" StepSize="1"/>
+                </EditMask>
+              </Editing>
+            </Presentation>
+          </EmbeddedProperty>
+        </Property>
+        <Property Id="prdRIO5G3EVGRFGPBDDUWRJIXLDHE" Name="timeRangeType" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="400" extStr="org.radixware.kernel.common.client.dashboard.HistoricalDiagramSettings.TimeRange"/>
+        </Property>
+        <Property Id="prdPP3ZIU5D7VFG3LFGOFO677LPIU" Name="timeUnits" Nature="8" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="21" Path="acsQOJKNHBS4BEADLN35QIXDMKDFU"/>
+          <InitialValue>
+            <ValAsStr>HOURS</ValAsStr>
+          </InitialValue>
+          <DependentItems/>
+          <EmbeddedProperty Id="prdPP3ZIU5D7VFG3LFGOFO677LPIU" Name="timeUnits" Nature="2" IsConst="false">
+            <AccessRules IsPublished="false"/>
+            <Type TypeId="21" Path="acsQOJKNHBS4BEADLN35QIXDMKDFU"/>
+            <Presentation InheritanceMask="4">
+              <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+            </Presentation>
+          </EmbeddedProperty>
+        </Property>
+        <Property Id="prdCLU3VA2HXVDAZOUCEIBZJPZ3GA" Name="title" Nature="8" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="21"/>
+          <DependentItems/>
+          <EmbeddedProperty Id="prdCLU3VA2HXVDAZOUCEIBZJPZ3GA" Name="title" Nature="2" IsConst="false">
+            <AccessRules IsPublished="false"/>
+            <Type TypeId="21"/>
+            <Presentation InheritanceMask="4">
+              <Editing IsDuplicatesEnabled="true"/>
+            </Presentation>
+          </EmbeddedProperty>
+        </Property>
+        <Property Id="prdJ4W6MT2BIBDVXLGQXJUK42563Y" Name="metricState" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="411" Path="aec4QTN5SWVEFB55HPL32XOX6KZ7Y"/>
+        </Property>
+        <Property Id="prdKKA2DXBAS5FQFDPXI5ZGSSINDU" Name="metricName" Nature="8" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="21"/>
+          <DependentItems/>
+          <EmbeddedProperty Id="prdKKA2DXBAS5FQFDPXI5ZGSSINDU" Name="metricName" Nature="2" IsConst="false">
+            <AccessRules IsPublished="false"/>
+            <Type TypeId="21"/>
+            <Presentation TitleId="mlsPYSQ67FZJZBCVP5I3MPKZQWGFQ" InheritanceMask="4">
+              <Editing IsDuplicatesEnabled="true"/>
+            </Presentation>
+          </EmbeddedProperty>
+        </Property>
+        <Property Id="prdJWCX6YJA45HIRH23LDBVOY7CJQ" Name="minValue" Nature="8" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="11"/>
+          <InitialValue>
+            <Jml>
+              <xsc:Item>
+                <xsc:Java>0</xsc:Java>
+              </xsc:Item>
+            </Jml>
+          </InitialValue>
+          <DependentItems/>
+          <EmbeddedProperty Id="prdJWCX6YJA45HIRH23LDBVOY7CJQ" Name="minValue" Nature="2" IsConst="false">
+            <AccessRules IsPublished="false"/>
+            <Type TypeId="11"/>
+            <Presentation TitleId="mlsZBX2C74TFJDATLSQYASVUU6O5A" InheritanceMask="4">
+              <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+            </Presentation>
+          </EmbeddedProperty>
+        </Property>
+        <Property Id="prdYCDPVCHNEVAM3IRR45BHRHUHQE" Name="maxValue" Nature="8" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="11"/>
+          <InitialValue>
+            <ValAsStr>1</ValAsStr>
+          </InitialValue>
+          <DependentItems/>
+          <EmbeddedProperty Id="prdYCDPVCHNEVAM3IRR45BHRHUHQE" Name="maxValue" Nature="2" IsConst="false">
+            <AccessRules IsPublished="false"/>
+            <Type TypeId="11"/>
+            <Presentation TitleId="mlsHUH4OKINRJE53P36VVXEIZH4YM" InheritanceMask="4">
+              <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+            </Presentation>
+          </EmbeddedProperty>
+        </Property>
+      </Properties>
+      <Methods>
+        <Method Id="mthUB5JG6R7TNCB7ONSFBLAX5UFQI" Name="rbLastPeriod_onClick" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="button" Id="mprAZ37OV6C3VGJ7MICYV5F6GBJ4E">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IButton"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdRIO5G3EVGRFGPBDDUWRJIXLDHE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = org.radixware.kernel.common.client.dashboard.HistoricalDiagramSettings.TimeRange.LAST_PERIOD;
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A mthY57I4E4V6RDAZGHN5NEENXF3W4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdRIO5G3EVGRFGPBDDUWRJIXLDHE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth4KNTXDVJRRHJJINHOXERA7C3MY" Name="rbInterval_onClick" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="button" Id="mprREI6HJJO35EMZPCDKII7TPPTCA">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IButton"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdRIO5G3EVGRFGPBDDUWRJIXLDHE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = org.radixware.kernel.common.client.dashboard.HistoricalDiagramSettings.TimeRange.INTERVAL;
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A mthY57I4E4V6RDAZGHN5NEENXF3W4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdRIO5G3EVGRFGPBDDUWRJIXLDHE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthAN4KHGZYFVB2FGF3BQHWEVPJ64" Name="DialogWidget_opened" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>org.radixware.wps.rwt.RadioButton.Group timeRangeGroup = new org.radixware.wps.rwt.RadioButton.Group();
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A wdg2NVRJZHUDFHK5J6VWZLPWIFI3I" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setGroup(timeRangeGroup);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A wdgXIAKGVC4MVBTRFGOT73XSBHMIA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setGroup(timeRangeGroup);
+
+if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdJBT7C26T65AXVGEFSRG4WFUIDI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> != null &amp;&amp; </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdJBT7C26T65AXVGEFSRG4WFUIDI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.HistSettings != null) {
+    org.radixware.kernel.common.client.dashboard.HistoricalDiagramSettings histSettings = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdJBT7C26T65AXVGEFSRG4WFUIDI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.HistSettings;
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdKKA2DXBAS5FQFDPXI5ZGSSINDU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdJBT7C26T65AXVGEFSRG4WFUIDI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.MetricName;
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdCLU3VA2HXVDAZOUCEIBZJPZ3GA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdJBT7C26T65AXVGEFSRG4WFUIDI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Title;
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdBDWTAEBXRRHLVMU4GU375CN65I" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdJBT7C26T65AXVGEFSRG4WFUIDI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.StateId;
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdY4L4CP2PL5EVTI7B4VLEMYU5H4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value = histSettings.getTimeRangeProp().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc6VPXEYW6RBHF3I23Q3TGB5JCEM mthOSFRCQTTSNAKLHMTXUFW2QXO5U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+    switch (histSettings.getTimeRangeProp().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc6VPXEYW6RBHF3I23Q3TGB5JCEM mth5WO6DOBG3ZGV7GFIUZYMJGS4IU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>()) {
+        case java.util.Calendar.HOUR:
+            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdPP3ZIU5D7VFG3LFGOFO677LPIU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsQOJKNHBS4BEADLN35QIXDMKDFU aciZ7LG5YAO4NABLLTNEQTVORMF64" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+            break;
+        case java.util.Calendar.MINUTE:
+            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdPP3ZIU5D7VFG3LFGOFO677LPIU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsQOJKNHBS4BEADLN35QIXDMKDFU aciZPVXGKWSNRGA5K4QHJCWBNO6TE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+            break;
+        case java.util.Calendar.SECOND:
+            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdPP3ZIU5D7VFG3LFGOFO677LPIU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsQOJKNHBS4BEADLN35QIXDMKDFU aci2Q4LFANW5ZFP5KGJU2H4FIUXWU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+            break;
+        default:
+            throw new RuntimeException("Not expected time unit value");
+    }
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdIJO2VPCXEJG5ZLK5WJC5JOY4X4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value = histSettings.getTimeRangeProp().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc6VPXEYW6RBHF3I23Q3TGB5JCEM mthLHIQIJDAIRAV3F4HDAG5BQ6UXA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdA4XXVLVCGZCLZPABYYQOUOJ6YM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value = histSettings.getTimeRangeProp().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc6VPXEYW6RBHF3I23Q3TGB5JCEM mthCWWMBDMGVFBRFD42ASUNGBQUJ4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+    
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdRIO5G3EVGRFGPBDDUWRJIXLDHE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = histSettings.getTimeRangeProp().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc6VPXEYW6RBHF3I23Q3TGB5JCEM mthVRGC46RAR5BHNBQMOEPUEBE2OI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+    if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdRIO5G3EVGRFGPBDDUWRJIXLDHE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.equals(org.radixware.kernel.common.client.dashboard.HistoricalDiagramSettings.TimeRange.LAST_PERIOD)) {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A wdgXIAKGVC4MVBTRFGOT73XSBHMIA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.click();
+    } else {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A wdg2NVRJZHUDFHK5J6VWZLPWIFI3I" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.click();
+    }
+    
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdJWCX6YJA45HIRH23LDBVOY7CJQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value = histSettings.getValueScale()[0];
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdYCDPVCHNEVAM3IRR45BHRHUHQE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value = histSettings.getValueScale()[1];
+    if (histSettings.isAutoValueRange()) {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A wdg7O7G2JY3UBFSZJZUMK6VPRJXOE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setSelected(true);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdJWCX6YJA45HIRH23LDBVOY7CJQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(false);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdYCDPVCHNEVAM3IRR45BHRHUHQE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(false);
+    } else {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A wdg7O7G2JY3UBFSZJZUMK6VPRJXOE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setSelected(false);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdJWCX6YJA45HIRH23LDBVOY7CJQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(true);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdYCDPVCHNEVAM3IRR45BHRHUHQE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(true);
+    }
+} else {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdCLU3VA2HXVDAZOUCEIBZJPZ3GA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value = "Default title";
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdY4L4CP2PL5EVTI7B4VLEMYU5H4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value = 10;
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdPP3ZIU5D7VFG3LFGOFO677LPIU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsQOJKNHBS4BEADLN35QIXDMKDFU aciZPVXGKWSNRGA5K4QHJCWBNO6TE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdIJO2VPCXEJG5ZLK5WJC5JOY4X4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="12"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(System.currentTimeMillis() - 60 * 60 * 1000);
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdA4XXVLVCGZCLZPABYYQOUOJ6YM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="12"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(System.currentTimeMillis());
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdRIO5G3EVGRFGPBDDUWRJIXLDHE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = org.radixware.kernel.common.client.dashboard.HistoricalDiagramSettings.TimeRange.LAST_PERIOD;
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A wdgXIAKGVC4MVBTRFGOT73XSBHMIA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.click();
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A wdgMDMJ5XU6LRHHDM64Y4JA3BJBVQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setActionEnabled(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsS7F4BA7TJXNRDCHCABIFNQAABA aci3KAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, false);
+
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdJWCX6YJA45HIRH23LDBVOY7CJQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(false);
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdYCDPVCHNEVAM3IRR45BHRHUHQE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(false);
+}
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A wdgRCPHZ5JVMVGJHNMSOCKJZ2NS2I" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcP2R7IHUBPFDGFNCMJF7KXYRMLM mthZTCQAPSR3VG75HQC3O3BGIUWHM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(30);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdKKA2DXBAS5FQFDPXI5ZGSSINDU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setReadonly(true);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthY57I4E4V6RDAZGHN5NEENXF3W4" Name="switchTimeWidgets" Nature="0" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="timeRange" Id="mprYHUDSG2JL5EYNNYDPKXI6HN2QM">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.client.dashboard.HistoricalDiagramSettings.TimeRange"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>boolean isLastPeriodTime;
+if (timeRange.equals(org.radixware.kernel.common.client.dashboard.HistoricalDiagramSettings.TimeRange.LAST_PERIOD)) {
+    isLastPeriodTime = true;
+} else {
+    isLastPeriodTime = false; 
+}
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdIJO2VPCXEJG5ZLK5WJC5JOY4X4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(!isLastPeriodTime);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdA4XXVLVCGZCLZPABYYQOUOJ6YM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(!isLastPeriodTime);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A wdgKGMS2IOFBBDRXFKZ2MNWHDFC5Q" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcP2R7IHUBPFDGFNCMJF7KXYRMLM mthZVIDRVKUF5HLXPO6INZANHRUVI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(!isLastPeriodTime);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A wdg6HEKDHO7VVCMFJYRLNSVDQWLQU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcP2R7IHUBPFDGFNCMJF7KXYRMLM mthZVIDRVKUF5HLXPO6INZANHRUVI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(!isLastPeriodTime);
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdY4L4CP2PL5EVTI7B4VLEMYU5H4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(isLastPeriodTime);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdPP3ZIU5D7VFG3LFGOFO677LPIU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(isLastPeriodTime);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A wdgY4Q2AM4MYZE4DFJ6VYS325UYK4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcP2R7IHUBPFDGFNCMJF7KXYRMLM mthZVIDRVKUF5HLXPO6INZANHRUVI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(isLastPeriodTime);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A wdgIBHY4FD6KBHFTHC6M2SLSGJJ34" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcP2R7IHUBPFDGFNCMJF7KXYRMLM mthZVIDRVKUF5HLXPO6INZANHRUVI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(isLastPeriodTime);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthVQHDYAKK45E7BGRGXX4XY6SSR4" Name="chooseMetricBtn_onClick" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="button" Id="mprLPCCY6KYCVHEDGD35ZNMG2TBLQ">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IButton"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="cdlTTA5LTE7DJC2VN36NZATF6UFEY"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> dialog = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="cdlTTA5LTE7DJC2VN36NZATF6UFEY"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>());
+if (dialog.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aic6XXEZKQ2K5AEJFYAA3DX7EFR6U mth64RWGAYVHRDGJMLHSN66TOXNQQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>() == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcDAOFOPE66ZA5ZP7ALHOOPQIQ6I"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.ACCEPTED &amp;&amp; dialog.Model.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlTTA5LTE7DJC2VN36NZATF6UFEY admTTA5LTE7DJC2VN36NZATF6UFEY prdWO4PJYML5ZGHXHN6NWBAAXQ7LM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> != null) {     
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdJ4W6MT2BIBDVXLGQXJUK42563Y" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="aec4QTN5SWVEFB55HPL32XOX6KZ7Y"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) dialog.Model.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlTTA5LTE7DJC2VN36NZATF6UFEY admTTA5LTE7DJC2VN36NZATF6UFEY prdWO4PJYML5ZGHXHN6NWBAAXQ7LM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdBDWTAEBXRRHLVMU4GU375CN65I" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdJ4W6MT2BIBDVXLGQXJUK42563Y" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aec4QTN5SWVEFB55HPL32XOX6KZ7Y colAJKGMNFACVDP3NKSFE74FBBJWI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value;
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdCLU3VA2HXVDAZOUCEIBZJPZ3GA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdJ4W6MT2BIBDVXLGQXJUK42563Y" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aec4QTN5SWVEFB55HPL32XOX6KZ7Y prdVSJ4MBIWJRH3FH6CZLCK2DB6YI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value; 
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdKKA2DXBAS5FQFDPXI5ZGSSINDU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdJ4W6MT2BIBDVXLGQXJUK42563Y" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aec4QTN5SWVEFB55HPL32XOX6KZ7Y prdVSJ4MBIWJRH3FH6CZLCK2DB6YI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value;
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A wdgMDMJ5XU6LRHHDM64Y4JA3BJBVQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setActionEnabled(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsS7F4BA7TJXNRDCHCABIFNQAABA aci3KAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, true);
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthZ6CNYSG4YJHARPO7TVLPUR3ZCE" Name="getNewDiagramSettings" Nature="0" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.dashboard.DiagramSettings"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>org.radixware.kernel.common.client.dashboard.DiagramSettings diagSettings = new org.radixware.kernel.common.client.dashboard.DiagramSettings(true);
+diagSettings.Title = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdCLU3VA2HXVDAZOUCEIBZJPZ3GA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value;
+diagSettings.MetricName = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdKKA2DXBAS5FQFDPXI5ZGSSINDU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value;
+diagSettings.setStateId(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdBDWTAEBXRRHLVMU4GU375CN65I" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value.longValue());
+diagSettings.MetricState = (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdJ4W6MT2BIBDVXLGQXJUK42563Y" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+int timeUnits;
+switch (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdPP3ZIU5D7VFG3LFGOFO677LPIU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value) {
+    case </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsQOJKNHBS4BEADLN35QIXDMKDFU aciZ7LG5YAO4NABLLTNEQTVORMF64" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>:
+        timeUnits = java.util.Calendar.HOUR;
+        break;
+    case </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsQOJKNHBS4BEADLN35QIXDMKDFU aciZPVXGKWSNRGA5K4QHJCWBNO6TE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>:
+        timeUnits = java.util.Calendar.MINUTE;
+        break;
+    case </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsQOJKNHBS4BEADLN35QIXDMKDFU aci2Q4LFANW5ZFP5KGJU2H4FIUXWU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>:
+        timeUnits = java.util.Calendar.SECOND;
+        break;
+    default:
+        throw new RuntimeException("Not expected time unit value");
+}
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc6VPXEYW6RBHF3I23Q3TGB5JCEM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> timeRangeProp = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc6VPXEYW6RBHF3I23Q3TGB5JCEM mthB2W3KZOTFRAMZCIKWGZDYROJEA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc7I6YG4EQAFERJNGPMQQEDDGGRA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc7I6YG4EQAFERJNGPMQQEDDGGRA prdC77BFMVF6ZAONA7TALYAHCPAPI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>,
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdRIO5G3EVGRFGPBDDUWRJIXLDHE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdIJO2VPCXEJG5ZLK5WJC5JOY4X4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdA4XXVLVCGZCLZPABYYQOUOJ6YM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value,
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdY4L4CP2PL5EVTI7B4VLEMYU5H4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value.longValue(), timeUnits);
+diagSettings.HistSettings.setTimeRangeProp(timeRangeProp);
+diagSettings.HistSettings.setAutoValueRange(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A wdg7O7G2JY3UBFSZJZUMK6VPRJXOE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.isSelected());
+diagSettings.HistSettings.setValueScale(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdJWCX6YJA45HIRH23LDBVOY7CJQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value.doubleValue(), </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdYCDPVCHNEVAM3IRR45BHRHUHQE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value.doubleValue());
+return diagSettings;</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth3FGGVOD7IBAZ5MYUX5TJKXAI4I" Name="DialogWidget_beforeClose" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="closeButtonType" Id="mprLZG6RYOL4ZCGVCAOJM26DZEKQA">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EDialogButtonType"/>
+            </Parameter>
+            <Parameter Name="closeResult" Id="mprEFHDDVYP2NB2LJYK7GYF7A7VBU">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.client.views.IDialog.DialogResult"/>
+            </Parameter>
+          </Parameters>
+          <ReturnType TypeId="400" extStr="boolean"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if (closeResult == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcDAOFOPE66ZA5ZP7ALHOOPQIQ6I"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcDAOFOPE66ZA5ZP7ALHOOPQIQ6I prdF2Y7KMCNG5BJNNVWGIMXUHANS4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> &amp;&amp; </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdRIO5G3EVGRFGPBDDUWRJIXLDHE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.equals(org.radixware.kernel.common.client.dashboard.HistoricalDiagramSettings.TimeRange.INTERVAL)) {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="12"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> dTo = (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="12"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A wdg6HEKDHO7VVCMFJYRLNSVDQWLQU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicWWIT3ISIVJFHFKG6MMJLWHA3UE mthWD5EVACYXRDGBM7TVVHZQCLAQM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthLSANOBLXINHNPFDVOGRUZDVNV4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="12"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> dFrom = (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="12"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A wdgKGMS2IOFBBDRXFKZ2MNWHDFC5Q" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicWWIT3ISIVJFHFKG6MMJLWHA3UE mthWD5EVACYXRDGBM7TVVHZQCLAQM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthLSANOBLXINHNPFDVOGRUZDVNV4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+    if (dTo.before(dFrom)) {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthA5MYDLGBIZFR7HVUDLFWB2FGJA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsZ4GP2NM64FFE3BIE6T2YBWCUHU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsIVLVX5YPYBFKVNXZBUGBQMMELQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+        return false;
+    }
+    return true;
+} else {
+    return true;
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthJHUNPRRUQNCJHCZHVH5SEOTWEA" Name="autoRangeCheckBox_onClick" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="button" Id="mpr6EI27FHH5JDHNAUZFX3WHG7HCU">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IButton"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A wdg7O7G2JY3UBFSZJZUMK6VPRJXOE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.isSelected()) {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdJWCX6YJA45HIRH23LDBVOY7CJQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(false);
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdYCDPVCHNEVAM3IRR45BHRHUHQE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(false);
+} else {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdJWCX6YJA45HIRH23LDBVOY7CJQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(true);
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlCZERB7KD75BAPGGWKYZMSWBA3A admCZERB7KD75BAPGGWKYZMSWBA3A prdYCDPVCHNEVAM3IRR45BHRHUHQE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(true);
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+      </Methods>
+    </EmbeddedModel>
+  </AdsWebCustomDialogDefinition>
+</AdsDefinition>

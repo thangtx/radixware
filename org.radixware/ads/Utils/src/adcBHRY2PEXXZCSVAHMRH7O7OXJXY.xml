@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcBHRY2PEXXZCSVAHMRH7O7OXJXY" Name="InetAddressParser" Type="3" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.utils.ValueFormatter"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcGFD7IDPXLBDQ5LRCHWBLCBKAHE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcMI5MBJASDJDSXIA2UMHGO4WJBQ"/>
+    </Bodies>
+    <MethodGroup Id="cmg2OISKWXHWZDNPAPCTIGN3W6HYA" Name="Root"/>
+    <PropertyGroup Id="cpg77JGNO5RPJAXVBNNRSHAAZEV7U" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth36LNF46VDJCZDEAAJ6FOEZUV6I" Name="parseCompositeInetSocketAddress" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="parseCompositeInetSocketAddress(Ljava.lang.String;)Lorg.radixware.kernel.common.utils.CompositeInetSocketAddress;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="address" Id="mpr4HRO4MFJWREMVOFTG3YND5Z7PU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.utils.CompositeInetSocketAddress"/>
+      </Method>
+      <Method Id="mthKACVEFWXKZB5HNUS23JCBYD3OI" Name="parseInetSocketAddress" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="parseInetSocketAddress(Ljava.lang.String;)Ljava.net.InetSocketAddress;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="address" Id="mprNTW3CVSQZRBP3KFKAZ24BPQJPY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.net.InetSocketAddress"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

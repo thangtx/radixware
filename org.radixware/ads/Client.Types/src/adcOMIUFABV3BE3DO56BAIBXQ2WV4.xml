@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcOMIUFABV3BE3DO56BAIBXQ2WV4" Name="TimeZoneInfo" Type="3" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.types.TimeZoneInfo"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcOMIUFABV3BE3DO56BAIBXQ2WV4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcOMIUFABV3BE3DO56BAIBXQ2WV4"/>
+    </Bodies>
+    <MethodGroup Id="cmgU57NRLPWIZEVHPYAKC5BAL2MOI" Name="Root"/>
+    <PropertyGroup Id="cpg33IH57HYBJDXFJXJVNFS4H5LBU" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthK2CL2ZDSJNAWHN3DUNNGFFOQNI" Name="getId" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getId()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthAVKICBHGYVHQTD7GEAO3A3RBFU" Name="getOffsetMills" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getOffsetMills()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthHF7NA73C5NC3ZEW7GMMRPD2YQ4" Name="getTimeZoneDisplayName" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getTimeZoneDisplayName(ILjava.util.Locale;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="style" Id="mprJRKUG22CNNAXRE7RTL4DFVKPDM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="locale" Id="mprYNBKGL7TU5EIDIGZTODHNBECBY">
+            <Type TypeId="400" extStr="java.util.Locale"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthHMMJJEHVWZGF7DFCKZPSCGCGFI" Name="formatDate" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="formatDate(ILjava.util.Locale;Ljava.sql.Timestamp;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="dateStyle" Id="mprYG2NI3HQPREB3BOJAU7RCCT3TY">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="locale" Id="mprZNKPK6UXYJFS7DNIFHJYJZWPJQ">
+            <Type TypeId="400" extStr="java.util.Locale"/>
+          </Parameter>
+          <Parameter Name="value" Id="mprOI2UQ2J2DJAF7PBPVRMO6MZFBA">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthPTZ5WILZ35G3JNSKPN7ZIHR6DI" Name="formatDateTime" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="formatDateTime(IILjava.util.Locale;Ljava.sql.Timestamp;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="dateStyle" Id="mpr3KAEG6ZDBVHD3LO4PV2VTIQ5IE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="timeStyle" Id="mprPIESBNFVQZER5BDPLTMG3BAF5E">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="locale" Id="mpr5OUZ7Y36YBFSTAROQHTJZV25RE">
+            <Type TypeId="400" extStr="java.util.Locale"/>
+          </Parameter>
+          <Parameter Name="value" Id="mprMYIOPHMHPJGK7EPYDP66QJ7ZJY">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthEPB45PJUY5BMZNWRUQFD53RTZI" Name="formatTime" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="formatTime(ILjava.util.Locale;Ljava.sql.Timestamp;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="timeStyle" Id="mprBJJNWHQTLBD7TFOA3ZFUYVREZI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="locale" Id="mprUTXGH2VKJBGWRKG5VZBYSBLT4A">
+            <Type TypeId="400" extStr="java.util.Locale"/>
+          </Parameter>
+          <Parameter Name="value" Id="mprBL25DU3B5RAZROOQFYUI6MZW5E">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthOUPEY3X7BJDRNNOC4WFWQI5DLE" Name="formatDateTime" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="formatDateTime(Ljava.lang.String;Ljava.util.Locale;Ljava.sql.Timestamp;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="pattern" Id="mprTF4JRLG6QRBDPPQ6KTAPVINM7E">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="locale" Id="mprFR7WPZKSWFAEFJAGML55RNXT7M">
+            <Type TypeId="400" extStr="java.util.Locale"/>
+          </Parameter>
+          <Parameter Name="value" Id="mprBJS3GIFE4BB4LCWISFXH4N2ENE">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

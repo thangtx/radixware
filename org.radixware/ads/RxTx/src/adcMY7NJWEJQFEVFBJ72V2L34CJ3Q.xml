@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcMY7NJWEJQFEVFBJ72V2L34CJ3Q" Name="CommPortIdentifier" Type="3" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="gnu.io.CommPortIdentifier"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcBR6UYYPTGBARVEDWT7PM3KAORU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc5EFYHVRAM5CLREKTS2TORMWMME"/>
+    </Bodies>
+    <MethodGroup Id="cmgEIXNUTEBHNAS3ORJZ4JTA3JXLU" Name="Root"/>
+    <PropertyGroup Id="cpg546ZU743CNGBTPWJZCCHNE7274" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth3BHPZEFYGJBI7PUOVZOOPOZK3Q" Name="getPortType" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getPortType()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthFXQPMGOPDJHFVNR7GTNGLKSI7I" Name="getPortIdentifiers" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getPortIdentifiers()Ljava.util.Enumeration;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.Enumeration"/>
+      </Method>
+      <Method Id="mthFTAYYE3GSZE5DGJOQUJYKJHO2A" Name="removePortOwnershipListener" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="removePortOwnershipListener(Lgnu.io.CommPortOwnershipListener;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="c" Id="mprKIPRJZ2GGREPVCFOJF4GHWT5RA">
+            <Type TypeId="400" extStr="gnu.io.CommPortOwnershipListener"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthHDIQUBYZ4VBAJL4BWHMSZTTRXU" Name="isCurrentlyOwned" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isCurrentlyOwned()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthH5TZR3ZFPJDENF3MEW735NEKLU" Name="addPortName" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="addPortName(Ljava.lang.String;ILgnu.io.CommDriver;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="s" Id="mprHZFNXUJYZZCZLNLQWUY2HOEZY4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="type" Id="mpr7W2EMVU4RNHUZKFGXF5BNXC2G4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="c" Id="mpr2J2GY732WJFQ7OKBXOHQR3E2BM">
+            <Type TypeId="400" extStr="gnu.io.CommDriver"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthMZNUP4NLDVF6PNB3FAVOWG5RCY" Name="getName" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getName()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthL737PTZY45HTPDTXQP6VRQEPZI" Name="getPortIdentifier" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getPortIdentifier(Ljava.lang.String;)Lgnu.io.CommPortIdentifier;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="s" Id="mprOLUCABYUVBBK3L7LDUX4YID6J4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="gnu.io.CommPortIdentifier"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="gnu.io.NoSuchPortException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth6GVBZUSPOBETXEO5A4RVXRH4UU" Name="addPortOwnershipListener" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="addPortOwnershipListener(Lgnu.io.CommPortOwnershipListener;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="c" Id="mprLHG3MSKCU5DH5KJUS5EKYUGCLI">
+            <Type TypeId="400" extStr="gnu.io.CommPortOwnershipListener"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthYOC273UY3VA4NK6IQITA7OQTSQ" Name="getCurrentOwner" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getCurrentOwner()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthSIJQ635HUZEW3AJD4BXEDKZTME" Name="open" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="open(Ljava.io.FileDescriptor;)Lgnu.io.CommPort;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="f" Id="mprYN2AOJ37B5B3XEQYNARISIVFUU">
+            <Type TypeId="400" extStr="java.io.FileDescriptor"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="gnu.io.CommPort"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="gnu.io.UnsupportedCommOperationException"/>
+        </ThrownExceptions>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

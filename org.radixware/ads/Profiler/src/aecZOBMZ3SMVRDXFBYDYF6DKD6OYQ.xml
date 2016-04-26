@@ -1,0 +1,535 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aecZOBMZ3SMVRDXFBYDYF6DKD6OYQ" Name="PeriodsView" Type="1" ClientEnvironment="explorer">
+    <AccessRules IsFinal="true"/>
+    <Headers>
+      <Src Name="HeaderadcCRV6XASL75AHLB5FILVPINGBZU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcXUOTJQJFONCZVFYOBWX7B7GKUY"/>
+    </Bodies>
+    <MethodGroup Id="cmg43EYIZ56OBFHJMYMPAA44R5WGA" Name="Root"/>
+    <PropertyGroup Id="cpgJK4QD64UTNHKXBFQHTDKVZYBPA" Name="Root"/>
+    <Properties>
+      <Property Id="col4MPPNUSDM5H5HDSSWUTEPLISPU" Name="periodEndTime" Nature="0" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="12"/>
+        <Presentation TitleId="mls6LAB7A7E7FFIJMRLU472PSWWT4" InheritanceMask="4">
+          <Editing NotNull="true" EditPossibility="2" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colMFQFDPL2LVBHPBJSCGSHBZJ5CU" Name="instanceId" Nature="0" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <Presentation TitleId="mlsMSPJFTKIFZFOJNYPTHR7MCEL7Q" InheritanceMask="4">
+          <Editing NotNull="true" EditPossibility="2" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods/>
+    <Entity EntityId="tblZOBMZ3SMVRDXFBYDYF6DKD6OYQ">
+      <AccessAreas Type="None"/>
+    </Entity>
+    <Presentations ObjectTitleId="mlsE6M63TSFNBDRPPXYXHZDMN224E" EntityTitleId="mls4AKGUYXXVREA7KVFEQUDU4DFDA" IconId="imgYTWQSGM2CZH6TET4KOCBXZYLDU" Restrictions="0">
+      <ObjectTitleFormat Id="etfC3QOPKKLDZAZXIQ3ZOK35FGHRU"/>
+      <Sortings>
+        <Sorting Id="srtASQ552MF5BG5BGLMZ2LBMQG2CQ" Name="Default">
+          <AccessRules IsPublished="false"/>
+          <OrderBy Desc="true" PropId="col4MPPNUSDM5H5HDSSWUTEPLISPU"/>
+          <OrderBy Desc="false" PropId="colMFQFDPL2LVBHPBJSCGSHBZJ5CU"/>
+          <Hint/>
+        </Sorting>
+        <Sorting Id="srtADKLWTGJTVHKZJIN7X5W7JKWM4" Name="timeAsc">
+          <AccessRules IsPublished="false"/>
+          <OrderBy Desc="false" PropId="col4MPPNUSDM5H5HDSSWUTEPLISPU"/>
+          <OrderBy Desc="false" PropId="colMFQFDPL2LVBHPBJSCGSHBZJ5CU"/>
+          <Hint/>
+        </Sorting>
+      </Sortings>
+      <EditorPresentations>
+        <EditorPresentation Id="epr2TCSQEL3JRFYDFOSDC266DWJFQ" Name="General" InheritanceMask="2192" Restrictions="5" EnabledCommandIds="" RightsInheritanceMode="0">
+          <AccessRules IsPublished="false"/>
+          <ChildExplorerItems>
+            <Item>
+              <Entity Id="xpiXUVVEL2AMBH2HFKUWS43YESONA" Name="ProfilerLog" InheritanceMask="16560" IsVisibleInTree="true" ClassId="aec7KEBDLAYLVHQDMHFSJTZSLRZJA" SelectorPresentationId="sprJ7K5GDYCTJHTZJIAJUCBQ7YB2Q" Restrictions="0" EnabledCommands="">
+                <AccessRules IsPublished="false"/>
+                <Condition>
+                  <ConditionWhere>
+                    <xsc:Item>
+                      <xsc:PropSqlName TableId="tbl7KEBDLAYLVHQDMHFSJTZSLRZJA" PropId="colWP5GZKZHYNFETENC2QN2NQXLPM" Owner="THIS"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Sql> = </xsc:Sql>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:PropSqlName TableId="tblZOBMZ3SMVRDXFBYDYF6DKD6OYQ" PropId="col4MPPNUSDM5H5HDSSWUTEPLISPU" Owner="PARENT"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Sql> and </xsc:Sql>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:PropSqlName TableId="tbl7KEBDLAYLVHQDMHFSJTZSLRZJA" PropId="colD6UBRQ763RA6XIT2RNYMNIEWGQ" Owner="THIS"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Sql> = </xsc:Sql>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:PropSqlName TableId="tblZOBMZ3SMVRDXFBYDYF6DKD6OYQ" PropId="colMFQFDPL2LVBHPBJSCGSHBZJ5CU" Owner="PARENT"/>
+                    </xsc:Item>
+                  </ConditionWhere>
+                  <ConditionFrom/>
+                </Condition>
+              </Entity>
+            </Item>
+            <Item>
+              <Entity Id="xpiEFSNE7S56VF5TDOSHOI2LNHGCM" Name="ProfilerLogAll" TitleId="mlsQIVWSTIHSNBN3GU3INC3UJ4NFM" InheritanceMask="16560" IsVisibleInTree="false" ClassId="aec7KEBDLAYLVHQDMHFSJTZSLRZJA" SelectorPresentationId="sprJ7K5GDYCTJHTZJIAJUCBQ7YB2Q" Restrictions="0" EnabledCommands="">
+                <AccessRules IsPublished="false"/>
+                <Condition>
+                  <ConditionWhere/>
+                  <ConditionFrom/>
+                </Condition>
+              </Entity>
+            </Item>
+          </ChildExplorerItems>
+          <ObjectTitleFormat Id="etfP4GIJCA4WFATXLNJVQDHAJBHJY"/>
+        </EditorPresentation>
+      </EditorPresentations>
+      <SelectorPresentations>
+        <SelectorPresentation Id="spr5H36TYH5YJAODEJVMOVP2DKQ3M" Name="General" TitleId="mlsMSV6LC64NBGCXNIXFNKW2SQNBI" InheritanceMask="16" Restrictions="264192" EnabledCommandIds="" CreationEditorPresentationIds="epr2TCSQEL3JRFYDFOSDC266DWJFQ" EditorPresentationIds="epr2TCSQEL3JRFYDFOSDC266DWJFQ">
+          <Model Id="agm5H36TYH5YJAODEJVMOVP2DKQ3M" Name="General:Model" Type="6">
+            <AccessRules/>
+            <Headers>
+              <Src Name="Headeradc7L4W52BEINHJLNKWJGVXJZN5D4" Environment="explorer">
+                <xsc:Item>
+                  <xsc:Java>import org.radixware.kernel.explorer.editors.profiling.*;</xsc:Java>
+                </xsc:Item>
+              </Src>
+            </Headers>
+            <Bodies>
+              <Src Name="Bodyadc6K23WANE6NBPZLHDHAOIYDEN6U"/>
+            </Bodies>
+            <MethodGroup Id="cmgSZN3XQHHRBBYLGLYO5TZST3XDQ" Name="Root"/>
+            <PropertyGroup Id="cpgFK6V5OEIFBBSPMKEEQ32DZ7CPA" Name="Root"/>
+            <Properties/>
+            <Methods>
+              <Method Id="mthCV3A2VHQ5REMTONVH6P6FGNWIE" Name="Selector_opened" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+                <AccessRules IsPublished="false"/>
+                <Parameters>
+                  <Parameter Name="widget" Id="mprLT2IRZ6KYZESXL6ZOE2BYKJR7I">
+                    <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+                  </Parameter>
+                </Parameters>
+                <Sources>
+                  <Src>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I mthZXE6WCYOH5BDBAFPP42T4QYQVI" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>().setToolBarHidden(true);
+//</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java> gm=</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.openTableContextlessSelectorModel(</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecZOBMZ3SMVRDXFBYDYF6DKD6OYQ"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>,</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecZOBMZ3SMVRDXFBYDYF6DKD6OYQ sprGCHH2OZNHJAPPPHM5KPUFX5QU4"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>);
+ProfilerWidget.ProfilerIdsGetter idsGetter=</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecZOBMZ3SMVRDXFBYDYF6DKD6OYQ spr5H36TYH5YJAODEJVMOVP2DKQ3M agm5H36TYH5YJAODEJVMOVP2DKQ3M mth7FK5M44NSFCJFLMUAIUENVOQRA" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(); 
+ProfilerWidget profilerWidget=new ProfilerWidget(widget, this, idsGetter);
+
+profilerWidget.setInstanceList(</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>,</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E sprBCFJSMAERTNRDB5PAALOMT5GDM"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>,</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E col3VINP666G5VDBFSUAAUMFADAIA"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>);
+profilerWidget.open();
+
+widget.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthPUWBC7L4QFCCRCCPSXJY2HF5IY" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>().setMargin(0);
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I mthZXE6WCYOH5BDBAFPP42T4QYQVI" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>().</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adc5H7P5FMQSNAEBGKNU3ESVQAEEA mthVQO6ZEXPGRCQJCANCEKD4C4354" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(profilerWidget);
+widget.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthPUWBC7L4QFCCRCCPSXJY2HF5IY" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>().addWidget(profilerWidget);
+</xsc:Java>
+                    </xsc:Item>
+                  </Src>
+                </Sources>
+              </Method>
+              <Method Id="mth7FK5M44NSFCJFLMUAIUENVOQRA" Name="createIdsGetter" Nature="0" Environment="explorer" IsOverride="false">
+                <AccessRules IsPublished="false"/>
+                <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.editors.profiling.ProfilerWidget.ProfilerIdsGetter"/>
+                <Sources>
+                  <Src>
+                    <xsc:Item>
+                      <xsc:Java>ProfilerWidget.ProfilerIdsGetter idsGetter = new ProfilerWidget.ProfilerIdsGetter() {
+
+    public </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java> getPeriodsViewClassId() {
+        return </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecZOBMZ3SMVRDXFBYDYF6DKD6OYQ"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>;
+    }
+
+    public </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java> getProfilerLogClassId() {
+        return </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aec7KEBDLAYLVHQDMHFSJTZSLRZJA"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>;
+    }
+
+    public </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java> getProfilerLogAllChildId() {
+        return </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecZOBMZ3SMVRDXFBYDYF6DKD6OYQ epr2TCSQEL3JRFYDFOSDC266DWJFQ xpiEFSNE7S56VF5TDOSHOI2LNHGCM"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>;
+    }
+
+    public </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java> getProfilerLogChildId() {
+        return </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecZOBMZ3SMVRDXFBYDYF6DKD6OYQ epr2TCSQEL3JRFYDFOSDC266DWJFQ xpiXUVVEL2AMBH2HFKUWS43YESONA"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>;
+    }
+
+    public </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java> getSummaryModeSelectorPresentId() {
+        return </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecZOBMZ3SMVRDXFBYDYF6DKD6OYQ sprGCHH2OZNHJAPPPHM5KPUFX5QU4"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>;
+    }
+
+    public </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java> getTimeSectionEnumId() {
+        return </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="acsJIXOZF6PJJAM5AZKRLYLYFA75E"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>;
+    }
+
+    public </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java> getPropertyIdByName(ProfilerWidget.EPropertyName propName) {
+        if (propName == ProfilerWidget.EPropertyName.NAME)
+            return </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aec7KEBDLAYLVHQDMHFSJTZSLRZJA colK2QWAL7JHNGY5OL2IATMC6F7DU"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>;
+        if (propName == ProfilerWidget.EPropertyName.PERIOD)
+            return </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecZOBMZ3SMVRDXFBYDYF6DKD6OYQ col4MPPNUSDM5H5HDSSWUTEPLISPU"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>;
+        if (propName == ProfilerWidget.EPropertyName.CONTEXT)
+            return </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aec7KEBDLAYLVHQDMHFSJTZSLRZJA colYZ7INGYPRVCYFJV5USAMHXITWI"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>;
+        if (propName == ProfilerWidget.EPropertyName.DURATION)
+            return </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aec7KEBDLAYLVHQDMHFSJTZSLRZJA colHLLRSGR27FEDPBWIAGRKMOQB2Q"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>;
+        if (propName == ProfilerWidget.EPropertyName.MIN_DURATION)
+            return </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aec7KEBDLAYLVHQDMHFSJTZSLRZJA colBFSWD6V7WJFLBAC44WJERV7FTE"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>;
+        if (propName == ProfilerWidget.EPropertyName.MAX_DURATION)
+            return </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aec7KEBDLAYLVHQDMHFSJTZSLRZJA colKZRY2TT4CBD27B7A2BA3KWFLCQ"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>;
+        if (propName == ProfilerWidget.EPropertyName.COUNT)
+            return </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aec7KEBDLAYLVHQDMHFSJTZSLRZJA colFGXNUCRJ75A5BGSNISBYIC255Y"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>;
+        if (propName == ProfilerWidget.EPropertyName.INSTANCE)
+            return </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecZOBMZ3SMVRDXFBYDYF6DKD6OYQ colMFQFDPL2LVBHPBJSCGSHBZJ5CU"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>;
+        if (propName == ProfilerWidget.EPropertyName.FROM)
+            return </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="agcZOBMZ3SMVRDXFBYDYF6DKD6OYQ pgpWCY2SO6WYFE5TLFIEAQSH4IMEY"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>;
+        if (propName == ProfilerWidget.EPropertyName.TO)
+            return </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="agcZOBMZ3SMVRDXFBYDYF6DKD6OYQ pgpIRK233YZFJGZRIMI6ESSHVQNWM"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>;
+        return null;
+    }
+
+    public </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java> getDomainCpuId() {
+        return </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="dmnSBMWDQB3TNF2LBZAYGVWXOPV6Q dmnHX5WB4PSUFAMFG4EOWUZNHDY5Q"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>;
+    }
+
+    public </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java> getDomainDbId() {
+        return </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="dmnSBMWDQB3TNF2LBZAYGVWXOPV6Q dmnM3XPCXZTCFGEZJMAAWHFAHN3L4"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>;
+    }
+
+    public </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java> getDomainExtId() {
+        return </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="dmnSBMWDQB3TNF2LBZAYGVWXOPV6Q dmnRCDLCTU2I5ADFBCV2GUTC7FES4"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>;
+    }
+
+};
+return idsGetter;</xsc:Java>
+                    </xsc:Item>
+                  </Src>
+                </Sources>
+              </Method>
+            </Methods>
+          </Model>
+          <View Id="ces5H36TYH5YJAODEJVMOVP2DKQ3M" Name="View">
+            <AccessRules IsPublished="false"/>
+            <ui:ui>
+              <ui:widget name="Selector" id="wdgTC3VCK5LOBGBHKTBLBAQATHMGQ" class="ces5H36TYH5YJAODEJVMOVP2DKQ3M" weight="0.0">
+                <ui:layout class="QVBoxLayout" name="verticalLayout"/>
+              </ui:widget>
+              <ui:connections>
+                <ui:connection>
+                  <ui:sender>wdgTC3VCK5LOBGBHKTBLBAQATHMGQ</ui:sender>
+                  <ui:signal>opened(com.trolltech.qt.gui.QWidget widget)</ui:signal>
+                  <ui:slot>mthCV3A2VHQ5REMTONVH6P6FGNWIE</ui:slot>
+                </ui:connection>
+              </ui:connections>
+            </ui:ui>
+          </View>
+          <Condition>
+            <ConditionWhere/>
+            <ConditionFrom/>
+          </Condition>
+          <Addons AnyBaseFilterEnabled="false" AnyBaseSortingEnabled="true" CustomFilterEnabled="false" CustomSortingEnabled="false" FilterIsObligatory="false" DefaultSortingId="srtASQ552MF5BG5BGLMZ2LBMQG2CQ" EnabledSortingIds="srtASQ552MF5BG5BGLMZ2LBMQG2CQ">
+            <DefaultHint/>
+          </Addons>
+          <SelectorColumns>
+            <Column Align="-1" PropId="colMFQFDPL2LVBHPBJSCGSHBZJ5CU" Visibility="1"/>
+            <Column Align="-1" PropId="col4MPPNUSDM5H5HDSSWUTEPLISPU" Visibility="1"/>
+          </SelectorColumns>
+        </SelectorPresentation>
+        <SelectorPresentation Id="sprGCHH2OZNHJAPPPHM5KPUFX5QU4" Name="selectPresentForSummaryMode" BasePresentationId="spr5H36TYH5YJAODEJVMOVP2DKQ3M" InheritanceMask="16602" Restrictions="2048" EnabledCommandIds="" CreationEditorPresentationIds="epr2TCSQEL3JRFYDFOSDC266DWJFQ" EditorPresentationIds="epr2TCSQEL3JRFYDFOSDC266DWJFQ">
+          <AccessRules IsPublished="false"/>
+          <Condition>
+            <ConditionWhere>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblZOBMZ3SMVRDXFBYDYF6DKD6OYQ" PropId="col4MPPNUSDM5H5HDSSWUTEPLISPU" Owner="THIS"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>>=</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="agcZOBMZ3SMVRDXFBYDYF6DKD6OYQ" PropId="pgpWCY2SO6WYFE5TLFIEAQSH4IMEY" Owner="THIS"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> and </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblZOBMZ3SMVRDXFBYDYF6DKD6OYQ" PropId="col4MPPNUSDM5H5HDSSWUTEPLISPU" Owner="THIS"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>&lt;=</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="agcZOBMZ3SMVRDXFBYDYF6DKD6OYQ" PropId="pgpIRK233YZFJGZRIMI6ESSHVQNWM" Owner="THIS"/>
+              </xsc:Item>
+            </ConditionWhere>
+            <ConditionFrom/>
+          </Condition>
+          <Addons AnyBaseFilterEnabled="false" AnyBaseSortingEnabled="false" CustomFilterEnabled="false" CustomSortingEnabled="false" FilterIsObligatory="false">
+            <DefaultHint/>
+          </Addons>
+          <SelectorColumns>
+            <Column Align="-1" PropId="colMFQFDPL2LVBHPBJSCGSHBZJ5CU" Visibility="1"/>
+            <Column Align="-1" PropId="col4MPPNUSDM5H5HDSSWUTEPLISPU" Visibility="1"/>
+            <Column Align="-1" PropId="prdYUIERMQHSBFTHHR6JOSRBYKG3M" Visibility="1"/>
+            <Column Align="-1" PropId="prdGOSD5FWUXNBOPJJQCEGB5UB3EE" Visibility="1"/>
+          </SelectorColumns>
+        </SelectorPresentation>
+      </SelectorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="pdcEntity____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

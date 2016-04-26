@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcWGO4Z5SRYRHCNAPD7DNGTD3DAI" Name="SbEditingContext" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcISZMWTZZERCUPIAAFKKLTN44Q4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcA2JWOFIYEJA2NCJ4LZO2LPAOXQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgHBHJAG3PURDO7DRKOXJUWBZMJM" Name="Root"/>
+    <PropertyGroup Id="cpgC4CUVGJWQBARPC2BB43P3AYFM4" Name="Root"/>
+    <Properties>
+      <Property Id="prdFND2FK6LDNASXHC3BWLM2PS3VY" Name="pipelinePid" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+      </Property>
+      <Property Id="prdG4LQYIZ73RC4VKPHLMNCVFY5CY" Name="pipeline" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="411" Path="aecX6WI554KVVCZPGNLK7CSZLOMTY"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthEEYIDJQJNFEBJBD5K3TKZXIE5Y" Name="SbEditingContext" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mpr5QJYSN3HCZCHLLEBBBULLKRZZE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="explorerItemView" Id="mprISFHRRNQ3FFTDIOUX6NQBVPICY">
+            <Type TypeId="411" Path="aicSPJLTZQOTZHCXFRMIPCCX3F36U"/>
+          </Parameter>
+          <Parameter Name="pipelinePid" Id="mprZCWDFZP3WZEH3CJIQAH2FAX5CY">
+            <Type TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+          </Parameter>
+          <Parameter Name="pipeline" Id="mpr5KSBIJTYHJHS5EQBXC2ZZZUJ3I">
+            <Type TypeId="411" Path="aecX6WI554KVVCZPGNLK7CSZLOMTY"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(userSession, explorerItemView);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWGO4Z5SRYRHCNAPD7DNGTD3DAI prdFND2FK6LDNASXHC3BWLM2PS3VY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = pipelinePid;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWGO4Z5SRYRHCNAPD7DNGTD3DAI prdG4LQYIZ73RC4VKPHLMNCVFY5CY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = pipeline;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthLYXLZ6XGWJD5DGBXNSI66NHMOA" Name="getPipelinePid" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWGO4Z5SRYRHCNAPD7DNGTD3DAI prdFND2FK6LDNASXHC3BWLM2PS3VY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="adcND3IPY7BVZHM7ENQNQAOCZ67PA"/>
+    <Implements>
+      <Interface TypeId="411" Path="aicCWCO5NMPIRERFMTU3XFPMOF26A"/>
+    </Implements>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcW2GCG7MB2XOBDNF5ABIFNQAABA" Name="PersonalCommunicator" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcZAKT6OI4WJABZDFFU3TJZW4R5E">
+        <xsc:Item>
+          <xsc:Java>import java.util.Map;
+import java.sql.Timestamp;
+import org.radixware.kernel.server.types.Entity;
+import org.radixware.kernel.server.algo.AlgorithmExecutor;
+import org.radixware.kernel.common.utils.Utils;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc2KS5ES6GWNDIFCQR5ULXL5X43A">
+        <xsc:Item>
+          <xsc:Java>public static final class ClientData {
+   public Long messageId;
+   public Map&lt;String,String> params;
+}
+
+private static final int EXIT_RESPONSE = 0;
+private static final int EXIT_TIMEOUT = 1;
+</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmg3B47BZQ6QNAWZDVUFZ2YCMWNIE" Name="Root"/>
+    <PropertyGroup Id="cpgNY23CJDQIZHSJHEUOECPHC4IUU" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth2XMYCYDY2XOBDNF5ABIFNQAABA" Name="invoke" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="algo" Id="mpr2I3ST7FBHNEF5BANEADYRJ4BNA">
+            <Type TypeId="411" Path="pdcAlgorithm_________________"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final AlgorithmExecutor executor = algo.getExecutor();
+final Entity process = algo.getProcess();
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21" Path="acsZ5EEISSCVXOBDCLUAALOMT5GDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> channelKind = Utils.toEnum(executor.getProperty("channelKind"), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21" Path="acsZ5EEISSCVXOBDCLUAALOMT5GDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.class);
+if (channelKind == null)
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ mth3IJGQPORMVEO7HQLJ7TDK2VWME" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls2JSH3XPXFVC77J7APWROFZ4BW4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> subject = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)executor.getProperty("subject");
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> body = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)executor.getProperty("body");
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2" Path="acsTUGILCRUVXOBDCLUAALOMT5GDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> importance = Utils.toEnum(executor.getProperty("importance"), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2" Path="acsTUGILCRUVXOBDCLUAALOMT5GDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.class);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> address = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)executor.getProperty("address");
+if (address == null)
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ mth3IJGQPORMVEO7HQLJ7TDK2VWME" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsD7YKTMQZKFGXNHPBOYNO2LISGY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> dueTime = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)executor.getProperty("dueTime");
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="11"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> responseTimeout = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="11"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)executor.getProperty("responseTimeout");
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecGBOAYN4PUTOBDANVABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> outMessage = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecGBOAYN4PUTOBDANVABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+outMessage.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthMUQ4NQFMSTNRDDXBABIFNQAAAE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+
+outMessage.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecGBOAYN4PUTOBDANVABIFNQAABA col4RHX4A4QUTOBDANVABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = channelKind;
+outMessage.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecGBOAYN4PUTOBDANVABIFNQAABA col5CKW454PUTOBDANVABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = subject;
+outMessage.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecGBOAYN4PUTOBDANVABIFNQAABA colDUU5BZMPUTOBDANVABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = body;
+outMessage.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecGBOAYN4PUTOBDANVABIFNQAABA colDYU5BZMPUTOBDANVABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = importance;
+outMessage.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecGBOAYN4PUTOBDANVABIFNQAABA colPRIH4IEQUTOBDANVABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = address;
+outMessage.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecGBOAYN4PUTOBDANVABIFNQAABA colM2TKV4MPUTOBDANVABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcFTLY2XIEXLOBDA6IAAMPGXSZKU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcFTLY2XIEXLOBDA6IAAMPGXSZKU mthUABEPVAEXLOBDA6IAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(dueTime, new Timestamp(System.currentTimeMillis()));
+outMessage.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecGBOAYN4PUTOBDANVABIFNQAABA colGBH2JEACTVBTTOIGPJHGZIUROM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsVQOKSQR4RVAMPBGDQRMO7W7JBQ aciMCBEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+        
+outMessage.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecGBOAYN4PUTOBDANVABIFNQAABA col6STBOLMQUTOBDANVABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = String.valueOf(process.getEntityId());
+outMessage.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecGBOAYN4PUTOBDANVABIFNQAABA colPDVAS7UQUTOBDANVABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = String.valueOf(process.getPid());
+
+outMessage.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mth7X446DFQSTNRDDXBABIFNQAAAE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+
+if (responseTimeout != null)
+   algo.scheduleTimeoutJob(responseTimeout.doubleValue(), executor.getPropertyId("timeoutWid"));
+
+return 0; //-1;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth4RQ35GDY2XOBDNF5ABIFNQAABA" Name="resume" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="algo" Id="mprMFTVR276NBETRPK63AZDCVTBU4">
+            <Type TypeId="411" Path="pdcAlgorithm_________________"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final AlgorithmExecutor executor = algo.getExecutor();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> waitId = executor.getCurrentThread().resumedWaitId;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> timeoutWid = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)executor.getProperty("timeoutWid");
+
+if (waitId != null &amp;&amp; waitId.equals(timeoutWid))
+   return EXIT_TIMEOUT;
+else {   
+   if (timeoutWid != null)
+      </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA mthRSICXRN3UFHRLDFWXXXN4CB7XY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(timeoutWid);
+}			   
+
+// check client data
+ClientData data = null;
+if (executor.getCurrentThread().clientData instanceof ClientData)
+   data = (ClientData)executor.getCurrentThread().clientData;
+
+if (data != null) {
+   </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecLXLOGLESUTOBDANVABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> recvMessage = null;
+   if (data.messageId != null)
+      recvMessage = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecLXLOGLESUTOBDANVABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecLXLOGLESUTOBDANVABIFNQAABA mth_loadByPK_________________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(data.messageId, true);
+   executor.setProperty("responseMessage", recvMessage);
+   executor.setProperty("responseParams", data.params);
+} else {
+   executor.setProperty("responseMessage", null);
+   executor.setProperty("responseParams", null);
+}
+
+return EXIT_RESPONSE;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

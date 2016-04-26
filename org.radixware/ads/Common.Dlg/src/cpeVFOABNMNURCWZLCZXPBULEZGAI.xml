@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsCustomPropEditorDefinition Id="cpeVFOABNMNURCWZLCZXPBULEZGAI" Name="ProfiledPrefixesDlg">
+    <AccessRules IsPublished="false"/>
+    <ui:ui>
+      <ui:widget name="PropEditorDialog" id="wdgHRI7Q2Z67NCQDBT2KL4VXNHUME" class="cpeVFOABNMNURCWZLCZXPBULEZGAI" weight="0.0">
+        <ui:layout class="QVBoxLayout" name="verticalLayout">
+          <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+            <ui:widget name="buttonBox" id="wdgSY2OFCKLGVDQ5MYUQQFIAQTSJA" class="QDialogButtonBox" weight="0.0">
+              <ui:property name="standardButtons">
+                <ui:set>com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Ok | com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Cancel</ui:set>
+              </ui:property>
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>307</ui:x>
+                  <ui:y>250</ui:y>
+                  <ui:width>156</ui:width>
+                  <ui:height>23</ui:height>
+                </ui:rect>
+              </ui:property>
+            </ui:widget>
+          </ui:item>
+        </ui:layout>
+      </ui:widget>
+      <ui:connections>
+        <ui:connection>
+          <ui:sender>wdgHRI7Q2Z67NCQDBT2KL4VXNHUME</ui:sender>
+          <ui:signal>opened(com.trolltech.qt.gui.QWidget widget)</ui:signal>
+          <ui:slot>mthWYFH2NIJ2BB77FN3H3XP6SWDJI</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgSY2OFCKLGVDQ5MYUQQFIAQTSJA</ui:sender>
+          <ui:signal>accepted()</ui:signal>
+          <ui:slot>mthSD62LLRNEJHORCFIRBFLXCGSNM</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgSY2OFCKLGVDQ5MYUQQFIAQTSJA</ui:sender>
+          <ui:signal>rejected()</ui:signal>
+          <ui:slot>mth6T4ANIW36BD3DGDJNHTCFHBQ4U</ui:slot>
+        </ui:connection>
+      </ui:connections>
+    </ui:ui>
+    <EmbeddedModel Id="armVFOABNMNURCWZLCZXPBULEZGAI" Name="ProfiledPrefixesDlg:Model" Type="17">
+      <AccessRules IsPublished="false"/>
+      <Headers>
+        <Src Name="Headeradc7UIHVCTVBVHNFNLI6PTAL73OBQ" Environment="explorer">
+          <xsc:Item>
+            <xsc:Java>import org.radixware.kernel.explorer.editors.profiling.prefix.*;</xsc:Java>
+          </xsc:Item>
+        </Src>
+      </Headers>
+      <Bodies>
+        <Src Name="BodyadcQOCOTXQQDJCOHGS36TQAFEKXBM" Environment="explorer">
+          <xsc:Item>
+            <xsc:Java>PrefixTree tree;</xsc:Java>
+          </xsc:Item>
+        </Src>
+      </Bodies>
+      <MethodGroup Id="cmgZJYNUCHBJFEG3FLI3LVVCSJFLU" Name="Root"/>
+      <PropertyGroup Id="cpgPVJFYVBECZGIDBZU3FIRWRLS3Y" Name="Root"/>
+      <Properties/>
+      <Methods>
+        <Method Id="mthWYFH2NIJ2BB77FN3H3XP6SWDJI" Name="PropEditorDialog_opened" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="widget" Id="mprQYQAEBN6RZHMHJAM6EZRB3BH6M">
+              <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcYPRT23KRRVAX7AN3727VBD5VI4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> profileProp = getSourceProperty();
+tree=new PrefixTree(widget,profileProp.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mth7OXSCLQHDFCWJNUZN7LX5OO7VE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>());
+((com.trolltech.qt.gui.QVBoxLayout)widget.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthPUWBC7L4QFCCRCCPSXJY2HF5IY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>()).insertWidget(0,tree);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthSD62LLRNEJHORCFIRBFLXCGSNM" Name="buttonBox_accepted" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcYPRT23KRRVAX7AN3727VBD5VI4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> profileProp = getSourceProperty();
+String s=tree.getSelectedPrefixes();
+profileProp.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthZBTI63XF4RBXJJXOH54ZV3GT6I" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(s);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mth7EFAYV56HBHZTJRSCD227GZ2ZA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth6T4ANIW36BD3DGDJNHTCFHBQ4U" Name="buttonBox_rejected" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mthYEMLDE62GNCTVNB2L3I2YFWHF4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+      </Methods>
+    </EmbeddedModel>
+  </AdsCustomPropEditorDefinition>
+</AdsDefinition>

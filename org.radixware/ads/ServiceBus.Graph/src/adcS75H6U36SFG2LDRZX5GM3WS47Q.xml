@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcS75H6U36SFG2LDRZX5GM3WS47Q" Name="BaseNode" Type="3" Environment="explorer">
+    <AccessRules IsPublished="false" IsAbstract="true">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcOTFMUZ7ZTFDOTCO3GYHM45QNFM">
+        <xsc:Item>
+          <xsc:Java>import com.trolltech.qt.gui.*;
+import com.trolltech.qt.core.Qt.MouseButton;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcTBKBQJL3SFEVVNT7UZ76OXIR4Q">
+        <xsc:Item>
+          <xsc:Java>protected final </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> userSession;
+protected final </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcHMXIRC2KYZFDRHIIULJ2M6YRLM"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> graph;
+private boolean moved = false;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmgKL35IMNPAVCQ7E5UZ4YQJMWAVA" Name="Root"/>
+    <PropertyGroup Id="cpgEOCJIGDKTJC6XI4GKZWH2IW7VM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthJJINOYNDORH6NFWPALVM7KJXJA" Name="BaseNode" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprAHCLU32BXBEMBCQSR7BFJNYW6Q">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="graph" Id="mprOO6MDQXPURAP7BFQ45VXQ5GRHE">
+            <Type TypeId="411" Path="adcHMXIRC2KYZFDRHIIULJ2M6YRLM"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this.graph = graph;
+this.userSession = userSession;
+setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable);
+setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable);
+setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsFocusable);
+setZValue(1.0);
+setFlag(QGraphicsItem.GraphicsItemFlag.ItemSendsGeometryChanges,true);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthTAM67XGXQJF4BPIDODFI3CYOSE" Name="adjust" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsAbstract="true"/>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthNZX7AXISEVB75E6Q4GKNT5QFFQ" Name="edit" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true"/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthFPUNTBY2E5EC7FNXLTMGOWHNYQ" Name="delete" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true"/>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthUWISQNC5SFDNRFSCWDZQFUK6QI" Name="duplicate" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true"/>
+        <ReturnType TypeId="411" Path="adcS75H6U36SFG2LDRZX5GM3WS47Q"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final Vector&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> roles = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcS75H6U36SFG2LDRZX5GM3WS47Q mthC7JZ57AMGVDWNJDHYYSEIEHX3U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> role : roles)
+    role.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU mthDQF6A2GCUBGYNGAD64R7Z34ZRA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcZ7ETKOF44NCLJBZPR47JS5LQK4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcZ7ETKOF44NCLJBZPR47JS5LQK4 mthBMP4D3LWG5G6XH52QLWVEV4QNI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(userSession, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcS75H6U36SFG2LDRZX5GM3WS47Q mthCDFU4M7MYNCZHLQLGD5EDF7MRQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()))
+    scene().removeItem(this);
+else
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcS75H6U36SFG2LDRZX5GM3WS47Q mthHHHTHWCRM5A6TJTZNCUQHEQZBE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthIYB6YKIL6BFDZPPKLPSN4YZZAU" Name="isApi" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true"/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthZ3BYBBAT4RF4JCRR4Y53EFVOXQ" Name="itemChange" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="change" Id="mprBI2FIM7KNBDZFJ6XKHMB7G643I">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QGraphicsItem.GraphicsItemChange"/>
+          </Parameter>
+          <Parameter Name="value" Id="mprU5DS5O4TG5ENVB6X7KEPG537QU">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>switch (change) {
+    case ItemPositionHasChanged:
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcS75H6U36SFG2LDRZX5GM3WS47Q mthTAM67XGXQJF4BPIDODFI3CYOSE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+        break;
+    case ItemSelectedHasChanged:
+        setZValue(isSelected() ? 1.1 : 1.0);
+        break;
+    default:
+        break;
+}
+return value;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthJPJDGZ5BJRABVJLKI7JSPBP4ZQ" Name="mouseDoubleClickEvent" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="event" Id="mprDPM7TY6B25CG7HLJER727WSZWA">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QGraphicsSceneMouseEvent"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (event.button() != MouseButton.LeftButton)
+    return;
+
+if (!</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcS75H6U36SFG2LDRZX5GM3WS47Q mthNZX7AXISEVB75E6Q4GKNT5QFFQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>())
+    return;
+
+update();
+graph.modified.emit();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthBTDVBWZTBVHZZLLDRZAQZ5USFQ" Name="mouseMoveEvent" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="event" Id="mprBHPCYLNU6JFA5O3OWSVNIPJDS4">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QGraphicsSceneMouseEvent"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>moved = true;
+super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcS75H6U36SFG2LDRZX5GM3WS47Q mthBTDVBWZTBVHZZLLDRZAQZ5USFQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(event);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth2KVUWCHVWJHCFCZM4FGETQEAKE" Name="mouseReleaseEvent" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="event" Id="mpr4TDUKPC34VDI3PLG43YBBYJR3U">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QGraphicsSceneMouseEvent"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (moved) {
+    graph.modified.emit();
+    moved = false;
+}
+super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcS75H6U36SFG2LDRZX5GM3WS47Q mth2KVUWCHVWJHCFCZM4FGETQEAKE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(event);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="adcZLJEAPXQ7ZCHTOFUJWRKYZOYSM"/>
+  </AdsClassDefinition>
+</AdsDefinition>

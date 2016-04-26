@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcBPRJDFXQEZAAFHB6SAWMIEPKOU" Name="EventNotifier.Subscriptions" DescriptionId="mls3UYIUSDKZVEF3PRATCRFNWAIL4" Type="3" Environment="server">
+    <AccessRules Access="4" IsFinal="true" IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcL45O2DLJCNH7LHZ76TQBNABOM4">
+        <xsc:Item>
+          <xsc:Java>import java.util.*;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcJAEB3L5NOVB4BB2UJF7IVEZGMI"/>
+    </Bodies>
+    <MethodGroup Id="cmgSWCRJJNRPNDIVJS5XDZZ3PW6MI" Name="Root">
+      <Group Id="cmgECQJG4FJ4NBLBCVZEWXMTEGV6M" Name="API" Members="mthGSRJ4LQAFJG4BPPVQPYHGNT6WQ mth4O7XINWQOVAC3DFIMDRWJLBK2E mthJNPFF5NQEFBJ7F4PJAMETJD64Q"/>
+    </MethodGroup>
+    <PropertyGroup Id="cpg5K7LSXDMWJGOTJ4GTVNV65G3LA" Name="Root">
+      <Group Id="cpgZWX5FUBGNRG7BDQKP5MATCLPPA" Name="Props" Members="prdKUZ4LJRFJVDRZLEYJEMRHDUBPA prdVEKZKO36FRHJNHOVPJ44LFQVAQ"/>
+    </PropertyGroup>
+    <Properties>
+      <Property Id="prdKUZ4LJRFJVDRZLEYJEMRHDUBPA" Name="byCode" DescriptionId="mlsEMONINZLZJH6LBHFDWKX5RZHZ4" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="400" extStr="java.util.Map">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="21"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="java.util.Set">
+                <xsc:GenericArguments>
+                  <xsc:Argument Alias="?">
+                    <xsc:Type TypeId="411" Path="aec7HTJAWJXVLOBDCLSAALOMT5GDM"/>
+                  </xsc:Argument>
+                </xsc:GenericArguments>
+              </xsc:Type>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </Type>
+      </Property>
+      <Property Id="prdVEKZKO36FRHJNHOVPJ44LFQVAQ" Name="byComponent" DescriptionId="mlsWPGMBMDVJBGILKDBQMYL3C3X3U" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="400" extStr="java.util.Map">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="21" Path="acsTNLJBZADHTNRDIPGABQAQNO6EY"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="java.util.Set">
+                <xsc:GenericArguments>
+                  <xsc:Argument Alias="?">
+                    <xsc:Type TypeId="411" Path="aec7HTJAWJXVLOBDCLSAALOMT5GDM"/>
+                  </xsc:Argument>
+                </xsc:GenericArguments>
+              </xsc:Type>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </Type>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthPJ5ZBDUHQFGAJKDDGVAHFGH5X4" Name="EventNotifier.Subscriptions" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules Access="4" IsPublished="false"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBPRJDFXQEZAAFHB6SAWMIEPKOU prdKUZ4LJRFJVDRZLEYJEMRHDUBPA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = new HashMap &lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, Set &lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec7HTJAWJXVLOBDCLSAALOMT5GDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>>();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBPRJDFXQEZAAFHB6SAWMIEPKOU prdVEKZKO36FRHJNHOVPJ44LFQVAQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = new HashMap &lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21" Path="acsTNLJBZADHTNRDIPGABQAQNO6EY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, Set &lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec7HTJAWJXVLOBDCLSAALOMT5GDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>>();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthGSRJ4LQAFJG4BPPVQPYHGNT6WQ" Name="add" DescriptionId="mlsXJ66ZQLOIZBYXAXJTFJQQ3AJTE" Nature="0" IsOverride="false">
+        <AccessRules Access="4" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="code" Id="mpr7676JCE63RFDTLD4YTJEWVJMMA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="subscription" Id="mprCNLWOE6ETVFAFA3ZWW3DLZX7B4">
+            <Type TypeId="411" Path="aec7HTJAWJXVLOBDCLSAALOMT5GDM"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>//add code
+Set &lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec7HTJAWJXVLOBDCLSAALOMT5GDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> subscriptions = null;
+if(!</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBPRJDFXQEZAAFHB6SAWMIEPKOU prdKUZ4LJRFJVDRZLEYJEMRHDUBPA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.containsKey(code)) {
+    subscriptions = new HashSet &lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec7HTJAWJXVLOBDCLSAALOMT5GDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBPRJDFXQEZAAFHB6SAWMIEPKOU prdKUZ4LJRFJVDRZLEYJEMRHDUBPA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.put(code, subscriptions);
+} else
+    subscriptions = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBPRJDFXQEZAAFHB6SAWMIEPKOU prdKUZ4LJRFJVDRZLEYJEMRHDUBPA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.get(code);
+subscriptions.add(subscription);
+
+//add component
+if(subscription.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec7HTJAWJXVLOBDCLSAALOMT5GDM col6MRC5ZR3VLOBDCLSAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci56AUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>){
+    if(!</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBPRJDFXQEZAAFHB6SAWMIEPKOU prdVEKZKO36FRHJNHOVPJ44LFQVAQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.containsKey(subscription.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec7HTJAWJXVLOBDCLSAALOMT5GDM colZQGUBQRZVLOBDCLSAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)) {
+        subscriptions = new HashSet &lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec7HTJAWJXVLOBDCLSAALOMT5GDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBPRJDFXQEZAAFHB6SAWMIEPKOU prdVEKZKO36FRHJNHOVPJ44LFQVAQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.put(subscription.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec7HTJAWJXVLOBDCLSAALOMT5GDM colZQGUBQRZVLOBDCLSAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, subscriptions);
+    } else
+        subscriptions = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBPRJDFXQEZAAFHB6SAWMIEPKOU prdVEKZKO36FRHJNHOVPJ44LFQVAQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.get(subscription.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec7HTJAWJXVLOBDCLSAALOMT5GDM colZQGUBQRZVLOBDCLSAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    subscriptions.add(subscription);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth4O7XINWQOVAC3DFIMDRWJLBK2E" Name="get" DescriptionId="mlsTZY4ME7JNZE5XIV5YSUDKFCBR4" Nature="0" IsOverride="false">
+        <AccessRules Access="4" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="eventCode" Id="mprIXKMWZYWKZFHDOIYZVDXNAKE2I">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="eventSource" Id="mprCSIYPDZAEJB45OEGC3WKNNAJHI">
+            <Type TypeId="21" Path="acsTNLJBZADHTNRDIPGABQAQNO6EY"/>
+          </Parameter>
+          <Parameter Name="eventSeverity" Id="mprPLD6QYUPSFD57E6I3FMZYCMVJE">
+            <Type TypeId="2" Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.Set">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="aec7HTJAWJXVLOBDCLSAALOMT5GDM"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>Set&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec7HTJAWJXVLOBDCLSAALOMT5GDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> res = new HashSet&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec7HTJAWJXVLOBDCLSAALOMT5GDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();
+
+if (eventCode != null &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBPRJDFXQEZAAFHB6SAWMIEPKOU prdKUZ4LJRFJVDRZLEYJEMRHDUBPA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.containsKey(eventCode)) {
+    res.addAll(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBPRJDFXQEZAAFHB6SAWMIEPKOU prdKUZ4LJRFJVDRZLEYJEMRHDUBPA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.get(eventCode));
+}
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> sEventSource = eventSource == null ? null : eventSource.Value;
+int iSeverity = eventSeverity.Value.intValue();
+//</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthS7A5F7KSRPNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Find subscriptions for component "+sEventSource, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciINPXZJH7XRGKFDAU2UBDJLYBVI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+for (Map.Entry&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21" Path="acsTNLJBZADHTNRDIPGABQAQNO6EY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, Set&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec7HTJAWJXVLOBDCLSAALOMT5GDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>> entry : </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBPRJDFXQEZAAFHB6SAWMIEPKOU prdVEKZKO36FRHJNHOVPJ44LFQVAQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.entrySet()) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> subscriptionEventSource = entry.getKey() != null ? entry.getKey().Value : null;
+    //</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthS7A5F7KSRPNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(" try "+subscriptionEventSource, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciINPXZJH7XRGKFDAU2UBDJLYBVI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    //подходят либо все события (sub.Source == null), либо события источника и дочерних источников
+    if (subscriptionEventSource == null || (sEventSource != null &amp;&amp; sEventSource.indexOf(subscriptionEventSource) == 0)) {
+        //</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthS7A5F7KSRPNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("     matched", </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciINPXZJH7XRGKFDAU2UBDJLYBVI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec7HTJAWJXVLOBDCLSAALOMT5GDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> sub : entry.getValue()) {
+            if (sub.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec7HTJAWJXVLOBDCLSAALOMT5GDM col6MRC5ZR3VLOBDCLSAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value.intValue() &lt;= iSeverity &amp;&amp; !res.contains(sub))
+                res.add(sub);
+        }
+    }
+}
+
+return res;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthJNPFF5NQEFBJ7F4PJAMETJD64Q" Name="isEmpty" Nature="0" IsOverride="false">
+        <AccessRules Access="4" IsPublished="false"/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBPRJDFXQEZAAFHB6SAWMIEPKOU prdKUZ4LJRFJVDRZLEYJEMRHDUBPA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.isEmpty() &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBPRJDFXQEZAAFHB6SAWMIEPKOU prdVEKZKO36FRHJNHOVPJ44LFQVAQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.isEmpty();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

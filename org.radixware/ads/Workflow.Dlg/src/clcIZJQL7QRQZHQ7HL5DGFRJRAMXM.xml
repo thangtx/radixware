@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsContextlessCommandDefinition Id="clcIZJQL7QRQZHQ7HL5DGFRJRAMXM" Name="SetAlgoContext" Nature="2" IconId="imgHFKN7TN3YXH3FX6UN5F2NMEBIP7JBKPT" IsVisible="false" IsConfirmationRequired="false">
+    <InType TypeId="451" Path="xsdAVNC5OMH2DNRDISQAAAAAAAAAA" extStr="SaveAlgoRqDocument"/>
+    <Source>
+      <xsc:Item>
+        <xsc:Java>final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="2"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> processId = input.SaveAlgoRq.ProcessId;
+final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aecRDXQVFY6PLNRDANMABIFNQAABA"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> process = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aecRDXQVFY6PLNRDANMABIFNQAABA"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aecRDXQVFY6PLNRDANMABIFNQAABA mth_loadByPK_________________" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(processId, true);
+
+</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdJUNRXYZPE3OBDGYTABIFNQAABA" extStr="ContextDocument"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> xContext;
+try {
+    xContext = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdJUNRXYZPE3OBDGYTABIFNQAABA" extStr="ContextDocument"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.Factory.parse(process.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aecRDXQVFY6PLNRDANMABIFNQAABA colKD4KAOZAPLNRDANMABIFNQAABA" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.getCharacterStream());
+} catch (</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> e) {
+    xContext = null;
+}
+
+if (xContext == null)
+    return;
+
+final java.util.Map&lt;</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>, byte[]> newValues = new java.util.HashMap&lt;</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>, byte[]>();
+for (</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdAVNC5OMH2DNRDISQAAAAAAAAAA" extStr="SaveAlgoRqDocument.SaveAlgoRq.Data.Item"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> xItem : input.SaveAlgoRq.Data.ItemList) {
+    newValues.put(xItem.Id, xItem.ByteArrayValue);
+}
+
+final java.util.Map&lt;</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>, byte[]> oldValues = new java.util.HashMap&lt;</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>, byte[]>();
+for (</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdJUNRXYZPE3OBDGYTABIFNQAABA" extStr="ContextDocument.Context.Data.DataItem"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> xDataItem : xContext.Context.Data.DataItemList) {
+    </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> id = xDataItem.Id;
+    if (xDataItem.Ref) {
+       </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> refId = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(new </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="21"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(xDataItem.ByteArrayValue));
+       if (newValues.containsKey(refId)) {
+           xDataItem.setRef(false);
+           xDataItem.setByteArrayValue(oldValues.get(refId));
+       }
+    } else
+        oldValues.put(id, xDataItem.ByteArrayValue);
+        
+    if (newValues.containsKey(id)) {
+        xDataItem.Ref = false;
+        xDataItem.ByteArrayValue = newValues.get(id);
+    }
+}
+/*
+for (org.radixware.schemas.algo.ContextDocument.Context.Data.DataItem xDataItem : xContext.Context.Data.DataItemList) {
+    if (xDataItem.Ref) {
+       </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> refId = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(new </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="21"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(xDataItem.ByteArrayValue));
+       if (newValues.containsKey(refId)) {
+           xDataItem.setRef(false);
+           xDataItem.setByteArrayValue(oldValues.get(refId));
+       }
+    }
+}
+for (org.radixware.schemas.algo.ContextDocument.Context.Data.DataItem xDataItem : xContext.Context.Data.DataItemList) {
+    </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> id = xDataItem.Id;
+    if (newValues.containsKey(id)) {
+        xDataItem.Ref = false;
+        xDataItem.ByteArrayValue = newValues.get(id);
+    }
+}
+*/
+</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="27"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> clob = null;
+try {
+    clob = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>().getDbConnection().createTemporaryClob();
+    java.io.OutputStream out = clob.setAsciiStream(1L);
+    xContext.save(out);
+    out.flush();
+    out.close();
+} catch (</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> e) {
+    throw new </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:LocalizedString StringId="mlsM2SRLYHZ2JE47MLXTO7PESJEGM"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> + e.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>());
+}
+        
+process.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aecRDXQVFY6PLNRDANMABIFNQAABA colKD4KAOZAPLNRDANMABIFNQAABA" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> = clob;
+process.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcEntity____________________ mth5A5TVHUCNVHFXIT7FDJ75MILHE" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>();</xsc:Java>
+      </xsc:Item>
+    </Source>
+  </AdsContextlessCommandDefinition>
+</AdsDefinition>

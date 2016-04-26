@@ -1,0 +1,1593 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc2YO4JA7JKJGGBLTARIEQHUSHGI" Name="TaskManager" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc2YO4JA7JKJGGBLTARIEQHUSHGI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc2YO4JA7JKJGGBLTARIEQHUSHGI"/>
+    </Bodies>
+    <MethodGroup Id="cmgRIS4URIZ7FDGXA63VOTVPK2VBY" Name="Root">
+      <Group Id="cmgSCYSTL6HNJCLZED7P4FEOAENZY" Name="Public" Members="mthA4SZ4ODO4NFL3A5KMYIJ54MTZA mth3XTY3XAUDBAHJEEM6OMP7N35QA mthLKG3SYA4UJAYLAIC34ROW2ULYQ mthSN3PQ3GSIFHWXIKBOVEHAZEKXI mthTQQPHJF7JBF4PIQR3VFYAR2FBA mthQQTZALBTVNHNLPXEO457CWYQBQ mthGPGEKXZQIVBW7MFL4JJWDGXSBY mthNWREC3E23ZCRBNO6WIPX2XEMGU mthEDW7XWYDPVGUZBPUM7CLBRJPNY mthAETX36QP5BC3BPAGGZXT64VPQI mthZXHCS2SCUBDVTKDMJMJNFX43TU mthZ4NPQVVAKBHRFDLVCNCTNCZ4RA"/>
+      <Group Id="cmgTZE2PLTVYBCSXMWIOQ3JHUYK4A" Name="Private" Members="mthMR67CF3ZIZFQNJ3RP6ZLVK6QZU"/>
+    </MethodGroup>
+    <PropertyGroup Id="cpgO4GJS7JYFZEQ3C77HOLPN2TQ7I" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthA4SZ4ODO4NFL3A5KMYIJ54MTZA" Name="execute" Nature="0" IsReflectiveCallable="true" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="taskId" Id="mprL2HBFGWMH5GL7GCJHX2N5LGEY4">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="execToken" Id="mprK63LM3VOY5D7XO4ECPCML75TQ4">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="prevExecTime" Id="mprVKCTVCHAJJBHNLD4Q2W667DURM">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="curExecTime" Id="mprJCXN42ERC5BKLM4JHPOCPSO5YM">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> task = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mth_loadByPK_________________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(taskId, true);
+//</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc6HO4C4BH2RCYPP7RFT3SFIGHEU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc6HO4C4BH2RCYPP7RFT3SFIGHEU mth2UJY7VT5ZFF2VKU3F772VL7LYQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Task " + task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM prdYMED5YPMPFGKBIZ4CLBYRTJ4VQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + " with status " + task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPT5IWXJ4O5AIPIYP3NSPZTDK54" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Name + " job: " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().JobQueue.CurrentJobId);
+if (task != null) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> beforeExecuteException = null;
+    boolean needToExecute = false;
+    try {
+        if (execToken == null) {
+            //exec token for the root task
+            execToken = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().JobQueue.CurrentJobId;
+        }
+        needToExecute = task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mthDBO4KAX6VNHR7J4HIT7NJDBL5M" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(execToken);
+        if (needToExecute) {
+            task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPT5IWXJ4O5AIPIYP3NSPZTDK54" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEIXEKC5YG5CVBEOCLYU33L3WGI aciYITWLSOWLJGRRFBQUU6EHTMKIM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+        }
+
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthH2FKAOYGRTNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    } catch (Throwable t) {
+        beforeExecuteException = t;
+    }
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> executionException = null;
+    if (needToExecute &amp;&amp; beforeExecuteException == null) {
+        try {
+//            System.out.println("Execute task " + task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM prdYMED5YPMPFGKBIZ4CLBYRTJ4VQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mth3MY3U3VYSTNRDDXBABIFNQAAAE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsPVLIUELSKTNRDAQSABIFNQAAAE aciQLDY6T6I7FG3LPVQV25L2HBJAI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPU65PF7LJPOBDCIUAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+            try {
+                task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mthN36NOGMSW5EGZIX2JAVCBWM2RU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(prevExecTime, curExecTime);
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthKYS3RPTKXLNRDISQAAAAAAAAAA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+            } finally {
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthA2VYUFF2STNRDDXBABIFNQAAAE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsPVLIUELSKTNRDAQSABIFNQAAAE aciQLDY6T6I7FG3LPVQV25L2HBJAI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPU65PF7LJPOBDCIUAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+            }
+        } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> t) {
+            executionException = t;
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthVR3O4RAGRTNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+        }
+    }
+    if (executionException != null || !needToExecute || task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mth3IQ77RONJZA6XLYRMT6K5X6DXI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2YO4JA7JKJGGBLTARIEQHUSHGI mthMR67CF3ZIZFQNJ3RP6ZLVK6QZU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(task, null, needToExecute, executionException, beforeExecuteException, execToken);
+    }
+} else {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthUVXH2WARWLOBDLJLAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:EventCode StringId="mlsBYV227ZJNVHBTHKQSMB7NGVAI4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, String.valueOf(taskId));
+}
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth3XTY3XAUDBAHJEEM6OMP7N35QA" Name="finishTask" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="task" Id="mprS5MCEWGNRRDSNKW6JAANCWCHTM">
+            <Type TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+          </Parameter>
+          <Parameter Name="execToken" Id="mprDBUCYGXPHRFULNRLXH7EB4L3JA">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2YO4JA7JKJGGBLTARIEQHUSHGI mthMR67CF3ZIZFQNJ3RP6ZLVK6QZU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(task, null, true, null, null, execToken);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthLKG3SYA4UJAYLAIC34ROW2ULYQ" Name="notifyParent" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="task" Id="mprZS7J3EZCMVCZ7B2U4XZUI6BVZY">
+            <Type TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+          </Parameter>
+          <Parameter Name="nextTask" Id="mprUOZP7MTE4NFFPAU3JRH63BNZGI">
+            <Type TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+          </Parameter>
+          <Parameter Name="execToken" Id="mpr6XBEQBAM75BFNEBXX4S4JL4T3U">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aclAISPQSDGNNF47CEMHOVHTK6G5U"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> parentTask = task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM prdSBSUX2ZY35HIVBMMSUONJNTTTE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+if (parentTask != null) {
+    parentTask.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclAISPQSDGNNF47CEMHOVHTK6G5U mthZBBPKW3Z6RAUTC3LR3FVNCTIXY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(task, nextTask, null, execToken);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthMR67CF3ZIZFQNJ3RP6ZLVK6QZU" Name="doFinishTask" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="task" Id="mprVGKDRTHEKFBNRPX7KGXOTUZVPI">
+            <Type TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+          </Parameter>
+          <Parameter Name="breakStatus" Id="mpr67YLDEDGYNE6ZCEBA6N5HC4B4Q">
+            <Type TypeId="21" Path="acsEIXEKC5YG5CVBEOCLYU33L3WGI"/>
+          </Parameter>
+          <Parameter Name="wasExecuted" Id="mprBCWKJUEWH5B6NJIHY4J3VI6FPY">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="executionException" Id="mpr4FQWNALENNFAHPXMRY3334P3YE">
+            <Type TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+          </Parameter>
+          <Parameter Name="beforeExecuteException" Id="mprK6MIP6KVCVEYPOGWNNYC22EZHI">
+            <Type TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+          </Parameter>
+          <Parameter Name="execToken" Id="mpr2S3VAHIPONCT3JUC4YCCFCNJZA">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>Throwable errOnFinish = null;
+try {
+    if (beforeExecuteException == null) {
+        task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mthJUZMKA2YT5GSZCJ7SUQVLDB5OE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(wasExecuted, breakStatus, executionException, execToken);
+    }
+} catch (Throwable t) {
+    errOnFinish = t;
+} finally {
+    if (errOnFinish != null) {
+        task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPT5IWXJ4O5AIPIYP3NSPZTDK54" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEIXEKC5YG5CVBEOCLYU33L3WGI aciJCCIEXZNGBEAZGSBORYHGTY25Q" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+        final String faultMess = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthBXQY2BN2DVEUNP7D645ZOVXZM4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(errOnFinish)
+                + (executionException == null ? "" : "\nExecution error:\n" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthBXQY2BN2DVEUNP7D645ZOVXZM4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(executionException));
+        task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mthXQWGS4T7IRHWHJEQMRDQZ2F2S4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsYLGER3PRTRC5RDBOA3THTTO57A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, faultMess));
+    } else if (task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPT5IWXJ4O5AIPIYP3NSPZTDK54" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEIXEKC5YG5CVBEOCLYU33L3WGI aciRFWSG7XQMRB5LPHY4D23KSOETY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>
+            || task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPT5IWXJ4O5AIPIYP3NSPZTDK54" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEIXEKC5YG5CVBEOCLYU33L3WGI aciYITWLSOWLJGRRFBQUU6EHTMKIM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>
+            || task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPT5IWXJ4O5AIPIYP3NSPZTDK54" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEIXEKC5YG5CVBEOCLYU33L3WGI aci5CWTKFG3ABGV5IYKAYZDDBGGWU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>
+            || task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPT5IWXJ4O5AIPIYP3NSPZTDK54" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null) {
+        final String faultMess;
+        if (beforeExecuteException == null) {
+            faultMess = String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsRPU4KZW6T5A5ZC6353Z4S5CSZA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPT5IWXJ4O5AIPIYP3NSPZTDK54" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null ? "null" : task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPT5IWXJ4O5AIPIYP3NSPZTDK54" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Name);
+        } else {
+            faultMess = String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthBXQY2BN2DVEUNP7D645ZOVXZM4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(beforeExecuteException));
+        }
+        task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mthXQWGS4T7IRHWHJEQMRDQZ2F2S4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(faultMess);
+        task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPT5IWXJ4O5AIPIYP3NSPZTDK54" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEIXEKC5YG5CVBEOCLYU33L3WGI aciJCCIEXZNGBEAZGSBORYHGTY25Q" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+    }
+    if (task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPT5IWXJ4O5AIPIYP3NSPZTDK54" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEIXEKC5YG5CVBEOCLYU33L3WGI aciJCCIEXZNGBEAZGSBORYHGTY25Q" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mth3MY3U3VYSTNRDDXBABIFNQAAAE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsPVLIUELSKTNRDAQSABIFNQAAAE aciQLDY6T6I7FG3LPVQV25L2HBJAI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPU65PF7LJPOBDCIUAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        try {
+            String faultString = "";
+            try {
+                if (task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM col3Y2V4U6ZQ5AJRCY4AAORP72JFA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+                    faultString = task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM col3Y2V4U6ZQ5AJRCY4AAORP72JFA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getSubString(1l, (int) task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM col3Y2V4U6ZQ5AJRCY4AAORP72JFA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.length());
+                }
+            } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcG6PZC4JQPBAI5C7ZFKWL4SWGKA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+                faultString = "Error while parsing fault message: " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthPEFBTLSR3JAPDAACBUPT7QLKBU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ex);
+            }
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthPB2YHBYRWLOBDLJLAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:EventCode StringId="mlsYDHYHYTVX5DANMNAYVBETBJJAU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM prdYMED5YPMPFGKBIZ4CLBYRTJ4VQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, "\n", faultString);
+        } finally {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthA2VYUFF2STNRDDXBABIFNQAAAE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsPVLIUELSKTNRDAQSABIFNQAAAE aciQLDY6T6I7FG3LPVQV25L2HBJAI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPU65PF7LJPOBDCIUAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        }
+    }
+    if (task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colDQSM4MYVNVDZJIYOCLNDQG3HWM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null) {
+        task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colDQSM4MYVNVDZJIYOCLNDQG3HWM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthO6E3U4KDA5A5FFVCN7JGELDMAU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    }
+    boolean jobDeleted = false;
+    if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().JobQueue.RelatedTaskId == task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPU65PF7LJPOBDCIUAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().JobQueue.deleteCurrentJob();
+        jobDeleted = true;
+    }
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthH2FKAOYGRTNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    if (jobDeleted) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().JobQueue.markCurrentJobDeleted();
+    }
+    if (task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPU65PF7LJPOBDCIUAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == 41432) {
+        try {</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcSFS2J5EHTFE65GWPGK6JFR7DFQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcSFS2J5EHTFE65GWPGK6JFR7DFQ mthS3PAMYUBRVFV7ASZNT7UE2S7OY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(60000);} catch (Exception ex) {};
+    }
+}
+
+task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mthQJ36OAD25NFR5DEA5XREYYJ3VI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(execToken);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthSN3PQ3GSIFHWXIKBOVEHAZEKXI" Name="postManual" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="task" Id="mpr36TCSDXOWJA35F5AM56FLFNUHQ">
+            <Type TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+          </Parameter>
+          <Parameter Name="requesterName" Id="mprM2R5WJXOGVFGLJE7LEUBKQ6RO4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mth3MY3U3VYSTNRDDXBABIFNQAAAE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsPVLIUELSKTNRDAQSABIFNQAAAE aciQLDY6T6I7FG3LPVQV25L2HBJAI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPU65PF7LJPOBDCIUAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+try {
+    try {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="sscTKOE2MYWZJB43POL3G755GXAPI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="sscTKOE2MYWZJB43POL3G755GXAPI mth_stmt_execute_____________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPU65PF7LJPOBDCIUAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, requesterName, null, null);
+    } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcXJP5J6GEPZCERMRA74CCVXC3HI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+        if (ex instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> dbEx = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) ex;
+            if (dbEx.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mthZL6PWAIL55HQTBGG7CRWWTGBXY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() == 20000) {
+                throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsH7BKZOIBCRH5VIKUIBQHGAIAIQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, dbEx.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthODO3LO5Y7VCOHGFQUFER4HARYA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() == null ? dbEx.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() : dbEx.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthODO3LO5Y7VCOHGFQUFER4HARYA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()), dbEx);
+            } else {
+                throw ex;
+            }
+        }
+    }
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mth4LIUO5IRWLOBDLJLAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:EventCode StringId="mlsRCTTDZMXDZBZ5LQI5LILP5YLMY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthJQUPUAH4RPNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM prdYMED5YPMPFGKBIZ4CLBYRTJ4VQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+} finally {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthA2VYUFF2STNRDDXBABIFNQAAAE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsPVLIUELSKTNRDAQSABIFNQAAAE aciQLDY6T6I7FG3LPVQV25L2HBJAI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPU65PF7LJPOBDCIUAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthTQQPHJF7JBF4PIQR3VFYAR2FBA" Name="postChild" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="task" Id="mprVYVPE6Q3BJCWPAYXMK3IBJP62A">
+            <Type TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+          </Parameter>
+          <Parameter Name="requesterName" Id="mprCH7MI72J35FLFIBNE6GWJ4FJGY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="curExecTime" Id="mprP7AYLFOY6JBGJCJXRJUR4IRPVU">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="execToken" Id="mpr5LHJDJYCGJEIVJQCKTYU7L2HHI">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="sscTKOE2MYWZJB43POL3G755GXAPI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="sscTKOE2MYWZJB43POL3G755GXAPI mth_stmt_execute_____________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPU65PF7LJPOBDCIUAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, requesterName, curExecTime, execToken);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthQQTZALBTVNHNLPXEO457CWYQBQ" Name="cancel" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="task" Id="mprJANTXFU23BCC3ONUN6BHV6BKDQ">
+            <Type TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mthKUZMCX37LBCMPKENNSVZQVBVSI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+if (!(task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPT5IWXJ4O5AIPIYP3NSPZTDK54" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEIXEKC5YG5CVBEOCLYU33L3WGI aciRFWSG7XQMRB5LPHY4D23KSOETY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> || task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPT5IWXJ4O5AIPIYP3NSPZTDK54" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEIXEKC5YG5CVBEOCLYU33L3WGI aciYITWLSOWLJGRRFBQUU6EHTMKIM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)) {
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsJVUXGUYLDNGZPINP47IWH4HIEA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}
+task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPT5IWXJ4O5AIPIYP3NSPZTDK54" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEIXEKC5YG5CVBEOCLYU33L3WGI aci5CWTKFG3ABGV5IYKAYZDDBGGWU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="sscILDIPSOO2ZAM3JDTE2ZJFYE7IU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="sscILDIPSOO2ZAM3JDTE2ZJFYE7IU mth_stmt_execute_____________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPU65PF7LJPOBDCIUAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthJQUPUAH4RPNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() != null &amp;&amp; !</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthJQUPUAH4RPNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().isEmpty()) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mth4LIUO5IRWLOBDLJLAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:EventCode StringId="mlsTTAM6QTZYRA4JA2EHGDNQ4RJZY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthJQUPUAH4RPNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM prdYMED5YPMPFGKBIZ4CLBYRTJ4VQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthGPGEKXZQIVBW7MFL4JJWDGXSBY" Name="terminateParent" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="task" Id="mprBY46MKY75FAQZJJKU6UJFDFBNU">
+            <Type TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+          </Parameter>
+          <Parameter Name="returnStatus" Id="mprFTPDB57PZVGFDHAG74HWUPGRUY">
+            <Type TypeId="21" Path="acsEIXEKC5YG5CVBEOCLYU33L3WGI"/>
+          </Parameter>
+          <Parameter Name="execToken" Id="mprWSEQSTTHMZB4XKCEDN3EXYFB2A">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aclAISPQSDGNNF47CEMHOVHTK6G5U"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> parentTask = task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM prdSBSUX2ZY35HIVBMMSUONJNTTTE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+if (parentTask != null) {
+    parentTask.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclAISPQSDGNNF47CEMHOVHTK6G5U mthZBBPKW3Z6RAUTC3LR3FVNCTIXY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(task, null, returnStatus, execToken);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthNWREC3E23ZCRBNO6WIPX2XEMGU" Name="cancelTree" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="partOfTreeTaskId" Id="mprZMEAS4N7IFGC5EFPUELCAPP2YY">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> root = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2YO4JA7JKJGGBLTARIEQHUSHGI mthZXHCS2SCUBDVTKDMJMJNFX43TU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(partOfTreeTaskId);
+if(root != null) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2YO4JA7JKJGGBLTARIEQHUSHGI mthQQTZALBTVNHNLPXEO457CWYQBQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(root);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthEDW7XWYDPVGUZBPUM7CLBRJPNY" Name="recalcChildSeqNumbers" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="groupTask" Id="mprJJ7IKXONABE43D3PXWBQF4CJYA">
+            <Type TypeId="411" Path="aclAISPQSDGNNF47CEMHOVHTK6G5U"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if(groupTask == null) {
+    return;
+}
+final java.util.List&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> childTasks = groupTask.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclAISPQSDGNNF47CEMHOVHTK6G5U mthCMOZTIRUORE4FDJG67MVTWQCQE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+int seqNumber = 1;
+for(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> child : childTasks) {
+    child.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colWDY2TRTHU5CBNOYBLCQRTQSCZM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = seqNumber;
+    seqNumber++;
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthAETX36QP5BC3BPAGGZXT64VPQI" Name="breakTask" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="task" Id="mprE6NI5VRIPRCWTPHS26IA222QNY">
+            <Type TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+          </Parameter>
+          <Parameter Name="breakStatus" Id="mprQR4OEI566RHEDIUJLP6NKFS2WM">
+            <Type TypeId="21" Path="acsEIXEKC5YG5CVBEOCLYU33L3WGI"/>
+          </Parameter>
+          <Parameter Name="execToken" Id="mprQNMCE7JD3NHX5ALGRH4FU27PAM">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2YO4JA7JKJGGBLTARIEQHUSHGI mthMR67CF3ZIZFQNJ3RP6ZLVK6QZU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(task, breakStatus, true, null, null, execToken);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthZXHCS2SCUBDVTKDMJMJNFX43TU" Name="getTreeRoot" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="treePartId" Id="mprBWAN7XGUE5AXRC2IYKFIZMZMWY">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if(treePartId == null) {
+    return null;
+}
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="acc32SFWE4SGJBWXE5MSRZUAW2XMI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> rootCursor = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="acc32SFWE4SGJBWXE5MSRZUAW2XMI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acc32SFWE4SGJBWXE5MSRZUAW2XMI mth_stmt_execute_____________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(treePartId);
+try {
+    if (rootCursor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+        return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mth_loadByPK_________________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(rootCursor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acc32SFWE4SGJBWXE5MSRZUAW2XMI prf5GHY5DCNBJFNXJ35WRNV3TWUUU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, true);
+    }
+} finally {
+    rootCursor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mth_stmt_close_______________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+}
+return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthZ4NPQVVAKBHRFDLVCNCTNCZ4RA" Name="actualizeStatus" Nature="0" IsReflectiveCallable="true" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="task" Id="mpr2E7OLUR3FZHJFDZVLW5H4QZX2Y">
+            <Type TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (!task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mth4A25XVWOKTPBDNOBAAN7YHKUNI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(false)) {
+    try {
+    task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthQN7LVIA74TNRDC7HAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(0, false);
+    } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcOKXMLZDOWFFIHEQU5KG7B3PUVY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+        throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsZMJIPXRBTZB4XD4QVETBFBO46Y"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    }
+}
+if (task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mth3WYBGLGT4BBCZNQ5RW33FBR4NU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthUVXH2WARWLOBDLJLAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:EventCode StringId="mlsE4ZEYNZ6B5EVTAYMZ3B6IMWSUE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM prdYMED5YPMPFGKBIZ4CLBYRTJ4VQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPT5IWXJ4O5AIPIYP3NSPZTDK54" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEIXEKC5YG5CVBEOCLYU33L3WGI aci7Z626KWOCBG25D3MNAVANFNXMM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+    task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mthXQWGS4T7IRHWHJEQMRDQZ2F2S4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Cancelled by actualization (" + (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthJQUPUAH4RPNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() == null ? "ARTE" : </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthJQUPUAH4RPNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) +")");
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2YO4JA7JKJGGBLTARIEQHUSHGI mthLKG3SYA4UJAYLAIC34ROW2ULYQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(task, null, task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colSPQ7GFBANJFXBJRZTRXETWZFG4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    return true;
+}
+return false;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

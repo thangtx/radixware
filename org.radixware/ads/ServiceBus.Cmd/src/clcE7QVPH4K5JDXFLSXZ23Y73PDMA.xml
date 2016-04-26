@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsContextlessCommandDefinition Id="clcE7QVPH4K5JDXFLSXZ23Y73PDMA" Name="ConnectCmd" TitleId="mlsFWTDLHI52NAHXGKCG5NRTYXF7A" Nature="2" IsVisible="false" IsConfirmationRequired="false">
+    <AccessRules IsPublished="false"/>
+    <InType TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="ConnectRqDocument"/>
+    <Source>
+      <xsc:Item>
+        <xsc:Java>final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="21"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> outConnectorId = input.ConnectRq.OutConnectorId;
+final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="21"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> inConnectorId = input.ConnectRq.InConnectorId;
+
+final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcPid_______________________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> pid = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mthI4Y2N5DMQVGQNB2J7ZFQJAKXWM" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(outConnectorId);
+final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="21"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> outRole = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mthGNUGXTIA2JG53E76RFDTPGMZLY" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(outConnectorId);
+final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aicC6PFHABKKZBO3N6RNZ66DMI5O4"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> node = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mth3PA5KC7P3NFQ5L7BQAF4WAVCDY" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(pid);
+if (node == null)
+    return;
+    
+node.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aicC6PFHABKKZBO3N6RNZ66DMI5O4 mthRJJVN7SZFRGFPKSWMK5OODDPHM" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(outRole, inConnectorId);</xsc:Java>
+      </xsc:Item>
+    </Source>
+  </AdsContextlessCommandDefinition>
+</AdsDefinition>

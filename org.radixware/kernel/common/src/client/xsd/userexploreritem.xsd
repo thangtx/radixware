@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:this="http://schemas.radixware.org/userexploreritem.xsd" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:xscml="http://schemas.radixware.org/xscml.xsd" targetNamespace="http://schemas.radixware.org/userexploreritem.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:import namespace="http://schemas.radixware.org/xscml.xsd" schemaLocation="xscml.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+            
+    <xs:complexType name="FilterParameterValue">
+        <xs:sequence>
+            <xs:element name="Value" type="xs:string" nillable="true" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="Id" type="types:Id"  use="required"/>
+        <xs:attribute name="ValType" use="required">
+            <xs:simpleType>
+                    <xs:annotation>
+                            <xs:documentation>Enum EValType</xs:documentation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                    <types:class>org.radixware.kernel.common.enums.EValType</types:class>
+                            </xs:appinfo>
+                    </xs:annotation>
+                    <xs:restriction base="types:IntEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="ContextFilter">
+        <xs:sequence>
+            <xs:element name="Condition" type="xscml:Sqml" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="ParamValues" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Item" type="this:FilterParameterValue" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>                        
+        </xs:sequence>       
+    </xs:complexType>
+    
+    <xs:complexType name="Sorting">
+        <xs:sequence>
+            <xs:element name="Title" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Order" minOccurs="1" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Item" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:attribute name="ColumnId" type="types:Id" use="required"/>
+                                <xs:attribute name="Desc" type="xs:boolean" use="optional" default="false"/>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="Id" type="types:Id"  use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="SelectorUserExplorerItem">
+        <xs:sequence>
+            <xs:element name="Title" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Filter" type="this:ContextFilter" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Sorting" type="this:Sorting" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="Id" type="types:Id"  use="required"/>
+        <xs:attribute name="sourceId" type="types:Id"  use="required"/>
+    </xs:complexType>
+    
+    <xs:element name="SelectorUserExplorerItem" type="this:SelectorUserExplorerItem"/>
+     
+</xs:schema>

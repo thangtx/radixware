@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcIKIZJELSEJDW7J46EBX4IQVTPQ" Name="DesktopUtils" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcIKIZJELSEJDW7J46EBX4IQVTPQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcIKIZJELSEJDW7J46EBX4IQVTPQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgSKUX5RFXXREHHCX6YMR4GL7JIA" Name="Root"/>
+    <PropertyGroup Id="cpgCGHM7CER6ZDCZEKWS6YYM7O4YM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthN7Y3DWHKJBDUTOQ2VO3EVXE73U" Name="openFileForImport" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="parentView" Id="mprWIEARDROGREFXPD4ICF27PKAPQ">
+            <Type TypeId="411" Path="aicFFQ5CBH335G3LJF4GQIWJITBCE"/>
+          </Parameter>
+          <Parameter Name="title" Id="mpr4GMXLDSDQNH4NNP4WV2WTILW7Y">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.io.File"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> dir = parentView.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFFQ5CBH335G3LJF4GQIWJITBCE mthWR62NIZKJRER5HPNBZN5MONOG4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthOICRIYTJ6FDK7IKIQGIULAMNHQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ mthAIEG7LFMGBHCTDUJ3XEJURLX64" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIKIZJELSEJDW7J46EBX4IQVTPQ mthN7Y3DWHKJBDUTOQ2VO3EVXE73U"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.toString());
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> fileName = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcRE2EXB6FO5DGHL6ZYQPDYNOVNY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcRE2EXB6FO5DGHL6ZYQPDYNOVNY mthJ4P5ZOVGCZCD7AIN76CMAY3RII" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(
+        (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)parentView,
+        title,
+        dir,
+        new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcRE2EXB6FO5DGHL6ZYQPDYNOVNY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Filter(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsXDNMLB6EBJC43FNRDTQDLA7HKI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>));
+
+if (fileName == null || fileName.isEmpty())
+    return null;
+
+java.io.File f = new java.io.File(fileName);
+
+parentView.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFFQ5CBH335G3LJF4GQIWJITBCE mthWR62NIZKJRER5HPNBZN5MONOG4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthOICRIYTJ6FDK7IKIQGIULAMNHQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ mthAL342767O5GMFPXUORM2UVWPQE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIKIZJELSEJDW7J46EBX4IQVTPQ mthN7Y3DWHKJBDUTOQ2VO3EVXE73U"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.toString(), f.getAbsolutePath());
+
+return f;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthGVM6XB5MJBDMRB2S4URB4HPLDY" Name="openFileForExport" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="parentView" Id="mprWIEARDROGREFXPD4ICF27PKAPQ">
+            <Type TypeId="411" Path="aicFFQ5CBH335G3LJF4GQIWJITBCE"/>
+          </Parameter>
+          <Parameter Name="title" Id="mpr4GMXLDSDQNH4NNP4WV2WTILW7Y">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.io.File"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> dir = parentView.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFFQ5CBH335G3LJF4GQIWJITBCE mthWR62NIZKJRER5HPNBZN5MONOG4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthOICRIYTJ6FDK7IKIQGIULAMNHQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ mthAIEG7LFMGBHCTDUJ3XEJURLX64" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIKIZJELSEJDW7J46EBX4IQVTPQ mthGVM6XB5MJBDMRB2S4URB4HPLDY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.toString());
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> fileName = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcRE2EXB6FO5DGHL6ZYQPDYNOVNY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcRE2EXB6FO5DGHL6ZYQPDYNOVNY mthSRV4I2DFWNHHZEYGYWS35YBLWE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(
+        (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)parentView,
+        title,
+        dir,
+        new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcRE2EXB6FO5DGHL6ZYQPDYNOVNY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Filter(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsTUWRCYIZGFATXKMSLWSVAGG6OI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>));
+
+if (fileName == null || fileName.isEmpty())
+    return null;
+
+java.io.File f = new java.io.File(fileName);
+
+parentView.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFFQ5CBH335G3LJF4GQIWJITBCE mthWR62NIZKJRER5HPNBZN5MONOG4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthOICRIYTJ6FDK7IKIQGIULAMNHQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ mthAL342767O5GMFPXUORM2UVWPQE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIKIZJELSEJDW7J46EBX4IQVTPQ mthGVM6XB5MJBDMRB2S4URB4HPLDY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.toString(), f.getAbsolutePath());
+
+return f;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthK7H5DFRBLVGC5NEWTTIN33OV6U" Name="saveXmlAndShowCompleteMessage" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="parentView" Id="mprAFDFIBF6BNCV7I56TS5TRASBXU">
+            <Type TypeId="411" Path="aicFFQ5CBH335G3LJF4GQIWJITBCE"/>
+          </Parameter>
+          <Parameter Name="xml" Id="mprJVTRHKN2DNANHPFTVUU5CHSFMA">
+            <Type TypeId="451"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>java.io.File file = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIKIZJELSEJDW7J46EBX4IQVTPQ mthGVM6XB5MJBDMRB2S4URB4HPLDY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(parentView, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsI3NXDCVMPZCUDCGQKWTU4CNDLQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+if (file != null) {
+    xml.save(file, new org.apache.xmlbeans.XmlOptions().setSavePrettyPrint().setSaveAggressiveNamespaces());
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthTBZ664HXGRA35JY3GRAKEYBTBA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsBIIDME3U6ZF3LCRHPLVAJN4NKU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

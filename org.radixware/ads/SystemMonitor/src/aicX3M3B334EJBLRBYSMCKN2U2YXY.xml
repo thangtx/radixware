@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicX3M3B334EJBLRBYSMCKN2U2YXY" Name="MonitoringTreeItemDecorator" Type="5" Environment="explorer">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.explorer.editors.monitoring.tree.MonitoringTreeItemDecorator"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderaicX3M3B334EJBLRBYSMCKN2U2YXY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaicX3M3B334EJBLRBYSMCKN2U2YXY"/>
+    </Bodies>
+    <MethodGroup Id="cmgJRUQPQDWRRHX7DBAA5IWJSPLUE" Name="Root"/>
+    <PropertyGroup Id="cpgWLJDOBHSAJDNFLJ6TXRWDTVXLE" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthKHBD5R2KMJDWNKTM35GCMT3X5M" Name="decorate" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="decorate(Lorg.radixware.kernel.explorer.editors.monitoring.tree.TreeItem;)Ljava.util.List&lt;Lorg.radixware.kernel.explorer.editors.monitoring.tree.MonitoringTreeItemDecoration;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="treeItem" Id="mprANE6KHYKZNEO7CMCXL4GWWC2DI">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.editors.monitoring.tree.TreeItem"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.explorer.editors.monitoring.tree.MonitoringTreeItemDecoration"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthFTIFXQHMAZFYFO7CE7LFS4DCRA" Name="prepare" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="prepare(Lorg.radixware.schemas.monitoringcommand.SysMonitoringRq;Lorg.radixware.schemas.monitoringcommand.SysMonitoringRs;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="rq" Id="mprSDHRPUXANBEP5HQ3EUXPLOVYTA">
+            <Type TypeId="400" extStr="org.radixware.schemas.monitoringcommand.SysMonitoringRq"/>
+          </Parameter>
+          <Parameter Name="rs" Id="mprERSWBJ5JHZEIZCFLP6VQ22WHGY">
+            <Type TypeId="400" extStr="org.radixware.schemas.monitoringcommand.SysMonitoringRs"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcO5QPMPMZVJF6FKVABZUEOCL75Q" Name="FileChoiceEditor" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc7ZUH4K3LNRGK3FUZBZWWO4TSTQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcJZATJP2QTJEFNGGWXM4YT2SMI4"/>
+    </Bodies>
+    <MethodGroup Id="cmgNWIYVY2X5NG2FA5CDNRIGDGB5Y" Name="Root"/>
+    <PropertyGroup Id="cpgIQXOWWAQDJCDPG2YYDVDNBXYXU" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthIBY5AXXQ5JBTHIDUVKUERCQBSY" Name="FileChoiceEditor" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="property" Id="mprELJQBUVSTZG5BJ7Y3VHATVGOUY">
+            <Type TypeId="411" Path="adcG4LPCCZWKFAYDPURZEU7GOHAWY"/>
+          </Parameter>
+          <Parameter Name="parent" Id="mprMRU63U7UZBEQ7GVPKBQKYCRUYE">
+            <Type TypeId="411" Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4"/>
+          </Parameter>
+          <Parameter Name="mode" Id="mprWPWQFGMO3ZHHHFXQUEE2CETG7A">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="mandatory" Id="mprD3XM2VN6DRH5JDWEKAAP2CZOD4">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="dialogTitle" Id="mpr2DUJBIM2SBB57G7BCMXCBYDZV4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="filter" Id="mprOFMXXL2UKFDKZD7A5SRY725ETI">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QFileDialog.Filter"/>
+          </Parameter>
+          <Parameter Name="initValue" Id="mpr2QORTSNHSFGTVJR454WMHCVFCE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(property, new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcO5QPMPMZVJF6FKVABZUEOCL75Q adcLFPVVEBV7VC35A3TAIHNCWTFXE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> fc = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)getValEditor();
+fc.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prpIQW4WR34TPORDKW4AAN7YHKUNI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.connect(this,"finishEdit()");
+fc.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prpOO4EKOK33NDLPDSO4HT3UIWUI4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = mode;
+if (dialogTitle != null)
+    fc.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prpOBQTCPEETVDJPN3MI6U3I2MCE4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = dialogTitle;
+fc.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc577BIS4VOZF6LHBG5OV7JJ5SVY mth6VN6K4GXE5HMJJ6YNTFQUI35FM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(mandatory);
+fc.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prpQRLNZVCJ6VGONPKDRTKUNZAS7I" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = filter;
+fc.Value =  initValue;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthZ62I4BDR6VFU3OD7TDRBR2S2SA" Name="FileChoiceEditor" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="property" Id="mprR33RCDDAUNCSVJQAHJ45LNTG5Y">
+            <Type TypeId="411" Path="adcG4LPCCZWKFAYDPURZEU7GOHAWY"/>
+          </Parameter>
+          <Parameter Name="parent" Id="mpr3WR65YOMK5BRJPQX3MIL3FZLFA">
+            <Type TypeId="411" Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4"/>
+          </Parameter>
+          <Parameter Name="mode" Id="mprXE6QM6JSONHTXKMEUWLJSDKK7Y">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="mandatory" Id="mprAQGVEOQZXVCSLPSRHWETWZIVEI">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this(property, parent, mode, mandatory, null, null, null);     </xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthMTGGZL4W7NHYFPRCEOHIZLVHVY" Name="FileChoiceEditor" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="property" Id="mprEC7QABLX75CRBE76CE5LUCEQXQ">
+            <Type TypeId="411" Path="adcG4LPCCZWKFAYDPURZEU7GOHAWY"/>
+          </Parameter>
+          <Parameter Name="parent" Id="mprSA5XSYT2KVEM5ESWFRY542VPWM">
+            <Type TypeId="411" Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4"/>
+          </Parameter>
+          <Parameter Name="mode" Id="mprLGHMSOBDB5HEJB4VCJKYHDK5V4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="mandatory" Id="mprQ44D25YTV5ERNJSKRKWCJSPZ6Y">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="dialogTitle" Id="mprCE7DTWQ22VAFHONAXXLGGOBMSE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="filter" Id="mprMBURH35E2NEQXHHZBAI6X5KMJQ">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QFileDialog.Filter"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this(property, parent, mode, mandatory, dialogTitle, filter, null);     </xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthAZOTRMSZ5BHI3JWBLU7KWXEW3Q" Name="setBasePath" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="basePath" Id="mprD44QE3TN65FEBMLRZCGVDIRQZQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> fc = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)getValEditor();
+fc.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY mthNXHCFNRDZNEGPBOHXK7FB7KWXI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(basePath);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <InnerClasses>
+      <Clazz Id="adcLFPVVEBV7VC35A3TAIHNCWTFXE" Name="FileChoiceFactory" Type="3" Environment="explorer">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true">
+          <Transparence Extendable="false"/>
+        </AccessRules>
+        <Headers>
+          <Src Name="HeaderadcLFPVVEBV7VC35A3TAIHNCWTFXE"/>
+        </Headers>
+        <Bodies>
+          <Src Name="BodyadcLFPVVEBV7VC35A3TAIHNCWTFXE"/>
+        </Bodies>
+        <MethodGroup Id="cmgPW4QZ3PQMBAI5J4WB2KUCWCAIY" Name="Root"/>
+        <PropertyGroup Id="cpg5DIAZUR2DRDCPMYZM3CEZPCUPY" Name="Root"/>
+        <Properties/>
+        <Methods>
+          <Method Id="mth535ON7BEHVGALJXU2B4Z7S4F3E" Name="createValEditor" Nature="0" IsOverride="true">
+            <AccessRules/>
+            <Parameters>
+              <Parameter Name="valType" Id="mprMWYFBPH3RRBVJNY6FOFBT3APEM">
+                <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+              </Parameter>
+              <Parameter Name="editMask" Id="mprEHDFN6KVKNE6DL6G4QLCVQMNZE">
+                <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
+              </Parameter>
+              <Parameter Name="environment" Id="mprYNABSWHT3VA33LX4EKQJXACZDM">
+                <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+              </Parameter>
+              <Parameter Name="parentWidget" Id="mprU5H3O4KCUNC3ZOTXRE6AVAVMRI">
+                <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+              </Parameter>
+            </Parameters>
+            <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.editors.valeditors.ValEditor">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?"/>
+              </xsc:GenericArguments>
+            </ReturnType>
+            <Sources>
+              <Src>
+                <xsc:Item>
+                  <xsc:Java>return new </xsc:Java>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY mthZGP7R5F4S3ORDL2TAAN7YHKUNI" Invoke="true"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java>(environment, parentWidget, </xsc:Java>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:TypeDeclaration TypeId="411" Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java>.OPEN, true,  null, null, null);</xsc:Java>
+                </xsc:Item>
+              </Src>
+            </Sources>
+          </Method>
+        </Methods>
+        <Extends TypeId="411" Path="adcB4MFR2EMXJHZXMWXRPXKFTZZ3M"/>
+      </Clazz>
+    </InnerClasses>
+    <Extends TypeId="411" Path="adc4XUXHLLOJRC7ZGMB7CYL7MHD4A"/>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:this="http://schemas.radixware.org/audit.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:t="http://schemas.radixware.org/types.xsd" targetNamespace="http://schemas.radixware.org/audit.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+	<xs:complexType name="Table">
+		<xs:attribute name="DbName" type="t:Str"/>
+		<xs:attribute name="Name" type="t:Str"/>
+	</xs:complexType>
+	<xs:complexType name="Keys">
+		<xs:sequence>
+			<xs:element name="Keys" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:attribute name="Key" type="t:Str" use="required"/>
+					<xs:attribute name="Value" type="t:Str" use="required"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Project">
+		<xs:sequence>
+			<xs:element name="Project" type="this:Project" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Table" type="this:Table" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="Name" type="t:Str"/>
+	</xs:complexType>
+	<xs:element name="PID" type="this:Keys"/>
+	<xs:element name="Data" type="this:Keys"/>
+	<xs:element name="Tree" type="this:Project"/>
+</xs:schema>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsContextlessCommandDefinition Id="clcCXP2432PUFHBBKG2CRAZSGMSHY" Name="GetAllowedLibNamesByPipelineId" DescriptionId="mlsFWRW5B7MNVH25CVM7CECXDSFTM" Nature="2" IsVisible="true" IsConfirmationRequired="true">
+    <AccessRules IsPublished="false"/>
+    <InType TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="IntDocument"/>
+    <OutType TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStrDocument"/>
+    <Source>
+      <xsc:Item>
+        <xsc:Java>if(input == null || input.Int == null) {
+    return null;
+}
+
+</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="accJHRQ6RIGK5GJ3BXWY6WUSK7U64"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> cursor = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="accJHRQ6RIGK5GJ3BXWY6WUSK7U64"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="accJHRQ6RIGK5GJ3BXWY6WUSK7U64 mth_stmt_execute_____________" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(input.Int);
+</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStrDocument"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> libName2PipelineId = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStrDocument"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.Factory.newInstance();
+libName2PipelineId.addNewMapStrStr();
+try {
+    while (cursor.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>()) {
+        org.radixware.schemas.types.MapStrStr.Entry entry = libName2PipelineId.MapStrStr.addNewEntry();
+        entry.Key = cursor.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="accJHRQ6RIGK5GJ3BXWY6WUSK7U64 prfNFVDAEO6EFDCDFQ7DQBJLQLQII" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>;
+        entry.Value = cursor.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="accJHRQ6RIGK5GJ3BXWY6WUSK7U64 prfGEYIVMISARCOVHNVG2Z3YF6DZM" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> != null ? cursor.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="accJHRQ6RIGK5GJ3BXWY6WUSK7U64 prfGEYIVMISARCOVHNVG2Z3YF6DZM" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.toString() : null;
+    }
+} finally {
+    cursor.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcCursor____________________ mth_stmt_close_______________" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>();
+}
+return libName2PipelineId;</xsc:Java>
+      </xsc:Item>
+    </Source>
+  </AdsContextlessCommandDefinition>
+</AdsDefinition>

@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcDX57NPKFJ5B5DNC6GBEW3QHFCQ" Name="EventCodeArrayEditorWeb" Type="3" Environment="web">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcDX57NPKFJ5B5DNC6GBEW3QHFCQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcDX57NPKFJ5B5DNC6GBEW3QHFCQ">
+        <xsc:Item>
+          <xsc:Java>private </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcHEXT6TMJ2FAXJGCQHFISLL36AA"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> prop;
+</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmgXIJM3KSYQZGC5FFPB6XOS5F37A" Name="Root"/>
+    <PropertyGroup Id="cpgZDGMGON3HJHEVAN23LBN5KW43Q" Name="Root"/>
+    <Properties>
+      <Property Id="prdC3YUJKAJLBED5PFNTSCL4OHAEI" Name="eventCodes" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="451" Path="xsdMPH3WOW4SHOBDCKSAALOMT5GDM" extStr="EventCodesRsDocument"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthLSHN5DVYMBFQJCQ7W4XOXA3QAU" Name="applyChanges" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> list = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) this.getCurrentValue();
+//
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> arr = list == null ? null : new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(list);
+//
+prop.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthZBTI63XF4RBXJJXOH54ZV3GT6I" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(arr);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthIERTF4KNPJBGZIMIRMIBJT6XTE" Name="EventCodeArrayEditorWeb" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="env" Id="mprBBIWIHFZWJFOVCXLYSYM6EXF5I">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
+          <Parameter Name="eventCodes" Id="mprRPZ3G7S4SNBWXML54LHUYHVD7A">
+            <Type TypeId="451" Path="xsdMPH3WOW4SHOBDCKSAALOMT5GDM" extStr="EventCodesRsDocument"/>
+          </Parameter>
+          <Parameter Name="property" Id="mprKRXJJ6TJ45GRROORZFJUXQM3HQ">
+            <Type TypeId="411" Path="adcHEXT6TMJ2FAXJGCQHFISLL36AA"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(env,</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciT57UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,null);
+
+setItemMandatory(true);
+
+org.radixware.kernel.common.client.meta.mask.EditMaskList list = new org.radixware.kernel.common.client.meta.mask.EditMaskList();
+
+if(eventCodes != null &amp;&amp; eventCodes.EventCodesRs != null){
+    for(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdMPH3WOW4SHOBDCKSAALOMT5GDM" extStr="EventCodesRsDocument.EventCodesRs.EventCode"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> rs :  eventCodes.getEventCodesRs().EventCodeList){
+        
+        list.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcB3YNBRATAVEHRM3YZIEXM5HH2A mth535OWWTCYVFFJAQKIMDLE4TOMI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(rs.Title,rs.Id);
+    }
+}
+setEditMask(list);
+this.prop = property;
+this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDX57NPKFJ5B5DNC6GBEW3QHFCQ prdC3YUJKAJLBED5PFNTSCL4OHAEI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = eventCodes;
+setCurrentValue((</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)prop.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthLSANOBLXINHNPFDVOGRUZDVNV4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthMDNESSHEFFDOZFQSKTPZF4ATOU" Name="getDefaultItemValue" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprLCDB63NVZ5AMJGWLGCEK5SVO4M">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="arg1" Id="mprAKJY356HJNBZ7HSFZY72SQA76U">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+          </Parameter>
+          <Parameter Name="arg2" Id="mprMCNXHMRJ6RCTNEQFJQ4KZXHRRA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>// --------------------- explorer --------------------- 
+
+//</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="cpeJR45J5TXOJBNJJEDT2CFPLSC3I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> dialog = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="cpeJR45J5TXOJBNJJEDT2CFPLSC3I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(this.Environment);
+//
+//dialog.Model.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthNKATX7S2YVAUDMTP3M3NBKU5GY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcND3IPY7BVZHM7ENQNQAOCZ67PA mthFFKF3BPD7FHBVM7WTENFKWUIUE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(this.Environment));
+//dialog.Model.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cpeJR45J5TXOJBNJJEDT2CFPLSC3I armJR45J5TXOJBNJJEDT2CFPLSC3I prdL6P2E3YNONEGFPOEJKV6YRZRNA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDX57NPKFJ5B5DNC6GBEW3QHFCQ prdC3YUJKAJLBED5PFNTSCL4OHAEI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+//if(dialog.execDialog() == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcDAOFOPE66ZA5ZP7ALHOOPQIQ6I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.ACCEPTED){
+//    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="cpeJR45J5TXOJBNJJEDT2CFPLSC3I armJR45J5TXOJBNJJEDT2CFPLSC3I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> model = dialog.Model;
+//    return model.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cpeJR45J5TXOJBNJJEDT2CFPLSC3I armJR45J5TXOJBNJJEDT2CFPLSC3I prdEFQ56GUXHVE2BJHQ5SKO62S4BM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+//}
+
+return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="adcNBL67SGVH5DHHO3PA5TEU2CCIQ"/>
+  </AdsClassDefinition>
+</AdsDefinition>

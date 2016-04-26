@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcVOS732KF7VHFZKK3JHPKKRO5ZY" Name="ChildNodes" Type="3" Environment="web">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.wps.views.selector.tree.SelectorTreeChildNodes"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcVOS732KF7VHFZKK3JHPKKRO5ZY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcVOS732KF7VHFZKK3JHPKKRO5ZY"/>
+    </Bodies>
+    <MethodGroup Id="cmg23ZMO4LHJ5E2FF5MBQUF2YNCQQ" Name="Root"/>
+    <PropertyGroup Id="cpg3JJNZDMPHRE6RNHVNKJCN2SUKY" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthTXWKKJ5ZYVE4RJFBU5APMHG72Y" Name="afterPrepareCreateObject" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="afterPrepareCreateObject(Lorg.radixware.kernel.common.client.models.EntityModel;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="newObject" Id="mprOYLNAYRKWZFGXEGX3UEAUMCEXI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthQR3HNTQ7SBHALFUFPIFABP5OH4" Name="calcChildGroupRestrictions" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="calcChildGroupRestrictions(Lorg.radixware.kernel.common.client.models.GroupModel;)Lorg.radixware.kernel.common.client.types.Restrictions;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="childGroupModel" Id="mprT5ZRSETQQVGNHN7UEXNHKSUJEQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.types.Restrictions"/>
+      </Method>
+      <Method Id="mthJ4FRCO5BVJFIJILJW5S5KVPAR4" Name="findNodes" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="findNodes(Lorg.radixware.kernel.common.client.types.Pid;)Ljava.util.List&lt;Lorg.radixware.wps.rwt.tree.Node;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="pid" Id="mprWDZEUF7DMNA2XKJT4UKRFHSUWA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.types.Pid"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.wps.rwt.tree.Node"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthRXL464XYWFG4ZHFJNZA6GKO7KQ" Name="getChildGroupModels" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getChildGroupModels()Ljava.util.List&lt;Lorg.radixware.kernel.common.client.models.GroupModel;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mth73SASX5CZJAA3FJVSVRSATOW6Q" Name="getChildGroupModelSettings" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getChildGroupModelSettings()Ljava.util.List&lt;Lorg.radixware.wps.views.selector.tree.ChildGroupModelSettings;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.wps.views.selector.tree.ChildGroupModelSettings"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthGTJ2WC533ZHXRCOPQWQLWQCSZI" Name="getGroupToCreateChild" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getGroupToCreateChild()Lorg.radixware.kernel.common.client.models.GroupModel;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+      </Method>
+      <Method Id="mth2HWO2XGACJHU3JWLCUTN4XSG24" Name="getNodeIcon" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getNodeIcon(Lorg.radixware.wps.rwt.tree.Node;)Lorg.radixware.kernel.common.client.types.Icon;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="node" Id="mprV2BAGSABNBBDZCN46ZULDGK73M">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.tree.Node"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.types.Icon"/>
+      </Method>
+      <Method Id="mthSWM3R46XTVHS3BMBRC3GLO22CY" Name="getParentEntityModel" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getParentEntityModel()Lorg.radixware.kernel.common.client.models.EntityModel;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+      </Method>
+      <Method Id="mthQKIOFIMG5NEJBMNJZIKT7BLTZE" Name="getRootGroupModel" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getRootGroupModel()Lorg.radixware.kernel.common.client.models.GroupModel;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+      </Method>
+      <Method Id="mthESSE6KF4O5BUPPHGK2STRFFLHY" Name="getSelectorTree" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getSelectorTree()Lorg.radixware.wps.views.selector.tree.IRwtSelectorTree;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.views.selector.tree.IRwtSelectorTree"/>
+      </Method>
+      <Method Id="mthSV4CIJPCQBENBL5F6I2M44ZD3E" Name="hasObjects" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="hasObjects()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth6MQOZXDPUZBTFMLPO46VBTOSCA" Name="mapSelectorColumn" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="mapSelectorColumn(Lorg.radixware.kernel.common.client.models.EntityModel;Lorg.radixware.kernel.common.client.models.items.SelectorColumnModelItem;)Lorg.radixware.kernel.common.types.Id;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="entityModel" Id="mprBMK2A5MZEFFHBDRGBQVEQQRTWE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+          <Parameter Name="column" Id="mprLP4ZAIYMPJCILBHSLSF57JF7BQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.SelectorColumnModelItem"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+      </Method>
+      <Method Id="mth5E6AIGJA35FJHMWE4E3322ALSY" Name="ChildNodes" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.wps.views.selector.tree.IRwtSelectorTree;Ljava.util.List&lt;Lorg.radixware.kernel.common.client.models.GroupModel;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="tree" Id="mprTNOVKWN3Z5BXREFGHCEGFCOKEA">
+            <Type TypeId="400" extStr="org.radixware.wps.views.selector.tree.IRwtSelectorTree"/>
+          </Parameter>
+          <Parameter Name="groupModels" Id="mprSHYMAPR6NRBELA24RD4FDFVIJM">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthNDSO2OUNRBD4HPAFAAM3EW3TSY" Name="ChildNodes" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.models.EntityModel;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parentEntityModel" Id="mprVLY363A4Z5H4TJ4I3HRS6MDXEA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthG3YNKDS3JBBXRIRW7Q2DNKSIAA" Name="ChildNodes" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.models.EntityModel;Lorg.radixware.wps.views.selector.tree.ChildGroupModelSettings;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parentEntityModel" Id="mprLAMYXPKWQZHVFENST3DJBDT3IY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+          <Parameter Name="childGroupModelSettings" Id="mprYETRWXT4OVGKJABE4BX6F3I2RE">
+            <Type TypeId="400" extStr="org.radixware.wps.views.selector.tree.ChildGroupModelSettings"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthHHYH5QOQGBBWDHCJVGM4GVQHNM" Name="ChildNodes" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.models.EntityModel;Ljava.util.List&lt;Lorg.radixware.wps.views.selector.tree.ChildGroupModelSettings;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parentEntityModel" Id="mprSTVNC44ZVNHBHBKNKPMDUDK52Q">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+          <Parameter Name="childGroupModelSettings" Id="mprKLYNNXELO5FH3BP5POXM5RVTQE">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.wps.views.selector.tree.ChildGroupModelSettings"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

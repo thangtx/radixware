@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:this="http://schemas.radixware.org/groupsettings.xsd" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:common="http://schemas.radixware.org/commondef.xsd" xmlns:editmask="http://schemas.radixware.org/editmask.xsd" xmlns:xscml="http://schemas.radixware.org/xscml.xsd" targetNamespace="http://schemas.radixware.org/groupsettings.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://schemas.radixware.org/xscml.xsd" schemaLocation="xscml.xsd"/>
+	<xs:import namespace="http://schemas.radixware.org/editmask.xsd" schemaLocation="editmask.xsd"/>
+	<xs:import namespace="http://schemas.radixware.org/commondef.xsd" schemaLocation="commondef.xsd"/>
+	<xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+            
+    <xs:complexType name="PropertyBasedFilterParameter">
+        <xs:complexContent>
+            <xs:extension base="common:Definition">
+                <xs:sequence>
+                    <xs:element name="DefaultVal" type="xs:string" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="OwnerClassId" type="types:Id"  use="required"/>
+                <xs:attribute name="PropertyId" type="types:Id"  use="required"/>
+                <xs:attribute name="Title" type="xs:string"  use="optional"/>              
+                <xs:attribute name="NotNull" type="xs:boolean" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="CustomFilterParameter">
+        <xs:complexContent>
+            <xs:extension base="common:Definition">
+                <xs:sequence>
+                    <xs:element name="EditMask" type="editmask:EditMask" minOccurs="0"/>
+                    <xs:element name="DefaultVal" type="types:SafeStr" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="Title" type="xs:string" use="required"/>
+				<xs:attribute name="ValType" use="required">
+					<xs:simpleType>
+						<xs:annotation>
+							<xs:documentation>Enum EValType</xs:documentation>
+							<xs:appinfo source="http://schemas.radixware.org/types.xsd">
+								<types:class>org.radixware.kernel.common.enums.EValType</types:class>
+							</xs:appinfo>
+						</xs:annotation>
+						<xs:restriction base="types:IntEnum"/>
+					</xs:simpleType>
+				</xs:attribute>
+                <xs:attribute name="NotNull" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="EnumId" type="types:Id" use="optional"/>
+                <xs:attribute name="ReferencedClassId" type="types:Id" use="optional"/>
+                <xs:attribute name="ParentSelectorPresentationId" type="types:Id" use="optional"/>
+                <xs:attribute name="NullTitle" type="xs:string" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="FilterParameters">
+        <xs:sequence>
+            <xs:element name="Parameter" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:choice>
+                        <xs:element name="PropertyBasedParamter" type="this:PropertyBasedFilterParameter" minOccurs="0"/>
+                        <xs:element name="CustomParameter" type="this:CustomFilterParameter" minOccurs="0"/>
+                    </xs:choice>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>        
+    </xs:complexType>    
+
+    <xs:complexType name="CustomFilter">
+        <xs:complexContent>
+            <xs:extension base="common:NamedDefinition">
+                <xs:sequence>
+                    <xs:element name="Condition" type="xscml:Sqml" minOccurs="0"/>
+                    <xs:element name="Parameters" type="this:FilterParameters" minOccurs="0"/>
+                    <xs:element name="PersistentValues" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="PersistentValue" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:attribute name="ParamId" type="types:Id" use="required"/>
+                                        <xs:attribute name="ValAsStr" type="types:SafeStr" use="optional"/>
+                                        <xs:attribute name="EditorPresentationId" type="types:Id" use="optional"/>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="BaseFilterId" type="types:Id" use="optional"/>
+                <xs:attribute name="TableId" type="types:Id" use="required"/>
+                <xs:attribute name="IsActive" type="xs:boolean" use="optional" default="true"/>
+                <xs:attribute name="SelectorPresentations" use="optional">
+                    <xs:simpleType>
+                        <xs:list itemType="types:Id"/>
+                    </xs:simpleType>
+                </xs:attribute>                
+            </xs:extension>
+        </xs:complexContent>
+     </xs:complexType>
+ 
+     <xs:element name="Filter" type="this:CustomFilter"/>
+     <xs:element name="CustomFilters">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Filter" type="this:CustomFilter" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+     </xs:element>     
+     
+    <xs:complexType name="CustomSorting">
+        <xs:complexContent>
+            <xs:extension base="common:NamedDefinition">
+                <xs:sequence>
+                    <xs:element name="OrderBy" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                            <xs:attribute name="PropId" type="types:Id" use="required"/>
+                            <xs:attribute name="Desc" type="xs:boolean" use="optional" default="false"/>
+                        </xs:complexType>
+                    </xs:element>                    
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+     </xs:complexType>
+     
+     <xs:element name="Sorting" type="this:CustomSorting"/>
+     <xs:element name="CustomSortings">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Sorting" type="this:CustomSorting" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+     </xs:element>    
+     <xs:element name="ConvertFilterRs" type="this:ConvertFilter"/>
+     <xs:complexType name="ConvertFilter">   
+        <xs:attribute name="FilterId" type="types:Id" use="required"/>
+     </xs:complexType>    
+     
+</xs:schema>

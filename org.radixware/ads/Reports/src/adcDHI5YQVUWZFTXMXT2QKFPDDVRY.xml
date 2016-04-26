@@ -1,0 +1,1061 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" xmlns:com="http://schemas.radixware.org/commondef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcDHI5YQVUWZFTXMXT2QKFPDDVRY" Name="ReportsExplorerUtils" Type="3" Environment="common-client" IsDual="true">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcG25AC65AOJHVLBLQFIN62ZG4OE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcXJWQU7O7YNGBNKSG44BLOONIFA"/>
+    </Bodies>
+    <MethodGroup Id="cmg3NTJ4XVMKVCXJAHFKMCYQTIH24" Name="Root"/>
+    <PropertyGroup Id="cpgADGCOFHK7ZFDFCBONSKMKHTRBQ" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthH6QGKYQ4UNGSHNRUVFWCTH7JCA" Name="findParameterBindingById" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="parametersBindingDoc" Id="mprXNQBUNPM6RE7ZACIFGBGIHI7SU">
+            <Type TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingDocument"/>
+          </Parameter>
+          <Parameter Name="paramId" Id="mprSIHCZKHHZNFS3A4YH2AXXDQ7BQ">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType.ParameterBinding"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (parametersBindingDoc!=null){
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> parametersBinding = parametersBindingDoc.getParametersBinding();
+    if (parametersBinding!=null){
+        final java.util.List&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType.ParameterBinding"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> bindingList = parametersBinding.ParameterBindingList;
+        if (bindingList!=null){
+            for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType.ParameterBinding"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> binding : bindingList){
+                if (paramId.equals(binding.ParameterId)){
+                    return binding;
+                }
+            }
+        }
+    }
+}
+return null;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthFFPTCDEJQNE5NDZHVT5UZCN5BA" Name="cfgReports" Nature="0" Environment="common-client" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprMEJB4GLWQRA3NNYHIBX5XCFDW4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="pubListDomainId" Id="mprUVFT4KR3Y5C7PBJO67PSXZY3AY">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="pubModel" Id="mprYYRS5MGAV5EHPIW4DZNFK7XO4E">
+            <Type TypeId="411" Path="aic7HTUN45DRJBV3FWNY7QQ4I5YQM"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src Environment="explorer">
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="cdlL5K2P4JXEFFJ7JTAVTMNYGUZJU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> dialog = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="cdlL5K2P4JXEFFJ7JTAVTMNYGUZJU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(userSession);
+dialog.Model.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdlL5K2P4JXEFFJ7JTAVTMNYGUZJU admL5K2P4JXEFFJ7JTAVTMNYGUZJU prdLCP57WRRVBEMFPWBMYULQEBTWI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = pubListDomainId;
+dialog.Model.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdlL5K2P4JXEFFJ7JTAVTMNYGUZJU admL5K2P4JXEFFJ7JTAVTMNYGUZJU prd2XSUSRWW7JD3PB22RAGBNWZ74U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = pubModel;
+dialog.exec();
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+          <Src Environment="web">
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> dialog = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(userSession);
+dialog.Model.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI admYGO3AAJYOBEPZJNR4JO7TJC2VI prdUMXTOKLWENCB7O6JYFR5YHCXYQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = pubListDomainId;
+dialog.Model.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI admYGO3AAJYOBEPZJNR4JO7TJC2VI prdSEBYFORSNJDWLAR2VVEUNA6AIM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = pubModel;
+dialog.execDialog();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth26KVB2TOFJCVHPEOBOH4KL77DU" Name="buildPubTreeRqDocument" Nature="0" Environment="common-client" IsOverride="false">
+        <com:Description>Get information about current report publication context and all parent contexts.
+Required to send to server to generate report publication tree.</com:Description>
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="env" Id="mpr5LXJYF7PIFHGZB7UL3PMFZWIMI">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
+          <Parameter Name="reportPubModel" Id="mprR6TAX64FWZBQTDRWTO7HEOP6MU">
+            <Type TypeId="411" Path="aic7HTUN45DRJBV3FWNY7QQ4I5YQM"/>
+          </Parameter>
+          <Parameter Name="pubListClassId" Id="mprA4JTTBKRNRFS3KUSX3T4D6STUA">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="GetReportPubTreeRqDocument"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="GetReportPubTreeRqDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> doc = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="GetReportPubTreeRqDocument.Factory"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.newInstance();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="GetReportPubTreeRqDocument.GetReportPubTreeRq"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xRequest = doc.addNewGetReportPubTreeRq();
+xRequest.PubListClassId = pubListClassId;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportPubContext"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xContext = xRequest.addNewContext();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY mthGWBO6J2IDJD4ZHJRRH4JE4RDYA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(env,reportPubModel, xContext);
+return doc;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth5FNR2FYLU5G6LPH3WO7WKJ5UUE" Name="generateReport" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="generateReportCmd" Id="mprPIYUVTTYHJHWRIDHFQCE27736M">
+            <Type TypeId="411" Path="adcETZW74XVUBEX5N3MV3IZMMDTUU"/>
+          </Parameter>
+          <Parameter Name="pubListClassId" Id="mpr33TG6AVI45E4NEXZM5E33VIN24">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aic7HTUN45DRJBV3FWNY7QQ4I5YQM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> reportContext = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aic7HTUN45DRJBV3FWNY7QQ4I5YQM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) generateReportCmd.Owner;
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="GetReportPubTreeRqDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> getPubTreeRequestDoc = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY mth26KVB2TOFJCVHPEOBOH4KL77DU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(generateReportCmd.Environment, reportContext, pubListClassId);
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportPubTopic"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xRoot = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY mthFIQBZ746VNETBB4X4J3IJCTPGM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(generateReportCmd.Environment, getPubTreeRequestDoc);
+if (xRoot == null) {
+    return;
+}
+
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> reportPupPid = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY mthIKUJZMH6NVBCPAK3XKF6WPJO4U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(generateReportCmd.Environment, generateReportCmd, xRoot);
+if (reportPupPid == null) {
+    return;
+}
+
+try {
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecUNC67IF5OBCX7NOPNLQOCUG374 eprFP5NARHOA5E7LNMKWHBCS5Y3FM aemFP5NARHOA5E7LNMKWHBCS5Y3FM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> reportPub = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecUNC67IF5OBCX7NOPNLQOCUG374 eprFP5NARHOA5E7LNMKWHBCS5Y3FM aemFP5NARHOA5E7LNMKWHBCS5Y3FM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mthZ2ZROAGPG5FDRBWDS5INBAJ7HE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(
+            generateReportCmd.Environment,
+            reportPupPid,
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecUNC67IF5OBCX7NOPNLQOCUG374"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecUNC67IF5OBCX7NOPNLQOCUG374 eprFP5NARHOA5E7LNMKWHBCS5Y3FM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    reportPub.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecUNC67IF5OBCX7NOPNLQOCUG374 eprFP5NARHOA5E7LNMKWHBCS5Y3FM aemFP5NARHOA5E7LNMKWHBCS5Y3FM mthNTRVW6B64ZANVNTQC3SQSORKPE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(generateReportCmd, null, null);
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+    // NOTHING - cancelled
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcWSBFK4LYMVHTXL55MVC44THTGE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+    generateReportCmd.Environment.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthKZ34JWV7QFDPBJW4JKVSP3AE3E" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ex);
+}
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthFIQBZ746VNETBB4X4J3IJCTPGM" Name="requestPubTree" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprPIN2IN6G55EK7FP2ZXCUXWG3CM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="requestDoc" Id="mprVWGDTGQ5N5BOHOOTE5XVTOML3I">
+            <Type TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="GetReportPubTreeRqDocument"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportPubTopic"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="GetReportPubTreeRpDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> replyDoc =
+            (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="GetReportPubTreeRpDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) userSession.EasSession.executeContextlessCommand(
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="clcC4Q32VQHBZH27K3AQODZ5HKOAQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+            requestDoc,
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="GetReportPubTreeRpDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.class);
+    return replyDoc.GetReportPubTreeRp;
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+    // nothing - cancel pressed
+    return null;
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcWSBFK4LYMVHTXL55MVC44THTGE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+    userSession.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthKZ34JWV7QFDPBJW4JKVSP3AE3E" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ex);
+    return null;
+}
+
+
+
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthLFDCDHCUHVARNMW6Q3AEVNSB5I" Name="fillReportsTree" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="reportPubTreeModel" Id="mprHVCJX433CZB6FO3BU6J55L63KA">
+            <Type TypeId="411" Path="aicTZ2BXRGUQRASRN7DV4FWCZUHA4"/>
+          </Parameter>
+          <Parameter Name="reportPubModel" Id="mprRGLH5IZZQFCP5F6HSIVID2MVWA">
+            <Type TypeId="411" Path="aic7HTUN45DRJBV3FWNY7QQ4I5YQM"/>
+          </Parameter>
+          <Parameter Name="pubListClassId" Id="mpr6DQ4PCG6XJGUHMZ2QEIFWUW35A">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="GetReportPubTreeRqDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> requestDoc = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY mth26KVB2TOFJCVHPEOBOH4KL77DU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(reportPubTreeModel.Environment,reportPubModel, pubListClassId);
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportPubTopic"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xRoot = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY mthFIQBZ746VNETBB4X4J3IJCTPGM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(reportPubTreeModel.Environment, requestDoc); // can be null
+reportPubTreeModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicTZ2BXRGUQRASRN7DV4FWCZUHA4 mthZFL5TATNSZCDPHJLFBVCE6PWCU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(xRoot);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthGWBO6J2IDJD4ZHJRRH4JE4RDYA" Name="fillContext" Nature="0" Environment="common-client" IsOverride="false">
+        <com:Description>Get information about current report publication context and all parent contexts.
+Required to send to server to generate report publication tree.</com:Description>
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="env" Id="mpr7H4ESBG5EFG2HATWGJDIUEQ6WM">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
+          <Parameter Name="reportPubModel" Id="mprJBMSPUKRMZDK3LCERC76DO6TYY">
+            <Type TypeId="411" Path="aic7HTUN45DRJBV3FWNY7QQ4I5YQM"/>
+          </Parameter>
+          <Parameter Name="xContext" Id="mpr5L2YK6AHSFCZ5DGLQY22LFKVXU">
+            <Type TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportPubContext"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportPubContext"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xCurContext = xContext;
+
+StringBuilder inheritancePathForDebug = null;
+
+while (true) {
+    final String modelTitleForDebug = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY mthTSKXN3AWWNHIPGSV6M2Y3WFSOM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(reportPubModel);
+    if (inheritancePathForDebug != null)
+        inheritancePathForDebug.append(" => ");
+    else
+        inheritancePathForDebug = new StringBuilder();
+    inheritancePathForDebug.append(modelTitleForDebug);
+
+    xCurContext.PubContextClassId = reportPubModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aic7HTUN45DRJBV3FWNY7QQ4I5YQM mth3YOXXEMIA5A57DA5LSRC57UMQE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    final String contextId = reportPubModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aic7HTUN45DRJBV3FWNY7QQ4I5YQM mth6KVP5LQUDNECBDB7RJ5KIBSBYQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    if (contextId != null) {
+        xCurContext.PubContextId = contextId;
+    }
+    reportPubModel = reportPubModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aic7HTUN45DRJBV3FWNY7QQ4I5YQM mthC6N5HGED6FGDTB2IVPTYZPITNQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    if (reportPubModel != null) {
+        xCurContext = xCurContext.addNewParent();
+    } else {
+        break;
+    }
+}
+env.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthLUUYWKLT5FCADGRMSBQMZYWYGE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().put(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, "Report publications inheritance path: " + inheritancePathForDebug, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci72EL5SVYFJFK7IJ7P2N723NJ44" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getValue());
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthTEMNY5EVNNCNDLANOP2MLYL3TU" Name="chooseInheritedPid" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprVAMUC2O52BBXXKSUA4QWI5XZ2A">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="reportPubModel" Id="mprS25YJHUDJ5AFTGREDS2Z5G7M3M">
+            <Type TypeId="411" Path="aic7HTUN45DRJBV3FWNY7QQ4I5YQM"/>
+          </Parameter>
+          <Parameter Name="pubListClassId" Id="mprGQJYD4QL3JDKLDDLPNX3MLJO7I">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aic7HTUN45DRJBV3FWNY7QQ4I5YQM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> parentContext = reportPubModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aic7HTUN45DRJBV3FWNY7QQ4I5YQM mthC6N5HGED6FGDTB2IVPTYZPITNQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+if (parentContext != null) {
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="GetReportPubTreeRqDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> requestDoc = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY mth26KVB2TOFJCVHPEOBOH4KL77DU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(userSession,parentContext, pubListClassId);
+    requestDoc.GetReportPubTreeRq.ForInheritance = true;
+    
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportPubTopic"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xRoot = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY mthFIQBZ746VNETBB4X4J3IJCTPGM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(userSession, requestDoc);
+    if (xRoot != null) {
+        return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY mthJYPBQ5S6IBCGNJMZJCHS4MTHHQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(userSession,xRoot);
+    } else {
+        return null;
+    }
+} else {
+    userSession.messageError(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsD6AF5PQE4VGSFBFV5KIT5HUN5Y"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    return null;
+}
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthTSKXN3AWWNHIPGSV6M2Y3WFSOM" Name="getReportPubModelTitleForDebug" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="reportPubModel" Id="mprP2XFCHSRHNAWJE27H7WDO6FEXQ">
+            <Type TypeId="411" Path="aic7HTUN45DRJBV3FWNY7QQ4I5YQM"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (reportPubModel instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> entityModel = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) reportPubModel;
+    return entityModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mthY5ZUKWLHZNBWFEVTAJ3IFM7PLI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcS24WA4C5SNAKJMW6G6CVRNWCSY mthTDNMMNJSBVATRCFRFLNUYQPO7I" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()
+            + " '" + entityModel.getTitle() + "'";
+} else if (reportPubModel instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> model = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) reportPubModel;
+    return "'" + model.getTitle() + "'";
+} else if (reportPubModel instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcZJQTPIAC4JBZBL453WN2XWJWIY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+    return "'" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsQMZ462LRJZDB3BIUAWUMAKCEWA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + "'";
+} else {
+    return "#"+reportPubModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aic7HTUN45DRJBV3FWNY7QQ4I5YQM mth6KVP5LQUDNECBDB7RJ5KIBSBYQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+}
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthAEZ3BUM7KJCGROLV3YW6EU4NPI" Name="getClassInfo" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprDZWJC4C3UJFPBASCTNVLP2GSC4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="classId" Id="mprVCIBMFBKXJAI7ND7F35Y44OZNE">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (classId == null) {
+    return String.valueOf(classId);
+}
+
+try {
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcS24WA4C5SNAKJMW6G6CVRNWCSY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> classDef = userSession.DefManager.getClassPresentationDef(classId);
+    final String name = classDef.Name;
+    return name + " (#" + String.valueOf(classId) + ")";
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+    return "#" + String.valueOf(classId);
+}
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthJYPBQ5S6IBCGNJMZJCHS4MTHHQ" Name="execChoosePubPidDialog" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="env" Id="mprGTARSWE4U5AV3LLI453GHSTRHE">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
+          <Parameter Name="requestDoc" Id="mprDGV3MI5GLFCZBP7ESQZI2B3OK4">
+            <Type TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportPubTopic"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+        <Sources>
+          <Src Environment="explorer">
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="cdlR6HDO63HXRF7FFXXSCUDQXQSHE admR6HDO63HXRF7FFXXSCUDQXQSHE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdlR6HDO63HXRF7FFXXSCUDQXQSHE admR6HDO63HXRF7FFXXSCUDQXQSHE mthRUGRJALRTBBYZADWHF2XWCMUR4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(env,requestDoc);</xsc:Java>
+            </xsc:Item>
+          </Src>
+          <Src Environment="web">
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="cdl7VU7MCGPLVBOHPALZB6CO6XLNI adm7VU7MCGPLVBOHPALZB6CO6XLNI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdl7VU7MCGPLVBOHPALZB6CO6XLNI adm7VU7MCGPLVBOHPALZB6CO6XLNI mthQCBZRAQYRJC6XFZSYFZ5VZKZLI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(env,requestDoc);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthIKUJZMH6NVBCPAK3XKF6WPJO4U" Name="execChoosePubPidDialog" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="env" Id="mprMA5ZOKDM3NFMZOMVQZTIXUKSHM">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
+          <Parameter Name="generateReportCmd" Id="mprG6MFLHU3DZFAJF7VJ3SYOOOHMM">
+            <Type TypeId="411" Path="adcETZW74XVUBEX5N3MV3IZMMDTUU"/>
+          </Parameter>
+          <Parameter Name="requestDoc" Id="mpr4HACHXFZMBGP5AGPXLINLDWEEA">
+            <Type TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportPubTopic"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+        <Sources>
+          <Src Environment="explorer">
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="cdlR6HDO63HXRF7FFXXSCUDQXQSHE admR6HDO63HXRF7FFXXSCUDQXQSHE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdlR6HDO63HXRF7FFXXSCUDQXQSHE admR6HDO63HXRF7FFXXSCUDQXQSHE mthR6CUIWNWRZA7RFWGCIBQMVHHEY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(generateReportCmd, env,requestDoc);</xsc:Java>
+            </xsc:Item>
+          </Src>
+          <Src Environment="web">
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="cdl7VU7MCGPLVBOHPALZB6CO6XLNI adm7VU7MCGPLVBOHPALZB6CO6XLNI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdl7VU7MCGPLVBOHPALZB6CO6XLNI adm7VU7MCGPLVBOHPALZB6CO6XLNI mthUVRVZVEWBBE4LNYM6QBHWII22M" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(generateReportCmd,env,requestDoc);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthRNOV2GHAQBA4NCEPOD7SKSZLFE" Name="printOrOpenFile" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="env" Id="mprXTRQJFKOXJAOLJVAX2J5QVSLHE">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
+          <Parameter Name="file" Id="mprZRCM7X66BVF4TCMJMGKNQE5EZ4">
+            <Type TypeId="400" extStr="java.io.File"/>
+          </Parameter>
+          <Parameter Name="print" Id="mprRDCANYNFJZDATBLDPHITPR5PY4">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="mimeType" Id="mprLV664Y6OQRGYLP6PN2X5VGU5IA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="save" Id="mprDIZEH3RJ7ZDDDGFEN37LDQYMAQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src Environment="explorer">
+            <xsc:Item>
+              <xsc:Java>if (print) {
+    java.awt.Desktop.getDesktop().print(file);
+} else {
+    java.awt.Desktop.getDesktop().open(file);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+          <Src Environment="web">
+            <xsc:Item>
+              <xsc:Java>if (file.isDirectory()) {
+    java.io.File tmpzip = java.io.File.createTempFile("report", ".zip");
+    org.radixware.kernel.common.utils.JarFiles.mkJar(file, tmpzip, new java.io.FileFilter() {
+        public boolean accept(java.io.File file) {
+            return true;
+        }
+    }, false);
+    org.radixware.kernel.common.utils.FileUtils.deleteDirectory(file);
+    file = tmpzip;
+    mimeType = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciGQA5BWCDS5APHJ2Y5JPV5QNJ4A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value;
+}
+
+((org.radixware.wps.WpsEnvironment) env).sendFileToTerminal(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsLP5WZFSXA5AFXNFGLKBO2ZFSOQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, file, mimeType, !save);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthXFNJK6LX7BAG5M2EJWKXWVZBNU" Name="createSqmlExpression" Nature="0" Environment="common-client" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="tableId" Id="mprTICFPAQAXJH7TCLJW7XOSOPMUM">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="propId" Id="mprYI7R7U25JVAFDACTCZZS4PESQU">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="value" Id="mprRO7AIGKCGBBFFA4OH7GLF4A5X4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adcT2UYOCLRSNAI3IONE4OQUGNVNQ"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (value != null) {
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcT2UYOCLRSNAI3IONE4OQUGNVNQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcT2UYOCLRSNAI3IONE4OQUGNVNQ mthCGVBDA5CYBFZRKKIZ5CQ3G55XM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcT2UYOCLRSNAI3IONE4OQUGNVNQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcT2UYOCLRSNAI3IONE4OQUGNVNQ mthQ3HDPCP4PBGFVHTQA7NPCTW2NU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(tableId, propId),
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcT2UYOCLRSNAI3IONE4OQUGNVNQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcT2UYOCLRSNAI3IONE4OQUGNVNQ mthRLB5JIZRLNA75HDECLQSKVXZLI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(value));
+} else {
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcT2UYOCLRSNAI3IONE4OQUGNVNQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcT2UYOCLRSNAI3IONE4OQUGNVNQ mthE6YFIY33Y5B5PJ5FBUHGJEZFSM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcT2UYOCLRSNAI3IONE4OQUGNVNQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcT2UYOCLRSNAI3IONE4OQUGNVNQ mthQ3HDPCP4PBGFVHTQA7NPCTW2NU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(tableId, propId));
+}
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

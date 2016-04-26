@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdAVNC5OMH2DNRDISQAAAAAAAAAA" Name="CommandsXsd" TargetNamespace="http://schemas.radixware.org/workflowCommands.xsd" Environment="common"><xs:schema targetNamespace="http://schemas.radixware.org/workflowCommands.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mess="http://schemas.radixware.org/workflowCommands.xsd" xmlns:ns1="http://schemas.radixware.org/eas.xsd" xmlns:t="http://schemas.radixware.org/types.xsd">
+	<xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+	<xs:import namespace="http://schemas.radixware.org/eas.xsd" schemaLocation="eas.xsd"/>
+	<!--****************** Requests - Responses ************************-->
+	<xs:element name="CaptureRq">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Properties" type="ns1:PropertyList" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="UserName" type="t:Str" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="CaptureRs"/>
+	<xs:element name="CaptureNRq">
+		<xs:complexType>
+			<xs:attribute name="UserName" type="t:Str" use="required"/>
+			<xs:attribute name="N" type="t:Int" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="CaptureNRs">
+		<xs:complexType>
+			<xs:attribute name="N" type="t:Int" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ReleaseRq">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Properties" type="ns1:PropertyList" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ReleaseRs"/>
+	<xs:element name="ForwardRq">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Properties" type="ns1:PropertyList" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="UserName" type="t:Str" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ForwardRs"/>
+	<xs:element name="CommentRq">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Properties" type="ns1:PropertyList" minOccurs="0"/>
+				<xs:element name="Comment" type="t:Str"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="CommentRs"/>
+	<xs:element name="ViewAlgoRq">
+		<xs:complexType>
+			<xs:attribute name="ProcessId" type="t:Int" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ViewAlgoRs">
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="Threads">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Item" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:attribute name="BlockId" type="t:Id" use="required"/>
+									<xs:attribute name="State" type="xs:int" use="required"/>
+									<xs:attribute name="Title" type="xs:string"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Data">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Item" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:base64Binary">
+											<xs:attribute name="Id" type="t:Id" use="required"/>
+											<xs:attribute name="Type" type="xs:long" use="required"/>
+											<xs:attribute name="Title" type="xs:string"/>
+											<xs:attribute name="Clazz" type="xs:string" use="optional"/>
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="SaveAlgoRq">
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="Data">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Item" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:base64Binary">
+											<xs:attribute name="Id" type="t:Id" use="required"/>
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:all>
+			<xs:attribute name="ProcessId" type="t:Int" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="AbortRq">
+		<xs:complexType>
+			<xs:attribute name="ProcessId" type="t:Int" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="AbortRs"/>
+	<xs:element name="SetSimulatedTimeRq">
+		<xs:complexType>
+			<xs:attribute name="ProcessId" type="t:Int" use="required"/>
+			<xs:attribute name="SimulatedTime" type="t:Num"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="SetSimulatedTimeRs"/>
+	<xs:element name="SubmitRq">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Properties" type="ns1:PropertyList" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="SubmitRs">
+		<xs:complexType>
+			<xs:attribute name="NextFormId" type="t:Int"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="GetSuitableReceiversRq">
+		<xs:complexType>
+			<xs:attribute name="FormId" type="t:Int" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="GetSuitableReceiversRs">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Item" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:attribute name="UserName" type="t:Str" use="required"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="GetActiveWaitingFormCountRs">
+		<xs:complexType>
+			<xs:attribute name="ActiveCount" type="t:Int" use="required"/>
+			<xs:attribute name="WaitingCount" type="t:Int" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="GetLinkedObjectPidsRq">
+		<xs:complexType>
+			<xs:attribute name="ProcessId" type="t:Int" use="required"/>
+			<xs:attribute name="Role" type="t:Str"/>
+			<xs:attribute name="Idx" type="t:Int"/>
+			<xs:attribute name="EntityGuid" type="t:Str"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="GetLinkedObjectPidsRs">
+		<xs:complexType>
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="Pid">
+					<xs:complexType>
+						<xs:attribute name="EntityGuid" type="t:Str"/>
+						<xs:attribute name="ObjectPid" type="t:Str"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="ProcessId" type="t:Int" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="GetLinkedProcessIdsRq">
+		<xs:complexType>
+			<xs:attribute name="EntityGuid" type="t:Str" use="required"/>
+			<xs:attribute name="ObjectPid" type="t:Str" use="required"/>
+			<xs:attribute name="Role" type="t:Str"/>
+			<xs:attribute name="Idx" type="t:Int"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="GetLinkedProcessIdsRs">
+		<xs:complexType>
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="Process">
+					<xs:complexType>
+						<xs:attribute name="Id" type="t:Int" use="required"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="ProcessId" type="t:Int" use="required"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

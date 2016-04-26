@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcZSLXDV6RWVBDFBB3VECNQHKHYE" Name="AcsSubject2RoleSelectorView" Type="3" Environment="explorer">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcZSLXDV6RWVBDFBB3VECNQHKHYE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcZSLXDV6RWVBDFBB3VECNQHKHYE">
+        <xsc:Item>
+          <xsc:Java>private final </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> explorerItemId;
+private final </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> hasChildrenPropId;
+
+public boolean shouldEditOnInsert=false;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmgOGP7REBBFJDOZHFV3L5SK4SK2U" Name="Root"/>
+    <PropertyGroup Id="cpgAUZFXTL4XNFCFCYZQKQVISHDWE" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthQBR2MIIOO5BU7CRZ7TWSNHMSDA" Name="open" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="groupModel" Id="mprGWPGW5QI3JFSBKUBUDA7TY7CGU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.Model"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc5H7P5FMQSNAEBGKNU3ESVQAEEA mthQBR2MIIOO5BU7CRZ7TWSNHMSDA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(groupModel);
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2XZZ4SGN5BH3VDXQ572ZFSCENI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> model = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2XZZ4SGN5BH3VDXQ572ZFSCENI mthY73GLKN3ZFBW7CMEWRJ3DGWDQA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>((</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) groupModel, explorerItemId) {
+    public </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> getHasChildrenPropertyId(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> entity) {
+        return hasChildrenPropId;
+    }
+
+    public boolean canCreateChild(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> parent) {
+        return false;
+    }
+
+    public </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcWFM6T6SQZ5E4HPADANCL7ENYHQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> calcChildGroupRestrictions(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> entity, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> group) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc53I3RNOVINED3OSTSDLTK27KCE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> r = group.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I mth7V2FKZWTGVDQZBAK5L5XDXXIQY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+        if (entity != null) {
+            r.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc53I3RNOVINED3OSTSDLTK27KCE mth6PHOVWFLBRCA3OMOSOFHHG6N6U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(true);
+        }
+        return r;
+    }
+};
+
+
+
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc5DILXNN5N5DVHCKPQVGFPZ62FU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> selectorTree = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc5DILXNN5N5DVHCKPQVGFPZ62FU mthTEDUUY5HQFHI3OEASIAVLEU3M4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(this, model) //{
+
+{
+    @Override
+    protected void rowsInserted(final com.trolltech.qt.core.QModelIndex parent, final int start, final int end) {
+        super.rowsInserted(parent, start, end);
+        if (shouldEditOnInsert) {
+            setCurrentIndex(parent.child(0,parent.column()));
+            this.controller.selector.actions.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcVNESECE5WNE47BJSTPEDLQCSH4 mthRIJRMFP7XRDVFLWZQU3J24EPO4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicZMREPT55ZJDEFEENQSZYHRXAVI mthEBGONPCIKJCFFI3NHJQZN5GPCU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+            shouldEditOnInsert = false;
+        }
+    }
+};
+final com.trolltech.qt.gui.QVBoxLayout layout = new com.trolltech.qt.gui.QVBoxLayout(content);
+layout.setSpacing(0);
+layout.setMargin(0);
+layout.addWidget(selectorTree);
+selectorTree.setSizePolicy(com.trolltech.qt.gui.QSizePolicy.Policy.Expanding, com.trolltech.qt.gui.QSizePolicy.Policy.Expanding);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc5H7P5FMQSNAEBGKNU3ESVQAEEA mthVQO6ZEXPGRCQJCANCEKD4C4354" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(selectorTree);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthEPPHIQSODFFUTCHGWX33COVMUI" Name="AcsSubject2RoleSelectorView" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="env" Id="mprVZDJJRPLW5AN3B7Q45BWJ7FVMY">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
+          <Parameter Name="explorerItemId" Id="mprUBS4OQFYI5FWXCDRII5INKI3KU">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="hasChildrenPropId" Id="mprWTGIJRSYYVHNVHIXGHCETMC6QQ">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(env);
+this.explorerItemId = explorerItemId;
+this.hasChildrenPropId = hasChildrenPropId;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="adc5H7P5FMQSNAEBGKNU3ESVQAEEA"/>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc6CC527YEBNHWHFLJAY4BLCSADA" Name="DomainPresentationDef" Type="3" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.meta.RadDomainPresentationDef"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcLWEHAAXROBABVPMRH43V3JRRC4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc7WEHDNJPWNBKJH76PGNSMHQYHI"/>
+    </Bodies>
+    <MethodGroup Id="cmg745CMFZ2PNCORFIRU7XMALROCA" Name="Root"/>
+    <PropertyGroup Id="cpgE36XYBNUIVHVREONSFOXSCLVYA" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthRH33ZMYV6JAQNEVA4BFMWBOF2E" Name="getOwnerDomain" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getOwnerDomain()Lorg.radixware.kernel.common.client.meta.RadDomainPresentationDef;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.RadDomainPresentationDef"/>
+      </Method>
+      <Method Id="mthSWSCZ5RA5NEJ5AGMEJODSLADKA" Name="getInnerDomains" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getInnerDomains()Ljava.util.List&lt;Lorg.radixware.kernel.common.client.meta.RadDomainPresentationDef;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.RadDomainPresentationDef"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthB6RGLA353ZCJPPHA7UREH4VZUI" Name="getFullName" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getFullName(C)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="separator" Id="mprCGPB7YMZ7JCENHSWMQWCD46GAU">
+            <Type TypeId="401" extStr="char"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthAVEWKFBFWZBNFB73XZXYZXAECU" Name="getFullTitle" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getFullTitle(C)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="separator" Id="mpr7SP3MNJDNVFQVICA3337CLXVWA">
+            <Type TypeId="401" extStr="char"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthC34WAUGN4VCUPNC347QPYRZPUA" Name="getRootDomains" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getRootDomains(Lorg.radixware.kernel.common.client.IClientApplication;)Ljava.util.Collection&lt;Lorg.radixware.kernel.common.client.meta.RadDomainPresentationDef;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="app" Id="mprBRTM6X2ILFDPTBJEPIQSZSXOPY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientApplication"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.Collection">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.RadDomainPresentationDef"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

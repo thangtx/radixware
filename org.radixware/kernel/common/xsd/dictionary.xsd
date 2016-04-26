@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://schemas.radixware.org/dictionary.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://schemas.radixware.org/dictionary.xsd">
+    
+    <xs:element name="Dictionary" type="Dictionary"/> 
+    
+    <xs:complexType name="Dictionary">
+        
+        <xs:sequence>
+            <xs:element name="Words">
+                <xs:simpleType>
+                    <xs:list itemType="xs:string"/>
+                </xs:simpleType>
+            </xs:element>
+            
+            <xs:element name="Comments">
+                <xs:complexType>
+                    <xs:sequence maxOccurs="unbounded">
+                        <xs:element name="Comment">
+                            <xs:complexType>
+                                <xs:simpleContent>
+                                    <xs:extension base="xs:string">
+                                        <xs:attribute name="Key" type="xs:string" />
+                                    </xs:extension>
+                                </xs:simpleContent>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>        
+        
+        <xs:attribute name="Language" type="xs:string" />
+        
+    </xs:complexType>
+    
+</xs:schema>

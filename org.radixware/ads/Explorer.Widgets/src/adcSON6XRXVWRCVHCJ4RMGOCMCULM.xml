@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcSON6XRXVWRCVHCJ4RMGOCMCULM" Name="ButtonBox" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.explorer.widgets.ExplorerDialogButtonBox"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcSON6XRXVWRCVHCJ4RMGOCMCULM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcSON6XRXVWRCVHCJ4RMGOCMCULM"/>
+    </Bodies>
+    <MethodGroup Id="cmg3J7WF7TJMBHBBKCUGU65X7F33A" Name="Root"/>
+    <PropertyGroup Id="cpgTWIHBSGAO5FRRNWNTQXQTTJFMY" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthM5OSPKU7ONGWVFVQ6XQHEW7IFI" Name="addButton" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="addButton(Lorg.radixware.kernel.common.enums.EDialogButtonType;)Lcom.trolltech.qt.gui.QAbstractButton;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="buttonType" Id="mprNVMH7AC3YZBMJNBO3RCDWTHQJE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EDialogButtonType"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QAbstractButton"/>
+      </Method>
+      <Method Id="mthGV2D2BGOYJGHPJXSERHFU2FKJM" Name="addButton" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="addButton(Lcom.trolltech.qt.gui.QAbstractButton;Lcom.trolltech.qt.gui.QDialogButtonBox.ButtonRole;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="button" Id="mprQIRNSFU6INA6DPEVC2J7JY6GKA">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QAbstractButton"/>
+          </Parameter>
+          <Parameter Name="role" Id="mprFQFNI7ZUFFFO3FD3SHP5NBRMWA">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QDialogButtonBox.ButtonRole"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthX65SEH43NZF5HCB6G3KBEQVFQU" Name="addButton" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="addButton(Lcom.trolltech.qt.gui.QDialogButtonBox.StandardButton;)Lcom.trolltech.qt.gui.QPushButton;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="stdButton" Id="mprCXPOJFXV2FE23HQ2BVPDMVMMB4">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QDialogButtonBox.StandardButton"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QPushButton"/>
+      </Method>
+      <Method Id="mthCVA5TOIINRAMZAXOK7QAPANR2Q" Name="addButton" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="addButton(Ljava.lang.String;Lcom.trolltech.qt.gui.QDialogButtonBox.ButtonRole;)Lcom.trolltech.qt.gui.QPushButton;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" Id="mprP65VGQFRLVGN5HA3ED2D6CXGWM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="role" Id="mprPJSIDG2TFBE7XETAFH2G4CGRUI">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QDialogButtonBox.ButtonRole"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QPushButton"/>
+      </Method>
+      <Method Id="mthBQINMBQGNZA4ZIHVLS4WSRR7GI" Name="addButtons" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="addButtons(Ljava.util.EnumSet&lt;Lorg.radixware.kernel.common.enums.EDialogButtonType;>;)Ljava.util.EnumMap&lt;Lorg.radixware.kernel.common.enums.EDialogButtonType;Lcom.trolltech.qt.gui.QAbstractButton;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="buttons" Id="mprWLCLGADMMZFTRNRUXDK4HZNKXQ">
+            <Type TypeId="400" extStr="java.util.EnumSet">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.enums.EDialogButtonType"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.EnumMap">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.enums.EDialogButtonType"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="com.trolltech.qt.gui.QAbstractButton"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthBVHXV7XIMFGLPFSW7TWZRY6QPQ" Name="button" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="button(Lcom.trolltech.qt.gui.QDialogButtonBox.StandardButton;)Lcom.trolltech.qt.gui.QPushButton;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="button" Id="mprSJBRQP566JDG5APSAWBMPZTGWA">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QDialogButtonBox.StandardButton"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QPushButton"/>
+      </Method>
+      <Method Id="mthAWWVOMFDL5BKNKRWCSP7THL43E" Name="buttonRole" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="buttonRole(Lcom.trolltech.qt.gui.QAbstractButton;)Lcom.trolltech.qt.gui.QDialogButtonBox.ButtonRole;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="button" Id="mprJV52DKFFCVF53D7KF6BO745UGE">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QAbstractButton"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QDialogButtonBox.ButtonRole"/>
+      </Method>
+      <Method Id="mthH2YVDMWD55GUDD4OHA67TMCVMQ" Name="buttons" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="buttons()Ljava.util.List&lt;Lcom.trolltech.qt.gui.QAbstractButton;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="com.trolltech.qt.gui.QAbstractButton"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthPADBNCMN55HUVL7IWDJLFY5OWM" Name="centerButtons" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="centerButtons()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthXSMTFVMKMJD5NDSOYO55GSSUNQ" Name="clear" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="clear()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthR27GILKKYNDUHE5I57SYYCNQXU" Name="clearButtons" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="clearButtons()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth4LRYL2PFQVFRFFSPBNR6MW6ANU" Name="ButtonBox" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Lcom.trolltech.qt.gui.QWidget;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mpr57FCTUEV4FAH5H6UAOOGV5FLLM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parentWidget" Id="mprPTG4IQUMIFAMLN2YN7VTZPSSNA">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth4QFA46RVMFDWBDIZL7UHTLIBE4" Name="getButton" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getButton(Lorg.radixware.kernel.common.enums.EDialogButtonType;)Lorg.radixware.kernel.common.client.widgets.IPushButton;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="type" Id="mpr5PXQEJS2RZCNNF7PTPJRBPQRVE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EDialogButtonType"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IPushButton"/>
+      </Method>
+      <Method Id="mthEGPKAUOYIVD6TCSIMG6HEKCYNY" Name="orientation" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="orientation()Lcom.trolltech.qt.core.Qt.Orientation;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.core.Qt.Orientation"/>
+      </Method>
+      <Method Id="mthDLFHNA7ONFCEVOP7UJNRS4CPMU" Name="removeButton" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="removeButton(Lorg.radixware.kernel.common.enums.EDialogButtonType;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="type" Id="mprAAZWPGRY4NCFJIWAQ7JGN2TV6I">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EDialogButtonType"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth3GFQ6EJVM5GSXIKLLKSGHYINOQ" Name="removeButton" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="removeButton(Lcom.trolltech.qt.gui.QAbstractButton;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="button" Id="mpr7TOPV2IBQZDJTEWKCS64VJ6UNA">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QAbstractButton"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthKUMBUO6DFNBVLBTK3B2E23SXMM" Name="setCenterButtons" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setCenterButtons(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="center" Id="mprGHZCAMZUYNGZ5G44RMK5SRSA7Q">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthAM63QJ6U55HSDMIUZ6EXEGABPY" Name="setOrientation" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setOrientation(Lcom.trolltech.qt.core.Qt.Orientation;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="orientation" Id="mprEA73XH7VN5G6HD5V5AADPHHNKE">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.Qt.Orientation"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthC36EU6BPJRBLLOGYMIOM7OVK7Y" Name="setStandardButtons" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setStandardButtons([Lcom.trolltech.qt.gui.QDialogButtonBox.StandardButton;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="button" Variable="true" Id="mpr2FS5DGYAGVHLZNRWBN2RUI2CTU">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QDialogButtonBox.StandardButton" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthOHDHBYIVIFCINCKAPS4GRYUVJQ" Name="setStandardButtons" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setStandardButtons(Lcom.trolltech.qt.gui.QDialogButtonBox.StandardButtons;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="buttons" Id="mprZAHFWDO6FFEXFFYHGJAH7CCII4">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QDialogButtonBox.StandardButtons"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthXJUHWBCGFRAJ5HDR5RIEJ7HFPE" Name="standardButton" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="standardButton(Lcom.trolltech.qt.gui.QAbstractButton;)Lcom.trolltech.qt.gui.QDialogButtonBox.StandardButton;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="button" Id="mprZT2HPX455JCIJP2R6XW3VK7CRA">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QAbstractButton"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QDialogButtonBox.StandardButton"/>
+      </Method>
+      <Method Id="mthFTHHFG4OUJCG5BJRBB54NOQ72A" Name="standardButtons" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="standardButtons()Lcom.trolltech.qt.gui.QDialogButtonBox.StandardButtons;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QDialogButtonBox.StandardButtons"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

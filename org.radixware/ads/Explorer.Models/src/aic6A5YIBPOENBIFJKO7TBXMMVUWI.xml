@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aic6A5YIBPOENBIFJKO7TBXMMVUWI" Name="IReaderController" Type="5" Environment="common-client">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.models.IReaderController"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeraic6A5YIBPOENBIFJKO7TBXMMVUWI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyaic6A5YIBPOENBIFJKO7TBXMMVUWI"/>
+    </Bodies>
+    <MethodGroup Id="cmgN2W2K57O7JA4FPHF75X6YK2CEE" Name="Root"/>
+    <PropertyGroup Id="cpgWA5Z434ERZG6DJNKGOB64HXFBA" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthX4AFQP7JWVAVLHERBXXWPQSYQU" Name="hasMore" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="hasMore(Lorg.radixware.kernel.common.client.models.EntityModel;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="entity" Id="mprX6J7YTOYQJADLDSC2DQBZZROYY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthFR7BMRCZKJGHZI3PXYOFSC5LGI" Name="merge" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="merge(Ljava.util.List&lt;Lorg.radixware.kernel.common.client.models.EntityModel;>;Ljava.util.List&lt;Lorg.radixware.kernel.common.client.models.EntityModel;>;Lorg.radixware.kernel.common.client.models.EntityModel;)Ljava.util.List&lt;Lorg.radixware.kernel.common.client.models.EntityModel;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="currentModels" Id="mpr32AQE3N55FGGLL25Y5EJOFQDYY">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="newModels" Id="mpr7OV4U6NS2NDFLIKFGSADSHFCBI">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="currentModel" Id="mprIOMLGJBHWBHOPCNZMD3L5R23AE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthAM5TE7DCCRHP5IB3DCDVQEIBCI" Name="scrollPosition" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="scrollPosition()Lorg.radixware.kernel.common.client.models.IReaderController.ScrollPosition;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.IReaderController.ScrollPosition"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

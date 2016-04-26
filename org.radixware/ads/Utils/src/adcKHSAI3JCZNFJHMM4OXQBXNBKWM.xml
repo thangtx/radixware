@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcKHSAI3JCZNFJHMM4OXQBXNBKWM" Name="IncrementalXmlDataWriter" Type="3" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.utils.IncrementalDataWriter"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcYSKKBP2PRRBP3B2746Q62BJTMY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcKBRIEYERJFGKFAME33CAE5BNSE"/>
+    </Bodies>
+    <MethodGroup Id="cmgR2VTTRJJDJDR3NWZDEUCDAVXKI" Name="Root"/>
+    <PropertyGroup Id="cpg2IDK2OLWWJHGFMHCHO6UKXBXQQ" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthGSYEFSAZD5DRLIWFSGJKXCQBCY" Name="IncrementalXmlDataWriter" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.io.Writer;[Ljavax.xml.namespace.QName;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="writer" Id="mprNDOLXBT3S5DSXHCPP746U4BIJM">
+            <Type TypeId="400" extStr="java.io.Writer"/>
+          </Parameter>
+          <Parameter Name="branch" Id="mprMKLIFXQDH5GCTK4QASG2RG2XH4">
+            <Type TypeId="400" extStr="javax.xml.namespace.QName" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthLD3WT2DFEFBRPNGZYRZSI2KPYE" Name="forceEndDocument" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="forceEndDocument()V"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.xml.sax.SAXException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth2X42XNGR25FCTILZUT2AZXGPXU" Name="forceStartDocument" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="forceStartDocument()V"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.xml.sax.SAXException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthTB65D5XSKRBDFMAZO4UPCXKPIY" Name="IncrementalXmlDataWriter" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.io.Writer;Ljava.util.List&lt;Ljavax.xml.namespace.QName;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="writer" Id="mpr3GPPSFGD6JBO7IUR6BSA7CK5EA">
+            <Type TypeId="400" extStr="java.io.Writer"/>
+          </Parameter>
+          <Parameter Name="branch" Id="mpr5Y3GUYOJ3JG4PK46TSNZVT5PXM">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="javax.xml.namespace.QName"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthYEKHVUZKMZDF5GDOSJSQ3IMZGQ" Name="characters" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="characters([CII)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="ch" Id="mprUM7ZKZRB55BLJMLVNHCDVWEPUM">
+            <Type TypeId="401" extStr="char" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="start" Id="mprFOT44OY6OVAEHIGDNCFRU726XE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="len" Id="mprAQMXHS6TTBHLVOH6KWMAFME6JA">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.xml.sax.SAXException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthB3VJCA7ZMBF2FFGFJHLXRRYREQ" Name="emptyElement" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="emptyElement(Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;Lorg.xml.sax.Attributes;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="uri" Id="mprH7BONJTZDVFMDAL2MTZWOUSCWE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="localName" Id="mpr7Q4OWC2CUFGIZHPNRNR5VDTHSU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="qName" Id="mprCWVSKHY7MBFHJLT7GALNUZLVW4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="attrs" Id="mprZWW6RRM27JDPVJZKEDZKO2UJ3M">
+            <Type TypeId="400" extStr="org.xml.sax.Attributes"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.xml.sax.SAXException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthA5NKZNBRFNDVROCQ53PITTK3GU" Name="endDocument" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="endDocument()V"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.xml.sax.SAXException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthATB6HXKUMBCCRCZVN2S43BLHAI" Name="endElement" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="endElement(Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="uri" Id="mpr7ZH6O3LNDJFW3IZ3QKSBWEQJXI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="localName" Id="mprEIRCW65X2RDLPPYRJBUZA3FULI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="qName" Id="mprAOW4K5Q3G5AATFI6BL2IQM5CTA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.xml.sax.SAXException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthKA5FO7JVNJHIJP52NPKXHDI6NM" Name="startDocument" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="startDocument()V"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.xml.sax.SAXException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthNJUB355BNNDXXKGMIC3GRZ7BRI" Name="startElement" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="startElement(Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;Lorg.xml.sax.Attributes;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="uri" Id="mprJ6RBBDEAVNBHFJ4FPKHBNH6GWY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="localName" Id="mprQAFZEU2JBZGSZMNUV3DGSG5VZQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="qName" Id="mprLZ3GNZWVEJCF7MMM77DNIB3JZA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="attrs" Id="mprIYTOFQ3YJNDQTJD3M2F2N7MINQ">
+            <Type TypeId="400" extStr="org.xml.sax.Attributes"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.xml.sax.SAXException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthITL43W3P2JCQ3CK3GDHLFFWC5I" Name="endElement" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="endElement(Lorg.apache.xmlbeans.XmlObject;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="xmlObject" Id="mprX7GEK35UFFH3FCI3BWDPJRN2ZQ">
+            <Type TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.xml.sax.SAXException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthOH7TWENYD5A6LCDY6OZZEIYTEU" Name="startElement" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="startElement(Lorg.apache.xmlbeans.XmlObject;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="xmlObject" Id="mpr23UBHUCOJZBDXO7GX23HNMTMLY">
+            <Type TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.xml.sax.SAXException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthX5BDKI6SXZCLVOFRMOS6WQHDW4" Name="write" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="write(Lorg.apache.xmlbeans.XmlObject;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="xmlObject" Id="mprQA3OXHFNY5DQPB5QZBJTPJOQOQ">
+            <Type TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.xml.sax.SAXException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthTINDSUW4J5BNBDQPQXNVHYA6CI" Name="IncrementalXmlDataWriter" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.io.Writer;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="writer" Id="mprTPNPMZKJFFAILILFLSKEBDK7W4">
+            <Type TypeId="400" extStr="java.io.Writer"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthDREDDAASY5BFVEWDQPL5SJ26VM" Name="IncrementalXmlDataWriter" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.io.Writer;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="writer" Id="mprBLN2FQ3KMZCUNP2ZUOAD3RQYWY">
+            <Type TypeId="400" extStr="java.io.Writer"/>
+          </Parameter>
+          <Parameter Name="branchAsXpath" Id="mprUQV3V3VCGJENLIWMTOQWVF6J44">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

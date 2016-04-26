@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicR5Z726ZHUZH2LB6OK3JW4YZCYM" Name="IMessageBox" Type="5" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.dialogs.IMessageBox"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcM2IMZ6GSXZDD3OEOHVJRC5OUSI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcQORJJX6FRBBL7KSEH7OIAPMYKU"/>
+    </Bodies>
+    <MethodGroup Id="cmgZTY2ZXKNFBAHTMPHFFS77KKGTQ" Name="Root"/>
+    <PropertyGroup Id="cpgCSTIFK2M7BHDTHWFUB2QLSKMIE" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthFUYHAAHRPZCTVPLQ7CUDDYFCZE" Name="execMessageBox" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="execMessageBox()Lorg.radixware.kernel.common.enums.EDialogButtonType;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.enums.EDialogButtonType"/>
+      </Method>
+      <Method Id="mthJAWG353DFNFITMXD3TYNS2PMWE" Name="isOptionActivated" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isOptionActivated()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthOS6VRWI6LRFRNG7EREHDQQCBQE" Name="setOptionText" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setOptionText(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="optionText" Id="mpr5XOEGANJTZGRDP6GOSUN3GFXIE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthWQY3AKE2JZDXHFF45TLY2EREME" Name="show" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="show(Lorg.radixware.kernel.common.client.IClientEnvironment;Ljava.lang.String;Ljava.lang.String;Lorg.radixware.kernel.common.enums.EDialogIconType;Ljava.util.Set&lt;Lorg.radixware.kernel.common.enums.EDialogButtonType;>;)Lorg.radixware.kernel.common.enums.EDialogButtonType;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprRIN7LT6NQ5DZ3OWSFUIHJOWEOY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="message" Id="mprNY7GBL6STRCU7GLKOS3BJU3Q34">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="title" Id="mpr56XRQNQ4QVF4NNYKY7KZ4L4I6Y">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="icon" Id="mprVF7PEEQJ7BDCZMTWGJ33AUECFE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EDialogIconType"/>
+          </Parameter>
+          <Parameter Name="buttons" Id="mprZCWFZ4E3J5GRRI6XM4AUJ6AREY">
+            <Type TypeId="400" extStr="java.util.Set">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.enums.EDialogButtonType"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.enums.EDialogButtonType"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="spcBDQZZAYTFNGIXLBW7PSKHOSGKU" Name="ClearTracedSensitiveDataStmt" Type="10">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="true" PublishedName="org.radixware.kernel.server.types.SqlClass"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcUREFIJMIUFGN5AOWH3O3SWZLG4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc3ZDJLCBPGRAB3H65Y3GKZTI7MQ"/>
+    </Bodies>
+    <MethodGroup Id="cmg75HVCBOH6VFNDPW5UQ46XLGCCE" Name="Root"/>
+    <PropertyGroup Id="cpgDTUD3367JZASTHAB6HPSBQZDOM" Name="Root"/>
+    <Properties>
+      <Property Id="prmKGIXI4LYCFDYXGBZZYLFFV3LCA" Name="maxCount" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prmEOA5V2BYJ5CARCGR3CFPT57N4A" Name="updatedCount" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="execute" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="maxCount" Id="mprKGIXI4LYCFDYXGBZZYLFFV3LCA">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="spcBDQZZAYTFNGIXLBW7PSKHOSGKU"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>begin
+    update </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblACQVZOMVVHWDBROXAAIT4AGD7E"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> set </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblACQVZOMVVHWDBROXAAIT4AGD7E" PropId="colVBCRBDFDL2VDBNSNAAYOJ6SINF" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = null 
+    where 
+        </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblACQVZOMVVHWDBROXAAIT4AGD7E" PropId="colLNECKEY3IJGX7D6OZOFLCAWOOI" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> &lt;> 0 and
+        </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblACQVZOMVVHWDBROXAAIT4AGD7E" PropId="colVBCRBDFDL2VDBNSNAAYOJ6SINF" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> is not null and 
+        ROWNUM &lt;= </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmKGIXI4LYCFDYXGBZZYLFFV3LCA"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>;
+    
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmEOA5V2BYJ5CARCGR3CFPT57N4A" Direction="1"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> := sql%rowcount;
+end;    </xsc:Sql>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblACQVZOMVVHWDBROXAAIT4AGD7E"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="400" extStr="org.radixware.kernel.server.types.SqlClass"/>
+  </AdsClassDefinition>
+</AdsDefinition>

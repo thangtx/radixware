@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:edit="http://schemas.radixware.org/editmask.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclJ2BMJCODDNDVVPZVVASE2EMH2U" Name="Task.DeleteDebugTrace" Type="2" ClientEnvironment="explorer">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderaclJ2BMJCODDNDVVPZVVASE2EMH2U"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaclJ2BMJCODDNDVVPZVVASE2EMH2U"/>
+    </Bodies>
+    <MethodGroup Id="cmg2WPKGNXKARHITJTSG2GA36F2DM" Name="Root"/>
+    <PropertyGroup Id="cpgUYIWA3XDGJFDFPOFJMCCME5WJM" Name="Root"/>
+    <Properties>
+      <Property Id="pruIBXAUMA5GFDYZNREIS2WQHLJTM" Name="storePeriod" Nature="1" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <InitialValue>
+          <ValAsStr>1440</ValAsStr>
+        </InitialValue>
+        <Presentation TitleId="mlsRBFTJOWX5BCPDODZJQ3KJARVHY" HintId="mls5NYIVENBC5EJPFTB6ANASDTQCA" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true">
+            <EditMask>
+              <edit:TimeInterval Mask="" Scale="MINUTE"/>
+            </EditMask>
+          </Editing>
+        </Presentation>
+      </Property>
+      <Property Id="colWHSIDUVTZ5BD3NHIM6J5QZV35I" Name="sysdate" Nature="6" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="12"/>
+        <Presentation InheritanceMask="4" IsPresentable="false">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+        <SqmlExpression>
+          <xsc:Item>
+            <xsc:Sql>sysdate</xsc:Sql>
+          </xsc:Item>
+        </SqmlExpression>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthN36NOGMSW5EGZIX2JAVCBWM2RU" Name="execute" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="prevExecTime" Id="mprCAC5LMUS7RBGTKTR6P4RVDYYAE">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="curExecTime" Id="mprVCON6I3F2BE7FGXX3YHKQM4UVU">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthYXHXCUYRXTNRDCJ3ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();//fetch actual sysdate
+
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclJ2BMJCODDNDVVPZVVASE2EMH2U pruIBXAUMA5GFDYZNREIS2WQHLJTM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthP66N3O2SRPNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Debug message store period is undefined. Debug message cleanup task cancelled", </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci7SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    return;
+}
+
+//store period contains time interval in minutes;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> endTime = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclJ2BMJCODDNDVVPZVVASE2EMH2U colWHSIDUVTZ5BD3NHIM6J5QZV35I" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Time - </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclJ2BMJCODDNDVVPZVVASE2EMH2U pruIBXAUMA5GFDYZNREIS2WQHLJTM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.longValue() * 60 * 1000);
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="spcMNWS7UJ4NVDVPBPJB2YWICJWCI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> q;
+int totalDeletedCount = 0;
+do {
+    q = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="spcMNWS7UJ4NVDVPBPJB2YWICJWCI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="spcMNWS7UJ4NVDVPBPJB2YWICJWCI mth_stmt_execute_____________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(null, endTime, 10000);
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthH2FKAOYGRTNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    totalDeletedCount += q.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="spcMNWS7UJ4NVDVPBPJB2YWICJWCI prmLWTWUVDCWJD4XEQK4H4GSEJ5CM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null ? 0 : q.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="spcMNWS7UJ4NVDVPBPJB2YWICJWCI prmLWTWUVDCWJD4XEQK4H4GSEJ5CM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.intValue();
+} while (q.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="spcMNWS7UJ4NVDVPBPJB2YWICJWCI prmLWTWUVDCWJD4XEQK4H4GSEJ5CM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null &amp;&amp; q.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="spcMNWS7UJ4NVDVPBPJB2YWICJWCI prmLWTWUVDCWJD4XEQK4H4GSEJ5CM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.intValue() > 0);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthS7A5F7KSRPNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Debug records removed: " + totalDeletedCount, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci7SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+    <Presentations ObjectTitleId="mls5EHURA6HFFARXOVOIYTE4BIA64">
+      <ClassCatalogs>
+        <ClassCatalog Id="eccVXWRKQLYJTOBDCIVAALOMT5GDM" Name="Default">
+          <ClassRef Order="870.0"/>
+        </ClassCatalog>
+      </ClassCatalogs>
+      <EditorPresentations>
+        <EditorPresentation Id="eprWB3AAS57VJC7BNVCKVDKAULV5I" Name="Edit" BasePresentationId="eprAIWBLDTSJTOBDCIVAALOMT5GDM" InheritanceMask="36016" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprAIWBLDTSJTOBDCIVAALOMT5GDM">
+          <AccessRules IsPublished="false"/>
+          <ChildExplorerItems/>
+          <EditorPages>
+            <Page Id="epgCCZ6JGBWOZGIBI5M3PEHATRPHU" Name="Setup" TitleId="mlsMPP45LW2AJGSFBRV4IITYCABP4" Type="1">
+              <AccessRules IsPublished="false"/>
+              <Properties>
+                <Property Id="pruIBXAUMA5GFDYZNREIS2WQHLJTM" Row="0" Column="0"/>
+              </Properties>
+            </Page>
+            <PageOrder>
+              <Item PageId="epgHHRMHELUJTOBDCIVAALOMT5GDM" Level="1"/>
+              <Item PageId="epgCCZ6JGBWOZGIBI5M3PEHATRPHU" Level="1"/>
+              <Item PageId="epgL6FUZ36EMVEU3BPQ4FLI3TZ6KA" Level="1"/>
+            </PageOrder>
+          </EditorPages>
+          <ObjectTitleFormat Id="etfH7F22JBNLRGGBPTMBQJUVHIIXM"/>
+        </EditorPresentation>
+      </EditorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="aclZDLN466RV5FE3BQIWSX56ZAETQ"/>
+  </AdsClassDefinition>
+</AdsDefinition>

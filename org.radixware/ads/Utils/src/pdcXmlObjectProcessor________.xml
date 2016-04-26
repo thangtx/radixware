@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="pdcXmlObjectProcessor________" Name="XmlObjectSerializer" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcJRYAJOOTNBFULLTZLSZHGC2DCI">
+        <xsc:Item>
+          <xsc:Java>import java.io.StringWriter;
+import org.apache.xmlbeans.XmlOptions;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method; </xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc5MVBIFG7B5CYJNSGOQZY7ZMFRI">
+        <xsc:Item>
+          <xsc:Java>private static XmlOptions   saveOptions = null;
+private static StringWriter writer = null;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmg7HEO24E4C5AOHN32VMIDDGLTKI" Name="Root"/>
+    <PropertyGroup Id="cpgDMLS37E36NFJHCCYUS4DBVE3DY" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth54LVIBS53PNRDISQAAAAAAAAAA" Name="asStr" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="obj" Id="mprQ7CTQTNNYFBWXABQWKI3BCCLTM">
+            <Type TypeId="451"/>
+          </Parameter>
+          <Parameter Name="nsm" Id="mprYDJR3N4OLJBWHP6RNQQBRYQWDM">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (obj==null)
+    return null;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcXmlObjectProcessor________ mthYOQZZOCK7XNRDIINAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(obj, nsm);
+
+writer.getBuffer().setLength( 0 ); 
+try {
+   obj.save( writer, saveOptions );
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Can't serialize XmlObject to string: "+e.getMessage(),e);
+}
+
+return writer.toString();            
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthH5YNK5C3RPNRDCISABIFNQAABA" Name="XmlObjectSerializer" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>// класс используется как библиотека </xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthHE5RIECO7XNRDIINAAMPGXSZKU" Name="asClob" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="obj" Id="mprNGM6SYUZSVCZ5FGEAZOVJQAPTQ">
+            <Type TypeId="451"/>
+          </Parameter>
+          <Parameter Name="nsm" Id="mprZY6L44QNVVFS3P33AE36FAWJYA">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="27"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcXmlObjectProcessor________ mthMQBV5RE24NDUJAD3DKEEX6CAWQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(obj, nsm, null);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthMY6T6U263PNRDISQAAAAAAAAAA" Name="asStr" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="obj" Id="mprHWD3LSUMRFET5LB5VJ5TSI47BM">
+            <Type TypeId="451"/>
+          </Parameter>
+          <Parameter Name="namespace" Id="mprC3L2R626E5APTB5LQAZXJCHX4I">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="prefix" Id="mprXVCEN5O5BJARPE3IZM4VUL5RFQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>java.util.HashMap&lt;String, String> nsm = new java.util.HashMap&lt;String, String>();
+nsm.put(namespace, prefix);
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcXmlObjectProcessor________ mth54LVIBS53PNRDISQAAAAAAAAAA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(obj, nsm);            
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthO2XF6FJYI3OBDONGABIFNQAABA" Name="castToXmlClass" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="obj" Id="mpr7RJMCBS5SFGXBLTP3D64H5UEIU">
+            <Type TypeId="451"/>
+          </Parameter>
+          <Parameter Name="castTo" Id="mprN2S23QDS5RERLLHKRTXNJHCPFE">
+            <Type TypeId="400" extStr="java.lang.Class">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?"/>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axc7TQA3FCDI3OBDONGABIFNQAABA"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (obj != null &amp;&amp; !castTo.isInstance(obj)) {
+    String factoryClassName = castTo.getName() + "$Factory";
+    final Class&lt;?> c;
+    try {
+        c = castTo.getClassLoader().loadClass(factoryClassName);
+    } catch (ClassNotFoundException e) {
+        throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Unable to find factory class for casting: " + factoryClassName);
+    }
+    final Method m;
+    try {
+        m = c.getMethod("parse", new Class&lt;?>[]{org.w3c.dom.Node.class});
+    } catch (SecurityException e) {
+        throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Unable to get factory class method for casting: " + factoryClassName + ".parse( org.w3c.dom.Node )");
+    } catch (NoSuchMethodException e) {
+        throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Unable to find factory class method for casting: " + factoryClassName + ".parse( org.w3c.dom.Node )");
+    }
+
+    try {
+        obj = (org.apache.xmlbeans.XmlObject) m.invoke(null, new Object[]{obj.getDomNode()});
+    } catch (IllegalArgumentException e) {
+        throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Unable to cast - internal error: illegal arguments");
+    } catch (IllegalAccessException e) {
+        throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Unable to cast - internal error: illegal access");
+    } catch (InvocationTargetException e) {
+        throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc7TQA3FCDI3OBDONGABIFNQAABA mthHIRS5CTTTTPBDE47ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Can't parse message" + (e.getTargetException().getMessage() != null ? " :" + e.getTargetException().getMessage() : ""), e.getTargetException());
+    }
+}
+
+
+return obj;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthQ2RH7Q57Y7NRDCKHABIFNQAABA" Name="asClob" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="obj" Id="mprMJ33KQXR35HXPAHB4ENXFVWAJ4">
+            <Type TypeId="451"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="27"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcXmlObjectProcessor________ mthHE5RIECO7XNRDIINAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(obj, new java.util.HashMap&lt;String, String>());            
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthWWZBMF2O7XNRDIINAAMPGXSZKU" Name="asClob" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="obj" Id="mprKF6ZWXQ5HNG5NGSHBBGP6AS2U4">
+            <Type TypeId="451"/>
+          </Parameter>
+          <Parameter Name="namespace" Id="mprXJUMV3YFQZDLZI3BFVWQNFD3UY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="prefix" Id="mprGLU5BS33BNHHDDRABSC3JDRCBY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="27"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>java.util.HashMap&lt;String, String> nsm = new java.util.HashMap&lt;String, String>();
+nsm.put(namespace, prefix);
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcXmlObjectProcessor________ mthHE5RIECO7XNRDIINAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(obj, nsm);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYOQZZOCK7XNRDIINAAMPGXSZKU" Name="prepareSerialize" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="obj" Id="mprHYJAMGX6CNBTNCF2O2O3PVBKFA">
+            <Type TypeId="451"/>
+          </Parameter>
+          <Parameter Name="nsm" Id="mprPL6QAEQZDFFMVGUFOE2M45JNPY">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if( saveOptions == null ) {
+    saveOptions = new XmlOptions();
+    saveOptions.setSaveNamespacesFirst();
+    saveOptions.setUseDefaultNamespace();
+
+    writer = new StringWriter();                
+} 
+
+nsm.put("http://schemas.xmlsoap.org/soap/envelope/",         "SOAP-ENV");
+
+nsm.put(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsYKHG3Q4XU5H3PFBQCQIZ6ACBNI aciSWSY5ZTE2REDVKO6DCRL4FMPFQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value,    "t");
+nsm.put(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsYKHG3Q4XU5H3PFBQCQIZ6ACBNI aciHY6I4LGHNRGJ5KQZFW4J2YRNKI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value,    "eas");
+nsm.put(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsYKHG3Q4XU5H3PFBQCQIZ6ACBNI aciITCESHRBFNFKVBEAO4H576GGLY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value,    "aas");
+
+saveOptions.setSaveSuggestedPrefixes( nsm );
+saveOptions.setSaveAggressiveNamespaces();
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYVKUYNEAQ7NRDCIOABIFNQAABA" Name="asStr" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="obj" Id="mprZQ6FP5DJ6VALTLKKX2XTHLFJLE">
+            <Type TypeId="451"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcXmlObjectProcessor________ mth54LVIBS53PNRDISQAAAAAAAAAA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(obj, new java.util.HashMap&lt;String, String>());            
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthMQBV5RE24NDUJAD3DKEEX6CAWQ" Name="asClob" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="obj" Id="mprNEIG2JTHCBCAHNZ7RJEOYDXC4M">
+            <Type TypeId="451"/>
+          </Parameter>
+          <Parameter Name="nsm" Id="mprQY4R76ZBGZGGBDSLKUKF675S4A">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="replaceVal" Id="mprN2S5WMU25VH63AC6SQBIF3VUSM">
+            <Type TypeId="27"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="27"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (obj==null)
+    return null;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcXmlObjectProcessor________ mthYOQZZOCK7XNRDIINAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(obj, nsm);
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="27"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> result;
+try {
+    if (replaceVal == null)
+        result = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthFAPPRHDR7DNRDOMIABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    else {
+        result = replaceVal;
+        result.truncate(0);
+    }
+    final java.io.Writer w = result.setCharacterStream(1);
+    obj.save(w, saveOptions);
+    w.flush();
+    w.close();
+} catch (Throwable e) {
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Can't serialize XmlObject to CLOB: " + e.getMessage(), e);
+}
+
+return result;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthIB2XFKKZHNDYBCXUT5MTSE3L6I" Name="asClob" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="obj" Id="mprA77UMSAMLFCEFK6GKY6EQWZ5YM">
+            <Type TypeId="451"/>
+          </Parameter>
+          <Parameter Name="namespace" Id="mpr6HMAXAKLW5GH3HTB6PJDO3DZFE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="prefix" Id="mprV6VY27SR7VHB7EG4EJEFAHTPCU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="replaceVal" Id="mprMBVAZOBN4JCWPMZAG2OCCHN2LQ">
+            <Type TypeId="27"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="27"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>java.util.HashMap&lt;String, String> nsm = new java.util.HashMap&lt;String, String>();
+nsm.put(namespace, prefix);
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcXmlObjectProcessor________ mthMQBV5RE24NDUJAD3DKEEX6CAWQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(obj, nsm, replaceVal);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth5RSDG5SJZBFJ5N7SQEX4LBTK2M" Name="asClob" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="obj" Id="mprWUHAUOYM7FFHNJAPYWB5TJIZPU">
+            <Type TypeId="451"/>
+          </Parameter>
+          <Parameter Name="replaceVal" Id="mprB5Y4RUCZD5DIZDUZMX3GAPCKOA">
+            <Type TypeId="27"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="27"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcXmlObjectProcessor________ mthMQBV5RE24NDUJAD3DKEEX6CAWQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(obj, new java.util.HashMap&lt;String, String>(), replaceVal);            
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

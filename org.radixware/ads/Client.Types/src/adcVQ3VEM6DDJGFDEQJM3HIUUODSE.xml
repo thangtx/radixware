@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcVQ3VEM6DDJGFDEQJM3HIUUODSE" Name="EntityObjectTitles" Type="3" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.eas.EntityObjectTitles"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcKVXVMDBXINEWVI57EKL7DXMSEE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcJPRWU6EC25FWXL4HG56YUP7PYY"/>
+    </Bodies>
+    <MethodGroup Id="cmgNDUNNEHA3RGMNLL6AXRUI6TY4U" Name="Root"/>
+    <PropertyGroup Id="cpgMW7KFEQDUBE63LF35LLY7GHBVY" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthFBA7XBIBXNFN3LTFWLSBR3SAGU" Name="getEntityObjectTitle" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getEntityObjectTitle(Lorg.radixware.kernel.common.client.types.Pid;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="pid" Id="mprUJATINY3ARCY3JC7QBMOVAERME">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.types.Pid"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.client.errors.ObjectNotAccessibleError"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.client.errors.ObjectNotFoundError"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthCKSMV5RVBNHVJA7J5SOVZ7Q3IA" Name="isEntityObjectAccessible" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isEntityObjectAccessible(Lorg.radixware.kernel.common.client.types.Pid;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="pid" Id="mpr2HV5FQGFONH77B6K2IDHHPMBUU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.types.Pid"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthYR3NFJ7NMZGAPDNEH56ZLQMZ7A" Name="getEntityObjectReference" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getEntityObjectReference(Lorg.radixware.kernel.common.client.types.Pid;)Lorg.radixware.kernel.common.client.types.Reference;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="pid" Id="mprFSPLMT5GZZBGLPYFZS2HCM5S3I">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.types.Pid"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.types.Reference"/>
+      </Method>
+      <Method Id="mthOHVTIW5F5REHDOZQYX5ENOGG6I" Name="isEntityObjectExists" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isEntityObjectExists(Lorg.radixware.kernel.common.client.types.Pid;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="pid" Id="mprGJUUPREAOJFT3NPP7KNZHPGQPM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.types.Pid"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

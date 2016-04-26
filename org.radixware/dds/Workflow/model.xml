@@ -1,0 +1,4503 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Model xmlns="http://schemas.radixware.org/ddsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" xmlns:com="http://schemas.radixware.org/commondef.xsd" Id="prjLDOMVLKEE5EZPKDVT5XXF5B7HA" DbNamePrefix="RDX_WF">
+  <Tables>
+    <Table Id="tblVP66JC4HXLNRDF5JABIFNQAABA" Name="Form" DbName="RDX_WF_FORM" UserExtMask="65568">
+      <Columns>
+        <Column Id="colJGHFDGEHXLNRDF5JABIFNQAABA" Name="id" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="true" DbName="ID" SequenceId="sqn2JVM7UMHXLNRDF5JABIFNQAABA" TemplateId="cdmIPP7BRC6XVHYNGYP5YKDW4FMDE"/>
+        <Column Id="colSM57J2EHXLNRDF5JABIFNQAABA" Name="classGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="CLASSGUID"/>
+        <Column Id="colFOZ357EHXLNRDF5JABIFNQAABA" Name="processId" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="true" DbName="PROCESSID" TemplateId="cdm4D3OXB3KLJFKHBXXD6PF5B5WMQ"/>
+        <Column Id="col34WUQDUIXLNRDF5JABIFNQAABA" Name="title" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="TITLE" TemplateId="cdmVKEXNOQQ5ZGI3KZWQLOMROTKWE"/>
+        <Column Id="colPUVYKRSRX7OBDBG7ABIFNQAABA" Name="headerTitle" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="HEADERTITLE" TemplateId="cdmVKEXNOQQ5ZGI3KZWQLOMROTKWE"/>
+        <Column Id="colVNBSW6CRX7OBDBG7ABIFNQAABA" Name="footerTitle" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="FOOTERTITLE" TemplateId="cdmVKEXNOQQ5ZGI3KZWQLOMROTKWE"/>
+        <Column Id="colFPUVAH4IXLNRDF5JABIFNQAABA" Name="priority" ValType="2" Length="1" DbType="NUMBER(1,0)" NotNull="true" DbName="PRIORITY"/>
+        <Column Id="colFFO5OHMJXLNRDF5JABIFNQAABA" Name="openTime" ValType="12" Length="0" DbType="DATE" NotNull="true" DbName="OPENTIME"/>
+        <Column Id="colD2WOGKUJXLNRDF5JABIFNQAABA" Name="dueTime" ValType="12" Length="0" DbType="DATE" NotNull="true" DbName="DUETIME"/>
+        <Column Id="col4MQBMOEJXLNRDF5JABIFNQAABA" Name="overdueTime" ValType="12" Length="0" DbType="DATE" NotNull="false" DbName="OVERDUETIME"/>
+        <Column Id="col7DJHQP4JXLNRDF5JABIFNQAABA" Name="expirationTime" ValType="12" Length="0" DbType="DATE" NotNull="false" DbName="EXPIRATIONTIME"/>
+        <Column Id="colO5JOWR4JXLNRDF5JABIFNQAABA" Name="closeTime" ValType="12" Length="0" DbType="DATE" NotNull="false" DbName="CLOSETIME"/>
+        <Column Id="colX2IBCL4KXLNRDF5JABIFNQAABA" Name="state" ValType="2" Length="1" DbType="NUMBER(1,0)" NotNull="false" GenerateInDb="false" DbName="STATE">
+          <Expression>
+            <xsc:Item>
+              <xsc:Sql>RDX_WF.getFormState(Id)</xsc:Sql>
+            </xsc:Item>
+          </Expression>
+        </Column>
+        <Column Id="colAFQOE5UKXLNRDF5JABIFNQAABA" Name="assigned" ValType="1" Length="1" Precision="1" DbType="NUMBER(1,0)" NotNull="false" GenerateInDb="false" DbName="ASSIGNED">
+          <Expression>
+            <xsc:Item>
+              <xsc:Sql>DECODE(</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colPMMP7BUKXLNRDF5JABIFNQAABA" Owner="THIS">
+                <xsc:Sql>CLERKNAME</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>, NULL, 0, 1)</xsc:Sql>
+            </xsc:Item>
+          </Expression>
+        </Column>
+        <Column Id="colPMMP7BUKXLNRDF5JABIFNQAABA" Name="clerkName" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="false" DbName="CLERKNAME" TemplateId="cdmBHOWDKCA6FDZVJ35M73O6CZJ6A"/>
+        <Column Id="colEHLVNESRX7OBDBG7ABIFNQAABA" Name="submitVariants" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="SUBMITVARIANTS"/>
+        <Column Id="colUZPAT5LEUJDKBIWBKC6GBA3RCA" Name="submitVariantsTitle" ValType="221" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="SUBMITVARIANTSTITLE"/>
+        <Column Id="colM52BWLMWZJDIDOZ6BMFB3JUZOU" Name="submitVariantsVisible" ValType="201" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="SUBMITVARIANTSVISIBLE"/>
+        <Column Id="colEM7CCTU6LRDDTP35YMRAT6IIMQ" Name="submitVariantsNeedConfirm" ValType="201" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="SUBMITVARIANTSNEEDCONFIRM"/>
+        <Column Id="colRURA3POSGBEBNMQFDOAMM4LXXA" Name="submitVariantsNeedUpdate" ValType="201" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="SUBMITVARIANTSNEEDUPDATE"/>
+        <Column Id="col4LCFVKUMXLNRDF5JABIFNQAABA" Name="submitVariant" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="false" DbName="SUBMITVARIANT"/>
+        <Column Id="col5CMSW6MNXLNRDF5JABIFNQAABA" Name="objClassGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="OBJCLASSGUID"/>
+        <Column Id="colNO2XWSMOXLNRDF5JABIFNQAABA" Name="selectorPresentationId" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="SELECTORPRESENTATIONID"/>
+        <Column Id="colR35RDQV7BHOBDF7KABIFNQAABA" Name="restrictions" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="RESTRICTIONS" TemplateId="cdmN4HG25YEYZCLLGEB3KQ2WTP7EU"/>
+        <Column Id="colKZYFXOOU6PNRDF6UABIFNQAABA" Name="selectCondition" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="SELECTCONDITION"/>
+        <Column Id="colEO72AVMOXLNRDF5JABIFNQAABA" Name="editorPresentationIds" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="EDITORPRESENTATIONIDS"/>
+        <Column Id="col7CXV3KY5BRGM5BTO3QF2HAZHAI" Name="adminPresentationId" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="ADMINPRESENTATIONID"/>
+        <Column Id="col76QBKXUOXLNRDF5JABIFNQAABA" Name="creationPresentationId" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="CREATIONPRESENTATIONID"/>
+        <Column Id="colKNQKUZ4PXLNRDF5JABIFNQAABA" Name="selectedPid" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="SELECTEDPID" TemplateId="cdm7256M45ZTRFANMU2Z4OFJJ2WRE"/>
+        <Column Id="col7VRMLD46ITOBDBDXABIFNQAABA" Name="reportGuid" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="false" DbName="REPORTGUID"/>
+        <Column Id="col5IUWY4UPXLNRDF5JABIFNQAABA" Name="contentSaving" ValType="1" Length="1" Precision="1" DbType="NUMBER(1,0)" NotNull="true" DbName="CONTENTSAVING"/>
+        <Column Id="col56S2R4UPXLNRDF5JABIFNQAABA" Name="waitId" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="false" DbName="WAITID"/>
+        <Column Id="colUSDVE5UQXLNRDF5JABIFNQAABA" Name="clerkRoleGuids" ValType="221" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="CLERKROLEGUIDS"/>
+        <Column Id="col7VCUPAEQXLNRDF5JABIFNQAABA" Name="adminRoleGuids" ValType="221" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="ADMINROLEGUIDS"/>
+        <Column Id="colDG7VJCMQXLNRDF5JABIFNQAABA" Name="accessArea" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="ACCESSAREA"/>
+      </Columns>
+      <PrimaryKey Id="idxVP66JC4HXLNRDF5JABIFNQAABA" Name="PrimaryKey" DbName="PK_RDX_WF_FORM" Unique="true">
+        <Columns>
+          <Column ColumnId="colJGHFDGEHXLNRDF5JABIFNQAABA" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqVP66JC4HXLNRDF5JABIFNQAABA" DbName="PK_RDX_WF_FORM" Rely="true"/>
+      </PrimaryKey>
+      <Indices>
+        <Index Id="idxJTFY7AIZXTNRDF5LABIFNQAABA" Name="ClerkCloseDue" DbName="IDX_RDX_WF_FORM_CLERKCLOSEDUE">
+          <Columns>
+            <Column ColumnId="colPMMP7BUKXLNRDF5JABIFNQAABA" Order="Asc"/>
+            <Column ColumnId="colO5JOWR4JXLNRDF5JABIFNQAABA" Order="Asc"/>
+            <Column ColumnId="colD2WOGKUJXLNRDF5JABIFNQAABA" Order="Asc"/>
+          </Columns>
+        </Index>
+        <Index Id="idxH5I5AHIZXTNRDF5LABIFNQAABA" Name="CloseDue" DbName="IDX_RDX_WF_FORM_CLOSEDUE">
+          <Columns>
+            <Column ColumnId="colO5JOWR4JXLNRDF5JABIFNQAABA" Order="Asc"/>
+            <Column ColumnId="colD2WOGKUJXLNRDF5JABIFNQAABA" Order="Asc"/>
+          </Columns>
+        </Index>
+        <Index Id="idxANG6NJQZXTNRDF5LABIFNQAABA" Name="Process" DbName="IDX_RDX_WF_FORM_PROCESS">
+          <Columns>
+            <Column ColumnId="colFOZ357EHXLNRDF5JABIFNQAABA" Order="Asc"/>
+            <Column ColumnId="colJGHFDGEHXLNRDF5JABIFNQAABA" Order="Asc"/>
+          </Columns>
+        </Index>
+      </Indices>
+      <Triggers>
+        <Trigger Id="trgRCS7C2R7JVDH3EAHFUXJ4IO3PA" Name="UserPropOwn" DbName="UPO_VP66JC4HXLNRDF5JABIFNQAABA" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+   RDX_ENTITY.UserPropOnDelOwner('tblVP66JC4HXLNRDF5JABIFNQAABA', :old.ID);
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+      </Triggers>
+      <Placement PosX="281" PosY="738"/>
+    </Table>
+    <Table Id="tbl3KY3VBDIXPNRDF5KABIFNQAABA" Name="FormLog" DbName="RDX_WF_FORMLOG">
+      <Columns>
+        <Column Id="colZFOGJETIXPNRDF5KABIFNQAABA" Name="formId" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="true" DbName="FORMID" TemplateId="cdmIPP7BRC6XVHYNGYP5YKDW4FMDE"/>
+        <Column Id="colCDTKH4LIXPNRDF5KABIFNQAABA" Name="id" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="true" DbName="ID" SequenceId="sqnLHGJUXDJXPNRDF5KABIFNQAABA" TemplateId="cdmIPP7BRC6XVHYNGYP5YKDW4FMDE"/>
+        <Column Id="colITXTX6DIXPNRDF5KABIFNQAABA" Name="time" ValType="12" Length="0" DbType="DATE" NotNull="true" DbName="TIME"/>
+        <Column Id="colB3SYQATJXPNRDF5KABIFNQAABA" Name="clerkName" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="true" DbName="CLERKNAME" TemplateId="cdmBHOWDKCA6FDZVJ35M73O6CZJ6A"/>
+        <Column Id="colSE3FOD3JXPNRDF5KABIFNQAABA" Name="commandGuid" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="true" DbName="COMMANDGUID"/>
+        <Column Id="colUWWYIJ3JXPNRDF5KABIFNQAABA" Name="comments" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="COMMENTS"/>
+        <Column Id="colWRDDKQDJXPNRDF5KABIFNQAABA" Name="destClerkName" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="false" DbName="DESTCLERKNAME" TemplateId="cdmBHOWDKCA6FDZVJ35M73O6CZJ6A"/>
+        <Column Id="colLJ6TQSM7ITOBDBDXABIFNQAABA" Name="content" ValType="27" Length="0" DbType="CLOB" NotNull="false" DbName="CONTENT"/>
+      </Columns>
+      <PrimaryKey Id="idx3KY3VBDIXPNRDF5KABIFNQAABA" Name="PrimaryKey" DbName="PK_RDX_WF_FORMLOG" Unique="true">
+        <Columns>
+          <Column ColumnId="colZFOGJETIXPNRDF5KABIFNQAABA" Order="Asc"/>
+          <Column ColumnId="colCDTKH4LIXPNRDF5KABIFNQAABA" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unq3KY3VBDIXPNRDF5KABIFNQAABA" DbName="PK_RDX_WF_FORMLOG" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="32" PosY="995"/>
+    </Table>
+    <Table Id="tblRDXQVFY6PLNRDANMABIFNQAABA" Name="Process" DbName="RDX_WF_PROCESS" UserExtMask="65568">
+      <Columns>
+        <Column Id="colYBCGVMA6PLNRDANMABIFNQAABA" Name="id" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="true" DbName="ID" SequenceId="sqnRC56R6Y6PLNRDANMABIFNQAABA"/>
+        <Column Id="colKXH5QGFO5LOBDBIOABIFNQAABA" Name="classGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="CLASSGUID"/>
+        <Column Id="colHDZJU3I7PLNRDANMABIFNQAABA" Name="algoClassGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="ALGOCLASSGUID"/>
+        <Column Id="colMCUP6FRT5FBYXDBZUYABU5RFII" Name="typeGuid" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="true" DbName="TYPEGUID"/>
+        <Column Id="colKKF6BJQ7PLNRDANMABIFNQAABA" Name="creatorName" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="false" DbName="CREATORNAME" TemplateId="cdmBHOWDKCA6FDZVJ35M73O6CZJ6A"/>
+        <Column Id="colXLGX3QEDXLNRDF5JABIFNQAABA" Name="ownerName" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="false" DbName="OWNERNAME" TemplateId="cdmBHOWDKCA6FDZVJ35M73O6CZJ6A"/>
+        <Column Id="colFPULBNGVQLOBDBFRAALOYD3UKE" Name="language" ValType="21" Length="2" DbType="VARCHAR2(2 char)" NotNull="true" DbName="LANGUAGE"/>
+        <Column Id="colSYRTXEA7PLNRDANMABIFNQAABA" Name="title" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="TITLE" TemplateId="cdmVKEXNOQQ5ZGI3KZWQLOMROTKWE"/>
+        <Column Id="colQTG3VSI7PLNRDANMABIFNQAABA" Name="state" ValType="2" Length="1" DbType="NUMBER(1,0)" NotNull="true" DbName="STATE">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>0</com:Value>
+          </DefaultVal>
+        </Column>
+        <Column Id="colLWQUAF7ILNCXXOZR6CZTKPSRKA" Name="stateDesc" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="STATEDESC" TemplateId="cdmVKEXNOQQ5ZGI3KZWQLOMROTKWE"/>
+        <Column Id="colPIZGX2I7PLNRDANMABIFNQAABA" Name="startTime" ValType="12" Length="0" DbType="DATE" NotNull="true" DbName="STARTTIME"/>
+        <Column Id="colDKM24AZAPLNRDANMABIFNQAABA" Name="finishTime" ValType="12" Length="0" DbType="DATE" NotNull="false" DbName="FINISHTIME"/>
+        <Column Id="colICQDIGZAPLNRDANMABIFNQAABA" Name="exceptionText" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="EXCEPTIONTEXT"/>
+        <Column Id="colKD4KAOZAPLNRDANMABIFNQAABA" Name="context" ValType="27" Length="0" DbType="CLOB" NotNull="false" DbName="CONTEXT"/>
+        <Column Id="colYRAZOVBAPLNRDANMABIFNQAABA" Name="traceProfile" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="TRACEPROFILE"/>
+        <Column Id="colUTVP7ABAPLNRDANMABIFNQAABA" Name="simulatedTime" ValType="12" Length="0" DbType="DATE" NotNull="false" DbName="SIMULATEDTIME"/>
+        <Column Id="colKNEIRTHMJ5FBFBRZT4UIUUOPKY" Name="purgeTime" ValType="12" Length="0" DbType="DATE" NotNull="false" DbName="PURGETIME"/>
+        <Column Id="colCFEL65EEXLNRDF5JABIFNQAABA" Name="accessArea" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="ACCESSAREA"/>
+      </Columns>
+      <PrimaryKey Id="idxRDXQVFY6PLNRDANMABIFNQAABA" Name="PrimaryKey" DbName="PK_RDX_WF_PROCESS" Unique="true">
+        <Columns>
+          <Column ColumnId="colYBCGVMA6PLNRDANMABIFNQAABA" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqRDXQVFY6PLNRDANMABIFNQAABA" DbName="PK_RDX_WF_PROCESS" Rely="true"/>
+      </PrimaryKey>
+      <Indices>
+        <Index Id="idxD6KOVVAYXTNRDF5LABIFNQAABA" Name="OwnerTypeStateFinish" DbName="IDX_DWF_PROCESS_OWNERTSF" AutoDbName="false">
+          <Columns>
+            <Column ColumnId="colXLGX3QEDXLNRDF5JABIFNQAABA" Order="Asc"/>
+            <Column ColumnId="colMCUP6FRT5FBYXDBZUYABU5RFII" Order="Asc"/>
+            <Column ColumnId="colQTG3VSI7PLNRDANMABIFNQAABA" Order="Asc"/>
+            <Column ColumnId="colDKM24AZAPLNRDANMABIFNQAABA" Order="Asc"/>
+          </Columns>
+        </Index>
+        <Index Id="idxX7GHNSAYXTNRDF5LABIFNQAABA" Name="OwnerTypeStateStart" DbName="IDX_DWF_PROCESS_OWNERTSS" AutoDbName="false">
+          <Columns>
+            <Column ColumnId="colXLGX3QEDXLNRDF5JABIFNQAABA" Order="Asc"/>
+            <Column ColumnId="colMCUP6FRT5FBYXDBZUYABU5RFII" Order="Asc"/>
+            <Column ColumnId="colQTG3VSI7PLNRDANMABIFNQAABA" Order="Asc"/>
+            <Column ColumnId="colPIZGX2I7PLNRDANMABIFNQAABA" Order="Asc"/>
+          </Columns>
+        </Index>
+        <Index Id="idx75VMVPIYXTNRDF5LABIFNQAABA" Name="OwnerStateFinish" DbName="IDX_RDX_WF_PROCESS_OWNERSTATEF">
+          <Columns>
+            <Column ColumnId="colXLGX3QEDXLNRDF5JABIFNQAABA" Order="Asc"/>
+            <Column ColumnId="colQTG3VSI7PLNRDANMABIFNQAABA" Order="Asc"/>
+            <Column ColumnId="colDKM24AZAPLNRDANMABIFNQAABA" Order="Asc"/>
+          </Columns>
+        </Index>
+        <Index Id="idxT7FH7MYYXTNRDF5LABIFNQAABA" Name="OwnerStateStart" DbName="IDX_RDX_WF_PROCESS_OWNERSTATES">
+          <Columns>
+            <Column ColumnId="colXLGX3QEDXLNRDF5JABIFNQAABA" Order="Asc"/>
+            <Column ColumnId="colQTG3VSI7PLNRDANMABIFNQAABA" Order="Asc"/>
+            <Column ColumnId="colPIZGX2I7PLNRDANMABIFNQAABA" Order="Asc"/>
+          </Columns>
+        </Index>
+        <Index Id="idxT6SUTIQYXTNRDF5LABIFNQAABA" Name="TypeStateFinish" DbName="IDX_RDX_WF_PROCESS_TYPESTATEFI">
+          <Columns>
+            <Column ColumnId="colMCUP6FRT5FBYXDBZUYABU5RFII" Order="Asc"/>
+            <Column ColumnId="colQTG3VSI7PLNRDANMABIFNQAABA" Order="Asc"/>
+            <Column ColumnId="colDKM24AZAPLNRDANMABIFNQAABA" Order="Asc"/>
+          </Columns>
+        </Index>
+        <Index Id="idx36MPDFQYXTNRDF5LABIFNQAABA" Name="TypeStateStart" DbName="IDX_RDX_WF_PROCESS_TYPESTATEST">
+          <Columns>
+            <Column ColumnId="colMCUP6FRT5FBYXDBZUYABU5RFII" Order="Asc"/>
+            <Column ColumnId="colQTG3VSI7PLNRDANMABIFNQAABA" Order="Asc"/>
+            <Column ColumnId="colPIZGX2I7PLNRDANMABIFNQAABA" Order="Asc"/>
+          </Columns>
+        </Index>
+        <Index Id="idxX7SU7CAYXTNRDF5LABIFNQAABA" Name="StateFinish" DbName="IDX_RDX_WF_PROCESS_STATEFINISH">
+          <Columns>
+            <Column ColumnId="colQTG3VSI7PLNRDANMABIFNQAABA" Order="Asc"/>
+            <Column ColumnId="colDKM24AZAPLNRDANMABIFNQAABA" Order="Asc"/>
+          </Columns>
+        </Index>
+        <Index Id="idx4EAOE3YYXTNRDF5LABIFNQAABA" Name="StateStart" DbName="IDX_RDX_WF_PROCESS_STATESTART">
+          <Columns>
+            <Column ColumnId="colQTG3VSI7PLNRDANMABIFNQAABA" Order="Asc"/>
+            <Column ColumnId="colPIZGX2I7PLNRDANMABIFNQAABA" Order="Asc"/>
+          </Columns>
+        </Index>
+        <Index Id="idxA7TJJH4TBJE3LEYN473DK5ARWY" Name="Purge" DbName="IDX_RDX_WF_PROCESS_PURGE">
+          <Columns>
+            <Column ColumnId="colKNEIRTHMJ5FBFBRZT4UIUUOPKY" Order="Asc"/>
+          </Columns>
+        </Index>
+      </Indices>
+      <Triggers>
+        <Trigger Id="trgHK7CUUPZTPOBDCNHAAMPGXSZKU" Name="StateChanged" DbName="TAUR_RDX_WF_PROCESS" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="colQTG3VSI7PLNRDANMABIFNQAABA">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>Declare
+  currentTime DATE;
+Begin
+  if :new.state &lt;> </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:ConstValue EnumId="acsAUKTDYXZKTNRDAQSABIFNQAAAE" ItemId="aciYOBEJTYZVPORDJHCAANE2UAFXA">
+                <xsc:Sql>1</xsc:Sql>
+              </xsc:ConstValue>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> then
+     delete from </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TableSqlName TableId="tblHRWUWEEMIHNRDJIEACQMTAIZT4">
+                <xsc:Sql>RDX_JS_JOBQUEUE</xsc:Sql>
+              </xsc:TableSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> where </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tblHRWUWEEMIHNRDJIEACQMTAIZT4" PropId="colKO3GLUKLZVBJ5LB74GGO6QEBKE" Owner="TABLE">
+                <xsc:Sql>RDX_JS_JOBQUEUE.CREATORENTITYGUID</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>=</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:ThisTableId/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> and </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tblHRWUWEEMIHNRDJIEACQMTAIZT4" PropId="col3QEST2453NB6VO2QYXLW6IJTMM" Owner="TABLE">
+                <xsc:Sql>RDX_JS_JOBQUEUE.CREATORPID</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>=:new.id; 
+  end if;
+  if :new.state in (</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:ConstValue EnumId="acsAUKTDYXZKTNRDAQSABIFNQAAAE" ItemId="aciY2BEJTYZVPORDJHCAANE2UAFXA">
+                <xsc:Sql>4</xsc:Sql>
+              </xsc:ConstValue>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>, </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:ConstValue EnumId="acsAUKTDYXZKTNRDAQSABIFNQAAAE" ItemId="aciYWBEJTYZVPORDJHCAANE2UAFXA">
+                <xsc:Sql>3</xsc:Sql>
+              </xsc:ConstValue>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>, </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:ConstValue EnumId="acsAUKTDYXZKTNRDAQSABIFNQAAAE" ItemId="aciYSBEJTYZVPORDJHCAANE2UAFXA">
+                <xsc:Sql>2</xsc:Sql>
+              </xsc:ConstValue>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>) then
+     currentTime := :new.simulatedTime;
+     if currentTime is null then
+        currentTime := sysdate;
+     end if;
+     update </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TableSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA">
+                <xsc:Sql>RDX_WF_FORM</xsc:Sql>
+              </xsc:TableSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> set </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colO5JOWR4JXLNRDF5JABIFNQAABA" Owner="TABLE">
+                <xsc:Sql>RDX_WF_FORM.CLOSETIME</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> = currentTime
+        where </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colFOZ357EHXLNRDF5JABIFNQAABA" Owner="TABLE">
+                <xsc:Sql>RDX_WF_FORM.PROCESSID</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> = :new.</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA" PropId="colYBCGVMA6PLNRDANMABIFNQAABA" Owner="NONE">
+                <xsc:Sql>ID</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> and </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnOPB5NEKVXPNRDF5KABIFNQAABA">
+                <xsc:Sql>RDX_WF.getFormState</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colO5JOWR4JXLNRDF5JABIFNQAABA" Owner="TABLE">
+                <xsc:Sql>RDX_WF_FORM.CLOSETIME</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>, </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colD2WOGKUJXLNRDF5JABIFNQAABA" Owner="TABLE">
+                <xsc:Sql>RDX_WF_FORM.DUETIME</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>, </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="col4MQBMOEJXLNRDF5JABIFNQAABA" Owner="TABLE">
+                <xsc:Sql>RDX_WF_FORM.OVERDUETIME</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>, </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="col7DJHQP4JXLNRDF5JABIFNQAABA" Owner="TABLE">
+                <xsc:Sql>RDX_WF_FORM.EXPIRATIONTIME</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>, currentTime) in (</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:ConstValue EnumId="acsCLVPBP4JXLNRDF5JABIFNQAABA" ItemId="aciUWBEJTYZVPORDJHCAANE2UAFXA">
+                <xsc:Sql>0</xsc:Sql>
+              </xsc:ConstValue>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>, </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:ConstValue EnumId="acsCLVPBP4JXLNRDF5JABIFNQAABA" ItemId="aciU2BEJTYZVPORDJHCAANE2UAFXA">
+                <xsc:Sql>1</xsc:Sql>
+              </xsc:ConstValue>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>, </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:ConstValue EnumId="acsCLVPBP4JXLNRDF5JABIFNQAABA" ItemId="aciU6BEJTYZVPORDJHCAANE2UAFXA">
+                <xsc:Sql>2</xsc:Sql>
+              </xsc:ConstValue>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>);
+  end if;  
+End;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+        <Trigger Id="trgX37PB6H3SFHHHNHMKG6WTAJ27U" Name="UserPropOwn" DbName="UPO_RDXQVFY6PLNRDANMABIFNQAABA" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+   RDX_ENTITY.UserPropOnDelOwner('tblRDXQVFY6PLNRDANMABIFNQAABA', :old.ID);
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+      </Triggers>
+      <Placement PosX="354" PosY="167"/>
+    </Table>
+    <Table Id="tbl2XXEGTLFCDORDBJNABIFNQAABA" Name="ProcessLink" DbName="RDX_WF_PROCESSLINK">
+      <Columns>
+        <Column Id="colASLT4ANWJBEPBMXQIGTZIQMSSM" Name="id" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="true" DbName="ID" SequenceId="sqn4QA2IP7O7FEXLBP6ZXPWIGTO7U"/>
+        <Column Id="colSWL5OX3FCDORDBJNABIFNQAABA" Name="processId" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="true" DbName="PROCESSID"/>
+        <Column Id="colLHKNYZY5EFCK7F224V45G24FZE" Name="role" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="ROLE"/>
+        <Column Id="colNS7IZMORBBHCZKA365MDZCEK4M" Name="idx" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="IDX"/>
+        <Column Id="colCUC3E7LFCDORDBJNABIFNQAABA" Name="entityGuid" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="false" DbName="ENTITYGUID"/>
+        <Column Id="col2W7HJCLFCDORDBJNABIFNQAABA" Name="objectPid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="OBJECTPID"/>
+        <Column Id="col2URINFLFCDORDBJNABIFNQAABA" Name="title" ValType="21" Length="300" DbType="VARCHAR2(300 char)" NotNull="false" DbName="TITLE"/>
+      </Columns>
+      <PrimaryKey Id="idx2XXEGTLFCDORDBJNABIFNQAABA" Name="PrimaryKey" DbName="PK_RDX_WF_PROCESSLINK" Unique="true">
+        <Columns>
+          <Column ColumnId="colASLT4ANWJBEPBMXQIGTZIQMSSM" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unq2XXEGTLFCDORDBJNABIFNQAABA" DbName="PK_RDX_WF_PROCESSLINK" Rely="true"/>
+      </PrimaryKey>
+      <Indices>
+        <Index Id="idxTPLG3YTTOJFI3LTXXNPXPAFJYQ" Name="Object" DbName="IDX_RDX_WF_PROCESSLINK_OBJECT">
+          <Columns>
+            <Column ColumnId="colCUC3E7LFCDORDBJNABIFNQAABA" Order="Asc"/>
+            <Column ColumnId="col2W7HJCLFCDORDBJNABIFNQAABA" Order="Asc"/>
+            <Column ColumnId="colLHKNYZY5EFCK7F224V45G24FZE" Order="Asc"/>
+            <Column ColumnId="colSWL5OX3FCDORDBJNABIFNQAABA" Order="Asc"/>
+          </Columns>
+        </Index>
+        <Index Id="idxWD4J7PBK7ZC3HHNK7V4KYM4M2I" Name="Process" DbName="IDX_RDX_WF_PROCESSLINK_PROCESS" Unique="true">
+          <Columns>
+            <Column ColumnId="colSWL5OX3FCDORDBJNABIFNQAABA" Order="Asc"/>
+            <Column ColumnId="colLHKNYZY5EFCK7F224V45G24FZE" Order="Asc"/>
+            <Column ColumnId="colNS7IZMORBBHCZKA365MDZCEK4M" Order="Asc"/>
+            <Column ColumnId="colASLT4ANWJBEPBMXQIGTZIQMSSM" Order="Asc"/>
+          </Columns>
+          <UniqueConstraint Id="unq55ICHZKNBNH3XA2T5P5ND53BFQ" DbName="UNQ_RDX_WF_PROCESSLINK_PROCESS"/>
+        </Index>
+      </Indices>
+      <Placement PosX="482" PosY="739"/>
+    </Table>
+    <Table Id="tblXI6CAOIGDBAGJEE6JQEGJME43Q" Name="ProcessType" DbName="RDX_WF_PROCESSTYPE" AuditMask="7" UserExtMask="65568">
+      <Columns>
+        <Column Id="colAEAAPJXBX5BIXHBNJOYP3FBIR4" Name="guid" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="true" DbName="GUID"/>
+        <Column Id="colGG5VO4FGVBAMFB7SU4TOCRK7JE" Name="title" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="TITLE" TemplateId="cdmVKEXNOQQ5ZGI3KZWQLOMROTKWE"/>
+        <Column Id="colDIZMB2WMQFGFNKGNDPBZKRCHIM" Name="classGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="CLASSGUID"/>
+        <Column Id="colE62KHOUF45E6JDWSYCA7TICXAI" Name="algoClassGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="ALGOCLASSGUID"/>
+        <Column Id="colCGY7I2E76ZF7LNL4OVRXERFG7I" Name="traceProfile" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="TRACEPROFILE"/>
+        <Column Id="col6SKMJNSZZNFVDNGCP26PG6QPEM" Name="clerkRoleGuids" ValType="221" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="CLERKROLEGUIDS" AuditMask="6"/>
+        <Column Id="col6KIGNQEL7NEWFDQMOEIO4POSTQ" Name="adminRoleGuids" ValType="221" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="ADMINROLEGUIDS" AuditMask="6"/>
+        <Column Id="colNWJ6DLDISBBWZKPVZUMMGLM5LI" Name="processStoreDays" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="PROCESSSTOREDAYS" AuditMask="6"/>
+        <Column Id="colXPT3ITROQNCC5OQ67AAKUEY2IQ" Name="notes" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="NOTES" TemplateId="cdmBTGBYZC5GBAM5PKMEF2HYVPF7U"/>
+      </Columns>
+      <PrimaryKey Id="idxLYUNH44HBNBLLJ33EFSOLHOJ7U" Name="PrimaryKey" DbName="PK_RDX_WF_PROCESSTYPE" Unique="true">
+        <Columns>
+          <Column ColumnId="colAEAAPJXBX5BIXHBNJOYP3FBIR4" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqLWPBN2ZBOJFTTP72JV7RGSXYAM" DbName="PK_RDX_WF_PROCESSTYPE" Rely="true"/>
+      </PrimaryKey>
+      <Triggers>
+        <Trigger Id="trgYR4XDLCC6JBTZOGH727TP3IB4M" Name="UserPropOwn" DbName="UPO_XI6CAOIGDBAGJEE6JQEGJME43Q" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+   RDX_ENTITY.UserPropOnDelOwner('tblXI6CAOIGDBAGJEE6JQEGJME43Q', RDX_ENTITY.PackPIDStr(:old.GUID));
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+        <Trigger Id="trgPLT2PTDN3FAJNDTHJHPSCOXTFI" Name="AuditUpdate" DbName="atuXI6CAOIGDBAGJEE6JQEGJME43Q" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="col6SKMJNSZZNFVDNGCP26PG6QPEM col6KIGNQEL7NEWFDQMOEIO4POSTQ colNWJ6DLDISBBWZKPVZUMMGLM5LI" Disabled="true">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      from RDX_AU_SCHEMEITEM
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.TABLEID = 'tblXI6CAOIGDBAGJEE6JQEGJME43Q'
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'U';
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   exception
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      when no_data_found then return;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   end;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   vPID:=RDX_ENTITY.PackPIDStr(:old.GUID);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   if vSaveData=1 then</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnMTT5CAY2LBE4LP7GHG3E6RBO3M">
+                <xsc:Sql>RDX_AUDIT.addChangedValueStr</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'col6SKMJNSZZNFVDNGCP26PG6QPEM',:old.CLERKROLEGUIDS,:new.CLERKROLEGUIDS);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnMTT5CAY2LBE4LP7GHG3E6RBO3M">
+                <xsc:Sql>RDX_AUDIT.addChangedValueStr</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'col6KIGNQEL7NEWFDQMOEIO4POSTQ',:old.ADMINROLEGUIDS,:new.ADMINROLEGUIDS);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfn5WOW6KKZRBAC3MFHWD3KNPIZVU">
+                <xsc:Sql>RDX_AUDIT.addChangedValueInt</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'colNWJ6DLDISBBWZKPVZUMMGLM5LI',:old.PROCESSSTOREDAYS,:new.PROCESSSTOREDAYS);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   end if;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   vClassGuid := :old.CLASSGUID;</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   insert into </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TableSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q">
+                <xsc:Sql>RDX_AU_AUDITLOG</xsc:Sql>
+              </xsc:TableSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   values(</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:SequenceDbName SequenceId="sqn2FY3TI3TMXNBDKV7ABINU7DB2Q" Postfix="NONE">
+                <xsc:Sql>SQN_RDX_AU_AUDITLOGID</xsc:Sql>
+              </xsc:SequenceDbName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>.NextVal,SYSTIMESTAMP,vStoreDuration,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnI4SB4XOXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getStationName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,'tblXI6CAOIGDBAGJEE6JQEGJME43Q',vClassGuid,vPID,'U',vChangeData);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+        <Trigger Id="trg63NTK4JOUBG6NNTO2HKG6VVMXQ" Name="AuditInsert" DbName="atiXI6CAOIGDBAGJEE6JQEGJME43Q" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      from RDX_AU_SCHEMEITEM
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.TABLEID = 'tblXI6CAOIGDBAGJEE6JQEGJME43Q'
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'I';
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   exception
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      when no_data_found then return;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   end;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   vPID:=RDX_ENTITY.PackPIDStr(:new.GUID);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   vClassGuid := :new.CLASSGUID;</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   insert into </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TableSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q">
+                <xsc:Sql>RDX_AU_AUDITLOG</xsc:Sql>
+              </xsc:TableSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   values(</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:SequenceDbName SequenceId="sqn2FY3TI3TMXNBDKV7ABINU7DB2Q" Postfix="NONE">
+                <xsc:Sql>SQN_RDX_AU_AUDITLOGID</xsc:Sql>
+              </xsc:SequenceDbName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>.NextVal,SYSTIMESTAMP,vStoreDuration,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnI4SB4XOXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getStationName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,'tblXI6CAOIGDBAGJEE6JQEGJME43Q',vClassGuid,vPID,'I',vChangeData);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+        <Trigger Id="trgV4VIXVC345FPZPGYWA37GW4RJQ" Name="AuditDelete" DbName="atdXI6CAOIGDBAGJEE6JQEGJME43Q" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      if vSchemeId IS NULL then 
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>           select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      end if;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      from RDX_AU_SCHEMEITEM
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.TABLEID = 'tblXI6CAOIGDBAGJEE6JQEGJME43Q'
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'D';
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   exception
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      when no_data_found then return;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   end;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   vPID:=RDX_ENTITY.PackPIDStr(:old.GUID);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   if vSaveData=1 then</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnPQ3VCQBSX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueStr</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'old.col6SKMJNSZZNFVDNGCP26PG6QPEM',:old.CLERKROLEGUIDS);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnPQ3VCQBSX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueStr</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'old.col6KIGNQEL7NEWFDQMOEIO4POSTQ',:old.ADMINROLEGUIDS);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnRAERWTZSX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueInt</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'old.colNWJ6DLDISBBWZKPVZUMMGLM5LI',:old.PROCESSSTOREDAYS);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   end if;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   vClassGuid := :old.CLASSGUID;</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   insert into </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TableSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q">
+                <xsc:Sql>RDX_AU_AUDITLOG</xsc:Sql>
+              </xsc:TableSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   values(</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:SequenceDbName SequenceId="sqn2FY3TI3TMXNBDKV7ABINU7DB2Q" Postfix="NONE">
+                <xsc:Sql>SQN_RDX_AU_AUDITLOGID</xsc:Sql>
+              </xsc:SequenceDbName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>.NextVal,SYSTIMESTAMP,vStoreDuration,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnI4SB4XOXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getStationName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,'tblXI6CAOIGDBAGJEE6JQEGJME43Q',vClassGuid,vPID,'D',vChangeData);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+      </Triggers>
+      <Placement PosX="634" PosY="169"/>
+    </Table>
+  </Tables>
+  <Views>
+    <View Id="tblGWCVXTQSXTNRDF5LABIFNQAABA" Name="ClerkStatistics" DbName="RDX_WF_CLERKSTATISTICS" Distinct="false" WithOption="ReadOnly">
+      <Columns>
+        <Column Id="colMARMUAATXTNRDF5LABIFNQAABA" Name="name" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="true" DbName="NAME"/>
+        <Column Id="colUCUQVVITXTNRDF5LABIFNQAABA" Name="personName" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="false" DbName="PERSONNAME"/>
+        <Column Id="colWBG7F2QTXTNRDF5LABIFNQAABA" Name="ownProcessCount" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="OWNPROCESSCOUNT"/>
+        <Column Id="colCSJ575YTXTNRDF5LABIFNQAABA" Name="dueFormCount" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="DUEFORMCOUNT"/>
+        <Column Id="col2VFZMAIUXTNRDF5LABIFNQAABA" Name="overdueFormCount" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="OVERDUEFORMCOUNT"/>
+      </Columns>
+      <PrimaryKey Id="idxGWCVXTQSXTNRDF5LABIFNQAABA" Name="PrimaryKey" DbName="PK_RDX_WF_CLERKSTATISTICS" GenerateInDb="false" Unique="true">
+        <Columns>
+          <Column ColumnId="colMARMUAATXTNRDF5LABIFNQAABA" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqGWCVXTQSXTNRDF5LABIFNQAABA" DbName="PK_RDX_WF_CLERKSTATISTICS" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="619" PosY="586"/>
+      <Query>
+        <xsc:Item>
+          <xsc:Sql>SELECT </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" PropId="colEF6ODCYWY3NBDGMCABQAQH3XQ4" Owner="TABLE">
+            <xsc:Sql>RDX_AC_USER.NAME</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> AS </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGWCVXTQSXTNRDF5LABIFNQAABA" PropId="colMARMUAATXTNRDF5LABIFNQAABA" Owner="THIS">
+            <xsc:Sql>NAME</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+       </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" PropId="col3FYUIAY5J3NRDJIRACQMTAIZT4" Owner="NONE">
+            <xsc:Sql>PERSONNAME</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> AS </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGWCVXTQSXTNRDF5LABIFNQAABA" PropId="colUCUQVVITXTNRDF5LABIFNQAABA" Owner="THIS">
+            <xsc:Sql>PERSONNAME</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+       </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:DbFuncCall FuncId="dfnUQ67M6IRXTNRDF5LABIFNQAABA">
+            <xsc:Sql>RDX_WF.getOwnProcessCount</xsc:Sql>
+          </xsc:DbFuncCall>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>(</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" PropId="colEF6ODCYWY3NBDGMCABQAQH3XQ4" Owner="NONE">
+            <xsc:Sql>NAME</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>) AS </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGWCVXTQSXTNRDF5LABIFNQAABA" PropId="colWBG7F2QTXTNRDF5LABIFNQAABA" Owner="THIS">
+            <xsc:Sql>OWNPROCESSCOUNT</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+       </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:DbFuncCall FuncId="dfn2QCWYKYAXTNRDF5LABIFNQAABA">
+            <xsc:Sql>RDX_WF.getStateFormCount</xsc:Sql>
+          </xsc:DbFuncCall>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>(</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" PropId="colEF6ODCYWY3NBDGMCABQAQH3XQ4" Owner="NONE">
+            <xsc:Sql>NAME</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:ConstValue EnumId="acsCLVPBP4JXLNRDF5JABIFNQAABA" ItemId="aciU2BEJTYZVPORDJHCAANE2UAFXA">
+            <xsc:Sql>1</xsc:Sql>
+          </xsc:ConstValue>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>) AS </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGWCVXTQSXTNRDF5LABIFNQAABA" PropId="colCSJ575YTXTNRDF5LABIFNQAABA" Owner="THIS">
+            <xsc:Sql>DUEFORMCOUNT</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+       </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:DbFuncCall FuncId="dfn2QCWYKYAXTNRDF5LABIFNQAABA">
+            <xsc:Sql>RDX_WF.getStateFormCount</xsc:Sql>
+          </xsc:DbFuncCall>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>(</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" PropId="colEF6ODCYWY3NBDGMCABQAQH3XQ4" Owner="NONE">
+            <xsc:Sql>NAME</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:ConstValue EnumId="acsCLVPBP4JXLNRDF5JABIFNQAABA" ItemId="aciU6BEJTYZVPORDJHCAANE2UAFXA">
+            <xsc:Sql>2</xsc:Sql>
+          </xsc:ConstValue>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>) AS </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGWCVXTQSXTNRDF5LABIFNQAABA" PropId="col2VFZMAIUXTNRDF5LABIFNQAABA" Owner="THIS">
+            <xsc:Sql>OVERDUEFORMCOUNT</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+  FROM </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4">
+            <xsc:Sql>RDX_AC_USER</xsc:Sql>
+          </xsc:TableSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+
+UNION
+
+SELECT 
+       '-' AS </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGWCVXTQSXTNRDF5LABIFNQAABA" PropId="colMARMUAATXTNRDF5LABIFNQAABA" Owner="THIS">
+            <xsc:Sql>NAME</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+       NULL AS </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGWCVXTQSXTNRDF5LABIFNQAABA" PropId="colUCUQVVITXTNRDF5LABIFNQAABA" Owner="THIS">
+            <xsc:Sql>PERSONNAME</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+       0 AS </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGWCVXTQSXTNRDF5LABIFNQAABA" PropId="colWBG7F2QTXTNRDF5LABIFNQAABA" Owner="THIS">
+            <xsc:Sql>OWNPROCESSCOUNT</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+       </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:DbFuncCall FuncId="dfn2QCWYKYAXTNRDF5LABIFNQAABA">
+            <xsc:Sql>RDX_WF.getStateFormCount</xsc:Sql>
+          </xsc:DbFuncCall>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>(NULL, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:ConstValue EnumId="acsCLVPBP4JXLNRDF5JABIFNQAABA" ItemId="aciU2BEJTYZVPORDJHCAANE2UAFXA">
+            <xsc:Sql>1</xsc:Sql>
+          </xsc:ConstValue>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>) AS </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGWCVXTQSXTNRDF5LABIFNQAABA" PropId="colCSJ575YTXTNRDF5LABIFNQAABA" Owner="THIS">
+            <xsc:Sql>DUEFORMCOUNT</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+       </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:DbFuncCall FuncId="dfn2QCWYKYAXTNRDF5LABIFNQAABA">
+            <xsc:Sql>RDX_WF.getStateFormCount</xsc:Sql>
+          </xsc:DbFuncCall>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>(NULL, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:ConstValue EnumId="acsCLVPBP4JXLNRDF5JABIFNQAABA" ItemId="aciU6BEJTYZVPORDJHCAANE2UAFXA">
+            <xsc:Sql>2</xsc:Sql>
+          </xsc:ConstValue>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>) AS </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGWCVXTQSXTNRDF5LABIFNQAABA" PropId="col2VFZMAIUXTNRDF5LABIFNQAABA" Owner="THIS">
+            <xsc:Sql>OVERDUEFORMCOUNT</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+  FROM Dual
+</xsc:Sql>
+        </xsc:Item>
+      </Query>
+      <UsedTables>
+        <Table>tblSY4KIOLTGLNRDHRZABQAQH3XQ4</Table>
+      </UsedTables>
+    </View>
+  </Views>
+  <ExtTables>
+    <ExtTable Id="tbe5VDMB4MYXLNRDF5JABIFNQAABA" TableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4">
+      <Placement PosX="183" PosY="377"/>
+    </ExtTable>
+  </ExtTables>
+  <References>
+    <Reference Id="refZZEBFBLJXPNRDF5KABIFNQAABA" AutoDbName="false" DbName="FK_RDX_WF_FORMLOG_FORM" Type="LINK" ChildTableId="tbl3KY3VBDIXPNRDF5KABIFNQAABA" ParentTableId="tblVP66JC4HXLNRDF5JABIFNQAABA" ConfirmDelete="false" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqVP66JC4HXLNRDF5JABIFNQAABA">
+      <Columns>
+        <Item ChildColumnId="colZFOGJETIXPNRDF5KABIFNQAABA" ParentColumnId="colJGHFDGEHXLNRDF5JABIFNQAABA"/>
+      </Columns>
+    </Reference>
+    <Reference Id="ref24GMBXTJXPNRDF5KABIFNQAABA" AutoDbName="false" DbName="FK_RDZ_WF_FORMLOG_USER" Rely="true" Disable="true" Novalidate="true" Type="LINK" GenerateInDb="false" ChildTableId="tbl3KY3VBDIXPNRDF5KABIFNQAABA" ParentTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ExtParentTableId="tbe5VDMB4MYXLNRDF5JABIFNQAABA" ConfirmDelete="false" DeleteMode="NONE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqSY4KIOLTGLNRDHRZABQAQH3XQ4">
+      <Columns>
+        <Item ChildColumnId="colB3SYQATJXPNRDF5KABIFNQAABA" ParentColumnId="colEF6ODCYWY3NBDGMCABQAQH3XQ4"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refTTOY4CDKXPNRDF5KABIFNQAABA" AutoDbName="false" DbName="FK_RDX_WF_FORMLOG_USER" Rely="true" Disable="true" Novalidate="true" Type="LINK" GenerateInDb="false" ChildTableId="tbl3KY3VBDIXPNRDF5KABIFNQAABA" ParentTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ExtParentTableId="tbe5VDMB4MYXLNRDF5JABIFNQAABA" ConfirmDelete="false" DeleteMode="NONE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqSY4KIOLTGLNRDHRZABQAQH3XQ4">
+      <Columns>
+        <Item ChildColumnId="colWRDDKQDJXPNRDF5KABIFNQAABA" ParentColumnId="colEF6ODCYWY3NBDGMCABQAQH3XQ4"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refMLFKH3URXLNRDF5JABIFNQAABA" AutoDbName="false" DbName="FK_RDX_WF_FORM_PROCESS" Type="LINK" ChildTableId="tblVP66JC4HXLNRDF5JABIFNQAABA" ParentTableId="tblRDXQVFY6PLNRDANMABIFNQAABA" ConfirmDelete="false" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqRDXQVFY6PLNRDANMABIFNQAABA">
+      <Columns>
+        <Item ChildColumnId="colFOZ357EHXLNRDF5JABIFNQAABA" ParentColumnId="colYBCGVMA6PLNRDANMABIFNQAABA"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refFPSJXPFDXLNRDF5JABIFNQAABA" AutoDbName="false" DbName="FK_RDX_WF_FORM_USER" Rely="true" Disable="true" Novalidate="true" Type="LINK" GenerateInDb="false" ChildTableId="tblVP66JC4HXLNRDF5JABIFNQAABA" ParentTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ExtParentTableId="tbe5VDMB4MYXLNRDF5JABIFNQAABA" ConfirmDelete="false" DeleteMode="NONE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqSY4KIOLTGLNRDHRZABQAQH3XQ4">
+      <Columns>
+        <Item ChildColumnId="colPMMP7BUKXLNRDF5JABIFNQAABA" ParentColumnId="colEF6ODCYWY3NBDGMCABQAQH3XQ4"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refCVOJXITFCDORDBJNABIFNQAABA" AutoDbName="false" DbName="FK_RDX_WF_PROCESSLINK_PROCESS" Type="LINK" ChildTableId="tbl2XXEGTLFCDORDBJNABIFNQAABA" ParentTableId="tblRDXQVFY6PLNRDANMABIFNQAABA" ConfirmDelete="false" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqRDXQVFY6PLNRDANMABIFNQAABA">
+      <Columns>
+        <Item ChildColumnId="colSWL5OX3FCDORDBJNABIFNQAABA" ParentColumnId="colYBCGVMA6PLNRDANMABIFNQAABA"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refDXYAZ74YXLNRDF5JABIFNQAABA" AutoDbName="false" DbName="FK_RDX_WF_PROCESS_USER" Rely="true" Disable="true" Novalidate="true" Type="LINK" GenerateInDb="false" ChildTableId="tblRDXQVFY6PLNRDANMABIFNQAABA" ParentTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ExtParentTableId="tbe5VDMB4MYXLNRDF5JABIFNQAABA" ConfirmDelete="false" DeleteMode="NONE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqSY4KIOLTGLNRDHRZABQAQH3XQ4">
+      <Columns>
+        <Item ChildColumnId="colKKF6BJQ7PLNRDANMABIFNQAABA" ParentColumnId="colEF6ODCYWY3NBDGMCABQAQH3XQ4"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refRFY7GGEZXLNRDF5JABIFNQAABA" AutoDbName="false" DbName="FK_RDX_WF_PROCESS_USER" Rely="true" Disable="true" Novalidate="true" Type="LINK" GenerateInDb="false" ChildTableId="tblRDXQVFY6PLNRDANMABIFNQAABA" ParentTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ExtParentTableId="tbe5VDMB4MYXLNRDF5JABIFNQAABA" ConfirmDelete="false" DeleteMode="NONE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqSY4KIOLTGLNRDHRZABQAQH3XQ4">
+      <Columns>
+        <Item ChildColumnId="colXLGX3QEDXLNRDF5JABIFNQAABA" ParentColumnId="colEF6ODCYWY3NBDGMCABQAQH3XQ4"/>
+      </Columns>
+    </Reference>
+    <Reference Id="ref5CVV7PTXI5B3DDPSSSLQJRTOKI" AutoDbName="false" DbName="FK_RDX_WF_PROCESS_PROCESSTYPE" Type="LINK" ChildTableId="tblRDXQVFY6PLNRDANMABIFNQAABA" ParentTableId="tblXI6CAOIGDBAGJEE6JQEGJME43Q" ConfirmDelete="true" DeleteMode="RESTRICT" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqLWPBN2ZBOJFTTP72JV7RGSXYAM">
+      <Columns>
+        <Item ChildColumnId="colMCUP6FRT5FBYXDBZUYABU5RFII" ParentColumnId="colAEAAPJXBX5BIXHBNJOYP3FBIR4"/>
+      </Columns>
+    </Reference>
+  </References>
+  <Sequences>
+    <Sequence Id="sqn2JVM7UMHXLNRDF5JABIFNQAABA" Name="FormId" DbName="SQN_RDX_WF_FORMID" StartWith="1" Cycle="false" MinValue="1" Order="true" Cache="20">
+      <Placement PosX="188" PosY="739"/>
+    </Sequence>
+    <Sequence Id="sqnLHGJUXDJXPNRDF5KABIFNQAABA" Name="FormLogId" DbName="SQN_RDX_WF_FORMLOGID" Cycle="false" MinValue="1" Order="true" Cache="20">
+      <Placement PosX="153" PosY="996"/>
+    </Sequence>
+    <Sequence Id="sqnRC56R6Y6PLNRDANMABIFNQAABA" Name="ProcessId" DbName="SQN_RDX_WF_PROCESSID" StartWith="1" Cycle="false" MinValue="1" Order="true" Cache="20">
+      <Placement PosX="379" PosY="96"/>
+    </Sequence>
+    <Sequence Id="sqn4QA2IP7O7FEXLBP6ZXPWIGTO7U" Name="ProcessLinkId" DbName="SQN_RDX_WF_PROCESSLINKID" StartWith="1" Cycle="false" MinValue="1" Order="true" Cache="20">
+      <Placement PosX="600" PosY="740"/>
+    </Sequence>
+  </Sequences>
+  <Packages>
+    <Package Id="pkgEX4IXO2HXPNRDF5KABIFNQAABA" Name="RDX_WF" PurityLevelMask="0">
+      <Header>
+        <Item>
+          <CustomText Id="dtxZ7GH3H7OGTOBDGAOABIFNQAABA" Name="=== ACCESSIBILITY ===">
+            <Text/>
+          </CustomText>
+        </Item>
+        <Item>
+          <Prototype Id="dprORZIJZTBPBFXNFK32Z5EWWHZXQ" FunctionId="dfnKLXWL6LOCZDCTL7VN7CCBAPPN4"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprKSQY4IAI6VCCHB6LMNJEE4D6XQ" FunctionId="dfnHHJLQ3YHYJDNFE73M6DKBZ6OLA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprQP2VYEJVLJEOHJQKVRBRSFEZAM" FunctionId="dfnWEDK4ZXUKNB2FN6RZAY7CIKWDA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprTZI73NHVXFCG7DCDQWPYYI74AM" FunctionId="dfnTSQ26A6QCVATVBIGC4QBS2DJTA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dpr2UL35Q2HXPNRDF5KABIFNQAABA" FunctionId="dfn2UL35Q2HXPNRDF5KABIFNQAABA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprFVBO2N2MXPNRDF5KABIFNQAABA" FunctionId="dfnFVBO2N2MXPNRDF5KABIFNQAABA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprRPCJRHXKFFFXPE3HLMBM66O63E" FunctionId="dfnYTS4VVXKK5CIBI764AC34N2GM4"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprXFARXHJHUBAANP2BMQTQ44BUXU" FunctionId="dfnJCLAOIPL6ZEQ3IHPPTPKSUUYFQ"/>
+        </Item>
+        <Item>
+          <CustomText Id="dtx5NBN7OXOGTOBDGAOABIFNQAABA" Name="=== STATE ===">
+            <Text/>
+          </CustomText>
+        </Item>
+        <Item>
+          <Prototype Id="dprOPB5NEKVXPNRDF5KABIFNQAABA" FunctionId="dfnOPB5NEKVXPNRDF5KABIFNQAABA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprQZTUF5WJKZE2LCVGBDPTHDMJ3Q" FunctionId="dfnGN6I73IXCFFOLN7ICGLTGMOOWA"/>
+        </Item>
+        <Item>
+          <CustomText Id="dtxDJ7MZT7OGTOBDGAOABIFNQAABA" Name="=== STATISTICS ===">
+            <Text/>
+          </CustomText>
+        </Item>
+        <Item>
+          <Prototype Id="dprUQ67M6IRXTNRDF5LABIFNQAABA" FunctionId="dfnUQ67M6IRXTNRDF5LABIFNQAABA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dpr2QCWYKYAXTNRDF5LABIFNQAABA" FunctionId="dfn2QCWYKYAXTNRDF5LABIFNQAABA"/>
+        </Item>
+        <Item>
+          <CustomText Id="dtxI3RPXYXOGTOBDGAOABIFNQAABA" Name="=== ACCESSAREA ===">
+            <Text/>
+          </CustomText>
+        </Item>
+        <Item>
+          <CustomText Id="dtxOMW5ZXXTGTOBDGAOABIFNQAABA" Name="=== common ===">
+            <Text/>
+          </CustomText>
+        </Item>
+        <Item>
+          <Prototype Id="dprKOEXQNPPGTOBDGAOABIFNQAABA" FunctionId="dfnKOEXQNPPGTOBDGAOABIFNQAABA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprNZRFLYHQGTOBDGAOABIFNQAABA" FunctionId="dfnNZRFLYHQGTOBDGAOABIFNQAABA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dpr352G7L7RGTOBDGAOABIFNQAABA" FunctionId="dfn352G7L7RGTOBDGAOABIFNQAABA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dpr4MWCJKXSGTOBDGAOABIFNQAABA" FunctionId="dfn4MWCJKXSGTOBDGAOABIFNQAABA"/>
+        </Item>
+        <Item>
+          <CustomText Id="dtxTPVXH2HTGTOBDGAOABIFNQAABA" Name="=== form ===">
+            <Text/>
+          </CustomText>
+        </Item>
+        <Item>
+          <Prototype Id="dprAYJHXAXLGTOBDGAOABIFNQAABA" FunctionId="dfnAYJHXAXLGTOBDGAOABIFNQAABA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprCN6WFE7TGTOBDGAOABIFNQAABA" FunctionId="dfnCN6WFE7TGTOBDGAOABIFNQAABA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dpr4AZNJHRPGXOBDGAOABIFNQAABA" FunctionId="dfn4AZNJHRPGXOBDGAOABIFNQAABA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprSSDUZ6SGGTOBDGANABIFNQAABA" FunctionId="dfnSSDUZ6SGGTOBDGANABIFNQAABA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprHI3NRPKHGTOBDGANABIFNQAABA" FunctionId="dfnHI3NRPKHGTOBDGANABIFNQAABA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprEE7G3R2IGTOBDGANABIFNQAABA" FunctionId="dfnEE7G3R2IGTOBDGANABIFNQAABA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprHYEU2MEYGPOBDGAMABIFNQAABA" FunctionId="dfnHYEU2MEYGPOBDGAMABIFNQAABA"/>
+        </Item>
+        <Item>
+          <CustomText Id="dtxM7EMSRPVGTOBDGAOABIFNQAABA" Name="=== process ===">
+            <Text/>
+          </CustomText>
+        </Item>
+        <Item>
+          <Prototype Id="dprIOVWWUPVGTOBDGAOABIFNQAABA" FunctionId="dfnIOVWWUPVGTOBDGAOABIFNQAABA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprH6S4NGPVGTOBDGAOABIFNQAABA" FunctionId="dfnH6S4NGPVGTOBDGAOABIFNQAABA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprV3UQZTJPGXOBDGAOABIFNQAABA" FunctionId="dfnV3UQZTJPGXOBDGAOABIFNQAABA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprNJGUAXSHGTOBDGANABIFNQAABA" FunctionId="dfnNJGUAXSHGTOBDGANABIFNQAABA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprBZL2YQSIGTOBDGANABIFNQAABA" FunctionId="dfnBZL2YQSIGTOBDGANABIFNQAABA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprWWWIPPSJGTOBDGANABIFNQAABA" FunctionId="dfnWWWIPPSJGTOBDGANABIFNQAABA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprA2YY2CU5GPOBDGAMABIFNQAABA" FunctionId="dfnA2YY2CU5GPOBDGAMABIFNQAABA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dpr2KGHR6SYEZFJVNHADOPV3BWHGQ" FunctionId="dfnKJZSOM3ISNDWHISTKDDZCZKINQ"/>
+        </Item>
+        <Item>
+          <Prototype Id="dpr6RBVOYEKQVH7LKKWQ6GHDMDSYY" FunctionId="dfnVLHAHCBS6ZDKNADOJJN7WNV3OY"/>
+        </Item>
+      </Header>
+      <Body>
+        <Item>
+          <CustomText Id="dtxJ6IPKP5MVBFKNLIQJMSVQLX7YI" Name="CONSTS">
+            <Text>
+              <xsc:Item>
+                <xsc:Sql>DEBUG_ROLE CONSTANT VARCHAR2(50) := 'rol7MTXJKWQORCJFD7EEZHGZ7TOJM';
+ADMIN_ROLE CONSTANT VARCHAR2(50) := 'rolHM6FIFA4JFCJFIYPB3P2KC435U';
+CLERK_ROLE CONSTANT VARCHAR2(50) := 'rolOYMAGGZIXNF6TMGZASCZET6VOI';</xsc:Sql>
+              </xsc:Item>
+            </Text>
+          </CustomText>
+        </Item>
+        <Item>
+          <CustomText Id="dtxXLU7QAHPGTOBDGAOABIFNQAABA" Name="=== ACCESSIBILITY ===">
+            <Text/>
+          </CustomText>
+        </Item>
+        <Item>
+          <Function Id="dfnKLXWL6LOCZDCTL7VN7CCBAPPN4" Name="curUserIsProcessAdmin" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+    adminRoleIds Clob;
+    accessArea TRdxAcsAreaList;
+    adminRoles </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgZAFHHIAD2PORDKBMABIFNQAABA">
+                  <xsc:Sql>RDX_Array</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.ARR_STR;
+begin
+    select </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnZOT3C5NEINHT7KIGYTH5CRRGDY">
+                  <xsc:Sql>RDX_ACS.strToAreaList</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colDG7VJCMQXLNRDF5JABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>ACCESSAREA</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>)
+        into accessArea
+        from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA">
+                  <xsc:Sql>RDX_WF_PROCESS</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+        where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA" PropId="colYBCGVMA6PLNRDANMABIFNQAABA" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_PROCESS.ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = pProcessId;
+
+    if </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnZMZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS.curUserHasRoleInArea</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(ADMIN_ROLE, accessArea) = 0 and </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnZMZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS.curUserHasRoleInArea</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(DEBUG_ROLE, accessArea) = 0 then
+        return 0;
+    end if;
+/*    
+    for ind in (select distinct ROLEID from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USER2ROLE</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where username = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
+                  <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>()) loop
+        if </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnZMZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS.curUserHasRoleInArea</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(ind.ROLEID, accessArea) != 0 then
+            return 1;
+        end if;
+    end loop;
+*/    
+    select to_clob(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblXI6CAOIGDBAGJEE6JQEGJME43Q" PropId="col6KIGNQEL7NEWFDQMOEIO4POSTQ" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_PROCESSTYPE.ADMINROLEGUIDS</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>)
+        into adminRoleIds
+        from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblXI6CAOIGDBAGJEE6JQEGJME43Q">
+                  <xsc:Sql>RDX_WF_PROCESSTYPE</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+        where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblXI6CAOIGDBAGJEE6JQEGJME43Q" PropId="colAEAAPJXBX5BIXHBNJOYP3FBIR4" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_PROCESSTYPE.GUID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = (select </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA" PropId="colMCUP6FRT5FBYXDBZUYABU5RFII" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_PROCESS.TYPEGUID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA">
+                  <xsc:Sql>RDX_WF_PROCESS</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA" PropId="colYBCGVMA6PLNRDANMABIFNQAABA" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_PROCESS.ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = pProcessId);
+    
+    adminRoles := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnFHKO2R5HIJAZRB3YAD5P45DTUY">
+                  <xsc:Sql>RDX_Array.fromStr</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(adminRoleIds);    
+    if adminRoles.COUNT > 0 then
+        for idx in adminRoles.FIRST .. adminRoles.LAST loop
+            if </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnZMZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS.curUserHasRoleInArea</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(adminRoles(idx), accessArea) != 0 then
+                return 1;
+            end if;
+        end loop;
+        return 0;
+     end if;      
+        
+    return 1;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpLQPIY7YKIFABBPGN74EB2J3QUI" Name="pProcessId" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnHHJLQ3YHYJDNFE73M6DKBZ6OLA" Name="curUserIsFormAdmin" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+    adminRoleIds Clob;
+    accessArea TRdxAcsAreaList;
+    adminRoles </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgZAFHHIAD2PORDKBMABIFNQAABA">
+                  <xsc:Sql>RDX_Array</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.ARR_STR;
+begin
+    select </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnZOT3C5NEINHT7KIGYTH5CRRGDY">
+                  <xsc:Sql>RDX_ACS.strToAreaList</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(nvl(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colDG7VJCMQXLNRDF5JABIFNQAABA" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_FORM.ACCESSAREA</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA" PropId="colCFEL65EEXLNRDF5JABIFNQAABA" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_PROCESS.ACCESSAREA</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>))
+        into accessArea
+        from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA">
+                  <xsc:Sql>RDX_WF_FORM</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA">
+                  <xsc:Sql>RDX_WF_PROCESS</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+        where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colJGHFDGEHXLNRDF5JABIFNQAABA" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_FORM.ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = pFormId and </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA" PropId="colYBCGVMA6PLNRDANMABIFNQAABA" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_PROCESS.ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colFOZ357EHXLNRDF5JABIFNQAABA" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_FORM.PROCESSID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+
+    if </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnZMZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS.curUserHasRoleInArea</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(ADMIN_ROLE, accessArea) = 0 and </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnZMZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS.curUserHasRoleInArea</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(DEBUG_ROLE, accessArea) = 0then
+        return 0;
+    end if;
+/*    
+    for ind in (select distinct ROLEID from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USER2ROLE</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where username = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
+                  <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>()) loop
+        if </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnZMZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS.curUserHasRoleInArea</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(ind.ROLEID, accessArea) != 0 then
+            return 1;
+        end if;
+    end loop;
+*/    
+    select to_clob(nvl(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="col7VCUPAEQXLNRDF5JABIFNQAABA" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_FORM.ADMINROLEGUIDS</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblXI6CAOIGDBAGJEE6JQEGJME43Q" PropId="col6KIGNQEL7NEWFDQMOEIO4POSTQ" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_PROCESSTYPE.ADMINROLEGUIDS</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>))
+        into adminRoleIds
+        from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA">
+                  <xsc:Sql>RDX_WF_FORM</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA">
+                  <xsc:Sql>RDX_WF_PROCESS</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblXI6CAOIGDBAGJEE6JQEGJME43Q">
+                  <xsc:Sql>RDX_WF_PROCESSTYPE</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+        where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colJGHFDGEHXLNRDF5JABIFNQAABA" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_FORM.ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = pFormId and </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA" PropId="colYBCGVMA6PLNRDANMABIFNQAABA" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_PROCESS.ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colFOZ357EHXLNRDF5JABIFNQAABA" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_FORM.PROCESSID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> and </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblXI6CAOIGDBAGJEE6JQEGJME43Q" PropId="colAEAAPJXBX5BIXHBNJOYP3FBIR4" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_PROCESSTYPE.GUID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA" PropId="colMCUP6FRT5FBYXDBZUYABU5RFII" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_PROCESS.TYPEGUID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+
+    adminRoles := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnFHKO2R5HIJAZRB3YAD5P45DTUY">
+                  <xsc:Sql>RDX_Array.fromStr</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(adminRoleIds);    
+    if adminRoles.COUNT > 0 then
+        for idx in adminRoles.FIRST .. adminRoles.LAST loop
+            if </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnZMZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS.curUserHasRoleInArea</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(adminRoles(idx), accessArea) != 0 then
+                return 1;
+            end if;
+        end loop;
+        return 0;
+     end if;      
+        
+    return 1;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfp3RMANQKRGNCHNKMVXA74L27FVA" Name="pFormId" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnWEDK4ZXUKNB2FN6RZAY7CIKWDA" Name="curUserIsFormClerk" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+    return </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnTSQ26A6QCVATVBIGC4QBS2DJTA">
+                  <xsc:Sql>RDX_WF.userIsFormClerk</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
+                  <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(), pFormId);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpLJPFWMQZEJHRVK5BRWJOGY4SQY" Name="pFormId" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnTSQ26A6QCVATVBIGC4QBS2DJTA" Name="userIsFormClerk" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+    adminRoleIds Clob;
+    accessArea TRdxAcsAreaList;
+    clerkRoles </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgZAFHHIAD2PORDKBMABIFNQAABA">
+                  <xsc:Sql>RDX_Array</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.ARR_STR;
+begin
+    select </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnZOT3C5NEINHT7KIGYTH5CRRGDY">
+                  <xsc:Sql>RDX_ACS.strToAreaList</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(nvl(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colDG7VJCMQXLNRDF5JABIFNQAABA" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_FORM.ACCESSAREA</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA" PropId="colCFEL65EEXLNRDF5JABIFNQAABA" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_PROCESS.ACCESSAREA</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>))
+        into accessArea
+        from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA">
+                  <xsc:Sql>RDX_WF_FORM</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA">
+                  <xsc:Sql>RDX_WF_PROCESS</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+        where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colJGHFDGEHXLNRDF5JABIFNQAABA" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_FORM.ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = pFormId and </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA" PropId="colYBCGVMA6PLNRDANMABIFNQAABA" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_PROCESS.ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colFOZ357EHXLNRDF5JABIFNQAABA" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_FORM.PROCESSID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+
+    if </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn5UZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS.userHasRoleInArea</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(pUser, CLERK_ROLE, accessArea) = 0 then
+        return 0;
+    end if;
+/*    
+    for ind in (select distinct ROLEID from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USER2ROLE</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where username = pUser) loop
+        if </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn5UZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS.userHasRoleInArea</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(pUser, ind.ROLEID, accessArea) = 0 then
+            return 0;
+        end if;
+    end loop;
+*/        
+    select to_clob(nvl(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colUSDVE5UQXLNRDF5JABIFNQAABA" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_FORM.CLERKROLEGUIDS</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblXI6CAOIGDBAGJEE6JQEGJME43Q" PropId="col6SKMJNSZZNFVDNGCP26PG6QPEM" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_PROCESSTYPE.CLERKROLEGUIDS</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>))
+        into adminRoleIds
+        from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA">
+                  <xsc:Sql>RDX_WF_FORM</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA">
+                  <xsc:Sql>RDX_WF_PROCESS</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblXI6CAOIGDBAGJEE6JQEGJME43Q">
+                  <xsc:Sql>RDX_WF_PROCESSTYPE</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+        where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colJGHFDGEHXLNRDF5JABIFNQAABA" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_FORM.ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = pFormId and </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA" PropId="colYBCGVMA6PLNRDANMABIFNQAABA" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_PROCESS.ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colFOZ357EHXLNRDF5JABIFNQAABA" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_FORM.PROCESSID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> and </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblXI6CAOIGDBAGJEE6JQEGJME43Q" PropId="colAEAAPJXBX5BIXHBNJOYP3FBIR4" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_PROCESSTYPE.GUID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA" PropId="colMCUP6FRT5FBYXDBZUYABU5RFII" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_PROCESS.TYPEGUID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+    
+    clerkRoles := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnFHKO2R5HIJAZRB3YAD5P45DTUY">
+                  <xsc:Sql>RDX_Array.fromStr</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(adminRoleIds);    
+    if clerkRoles.COUNT > 0 then
+        for idx in clerkRoles.FIRST .. clerkRoles.LAST loop
+            if </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn5UZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS.userHasRoleInArea</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(pUser, clerkRoles(idx), accessArea) != 0 then
+                return 1;
+            end if;
+        end loop;
+        return 0;
+     end if;      
+        
+    return 1;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpCLO3TCI5VJAIPNR4ZBBKY2OLQA" Name="pUser" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp44VQMFAXGVHFJLLCJQF62DUPU4" Name="pFormId" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfn2UL35Q2HXPNRDF5KABIFNQAABA" Name="getFormAccessibility" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>IS
+   result INTEGER;
+
+BEGIN
+   SELECT 2 * </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnZMZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS.curUserHasRoleInArea</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="col7VCUPAEQXLNRDF5JABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>ADMINROLEGUIDS</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnZOT3C5NEINHT7KIGYTH5CRRGDY">
+                  <xsc:Sql>RDX_ACS.strToAreaList</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colDG7VJCMQXLNRDF5JABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>ACCESSAREA</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>)) + 
+              </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnZMZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS.curUserHasRoleInArea</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colUSDVE5UQXLNRDF5JABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>CLERKROLEGUIDS</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnZOT3C5NEINHT7KIGYTH5CRRGDY">
+                  <xsc:Sql>RDX_ACS.strToAreaList</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colDG7VJCMQXLNRDF5JABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>ACCESSAREA</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>))
+     INTO result     
+     FROM </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA">
+                  <xsc:Sql>RDX_WF_FORM</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+    WHERE </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colJGHFDGEHXLNRDF5JABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>=</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>iFormId</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+   
+   RETURN result;  
+END;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpM6O2VOCIXPNRDF5KABIFNQAABA" Name="iFormId" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnFVBO2N2MXPNRDF5KABIFNQAABA" Name="getProcessAccessibility" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>IS
+   result INTEGER := 1;
+
+BEGIN
+/***
+   SELECT DECODE
+          (
+             </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnZMZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS.curUserHasRoleInArea</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(..., </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnZOT3C5NEINHT7KIGYTH5CRRGDY">
+                  <xsc:Sql>RDX_ACS.strToAreaList</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA" PropId="colCFEL65EEXLNRDF5JABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>ACCESSAREA</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>)), 1, 
+             </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:ConstValue EnumId="acsS5J2FCUEXLNRDF5JABIFNQAABA" ItemId="aciX6BEJTYZVPORDJHCAANE2UAFXA">
+                  <xsc:Sql>2</xsc:Sql>
+                </xsc:ConstValue>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>,
+             DECODE
+             (
+                </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
+                  <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA" PropId="colXLGX3QEDXLNRDF5JABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>OWNERNAME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, 
+                </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:ConstValue EnumId="acsS5J2FCUEXLNRDF5JABIFNQAABA" ItemId="aciYGBEJTYZVPORDJHCAANE2UAFXA">
+                  <xsc:Sql>1</xsc:Sql>
+                </xsc:ConstValue>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>,
+                </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:ConstValue EnumId="acsS5J2FCUEXLNRDF5JABIFNQAABA" ItemId="aciYCBEJTYZVPORDJHCAANE2UAFXA">
+                  <xsc:Sql>0</xsc:Sql>
+                </xsc:ConstValue>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+             )
+          )
+     INTO result     
+     FROM </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA">
+                  <xsc:Sql>RDX_WF_PROCESS</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+    WHERE </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colJGHFDGEHXLNRDF5JABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>=</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>iProcessId</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>; 
+***/    
+   RETURN result; 
+END;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpC4GY46SMXPNRDF5KABIFNQAABA" Name="iProcessId" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnYTS4VVXKK5CIBI764AC34N2GM4" Name="getSuitableClerk" ResultDbType="varchar2" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="21">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+    for c in 
+    (
+        select </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" PropId="colEF6ODCYWY3NBDGMCABQAQH3XQ4" Owner="TABLE">
+                  <xsc:Sql>RDX_AC_USER.NAME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USER</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> 
+        where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnTSQ26A6QCVATVBIGC4QBS2DJTA">
+                  <xsc:Sql>RDX_WF.userIsFormClerk</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" PropId="colEF6ODCYWY3NBDGMCABQAQH3XQ4" Owner="TABLE">
+                  <xsc:Sql>RDX_AC_USER.NAME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, pFormId) != 0
+        and not exists(select 1 from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USER2ROLE</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4" PropId="colCN3XEDKAZDNBDGMDABQAQH3XQ4" Owner="TABLE">
+                  <xsc:Sql>RDX_AC_USER2ROLE.USERNAME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" PropId="colEF6ODCYWY3NBDGMCABQAQH3XQ4" Owner="TABLE">
+                  <xsc:Sql>RDX_AC_USER.NAME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> and </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4" PropId="colFXSCOJCAZDNBDGMDABQAQH3XQ4" Owner="TABLE">
+                  <xsc:Sql>RDX_AC_USER2ROLE.ROLEID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = 'rolSUPER_ADMIN_______________') 
+        order by </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn2QCWYKYAXTNRDF5LABIFNQAABA">
+                  <xsc:Sql>RDX_WF.getStateFormCount</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" PropId="colEF6ODCYWY3NBDGMCABQAQH3XQ4" Owner="TABLE">
+                  <xsc:Sql>RDX_AC_USER.NAME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:ConstValue EnumId="acsCLVPBP4JXLNRDF5JABIFNQAABA" ItemId="aciU2BEJTYZVPORDJHCAANE2UAFXA">
+                  <xsc:Sql>1</xsc:Sql>
+                </xsc:ConstValue>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>) asc
+    ) loop
+        return c.name;
+    end loop;
+    return null;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpWFVPXX3PDRCP5JHM637J46OAUE" Name="pFormId" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnJCLAOIPL6ZEQ3IHPPTPKSUUYFQ" Name="getActiveSuitableClerk" ResultDbType="varchar2" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="21">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+    sessionInactivityMins integer;
+begin
+    select </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblX5TD7JDVVHWDBROXAAIT4AGD7E" PropId="colLPOXOGA2J3NRDJIRACQMTAIZT4" Owner="TABLE">
+                  <xsc:Sql>RDX_SYSTEM.EASSESSIONINACTIVITYMINS</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> 
+        into sessionInactivityMins
+        from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblX5TD7JDVVHWDBROXAAIT4AGD7E">
+                  <xsc:Sql>RDX_SYSTEM</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblX5TD7JDVVHWDBROXAAIT4AGD7E" PropId="col27EXNSNZRHWDBRCXAAIT4AGD7E" Owner="TABLE">
+                  <xsc:Sql>RDX_SYSTEM.ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = 1;
+        
+    for c in 
+    (
+        select distinct </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" PropId="colEF6ODCYWY3NBDGMCABQAQH3XQ4" Owner="TABLE">
+                  <xsc:Sql>RDX_AC_USER.NAME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USER</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblJ4PHOJCEA7NRDINMABQAQNO6EY">
+                  <xsc:Sql>RDX_EASSESSION</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+        where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblJ4PHOJCEA7NRDINMABQAQNO6EY" PropId="colD4VECOKEA7NRDINMABQAQNO6EY" Owner="TABLE">
+                  <xsc:Sql>RDX_EASSESSION.USERNAME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" PropId="colEF6ODCYWY3NBDGMCABQAQH3XQ4" Owner="TABLE">
+                  <xsc:Sql>RDX_AC_USER.NAME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+        and </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnTSQ26A6QCVATVBIGC4QBS2DJTA">
+                  <xsc:Sql>RDX_WF.userIsFormClerk</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" PropId="colEF6ODCYWY3NBDGMCABQAQH3XQ4" Owner="TABLE">
+                  <xsc:Sql>RDX_AC_USER.NAME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, pFormId) != 0 
+        and not exists(select 1 from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USER2ROLE</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4" PropId="colCN3XEDKAZDNBDGMDABQAQH3XQ4" Owner="TABLE">
+                  <xsc:Sql>RDX_AC_USER2ROLE.USERNAME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" PropId="colEF6ODCYWY3NBDGMCABQAQH3XQ4" Owner="TABLE">
+                  <xsc:Sql>RDX_AC_USER.NAME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> and </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4" PropId="colFXSCOJCAZDNBDGMDABQAQH3XQ4" Owner="TABLE">
+                  <xsc:Sql>RDX_AC_USER2ROLE.ROLEID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = 'rolSUPER_ADMIN_______________') 
+        and </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblJ4PHOJCEA7NRDINMABQAQNO6EY" PropId="colFLAANX2EA7NRDINMABQAQNO6EY" Owner="TABLE">
+                  <xsc:Sql>RDX_EASSESSION.LASTCONNECTTIME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> > sysdate - 1.*sessionInactivityMins/24/60
+        order by </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn2QCWYKYAXTNRDF5LABIFNQAABA">
+                  <xsc:Sql>RDX_WF.getStateFormCount</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" PropId="colEF6ODCYWY3NBDGMCABQAQH3XQ4" Owner="TABLE">
+                  <xsc:Sql>RDX_AC_USER.NAME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:ConstValue EnumId="acsCLVPBP4JXLNRDF5JABIFNQAABA" ItemId="aciU2BEJTYZVPORDJHCAANE2UAFXA">
+                  <xsc:Sql>1</xsc:Sql>
+                </xsc:ConstValue>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>) asc
+    ) loop
+        return c.name;
+    end loop;
+    return null;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpIC7XY4JONBHDPJIMPDWFJ2GVZA" Name="pFormId" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <CustomText Id="dtxFYU6GC7PGTOBDGAOABIFNQAABA" Name="=== STATE ===">
+            <Text/>
+          </CustomText>
+        </Item>
+        <Item>
+          <Function Id="dfnOPB5NEKVXPNRDF5KABIFNQAABA" Name="getFormState" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>IS
+   dCloseTime      DATE;
+   dDueTime        DATE;
+   dOverdueTime    DATE;
+   dExpirationTime DATE;
+   dCurrentTime    DATE;
+   iProcessId      INTEGER;
+
+BEGIN
+   SELECT </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colO5JOWR4JXLNRDF5JABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>CLOSETIME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colD2WOGKUJXLNRDF5JABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>DUETIME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="col4MQBMOEJXLNRDF5JABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>OVERDUETIME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="col7DJHQP4JXLNRDF5JABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>EXPIRATIONTIME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colFOZ357EHXLNRDF5JABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>PROCESSID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+     INTO dCloseTime, dDueTime, dOverdueTime, dExpirationTime, iProcessId
+     FROM </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA">
+                  <xsc:Sql>RDX_WF_FORM</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+    WHERE </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colJGHFDGEHXLNRDF5JABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>=</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>iFormId</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+    
+   dCurrentTime := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnKJZSOM3ISNDWHISTKDDZCZKINQ">
+                  <xsc:Sql>RDX_WF.getCurrentTime</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(iProcessId);
+   return </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnGN6I73IXCFFOLN7ICGLTGMOOWA">
+                  <xsc:Sql>RDX_WF.getFormState</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(dCloseTime, dDueTime, dOverdueTime, dExpirationTime, dCurrentTime);
+/*
+   IF dCloseTime IS NOT NULL THEN
+      IF dExpirationTime IS NULL OR dCloseTime&lt;dExpirationTime THEN
+         RETURN </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:ConstValue EnumId="acsCLVPBP4JXLNRDF5JABIFNQAABA" ItemId="aciVGBEJTYZVPORDJHCAANE2UAFXA">
+                  <xsc:Sql>4</xsc:Sql>
+                </xsc:ConstValue>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+      ELSE
+         RETURN </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:ConstValue EnumId="acsCLVPBP4JXLNRDF5JABIFNQAABA" ItemId="aciVCBEJTYZVPORDJHCAANE2UAFXA">
+                  <xsc:Sql>3</xsc:Sql>
+                </xsc:ConstValue>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+      END IF;   
+   END IF;
+
+   IF dOverdueTime IS NOT NULL AND dCurrentTime>dOverdueTime THEN
+      RETURN </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:ConstValue EnumId="acsCLVPBP4JXLNRDF5JABIFNQAABA" ItemId="aciU6BEJTYZVPORDJHCAANE2UAFXA">
+                  <xsc:Sql>2</xsc:Sql>
+                </xsc:ConstValue>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+   ELSIF dCurrentTime>dDueTime THEN
+      RETURN </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:ConstValue EnumId="acsCLVPBP4JXLNRDF5JABIFNQAABA" ItemId="aciU2BEJTYZVPORDJHCAANE2UAFXA">
+                  <xsc:Sql>1</xsc:Sql>
+                </xsc:ConstValue>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+   END IF;
+
+   RETURN </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:ConstValue EnumId="acsCLVPBP4JXLNRDF5JABIFNQAABA" ItemId="aciUWBEJTYZVPORDJHCAANE2UAFXA">
+                  <xsc:Sql>0</xsc:Sql>
+                </xsc:ConstValue>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+*/   
+END;
+</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpDETQ7G2VXPNRDF5KABIFNQAABA" Name="iFormId" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnGN6I73IXCFFOLN7ICGLTGMOOWA" Name="getFormState" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>IS
+BEGIN
+   IF closeTime IS NOT NULL THEN
+      IF expirationTime IS NULL OR closeTime&lt;expirationTime THEN
+         RETURN </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:ConstValue EnumId="acsCLVPBP4JXLNRDF5JABIFNQAABA" ItemId="aciVGBEJTYZVPORDJHCAANE2UAFXA">
+                  <xsc:Sql>4</xsc:Sql>
+                </xsc:ConstValue>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+      ELSE
+         RETURN </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:ConstValue EnumId="acsCLVPBP4JXLNRDF5JABIFNQAABA" ItemId="aciVCBEJTYZVPORDJHCAANE2UAFXA">
+                  <xsc:Sql>3</xsc:Sql>
+                </xsc:ConstValue>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+      END IF;   
+   END IF;
+
+   IF overdueTime IS NOT NULL AND currentTime>overdueTime THEN
+      RETURN </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:ConstValue EnumId="acsCLVPBP4JXLNRDF5JABIFNQAABA" ItemId="aciU6BEJTYZVPORDJHCAANE2UAFXA">
+                  <xsc:Sql>2</xsc:Sql>
+                </xsc:ConstValue>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+   ELSIF currentTime>dueTime THEN
+      RETURN </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:ConstValue EnumId="acsCLVPBP4JXLNRDF5JABIFNQAABA" ItemId="aciU2BEJTYZVPORDJHCAANE2UAFXA">
+                  <xsc:Sql>1</xsc:Sql>
+                </xsc:ConstValue>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+   END IF;
+
+   RETURN </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:ConstValue EnumId="acsCLVPBP4JXLNRDF5JABIFNQAABA" ItemId="aciUWBEJTYZVPORDJHCAANE2UAFXA">
+                  <xsc:Sql>0</xsc:Sql>
+                </xsc:ConstValue>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+END;
+</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpWKDE2QPCDVDY3IJQ5F5KYDMZUA" Name="closeTime" DbType="date" Direction="0" ValType="12"/>
+              <Param Id="dfpCWI3KW2BNFCKRM5POYTMKPAGU4" Name="dueTime" DbType="date" Direction="0" ValType="12"/>
+              <Param Id="dfpWIGNAJLLURGAXFWE2NP624B43M" Name="overdueTime" DbType="date" Direction="0" ValType="12"/>
+              <Param Id="dfpCCTUBD7WWRENFG3WRTUHBJZBK4" Name="expirationTime" DbType="date" Direction="0" ValType="12"/>
+              <Param Id="dfpJRYAITTUVJH3BH6VYXT76CZJMI" Name="currentTime" DbType="date" Direction="0" ValType="12"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <CustomText Id="dtx77PR2FPPGTOBDGAOABIFNQAABA" Name="=== STATISTICS ===">
+            <Text/>
+          </CustomText>
+        </Item>
+        <Item>
+          <Function Id="dfnUQ67M6IRXTNRDF5LABIFNQAABA" Name="getOwnProcessCount" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>IS
+   c INTEGER;
+
+BEGIN
+   SELECT COUNT(*)
+     INTO c
+     FROM </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA">
+                  <xsc:Sql>RDX_WF_PROCESS</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+    WHERE (</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA" PropId="colXLGX3QEDXLNRDF5JABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>OWNERNAME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>=</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>sUserName</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> OR </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA" PropId="colXLGX3QEDXLNRDF5JABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>OWNERNAME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> IS NULL AND </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>sUserName</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> IS NULL) AND
+          </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA" PropId="colQTG3VSI7PLNRDANMABIFNQAABA" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_PROCESS.STATE</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>=</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:ConstValue EnumId="acsAUKTDYXZKTNRDAQSABIFNQAAAE" ItemId="aciYOBEJTYZVPORDJHCAANE2UAFXA">
+                  <xsc:Sql>1</xsc:Sql>
+                </xsc:ConstValue>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+
+   RETURN c;
+END;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpOAOHDBQRXTNRDF5LABIFNQAABA" Name="sUserName" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfn2QCWYKYAXTNRDF5LABIFNQAABA" Name="getStateFormCount" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>IS
+   c INTEGER;
+   
+BEGIN
+   SELECT COUNT(*)
+     INTO c
+     FROM </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA">
+                  <xsc:Sql>RDX_WF_FORM</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+    WHERE (</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colPMMP7BUKXLNRDF5JABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>CLERKNAME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>=</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>sUserName</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> OR </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colPMMP7BUKXLNRDF5JABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>CLERKNAME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> IS NULL AND </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>sUserName</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> IS NULL) AND
+          </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnOPB5NEKVXPNRDF5KABIFNQAABA">
+                  <xsc:Sql>RDX_WF.getFormState</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colJGHFDGEHXLNRDF5JABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>)=</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>iFormState</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+   
+   RETURN c;       
+END;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpURAC5DQAXTNRDF5LABIFNQAABA" Name="sUserName" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpUPPKD3IBXTNRDF5LABIFNQAABA" Name="iFormState" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <CustomText Id="dtxXXJSSJPPGTOBDGAOABIFNQAABA" Name="=== ACCESSAREA ===">
+            <Text/>
+          </CustomText>
+        </Item>
+        <Item>
+          <CustomText Id="dtx24QVER7WGTOBDGAOABIFNQAABA" Name="=== common ===">
+            <Text/>
+          </CustomText>
+        </Item>
+        <Item>
+          <Function Id="dfnKOEXQNPPGTOBDGAOABIFNQAABA" Name="getAreaCount" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>IS
+   n INTEGER;
+
+BEGIN
+   n := 0;
+   IF areaList IS NOT NULL THEN 
+      IF areaList.LAST IS NOT NULL THEN
+         n := areaList.LAST;
+      END IF;   
+   END IF;
+   RETURN n;   
+END;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfp2QZVQQ4RQZGNTJ7VJLRYGBNVQA" Name="areaList" DbType="TRdxAcsAreaList" Direction="0" ValType="50"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnNZRFLYHQGTOBDGAOABIFNQAABA" Name="getAreaPointCount" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>IS
+   n INTEGER;
+   a </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="dbtWEYKFDDS2DNRDHWMABQAQH3XQ4">
+                  <xsc:Sql>TRdxAcsArea</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+
+BEGIN
+   n := 0;
+   IF areaList IS NOT NULL THEN
+      IF areaList.LAST IS NOT NULL AND areaList.LAST>=areaNumber THEN
+         a := areaList(areaNumber);
+         IF a IS NOT NULL THEN
+            IF a.boundaries IS NOT NULL THEN
+               IF a.boundaries.LAST IS NOT NULL THEN
+                  n := a.boundaries.LAST;
+               END IF;   
+            END IF;
+         END IF;      
+      END IF;
+   END IF;
+   RETURN n;   
+END;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpN7R34NZ3URESRBSETGBXVTLGRQ" Name="areaList" DbType="TRdxAcsAreaList" Direction="0" ValType="50"/>
+              <Param Id="dfpHAZORWO4QRHXRIDQ6OC6PK6S7E" Name="areaNumber" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfn352G7L7RGTOBDGAOABIFNQAABA" Name="getAreaPoint" Deterministic="false" CacheResult="false" PurityLevelMask="1">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>IS 
+   a </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="dbtWEYKFDDS2DNRDHWMABQAQH3XQ4">
+                  <xsc:Sql>TRdxAcsArea</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+   c </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="dbt6FL3Q4TS2DNRDHWMABQAQH3XQ4">
+                  <xsc:Sql>TRdxAcsCoordinate</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+
+BEGIN
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>familyId</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> := NULL;
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>keyVal</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> := NULL;
+
+   IF </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>areaList</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> IS NOT NULL THEN
+      IF </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>areaList</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.LAST IS NOT NULL AND </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>areaList</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.LAST>=</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>areaNumber</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> THEN
+         a := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>areaList</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>areaNumber</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>);
+         IF a IS NOT NULL THEN
+            IF a.boundaries.LAST IS NOT NULL AND a.boundaries.LAST>=</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>pointNumber</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> THEN  
+               c := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>areaList</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>areaNumber</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>).boundaries(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>pointNumber</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>);
+               IF c IS NOT NULL THEN
+                  </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>familyId</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> := c.FamilyId;
+                  </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>keyVal</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> := c.KeyVal;
+               END IF;
+            END IF;
+         END IF;
+      END IF;
+   END IF;               
+END;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpTCK5BHDT2ZHVJBSOAZLDTICT6Y" Name="areaList" DbType="TRdxAcsAreaList" Direction="0" ValType="50"/>
+              <Param Id="dfpIPBYO3OMCJFPBHZFLSUWJUV75E" Name="areaNumber" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfp253R44MRTVEABA57F7AX47PP4Q" Name="pointNumber" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfpWETXWO5PDFCCLCD4QBPIDT6GVM" Name="familyId" DbType="varchar2" Direction="1" ValType="21"/>
+              <Param Id="dfpQVADSFCXENCZ7IHZ46WXEGBJBI" Name="keyVal" DbType="varchar2" Direction="1" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfn4MWCJKXSGTOBDGAOABIFNQAABA" Name="setAreaPoint" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>IS
+   a </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="dbtWEYKFDDS2DNRDHWMABQAQH3XQ4">
+                  <xsc:Sql>TRdxAcsArea</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+   i INTEGER;
+   pointIndex INTEGER;
+
+BEGIN
+   IF </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>areaList</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> IS NULL THEN
+      </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>areaList</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="dbtKEWXNGTS2DNRDHWMABQAQH3XQ4">
+                  <xsc:Sql>TRdxAcsAreaList</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>();
+   END IF;
+          
+   WHILE </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>areaList</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.LAST IS NULL OR </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>areaList</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.LAST&lt;</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>areaNumber</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> LOOP
+      </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>areaList</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.EXTEND;
+   END LOOP;
+   
+   a := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>areaList</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>areaNumber</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>);
+
+   IF a IS NULL THEN
+      a := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="dbtWEYKFDDS2DNRDHWMABQAQH3XQ4">
+                  <xsc:Sql>TRdxAcsArea</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="dbtWGQKK73S2DNRDHWMABQAQH3XQ4">
+                  <xsc:Sql>TRdxAcsCoordinates</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>());
+   END IF;
+                
+   WHILE a.boundaries.LAST IS NULL OR a.boundaries.LAST&lt;</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>pointNumber</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> LOOP
+      a.boundaries.EXTEND;
+   END LOOP;
+                  
+   IF a.boundaries(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>pointNumber</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>) IS NULL THEN
+      a.boundaries(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>pointNumber</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>) := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="dbt6FL3Q4TS2DNRDHWMABQAQH3XQ4">
+                  <xsc:Sql>TRdxAcsCoordinate</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(0, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>familyId</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>keyVal</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>);
+   ELSE
+      a.boundaries(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>pointNumber</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>).FamilyId := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>familyId</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+      a.boundaries(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>pointNumber</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>).KeyVal := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>keyVal</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;          
+   END IF;
+   
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>areaList</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>areaNumber</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>) := a;
+END;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpDYEFXBZXW5C3VDO3L4XJYMFKSY" Name="areaList" DbType="TRdxAcsAreaList" Direction="2" ValType="50"/>
+              <Param Id="dfpUU73R74W6VAIJBC5DWDMZUACEE" Name="areaNumber" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfpSVZHH6MK35CBTMR4GESQWPDRFA" Name="pointNumber" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfpGF3ZKK2CJVDIXPI5FETSOG4U2M" Name="familyId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpACTUEBTMF5HQVFARD2RGTHXJOM" Name="keyVal" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <CustomText Id="dtxY7R36V7WGTOBDGAOABIFNQAABA" Name="=== form ===">
+            <Text/>
+          </CustomText>
+        </Item>
+        <Item>
+          <Function Id="dfnAYJHXAXLGTOBDGAOABIFNQAABA" Name="getFormArea" Deterministic="false" CacheResult="false" PurityLevelMask="1">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>IS
+BEGIN
+   SELECT </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnZOT3C5NEINHT7KIGYTH5CRRGDY">
+                  <xsc:Sql>RDX_ACS.strToAreaList</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colDG7VJCMQXLNRDF5JABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>ACCESSAREA</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>)
+     INTO </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>area</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+     FROM </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA">
+                  <xsc:Sql>RDX_WF_FORM</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+    WHERE </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colJGHFDGEHXLNRDF5JABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>=</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>formId</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+END;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfp46S6NCKXMFC6BFW4LSKWPWBCEE" Name="formId" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfpAQIY5VPMFJG4XK55QDMTPFFALE" Name="area" DbType="TRdxAcsAreaList" Direction="1" ValType="50"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnCN6WFE7TGTOBDGAOABIFNQAABA" Name="setFormArea" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>IS
+BEGIN
+   UPDATE </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA">
+                  <xsc:Sql>RDX_WF_FORM</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+      SET </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colDG7VJCMQXLNRDF5JABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>ACCESSAREA</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>=</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnYVW77OTL5DORDIGYABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS.areaListToStr</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>area</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>)
+    WHERE </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblVP66JC4HXLNRDF5JABIFNQAABA" PropId="colJGHFDGEHXLNRDF5JABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>=</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>formId</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;              
+END;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfp3IIIHWV4XFD7RNC7EJNQVDSYOQ" Name="formId" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfpUSFVSHSBWVBALPJEZHCSPUR7JM" Name="area" DbType="TRdxAcsAreaList" Direction="0" ValType="50"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfn4AZNJHRPGXOBDGAOABIFNQAABA" Name="clearFormArea" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>IS
+BEGIN
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnCN6WFE7TGTOBDGAOABIFNQAABA">
+                  <xsc:Sql>RDX_WF.setFormArea</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>formId</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, NULL);
+END;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfp6DT5TNJPGXOBDGAOABIFNQAABA" Name="formId" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnSSDUZ6SGGTOBDGANABIFNQAABA" Name="getFormAreaCount" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>IS 
+   areaList </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="dbtKEWXNGTS2DNRDHWMABQAQH3XQ4">
+                  <xsc:Sql>TRdxAcsAreaList</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+
+BEGIN
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnAYJHXAXLGTOBDGAOABIFNQAABA">
+                  <xsc:Sql>RDX_WF.getFormArea</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>formId</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, areaList);
+   RETURN </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnKOEXQNPPGTOBDGAOABIFNQAABA">
+                  <xsc:Sql>RDX_WF.getAreaCount</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(areaList);    
+END;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpLJL26CKHGTOBDGANABIFNQAABA" Name="formId" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnHI3NRPKHGTOBDGANABIFNQAABA" Name="getFormAreaPointCount" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>IS 
+   areaList </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="dbtKEWXNGTS2DNRDHWMABQAQH3XQ4">
+                  <xsc:Sql>TRdxAcsAreaList</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+
+BEGIN
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnAYJHXAXLGTOBDGAOABIFNQAABA">
+                  <xsc:Sql>RDX_WF.getFormArea</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>formId</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, areaList);
+   RETURN </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnNZRFLYHQGTOBDGAOABIFNQAABA">
+                  <xsc:Sql>RDX_WF.getAreaPointCount</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(areaList, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>areaNumber</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>);    
+END;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpRCQB3XSHGTOBDGANABIFNQAABA" Name="formId" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfpRGQB3XSHGTOBDGANABIFNQAABA" Name="areaNumber" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnEE7G3R2IGTOBDGANABIFNQAABA" Name="getFormAreaPoint" Deterministic="false" CacheResult="false" PurityLevelMask="1">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>IS 
+   areaList </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="dbtKEWXNGTS2DNRDHWMABQAQH3XQ4">
+                  <xsc:Sql>TRdxAcsAreaList</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+
+BEGIN
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnAYJHXAXLGTOBDGAOABIFNQAABA">
+                  <xsc:Sql>RDX_WF.getFormArea</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>formId</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, areaList);
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn352G7L7RGTOBDGAOABIFNQAABA">
+                  <xsc:Sql>RDX_WF.getAreaPoint</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(areaList, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>areaNumber</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>pointNumber</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>familyId</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>keyVal</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>);    
+END;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpHQ2UIACJGTOBDGANABIFNQAABA" Name="formId" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfpHU2UIACJGTOBDGANABIFNQAABA" Name="areaNumber" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfpHY2UIACJGTOBDGANABIFNQAABA" Name="pointNumber" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfpH42UIACJGTOBDGANABIFNQAABA" Name="familyId" DbType="varchar2" Direction="1" ValType="21"/>
+              <Param Id="dfpIA2UIACJGTOBDGANABIFNQAABA" Name="keyVal" DbType="varchar2" Direction="1" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnHYEU2MEYGPOBDGAMABIFNQAABA" Name="setFormAreaPoint" ResultDbType="TDRCAreaList" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>IS 
+   areaList </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="dbtKEWXNGTS2DNRDHWMABQAQH3XQ4">
+                  <xsc:Sql>TRdxAcsAreaList</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+
+BEGIN
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnAYJHXAXLGTOBDGAOABIFNQAABA">
+                  <xsc:Sql>RDX_WF.getFormArea</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>formId</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, areaList);
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn4MWCJKXSGTOBDGAOABIFNQAABA">
+                  <xsc:Sql>RDX_WF.setAreaPoint</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(areaList, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>areaNumber</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>pointNumber</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>familyId</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>keyVal</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>);
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnCN6WFE7TGTOBDGAOABIFNQAABA">
+                  <xsc:Sql>RDX_WF.setFormArea</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>formId</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, areaList);    
+END;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpDY7PXCMYGPOBDGAMABIFNQAABA" Name="formId" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfpT3HVLU4YGPOBDGAMABIFNQAABA" Name="areaNumber" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfpSA5DBYTBGTOBDGANABIFNQAABA" Name="pointNumber" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfpT7HVLU4YGPOBDGAMABIFNQAABA" Name="familyId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpUDHVLU4YGPOBDGAMABIFNQAABA" Name="keyVal" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <CustomText Id="dtxS6FA6Z7WGTOBDGAOABIFNQAABA" Name="=== process ===">
+            <Text/>
+          </CustomText>
+        </Item>
+        <Item>
+          <Function Id="dfnIOVWWUPVGTOBDGAOABIFNQAABA" Name="getProcessArea" Deterministic="false" CacheResult="false" PurityLevelMask="1">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>IS
+BEGIN
+   SELECT </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnZOT3C5NEINHT7KIGYTH5CRRGDY">
+                  <xsc:Sql>RDX_ACS.strToAreaList</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA" PropId="colCFEL65EEXLNRDF5JABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>ACCESSAREA</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>)
+     INTO </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>area</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+     FROM </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA">
+                  <xsc:Sql>RDX_WF_PROCESS</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> 
+    WHERE </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA" PropId="colYBCGVMA6PLNRDANMABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>=</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>processId</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+END;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpUMIDJ2IARNEIBGKGX3YMB2KUOI" Name="processId" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfpTKL2FEDHUJETLPFNL3VYZS4W3Y" Name="area" DbType="TRdxAcsAreaList" Direction="1" ValType="50"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnH6S4NGPVGTOBDGAOABIFNQAABA" Name="setProcessArea" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>IS
+BEGIN
+   UPDATE </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA">
+                  <xsc:Sql>RDX_WF_PROCESS</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+      SET </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA" PropId="colCFEL65EEXLNRDF5JABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>ACCESSAREA</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>=</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnYVW77OTL5DORDIGYABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS.areaListToStr</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>area</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>)
+    WHERE </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA" PropId="colYBCGVMA6PLNRDANMABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>=</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>processId</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;  
+END;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfp3WMXDPN3EBDF5GRLKUD22VHFAI" Name="processId" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfpJWHCIJ55W5BRRC6QXPC6IX5M2Y" Name="area" DbType="TRdxAcsAreaList" Direction="0" ValType="50"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnV3UQZTJPGXOBDGAOABIFNQAABA" Name="clearProcessArea" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>IS
+BEGIN
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnH6S4NGPVGTOBDGAOABIFNQAABA">
+                  <xsc:Sql>RDX_WF.setProcessArea</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>processId</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, NULL);
+END;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpPY3XRVJPGXOBDGAOABIFNQAABA" Name="processId" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnNJGUAXSHGTOBDGANABIFNQAABA" Name="getProcessAreaCount" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>IS 
+   areaList </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="dbtKEWXNGTS2DNRDHWMABQAQH3XQ4">
+                  <xsc:Sql>TRdxAcsAreaList</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+
+BEGIN
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnIOVWWUPVGTOBDGAOABIFNQAABA">
+                  <xsc:Sql>RDX_WF.getProcessArea</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>processId</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, areaList);
+   RETURN </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnKOEXQNPPGTOBDGAOABIFNQAABA">
+                  <xsc:Sql>RDX_WF.getAreaCount</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(areaList);    
+END;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpUJYAW5CHGTOBDGANABIFNQAABA" Name="processId" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnBZL2YQSIGTOBDGANABIFNQAABA" Name="getProcessAreaPointCount" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>IS 
+   areaList </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="dbtKEWXNGTS2DNRDHWMABQAQH3XQ4">
+                  <xsc:Sql>TRdxAcsAreaList</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+
+BEGIN
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnIOVWWUPVGTOBDGAOABIFNQAABA">
+                  <xsc:Sql>RDX_WF.getProcessArea</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>processId</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, areaList);
+   RETURN </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnNZRFLYHQGTOBDGAOABIFNQAABA">
+                  <xsc:Sql>RDX_WF.getAreaPointCount</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(areaList, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>areaNumber</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>);    
+END;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpMCDVOUKIGTOBDGANABIFNQAABA" Name="processId" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfpMGDVOUKIGTOBDGANABIFNQAABA" Name="areaNumber" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnWWWIPPSJGTOBDGANABIFNQAABA" Name="getProcessAreaPoint" Deterministic="false" CacheResult="false" PurityLevelMask="1">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>IS 
+   areaList </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="dbtKEWXNGTS2DNRDHWMABQAQH3XQ4">
+                  <xsc:Sql>TRdxAcsAreaList</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+
+BEGIN
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnIOVWWUPVGTOBDGAOABIFNQAABA">
+                  <xsc:Sql>RDX_WF.getProcessArea</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>processId</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, areaList);
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn352G7L7RGTOBDGAOABIFNQAABA">
+                  <xsc:Sql>RDX_WF.getAreaPoint</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(areaList, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>areaNumber</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>pointNumber</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>familyId</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>keyVal</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>);    
+END;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpLOZJPX2JGTOBDGANABIFNQAABA" Name="processId" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfpLSZJPX2JGTOBDGANABIFNQAABA" Name="areaNumber" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfpLWZJPX2JGTOBDGANABIFNQAABA" Name="pointNumber" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfpL2ZJPX2JGTOBDGANABIFNQAABA" Name="familyId" DbType="varchar2" Direction="1" ValType="21"/>
+              <Param Id="dfpL6ZJPX2JGTOBDGANABIFNQAABA" Name="keyVal" DbType="varchar2" Direction="1" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnA2YY2CU5GPOBDGAMABIFNQAABA" Name="setProcessAreaPoint" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>IS 
+   areaList </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="dbtKEWXNGTS2DNRDHWMABQAQH3XQ4">
+                  <xsc:Sql>TRdxAcsAreaList</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+
+BEGIN
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnIOVWWUPVGTOBDGAOABIFNQAABA">
+                  <xsc:Sql>RDX_WF.getProcessArea</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>processId</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, areaList);
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn4MWCJKXSGTOBDGAOABIFNQAABA">
+                  <xsc:Sql>RDX_WF.setAreaPoint</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(areaList, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>areaNumber</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>pointNumber</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>familyId</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>keyVal</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>);
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnH6S4NGPVGTOBDGAOABIFNQAABA">
+                  <xsc:Sql>RDX_WF.setProcessArea</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>processId</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, areaList);    
+END;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpV3USYKE5GPOBDGAMABIFNQAABA" Name="processId" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfpH2N5GT45GPOBDGAMABIFNQAABA" Name="areaNumber" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfpZTYOEEHXGTOBDGAOABIFNQAABA" Name="pointNumber" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfpH6N5GT45GPOBDGAMABIFNQAABA" Name="familyId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpICN5GT45GPOBDGAMABIFNQAABA" Name="keyVal" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnKJZSOM3ISNDWHISTKDDZCZKINQ" Name="getCurrentTime" ResultDbType="date" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="12">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+   dCurrentTime Date;
+begin
+    select </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA" PropId="colUTVP7ABAPLNRDANMABIFNQAABA" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_PROCESS.SIMULATEDTIME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> into dCurrentTime from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA">
+                  <xsc:Sql>RDX_WF_PROCESS</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA" PropId="colYBCGVMA6PLNRDANMABIFNQAABA" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_PROCESS.ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = processId;
+    if dCurrentTime is null then
+        dCurrentTime := sysdate;
+    end if;    
+    return dCurrentTime;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpSUDLBFLFH5BR5LHLIGIGD6Z4P4" Name="processId" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnVLHAHCBS6ZDKNADOJJN7WNV3OY" Name="getProcessState" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>IS
+   state INTEGER;
+BEGIN
+   SELECT </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA" PropId="colQTG3VSI7PLNRDANMABIFNQAABA" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_PROCESS.STATE</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+     INTO state</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+     FROM </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA">
+                  <xsc:Sql>RDX_WF_PROCESS</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> 
+    WHERE </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA" PropId="colYBCGVMA6PLNRDANMABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>processId</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+    return state;
+END;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpHPC4HL37RJHYHLIFIXID6WN5SU" Name="processId" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+      </Body>
+    </Package>
+    <Package Id="pkgC6APNKAYTTOBDCNHAAMPGXSZKU" Name="RDX_WF_Maintenance" PurityLevelMask="0">
+      <Header>
+        <Item>
+          <Prototype Id="dprJSRXHNIYTTOBDCNHAAMPGXSZKU" FunctionId="dfnJSRXHNIYTTOBDCNHAAMPGXSZKU"/>
+        </Item>
+      </Header>
+      <Body>
+        <Item>
+          <Function Id="dfnJSRXHNIYTTOBDCNHAAMPGXSZKU" Name="daily" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnCW2DHM2KOXOBDFKUAAMPGXUWTQ">
+                  <xsc:Sql>RDX_Trace.put</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:ConstValue EnumId="acsFRO5RTQOG7NRDJH2ACQMTAIZT4" ItemId="aci52AUJTYZVPORDJHCAANE2UAFXA">
+                  <xsc:Sql>1</xsc:Sql>
+                </xsc:ConstValue>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, 'Workflow maintenance started', </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:ConstValue EnumId="acsTNLJBZADHTNRDIPGABQAQNO6EY" ItemId="aciBCBEJTYZVPORDJHCAANE2UAFXA">
+                  <xsc:Sql>'Arte.Db'</xsc:Sql>
+                </xsc:ConstValue>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>);
+   delete from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA">
+                  <xsc:Sql>RDX_WF_PROCESS</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+      where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA" PropId="colQTG3VSI7PLNRDANMABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>STATE</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>></xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:ConstValue EnumId="acsAUKTDYXZKTNRDAQSABIFNQAAAE" ItemId="aciYOBEJTYZVPORDJHCAANE2UAFXA">
+                  <xsc:Sql>1</xsc:Sql>
+                </xsc:ConstValue>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> and </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA" PropId="colDKM24AZAPLNRDANMABIFNQAABA" Owner="NONE">
+                  <xsc:Sql>FINISHTIME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> &lt; sysdate - (select </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblXI6CAOIGDBAGJEE6JQEGJME43Q" PropId="colNWJ6DLDISBBWZKPVZUMMGLM5LI" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_PROCESSTYPE.PROCESSSTOREDAYS</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblXI6CAOIGDBAGJEE6JQEGJME43Q">
+                  <xsc:Sql>RDX_WF_PROCESSTYPE</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblXI6CAOIGDBAGJEE6JQEGJME43Q" PropId="colAEAAPJXBX5BIXHBNJOYP3FBIR4" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_PROCESSTYPE.GUID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblRDXQVFY6PLNRDANMABIFNQAABA" PropId="colMCUP6FRT5FBYXDBZUYABU5RFII" Owner="TABLE">
+                  <xsc:Sql>RDX_WF_PROCESS.TYPEGUID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>);
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnCW2DHM2KOXOBDFKUAAMPGXUWTQ">
+                  <xsc:Sql>RDX_Trace.put</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:ConstValue EnumId="acsFRO5RTQOG7NRDJH2ACQMTAIZT4" ItemId="aci52AUJTYZVPORDJHCAANE2UAFXA">
+                  <xsc:Sql>1</xsc:Sql>
+                </xsc:ConstValue>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>,  'Workflow maintenance finished', </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:ConstValue EnumId="acsTNLJBZADHTNRDIPGABQAQNO6EY" ItemId="aciBCBEJTYZVPORDJHCAANE2UAFXA">
+                  <xsc:Sql>'Arte.Db'</xsc:Sql>
+                </xsc:ConstValue>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+          </Function>
+        </Item>
+      </Body>
+    </Package>
+  </Packages>
+  <Labels>
+    <Label Id="lblPRV3NZLHKFHD5C2OXXEJNJUCDI">
+      <Placement PosX="333" PosY="37"/>
+      <Font Bold="false" Italic="false" Size="24"/>
+      <Text>Workflow</Text>
+    </Label>
+  </Labels>
+</Model>

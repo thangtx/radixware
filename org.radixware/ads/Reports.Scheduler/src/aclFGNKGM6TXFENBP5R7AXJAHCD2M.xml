@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclFGNKGM6TXFENBP5R7AXJAHCD2M" Name="UserFunc.CalcFileName" Type="2" ClientEnvironment="explorer">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderaclFGNKGM6TXFENBP5R7AXJAHCD2M"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaclFGNKGM6TXFENBP5R7AXJAHCD2M"/>
+    </Bodies>
+    <MethodGroup Id="cmgVSFCV24WSRB4VLNQWWZXVZHCOE" Name="Root"/>
+    <PropertyGroup Id="cpg36BUCIMGW5GIBAXYSR73JK4OQQ" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthFOOX7DTCW5GA5CUK2VYOOVAC3Q" Name="getMethodId" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <ReturnType TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclFGNKGM6TXFENBP5R7AXJAHCD2M mthIEE34LZFCNAQ3K4K22KQXJGT4Y"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthIEE34LZFCNAQ3K4K22KQXJGT4Y" Name="calcFileName" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="params" Id="mprDYQB7Y7ABVAMTGHB2UWW4HXNPU">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="genFileName" Id="mprAJI4E3DPWREHHAG257NHQ4TLDM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+    return (String)</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM mthTPAFKDKW4TOBDIECAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(new Object[]{params, genFileName});
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+    if (ex instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcXJP5J6GEPZCERMRA74CCVXC3HI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+        throw (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcXJP5J6GEPZCERMRA74CCVXC3HI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) ex;
+    }
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcWYWATQSPTFGLVAJPCFEERQFAFY mthK6TEO2MVP5CT3HHV4VRQI7ITWM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(this, "error in calcFileName(params, genFileName) user function", ex);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+    <Presentations/>
+    <Extends TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+  </AdsClassDefinition>
+</AdsDefinition>

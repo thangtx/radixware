@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcFYVNT76FFNA53CYKV2TYJ7U7EM" Name="GroupModelDataSource" Type="3" Environment="common-client">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.models.GroupModelDataSource"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcFYVNT76FFNA53CYKV2TYJ7U7EM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcFYVNT76FFNA53CYKV2TYJ7U7EM"/>
+    </Bodies>
+    <MethodGroup Id="cmgABKKRRU7ZBBRDLAISCILBZWT4M" Name="Root"/>
+    <PropertyGroup Id="cpgR446UXWZVRBAZLLVXVFPPIJCGM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthRMBJI4FMVFDF7ELC3VJPIZ2HW4" Name="getGroupModel" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getGroupModel()Lorg.radixware.kernel.common.client.models.GroupModel;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+      </Method>
+      <Method Id="mthMUNKLY3ZGZDYLM5PWDXZSVDTB4" Name="GroupModelDataSource" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.models.GroupModel;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="groupModel" Id="mprQTW5FZDHLJH3BFHYCK4TE65UFI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthQDOZ4FLXLFCCDEKZYXQMZ56H5U" Name="parseResponse" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="parseResponse(Lorg.radixware.schemas.eas.SelectRs;)Lorg.radixware.kernel.common.client.models.GroupModelData;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="response" Id="mprZVC7THIG6ZBCRBCZYVPHNSJJBU">
+            <Type TypeId="400" extStr="org.radixware.schemas.eas.SelectRs"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModelData"/>
+      </Method>
+      <Method Id="mth4CQROEAZTJBGREPQH6PS5MJVBY" Name="waitForData" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="waitForData(IIZLorg.radixware.kernel.common.client.models.GroupModelDataSource.Listener;)Lorg.radixware.kernel.common.client.models.GroupModelDataSource.Handler;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="startIdx" Id="mprJLGPARIVPNGUFHOUG3JYL3S5RQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="count" Id="mprK4EORQVGKJH2DD5IR4AC2TZB4I">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="withSelectorAddons" Id="mprRHAYKH2HWZDOBMKVKYO6QA5P5Q">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="listener" Id="mpr4U5A6DQJOJGFFNNYYN2JUCF5FA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModelDataSource.Listener"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModelDataSource.Handler"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

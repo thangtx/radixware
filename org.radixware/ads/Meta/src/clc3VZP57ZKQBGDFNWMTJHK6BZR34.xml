@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsContextlessCommandDefinition Id="clc3VZP57ZKQBGDFNWMTJHK6BZR34" Name="GetInstallationOptions" Nature="2" IsVisible="false" IsConfirmationRequired="false">
+    <OutType TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStrDocument"/>
+    <Source>
+      <xsc:Item>
+        <xsc:Java>final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStrDocument"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> document = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStrDocument"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.Factory.newInstance();
+final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStr"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> options = document.addNewMapStrStr();
+final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="accJINTYIFI6ZFEJPJJ7G7SNV2BPM"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> cur = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="accJINTYIFI6ZFEJPJJ7G7SNV2BPM"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="accJINTYIFI6ZFEJPJJ7G7SNV2BPM mth_stmt_execute_____________" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>();
+try {
+    while (cur.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>()) {
+        final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStr.Entry"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> option = options.addNewEntry();
+        option.setKey(cur.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="accJINTYIFI6ZFEJPJJ7G7SNV2BPM prf76LZ3PX5WVDFDHOOK2WW4S75NE" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>);
+        option.setValue(cur.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="accJINTYIFI6ZFEJPJJ7G7SNV2BPM prfTXFUWQ56PBDZNAFG3FNJADAD6A" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>);
+    }
+}finally{
+    cur.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcCursor____________________ mth_stmt_close_______________" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>();
+}
+return document;</xsc:Java>
+      </xsc:Item>
+    </Source>
+  </AdsContextlessCommandDefinition>
+</AdsDefinition>

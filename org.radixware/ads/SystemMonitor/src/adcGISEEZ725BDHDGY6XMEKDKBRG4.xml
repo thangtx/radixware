@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcGISEEZ725BDHDGY6XMEKDKBRG4" Name="DashAlert" Type="3" Environment="common-client" IsDual="true">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcGISEEZ725BDHDGY6XMEKDKBRG4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcGISEEZ725BDHDGY6XMEKDKBRG4"/>
+    </Bodies>
+    <MethodGroup Id="cmgILNUSIZQDVA7BOJM5OMBQOEMYM" Name="Root"/>
+    <PropertyGroup Id="cpgDA3J26J2PBFUXF3QYCSURVJHDU" Name="Root"/>
+    <Properties>
+      <Property Id="prdJRWPU3MOD5G5VAHAFW7UJTBUGM" Name="traceItem" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="400" extStr="org.radixware.kernel.common.client.trace.ClientTraceItem"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthRPN4UKK5LVCM7O5J5MZXF6KPHI" Name="DashAlert" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="severity" Id="mpr5Y6WHAFIQRBIRKI7MDPLGEN53E">
+            <Type TypeId="2" Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4"/>
+          </Parameter>
+          <Parameter Name="source" Id="mprHCL23OHMWZCFVCDC6MFTIWQYVE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="message" Id="mprZ6VBVUKYB5EQZO55ZGNJ7DPPGQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>//Pattern for alert message: "{1} {2,date,dd/MM/yy HH:mm:ss.SSS} : {3} : {4}"
+StringBuilder alertString;
+if (severity == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+    alertString = new StringBuilder("@ ");
+} else if (severity == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci52AUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+    alertString = new StringBuilder("  ");
+} else if (severity == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci6CAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+    alertString = new StringBuilder("# ");
+} else {
+    alertString = new StringBuilder("! ");
+}
+java.text.SimpleDateFormat formatDate = new java.text.SimpleDateFormat("dd/MM/yy HH:mm:ss.SSS");
+alertString.append(formatDate.format(java.util.Calendar.getInstance().Time));
+alertString.append(" : ");
+if (source != null &amp;&amp; !source.isEmpty()) {
+    alertString.append(source);
+    alertString.append(" : ");
+}
+alertString.append(message);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcGISEEZ725BDHDGY6XMEKDKBRG4 prdJRWPU3MOD5G5VAHAFW7UJTBUGM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = new org.radixware.kernel.common.client.trace.ClientTraceItem(severity, alertString.toString());</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

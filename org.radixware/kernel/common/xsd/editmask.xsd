@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:this="http://schemas.radixware.org/editmask.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:xscml="http://schemas.radixware.org/xscml.xsd" targetNamespace="http://schemas.radixware.org/editmask.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/xscml.xsd" schemaLocation="xscml.xsd"/>
+    <xs:annotation>
+        <xs:documentation>Element for work with edit mask in ads-schemas annotation</xs:documentation>
+    </xs:annotation>
+    <xs:element name="RadixEditMask" type="this:EditMask"/>
+    <xs:complexType name="EditMask" abstract="true">
+        <xs:choice>
+            <xs:element name="Int" type="this:EditMaskInt"/>
+            <xs:element name="Num" type="this:EditMaskNum"/>
+            <xs:element name="Str" type="this:EditMaskStr"/>
+            <xs:element name="TimeInterval" type="this:EditMaskTimeInterval"/>
+            <xs:element name="Enum" type="this:EditMaskEnum"/>
+            <xs:element name="DateTime" type="this:EditMaskDateTime"/>
+            <xs:element name="List" type="this:EditMaskList"/>
+            <xs:element name="Boolean" type="this:EditMaskBool"/>
+            <xs:element name="FilePath" type="this:EditMaskFilePath"/>
+            <xs:element name="Reference" type="this:EditMaskRef"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="EditMaskInt">
+        <xs:attribute name="NumberBase" type="xs:byte" use="optional" default="10"/>
+        <xs:attribute name="MinLength" type="xs:byte" use="optional" default="0"/>
+        <xs:attribute name="PadChar" use="optional" default="0">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:length value="1"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="MinValue" type="xs:long" use="optional"/>
+        <xs:attribute name="MaxValue" type="xs:long" use="optional"/>
+        <xs:attribute name="StepSize" type="xs:long" use="optional" default="1"/>
+        <xs:attribute name="TriadDelimeterType" use="required">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.ETriadDelimeterType</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:IntEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="TriadDelimeter" use="optional">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:length value="1"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="EditMaskNum">
+        <xs:attribute name="MaxValue" type="xs:decimal" use="optional"/>
+        <xs:attribute name="MinValue" type="xs:decimal" use="optional"/>
+        <xs:attribute name="Scale" type="xs:long" use="optional" default="1"/>
+        <xs:attribute name="TriadDelimeterType" use="required">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.ETriadDelimeterType</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:IntEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="TriadDelimeter" use="optional">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:length value="1"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="DecimalDelimeter" use="optional">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:length value="1"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>        
+        <xs:attribute name="Precision" type="xs:byte" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="EditMaskList">
+        <xs:sequence>
+            <xs:element name="Item" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Title" type="xs:string" minOccurs="0"/>
+                        <xs:element name="Value" type="xs:string" minOccurs="0"/>
+                    </xs:sequence>
+                    <xs:attribute name="TitleId" type="types:Id"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="EditMaskStr">
+        <xs:attribute name="ValidatorType" type="xs:int" use="optional"/>
+        <xs:attribute name="MaxValue" type="xs:string" use="optional"/>
+        <xs:attribute name="MinValue" type="xs:string" use="optional"/>
+        <xs:attribute name="Precision" type="xs:int" use="optional"/>
+        <xs:attribute name="CaseSensitive" type="xs:boolean" use="optional" default="true"/>
+        <xs:attribute name="Mask" type="xs:string" use="optional"/>
+        <xs:attribute name="IsPassword" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="NoBlankCharacter" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="MaxLength" type="xs:int" use="optional" default="0"/>
+        <xs:attribute name="KeepSeparators" type="xs:boolean" use="optional" default="true"/>
+        <xs:attribute name="AllowEmptyString" type="xs:boolean" use="optional" default="true"/>
+    </xs:complexType>
+    <xs:complexType name="EditMaskDateTime">
+        <xs:attribute name="DateStyle" use="required">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EDateTimeStyle</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:IntEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="TimeStyle" use="required">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EDateTimeStyle</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:IntEnum"/>
+            </xs:simpleType>
+        </xs:attribute>       
+        <xs:attribute name="Mask" type="xs:string" use="optional"/>
+        <xs:attribute name="MinValue" type="xs:dateTime" use="optional"/>
+        <xs:attribute name="MaxValue" type="xs:dateTime" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="EditMaskTimeInterval">
+        <xs:attribute name="Scale" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="MILLIS"/>
+                    <xs:enumeration value="SECOND"/>
+                    <xs:enumeration value="MINUTE"/>
+                    <xs:enumeration value="HOUR"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Mask" type="xs:string" use="optional" default="d hh:mm::ss"/>
+        <xs:attribute name="MinValue" type="xs:long" use="optional" default="0"/>
+        <xs:attribute name="MaxValue" type="xs:long" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="EditMaskEnum">
+        <xs:attribute name="OrderBy" use="optional">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EEditMaskEnumOrder</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:StrEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Correction" use="optional">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EEditMaskEnumCorrection</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:StrEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="CorrectionItems" use="optional">
+            <xs:simpleType>
+                <xs:list itemType="types:Id"/>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="EditMaskBool">
+        <xs:attribute name="TrueValue" type="xs:string" use="optional" default="1"></xs:attribute>
+        <xs:attribute name="FalseValue" type="xs:string" use="optional" default="0"></xs:attribute>
+        <xs:attribute name="ValueTitleVisible" type="xs:boolean" use="optional" default="false"></xs:attribute>
+        <xs:attribute name="FalseTitleId" type="types:Id" use="optional"></xs:attribute>
+        <xs:attribute name="TrueTitleId" type="types:Id" use="optional"></xs:attribute>        
+        <xs:attribute name="TitleOwnerId" type="types:Id" use="optional"></xs:attribute>        
+        <xs:attribute name="TrueTitle" type="xs:string" use="optional"></xs:attribute>
+        <xs:attribute name="FalseTitle" type="xs:string" use="optional"></xs:attribute>
+        <xs:attribute name="ValueType" use="optional">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.ECompatibleTypesForBool</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:IntEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="EditMaskFilePath">
+        <xs:attribute name="StoreLastPath" type="xs:boolean" use="optional" default="true"></xs:attribute>
+        <xs:attribute name="SelectionMode" use="optional">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EFileSelectionMode</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:IntEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="MimeType" use="optional">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EMimeType</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:StrEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="HandleInputAvailable" type="xs:boolean" use="optional" default="false"></xs:attribute>
+        <xs:attribute name="FileDialogTitle" type="xs:string" use="optional" default="File Dialog"></xs:attribute>
+        <xs:attribute name="CheckIfPathExists" type="xs:boolean" use="optional" default="false"></xs:attribute>
+        <xs:attribute name="FileDialogTitleId" type="types:Id" use="optional"></xs:attribute>
+        <xs:attribute name="TitleOwnerId" type="types:Id" use="optional"></xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="EditMaskRef">
+        <xs:sequence>
+            <xs:element name="DefaultSortingIdByFilterId" type="types:MapStrStr" minOccurs="0" maxOccurs="1" />
+            <xs:element name="Condition" type="xscml:Sqml"  minOccurs="0"></xs:element>
+        </xs:sequence>
+        <xs:attribute name="SelectorPresentationId" type="types:Id" use="optional"></xs:attribute>
+        <xs:attribute name="DefaultFilterId" type="types:Id" use="optional"></xs:attribute>
+        <xs:attribute name="DefaultFilterDefined" type="xs:boolean" use="optional" default="false"></xs:attribute>
+        <xs:attribute name="EditorPresentationIds" use="optional">
+            <xs:simpleType>
+                <xs:list itemType="types:Id"/>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+</xs:schema>

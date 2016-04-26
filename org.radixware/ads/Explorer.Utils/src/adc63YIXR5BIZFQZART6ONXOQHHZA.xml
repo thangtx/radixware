@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc63YIXR5BIZFQZART6ONXOQHHZA" Name="WidgetUtils" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc73TLMDKBWNEUPM6VFYPGRZKR44">
+        <xsc:Item>
+          <xsc:Java>import com.trolltech.qt.gui.QDialog;
+import com.trolltech.qt.gui.QPalette;
+</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcSHMJBX5JABHNHGNR3G3DA444P4"/>
+    </Bodies>
+    <MethodGroup Id="cmgEXGOUFDBZZD4ZJLCZ347RZPIBQ" Name="Root"/>
+    <PropertyGroup Id="cpgF24BOLMFJBCRLKWQYEGONG4YPQ" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthTVLYRXWROJFMXPHAOTLAZ26XKA" Name="setTextColor" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="widget" Id="mpr4M755O6ORNB3ZI53SQDQHYZFQE">
+            <Type TypeId="411" Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4"/>
+          </Parameter>
+          <Parameter Name="color" Id="mpr6MX7HDLXLNGIBLKJVDYXDU3QY4">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QColor"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>QPalette p = widget.palette();
+p.setColor(QPalette.ColorRole.Text, color);
+widget.setPalette(p);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthQY4QJSCIBZFSXFQI6YZK42ZRXA" Name="setWindowTextColor" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="widget" Id="mprWSEBZWLUENG6PA7FQYYPZPBIPQ">
+            <Type TypeId="411" Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4"/>
+          </Parameter>
+          <Parameter Name="color" Id="mpr725TXC3Y4JAMZJBGLUSL5GQXZI">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QColor"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>QPalette p = widget.palette();
+p.setColor(QPalette.ColorRole.Window, color);
+widget.setPalette(p);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth6S7AXA5P4JDPRO2SGKHLYCI7WI" Name="showHtml" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="title" Id="mpr4MXICDLYENBXHADDQIVNVE3UXQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="html" Id="mprNLGLS3KIYZBXZIVJHNK2G4A5LQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>QDialog dialog = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBQWVU3OGYFHPXEZH5ND56A3YBU mthEVAREUOWO5APHA2LTLJGXKMHQ4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthNQIWGHM3LNEANDMMAJFNCWDTFE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+com.trolltech.qt.gui.QTextEdit textEdit = new com.trolltech.qt.gui.QTextEdit();
+textEdit.setHtml(html);
+textEdit.setReadOnly(true);
+com.trolltech.qt.gui.QLayout layout = new com.trolltech.qt.gui.QVBoxLayout();
+layout.addWidget(textEdit);
+dialog.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthX7CUNWVR5NBJBKV54S67M4QGJM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(600, 400);
+dialog.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthWCWVI4PUSNCVLNGPYZFLMPWMXU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(layout);
+dialog.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthQF2WXV3YDFGHNPOLGSKADYYKNM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(title);
+dialog.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBQWVU3OGYFHPXEZH5ND56A3YBU mth2VIBKJCSUBANDEMJZ454NOG4FA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthGVVWZIKVBBC7TGVXPSURSKEPKE" Name="findNearestModel" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="widget" Id="mprLVNDJTGAIBBSHCRQL2FTREESEE">
+            <Type TypeId="411" Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return org.radixware.kernel.explorer.utils.WidgetUtils.findNearestModel(widget);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth44UWORL4OFARPAU7ITCRAVO44A" Name="isParentIndex" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="parent" Id="mprMH673EUK4JCQDLDIXUWI2I2MOE">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+          </Parameter>
+          <Parameter Name="child" Id="mprKD3Q2DXAKJH3TPLI2WE4HTPRDM">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2KY3CODCPZAGPJOMRY2Y7CZ4GI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.isParentIndex(parent,child);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

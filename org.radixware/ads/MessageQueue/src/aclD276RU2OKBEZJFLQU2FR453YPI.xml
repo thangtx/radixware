@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclD276RU2OKBEZJFLQU2FR453YPI" Name="MessageQueue.Producer.Kafka" DescriptionId="mlsMDVHAJWJWNDD5MMNNCCIS6BT4M" Type="2">
+    <AccessRules/>
+    <Headers>
+      <Src Name="HeaderaclD276RU2OKBEZJFLQU2FR453YPI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaclD276RU2OKBEZJFLQU2FR453YPI"/>
+    </Bodies>
+    <MethodGroup Id="cmg5N22OTEIERCKRLAQXSLK5Z5BA4" Name="Root"/>
+    <PropertyGroup Id="cpg34BNJ2SOVZGWPL6GXXDQLASVNY" Name="Root"/>
+    <Properties>
+      <Property Id="colY7OU5KA6ZVDFRHHVFV4JGWL3DQ" Name="queueId" Nature="5" IsConst="false" IsOverride="false" isDescriptionInherited="false" OriginalPropertyId="colMJ5LYEVHWVDXTLFODE43T7SO7A" DetailRefId="ref4UQQFX76UVA7HCT442UGW52U2A">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4">
+          <Editing NotNull="true" EditPossibility="2" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthWXVEL5SYNRBVVP2ICAI7TF6DLI" Name="getSender" DescriptionId="mlsVG5PBXDSNVDOXHNXZYW6VPYYT4" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="411" Path="aicGNS47MFCS5E6LLDQ7E2I42BJCM"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axc7PXEO3TYR5CCFH7362MPE6KFAY"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGTXE3ZFEXBHSTK6HZRVNWEZMGE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colOPGPZBRRSZFCFP6DSBBECKFM74" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colTRIHVJKCKNDNVESJUPLUFKPVQA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colB56SD6AHQ5AJFMZJHTWW2XRHQE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null ? Integer.valueOf(this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colB56SD6AHQ5AJFMZJHTWW2XRHQE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>).intValue() : 0);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthFMXUFM5J25E4TNM4PR73F6V3E4" Name="beforeCreate" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="src" Id="mpr6AGKFWIMZFCS7JBT5DIXYUAYUU">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ col7PCH7MSGLZFSNNDIFYF6WQLWDI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIXEVYI6PORHVNOJ2X4FJ4BGBE4 aciYJEC46EQGBHNRCIG4W7U2FKPCY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+return super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthFMXUFM5J25E4TNM4PR73F6V3E4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(src);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblQZ2AJHN3PFDWXC5BT6I66OS5PQ" AllowedDetailReferences="ref4UQQFX76UVA7HCT442UGW52U2A"/>
+    <Presentations ObjectTitleId="mlsP3OEAROUTRHYNJVBMKY4OSQXI4">
+      <ClassCatalogs>
+        <ClassCatalog Id="ecc5NBNQ63LAFHETGGWPERIR4Y6GI" Name="Producers">
+          <AccessRules IsPublished="false"/>
+          <ClassRef Order="20.0"/>
+        </ClassCatalog>
+      </ClassCatalogs>
+    </Presentations>
+    <Extends TypeId="411" Path="aclIJMFWGNFU5AV3PP4PS3SDW3NKY"/>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsWebCustomPropEditorDefinition Id="cpeAZKGWXQWXZGNVOTXXAII36HKPI" Name="SelectTablePropEditorWeb">
+    <AccessRules IsPublished="false"/>
+    <ui:ui>
+      <ui:widget name="root" id="wdg6KASWW6KNVEQXNFYHREAWDX7CY" class="cpeAZKGWXQWXZGNVOTXXAII36HKPI" weight="0.0">
+        <ui:property name="standardButtons">
+          <ui:set>Ok|Cancel</ui:set>
+        </ui:property>
+        <ui:property name="geometry">
+          <ui:rect>
+            <ui:x>0</ui:x>
+            <ui:y>0</ui:y>
+            <ui:width>455</ui:width>
+            <ui:height>343</ui:height>
+          </ui:rect>
+        </ui:property>
+        <ui:property name="objectName">
+          <ui:string>root</ui:string>
+        </ui:property>
+        <ui:widget name="list" id="wdgCQBTTULHQRHV5O7V3PKH6UNLYE" class="org.radixware.wps.rwt.ListBox" weight="0.0">
+          <ui:property name="geometry">
+            <ui:rect>
+              <ui:x>3</ui:x>
+              <ui:y>3</ui:y>
+              <ui:width>449</ui:width>
+              <ui:height>307</ui:height>
+            </ui:rect>
+          </ui:property>
+          <ui:property name="anchor">
+            <ui:anchor>
+              <ui:Bottom Part="1.0" Offset="-3"/>
+              <ui:Right Part="1.0" Offset="-3"/>
+            </ui:anchor>
+          </ui:property>
+          <ui:property name="objectName">
+            <ui:string>list</ui:string>
+          </ui:property>
+        </ui:widget>
+      </ui:widget>
+      <ui:connections>
+        <ui:connection>
+          <ui:sender>wdg6KASWW6KNVEQXNFYHREAWDX7CY</ui:sender>
+          <ui:signal>opened()</ui:signal>
+          <ui:slot>mth4FKIFTHXLJCMPK26FDWLDHI7W4</ui:slot>
+          <ui:interface>org.radixware.wps.views.dialog.RwtDialog.RwtDialogListener</ui:interface>
+          <ui:registrator>addDialogListener</ui:registrator>
+          <ui:returnType>void</ui:returnType>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgCQBTTULHQRHV5O7V3PKH6UNLYE</ui:sender>
+          <ui:signal>itemDoubleClick(org.radixware.wps.rwt.ListBox.ListBoxItem)</ui:signal>
+          <ui:slot>mthIGOIV3MDTRGQRMUZVDAAEI6XDY</ui:slot>
+          <ui:interface>org.radixware.wps.rwt.ListBox.DoubleClickListener</ui:interface>
+          <ui:registrator>addDoubleClickListener</ui:registrator>
+          <ui:returnType>void</ui:returnType>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdg6KASWW6KNVEQXNFYHREAWDX7CY</ui:sender>
+          <ui:signal>onClose(org.radixware.kernel.common.enums.EDialogButtonType,org.radixware.kernel.common.client.views.IDialog.DialogResult)</ui:signal>
+          <ui:slot>mthPHYHFP3ZAZDBLNFUXZEWRNCXHI</ui:slot>
+          <ui:interface>org.radixware.wps.rwt.Dialog.CloseButtonListener</ui:interface>
+          <ui:registrator>addCloseButtonListener</ui:registrator>
+          <ui:returnType>void</ui:returnType>
+        </ui:connection>
+      </ui:connections>
+    </ui:ui>
+    <EmbeddedModel Id="armAZKGWXQWXZGNVOTXXAII36HKPI" Name="SelectTablePropEditorWeb:Model" Type="17">
+      <AccessRules IsPublished="false"/>
+      <Headers>
+        <Src Name="HeaderarmAZKGWXQWXZGNVOTXXAII36HKPI"/>
+      </Headers>
+      <Bodies>
+        <Src Name="BodyarmAZKGWXQWXZGNVOTXXAII36HKPI"/>
+      </Bodies>
+      <MethodGroup Id="cmgMM2EQHNP55AFROQLPJNEQ3HMM4" Name="Root"/>
+      <PropertyGroup Id="cpgIRJ6K4LJJJA4XIP43RF6CML7AM" Name="Root"/>
+      <Properties>
+        <Property Id="prd34QTZNZDGZHKXFDC6G5NZ2673I" Name="tableIdPropId" Nature="2" IsConst="false" IsOverride="false">
+          <AccessRules/>
+          <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        </Property>
+      </Properties>
+      <Methods>
+        <Method Id="mth4FKIFTHXLJCMPK26FDWLDHI7W4" Name="root_opened" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthBN46PMVUBFADVFFMPLGSSR7ZRM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="clcV5ZNGBQVOTORDASXABIFNQAABA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>).execute();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthclcV5ZNGBQVOTORDASXABIFNQAABA" Name="onCommand_GetTableListCmd" Nature="1" IsOverride="false">
+          <AccessRules Access="4" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="command" Id="mprVZP2X45MVFAELM3DPLK2X6KUWY">
+              <Type TypeId="411" Path="clcV5ZNGBQVOTORDASXABIFNQAABA"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>try {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsd2OCIJO6UONEZZAWI3PSCUOW6ZU" extStr="TableListDocument"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> xOut = command.send();
+    java.util.List&lt;</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcUEGK7CJB6NET3HMZ7Z4HWLEQ6Y"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>> titles = new java.util.LinkedList&lt;</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcUEGK7CJB6NET3HMZ7Z4HWLEQ6Y"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>>();
+    
+
+    for (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsd2OCIJO6UONEZZAWI3PSCUOW6ZU" extStr="TableListDocument.TableList.Table"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> table : xOut.TableList.TableList) {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcUEGK7CJB6NET3HMZ7Z4HWLEQ6Y"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> i = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcUEGK7CJB6NET3HMZ7Z4HWLEQ6Y mthKTM6DXUNFZGFXKUD57HLFLQKZQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+        i.UserData = table.Id;
+        i.Text = table.Title;
+        titles.add(i);
+    }
+    
+    java.util.Collections.sort(titles,new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="aicUAXRHCKAFJAO5ITW6IOGQJ7YKM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>&lt;</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcUEGK7CJB6NET3HMZ7Z4HWLEQ6Y"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>>(){
+        public int compare(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcUEGK7CJB6NET3HMZ7Z4HWLEQ6Y"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> i1,</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcUEGK7CJB6NET3HMZ7Z4HWLEQ6Y"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> i2){
+            return i1.Text.compareTo(i2.Text);
+        }
+    });
+    for (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcUEGK7CJB6NET3HMZ7Z4HWLEQ6Y"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> i : titles) {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeAZKGWXQWXZGNVOTXXAII36HKPI wdgCQBTTULHQRHV5O7V3PKH6UNLYE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.add(i);
+    }
+    
+} catch (Exception e) {
+    Environment.processException(e);
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthUF3QNAZMQ5CCVAJKSAKLXG5FAI" Name="accept" Nature="0" IsOverride="false">
+          <AccessRules/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcUEGK7CJB6NET3HMZ7Z4HWLEQ6Y"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> item = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeAZKGWXQWXZGNVOTXXAII36HKPI wdgCQBTTULHQRHV5O7V3PKH6UNLYE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Current;
+if (item != null) {
+    String id = (String)item.UserData;
+    String title = item.Text;
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcIGHXUXORMFFNXGVBAEOQKN3Q6Y mth7UWTWB24FVASZBR3RCXXWXC4PU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().Owner.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthI4ZEAFBPYRGELAKWN3W2VE4SA4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeAZKGWXQWXZGNVOTXXAII36HKPI armAZKGWXQWXZGNVOTXXAII36HKPI prd34QTZNZDGZHKXFDC6G5NZ2673I" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>).</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthZBTI63XF4RBXJJXOH54ZV3GT6I" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(id);
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcIGHXUXORMFFNXGVBAEOQKN3Q6Y mth7UWTWB24FVASZBR3RCXXWXC4PU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthZBTI63XF4RBXJJXOH54ZV3GT6I" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(title);
+}
+getView().close(true);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthIGOIV3MDTRGQRMUZVDAAEI6XDY" Name="list_itemDoubleClick" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="param0" Id="mprPX4JTVWEPRF3XIMUXKL663SSO4">
+              <Type TypeId="400" extStr="org.radixware.wps.rwt.ListBox.ListBoxItem"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeAZKGWXQWXZGNVOTXXAII36HKPI armAZKGWXQWXZGNVOTXXAII36HKPI mthUF3QNAZMQ5CCVAJKSAKLXG5FAI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthPHYHFP3ZAZDBLNFUXZEWRNCXHI" Name="root_onClose" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="button" Id="mprEP6ZSBXDLFGNHLP6YCLGB43GO4">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EDialogButtonType"/>
+            </Parameter>
+            <Parameter Name="result" Id="mprRJQP73UN5ZBZVCGDMJTJD37LAQ">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.client.views.IDialog.DialogResult"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if (result == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcDAOFOPE66ZA5ZP7ALHOOPQIQ6I"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.ACCEPTED) {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeAZKGWXQWXZGNVOTXXAII36HKPI armAZKGWXQWXZGNVOTXXAII36HKPI mthUF3QNAZMQ5CCVAJKSAKLXG5FAI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+} else {
+    this.getView().close(true);
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+      </Methods>
+    </EmbeddedModel>
+  </AdsWebCustomPropEditorDefinition>
+</AdsDefinition>

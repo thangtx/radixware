@@ -1,0 +1,225 @@
+/*
+ * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. This Source Code is distributed
+ * WITHOUT ANY WARRANTY; including any implied warranties but not limited to
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * Mozilla Public License, v. 2.0. for more details.
+ */
+
+/*
+ * CharPanel.java
+ *
+ * Created on 22.01.2009, 14:07:48
+ */
+package org.radixware.kernel.common.design.msdleditor.field.panel.simple;
+
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JCheckBox;
+import javax.swing.JTextField;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.PlainDocument;
+
+import org.radixware.kernel.common.design.msdleditor.AbstractEditItem;
+
+
+public class CharPanel extends AbstractEditItem implements CaretListener {
+
+    boolean spaceMode = false;
+    ActionListener al;
+    //Character saved = null;
+    /** Creates new form CharPanel */
+    JTextFieldLimit jTextField1;
+    JCheckBox jCheckBox3;
+
+    public CharPanel() {
+        initComponents();
+
+        jTextField1 = new JTextFieldLimit(10);
+        jCheckBox3 = new JCheckBox();
+
+        jCheckBox3.setText("");
+        jCheckBox3.addActionListener(new java.awt.event.ActionListener() {
+
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                if (jCheckBox3.getModel().isSelected()) {
+                    spaceMode = true;
+                    setSpace();
+                } else {
+                    spaceMode = false;
+                    setCharValue(null);
+                }
+            }
+        });
+
+        this.setLayout(new BorderLayout());
+        this.add(jCheckBox3, BorderLayout.EAST);
+        this.add(jTextField1, BorderLayout.CENTER);
+
+
+
+        // jTextField1.set
+    }
+
+    public class JTextFieldLimit extends JTextField {
+
+        private int limit;
+        // optional uppercase conversion
+        // private boolean toUppercase = false;
+
+        JTextFieldLimit(int limit) {
+            super();
+            this.limit = limit;
+        }
+
+        @Override
+        protected Document createDefaultModel() {
+            return new PlainDocument2();
+        }
+
+        class PlainDocument2 extends PlainDocument {
+
+            @Override
+            public void insertString(int offset, String str, AttributeSet attr)
+                    throws BadLocationException {
+                if (str == null) {
+                    return;
+                }
+                if (limit == -1 || getLength() + str.length() <= limit) {
+                    super.insertString(offset, str, attr);
+                }
+            }
+        }
+ 
+
+        
+        
+        public void setLimit(int limit) {
+            this.limit = limit;
+        }
+
+ 
+        @Override
+        public void setText(String t) {
+            if (t!=null && t.length() > limit)
+                t = t.substring(0, limit);            
+            super.setText(t);
+        }
+    }
+
+    public void setChar(Character ch) {
+        spaceMode = false;
+        jCheckBox3.setSelected(false);
+        if (ch == null) {
+            jTextField1.setText("");
+        } else {
+            if (ch == ' ') {
+                spaceMode = true;
+                setSpace();
+                jCheckBox3.setSelected(true);
+            } else {
+                setCharValue(ch);
+                spaceMode = false;
+            }
+        }
+    }
+
+    public Character getChar() {
+        String res = jTextField1.getText();
+        if (res.equals("")) {
+            return null;
+        } else {
+            if (spaceMode) {
+                return ' ';
+            } else {
+                if (res.charAt(0) == ' ') {
+                    return null;
+                } else {
+                    return res.charAt(0);
+                }
+            }
+        }
+    }
+
+    public void addActionListener(final ActionListener l) {
+        al = l;
+        jTextField1.addCaretListener(this);
+    }
+
+    public void removeActionListener(final ActionListener l) {
+        jTextField1.removeCaretListener(this);
+        al = null;
+    }
+
+    @Override
+    public void setEnabled(boolean state) {
+        jTextField1.setEnabled(state);
+        jTextField1.setEditable(state && !spaceMode);
+        jCheckBox3.setEnabled(state);
+    }
+
+    /** This method is called from within the constructor to
+     * initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is
+     * always regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 293, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 28, Short.MAX_VALUE)
+        );
+    }// </editor-fold>//GEN-END:initComponents
+
+ 
+    private void setSpace() {
+//        try {
+//            //jTextField1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("*******")));
+//        } catch (java.text.ParseException ex) {
+//            ex.printStackTrace();
+//        }
+        jTextField1.setLimit(7);
+        jTextField1.setText("<space>");
+        jTextField1.setEditable(false);
+    }
+
+    private void setCharValue(Character ch) {
+//        try {
+//         //   jFormattedTextField1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("*")));
+//        } catch (java.text.ParseException ex) {
+//            ex.printStackTrace();
+//        }
+        jTextField1.setLimit(1);
+        if (ch != null) {
+            jTextField1.setText(ch.toString());
+        } else {
+            jTextField1.setText("");
+        }
+        jTextField1.setEditable(true);
+    }
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void caretUpdate(CaretEvent e) { 
+        if (al != null)// && e.getDot() != 0)
+           al.actionPerformed(new ActionEvent(jTextField1,1,""));
+    }
+}

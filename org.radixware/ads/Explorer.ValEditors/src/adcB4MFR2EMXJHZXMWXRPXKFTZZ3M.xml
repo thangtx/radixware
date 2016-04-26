@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcB4MFR2EMXJHZXMWXRPXKFTZZ3M" Name="ValEditorFactory" Type="3" Environment="explorer">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.explorer.editors.valeditors.ValEditorFactory"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcB4MFR2EMXJHZXMWXRPXKFTZZ3M"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcB4MFR2EMXJHZXMWXRPXKFTZZ3M"/>
+    </Bodies>
+    <MethodGroup Id="cmgRJ25FPCJ5BBTTNA3WQYQJOAB5I" Name="Root"/>
+    <PropertyGroup Id="cpgJEO3ZWPZHZBGHFQIXDATOSQO4M" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth535ON7BEHVGALJXU2B4Z7S4F3E" Name="createValEditor" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="createValEditor(Lorg.radixware.kernel.common.enums.EValType;Lorg.radixware.kernel.common.client.meta.mask.EditMask;Lorg.radixware.kernel.common.client.IClientEnvironment;Lcom.trolltech.qt.gui.QWidget;)Lorg.radixware.kernel.explorer.editors.valeditors.ValEditor&lt;*>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="valType" Id="mprFNSBKYRO4VAQLDFK626E2EVTRE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+          </Parameter>
+          <Parameter Name="editMask" Id="mprMLALNQ2JJBGI5FDJ73LZ43DLSM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
+          </Parameter>
+          <Parameter Name="environment" Id="mprMPVPRN2XOBETNGJFFYSAITQJP4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parentWidget" Id="mprCSSSWRCB5ZHITN42DBYHGLJRLE">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.editors.valeditors.ValEditor">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?"/>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthK5HDT3G5QFFQPKAFV7R6IH2HT4" Name="getDefault" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getDefault()Lorg.radixware.kernel.explorer.editors.valeditors.ValEditorFactory;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.editors.valeditors.ValEditorFactory"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

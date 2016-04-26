@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="pdcProgressDialogResource____" Name="ProgressDialogResource" DescriptionId="mlsEKEYVPKR65GUPI2SZJJNCQ4KJI" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.server.arte.resources.ProgressDialogResource"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcACCMSMTGVBEE5ENFTNSEY6SA3I"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcEA3TT5LLRFFDDEPAYJWPB5EOZ4"/>
+    </Bodies>
+    <MethodGroup Id="cmgBQ6KOMEL3NEKDA4VO2UPURFPP4" Name="Root"/>
+    <PropertyGroup Id="cpgXOAGU55VCVHGFB52URPN3ZLTIM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthC5IM4X76VRD6XN4BV3ALQXGFYU" Name="ProgressDialogResource" DescriptionId="mlsMGIWYNFRNVH2LAR7PYWJ7W5MWY" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.server.arte.Arte;Ljava.lang.String;Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arte" DescriptionId="mlsDSHT7QST4JFOJOTATUAPCOWXH4" Id="mprIWD2M3LAQNBKNBPMJMWOZQWWYI">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.arte.Arte"/>
+          </Parameter>
+          <Parameter Name="caption" DescriptionId="mlsKV65H26VRFFN7IFOAEQ2VSSIXQ" Id="mprEMMGGSNHKBEZDIQFLEBX34EK5E">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="showTrace" DescriptionId="mlsNLHM3SG2KFB53DFOIEJD3MTCEU" Id="mprQGYNYZQC3VGLFCKGU5AZOG6PAE">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthODOXK22HZJBINCRNIGWLD5DJGY" Name="startNewProcess" DescriptionId="mlsDBE4MXE23NF3VI5ZI5GV3CPHN4" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="startNewProcess(Ljava.lang.String;ZZ)Lorg.radixware.kernel.server.arte.resources.ProgressDialogResource.Process;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" DescriptionId="mlsYKK4W4Q2PZFD7OL2EQUMEUSUIQ" Id="mprN5SSXMDAJRH4TA7AE5WWEXCHUQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="cancellable" DescriptionId="mls4U2LZQ4J3JEZBLYPSVIYUMYYHA" Id="mprYYN6W5H77BBGPJF737GEXQJWX4">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="showPercent" DescriptionId="mlsKJIIPZTZ2JCXTCBVCAFHD5BA5M" Id="mprTLN3LEHA55CMHHMVQXGIMFGXME">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.arte.resources.ProgressDialogResource.Process" DescriptionId="mls6PMBG5IEQVFQXO43XCYG6JOZTA"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException" DescriptionId="mlsMYCXDLF4QNHWVFFUUFMXNIMHNY"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageException" DescriptionId="mls3W7I73DFDRHVRF2ZRYHT5SV3HQ"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageTimeout" DescriptionId="mlsUSOMSRL6A5CVTOWMSRSZBCPHLM"/>
+        </ThrownExceptions>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

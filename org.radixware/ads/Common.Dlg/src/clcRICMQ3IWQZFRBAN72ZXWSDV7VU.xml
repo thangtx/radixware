@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsContextlessCommandDefinition Id="clcRICMQ3IWQZFRBAN72ZXWSDV7VU" Name="GetTraceCmd" TitleId="mlsMNAGOTBACVC7HFVG4WUJIODNOE" Nature="2" IsVisible="false" IsConfirmationRequired="false">
+    <InType TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="StrDocument"/>
+    <OutType TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="StrDocument"/>
+    <Source>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="StrDocument"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> doc = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="StrDocument"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.Factory.newInstance();
+doc.Str = new org.radixware.kernel.common.trace.TraceParser(</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcArte______________________ mthJ22YS76JKFBLHMS32FAYSH3QNI" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>().getClassLoader()).parse(input.Str);
+return doc;</xsc:Java>
+      </xsc:Item>
+    </Source>
+  </AdsContextlessCommandDefinition>
+</AdsDefinition>

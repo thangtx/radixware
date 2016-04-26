@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" FormatVersion="0">
+  <AdsParagraphDefinition Id="parCDX4BA646BG5DKJCYPHI77ECKM" Name="SysUnits" TitleId="mlsORUSYCGIURGHXKVSZDISWUWMTA" IconId="imgS2GUZUZU2JCJXB3A7JZ76SNTPQ" IsRoot="false" ClientEnvironment="explorer">
+    <ChildExplorerItems>
+      <Item>
+        <Entity Id="xpiFHW6H3JOXBHTVMHXLTMPEZNHZI" Name="Instance" InheritanceMask="16560" IsVisibleInTree="false" ClassId="aec52CHFNO3EGWDBRCRAAIT4AGD7E" SelectorPresentationId="sprBCFJSMAERTNRDB5PAALOMT5GDM" Restrictions="0" EnabledCommands="">
+          <AccessRules IsPublished="false"/>
+          <Condition>
+            <ConditionWhere/>
+            <ConditionFrom/>
+          </Condition>
+        </Entity>
+      </Item>
+      <Item>
+        <Entity Id="xpiDWYBEZ57SVDH7CKCI7WNP2ANZ4" Name="EventLog" InheritanceMask="16528" IsVisibleInTree="false" ClassId="aecACQVZOMVVHWDBROXAAIT4AGD7E" SelectorPresentationId="sprF6ONI4OEXTNRDB6RAALOMT5GDM" Restrictions="2048" EnabledCommands="">
+          <AccessRules IsPublished="false"/>
+          <Condition>
+            <ConditionWhere/>
+            <ConditionFrom/>
+          </Condition>
+        </Entity>
+      </Item>
+      <Item>
+        <Entity Id="xpiNZGVNAE3OBFCZNXHZETJVPSOLI" Name="StateView" InheritanceMask="16560" IsVisibleInTree="false" ClassId="aecWQK6FDKV4BHXVHI62W7MV3AGMI" SelectorPresentationId="sprI42QK5M3NVDDXHMITEJW5BIVWA" Restrictions="0" EnabledCommands="">
+          <AccessRules IsPublished="false"/>
+          <Condition>
+            <ConditionWhere/>
+            <ConditionFrom/>
+          </Condition>
+        </Entity>
+      </Item>
+      <Item>
+        <Entity Id="xpiQO43ECU3VNFDVFAW4FR5ZQW6KI" Name="Unit" InheritanceMask="16560" IsVisibleInTree="false" ClassId="aec5HP4XTP3EGWDBRCRAAIT4AGD7E" ClientEnvironment="explorer" SelectorPresentationId="spr6AFPZS6TRHNRDB5MAALOMT5GDM" Restrictions="0" EnabledCommands="">
+          <AccessRules IsPublished="false"/>
+          <Condition>
+            <ConditionWhere/>
+            <ConditionFrom/>
+          </Condition>
+        </Entity>
+      </Item>
+      <Item>
+        <Entity Id="xpi4D4WLW6G2VA47GPU5BBIK7UVJA" Name="NetChannel" InheritanceMask="16560" IsVisibleInTree="false" ClassId="aecHBE24OUE2DNRDB7AAALOMT5GDM" ClientEnvironment="explorer" SelectorPresentationId="sprK5SCPQJQ2HNRDB7BAALOMT5GDM" Restrictions="0" EnabledCommands="">
+          <AccessRules IsPublished="false"/>
+          <Condition>
+            <ConditionWhere/>
+            <ConditionFrom/>
+          </Condition>
+        </Entity>
+      </Item>
+      <Item>
+        <Entity Id="xpi44KC6LQQ7BDJNPYGWD3MEOZT54" Name="EventLogWithContext" InheritanceMask="16528" IsVisibleInTree="false" ClassId="aecACQVZOMVVHWDBROXAAIT4AGD7E" SelectorPresentationId="sprDEZXGYRBYVBADE5OCIBI73JN2I" Restrictions="2048" EnabledCommands="">
+          <AccessRules IsPublished="false"/>
+          <Condition>
+            <ConditionWhere/>
+            <ConditionFrom/>
+          </Condition>
+        </Entity>
+      </Item>
+    </ChildExplorerItems>
+    <Model Id="apmCDX4BA646BG5DKJCYPHI77ECKM" Name="SysUnits:Model" Type="13">
+      <AccessRules/>
+      <Headers>
+        <Src Name="HeaderadcH5BJHPPLM5DIDFQBA4NH4UJAAA" Environment="explorer">
+          <xsc:Item>
+            <xsc:Java>import org.radixware.kernel.explorer.editors.monitoring.*;</xsc:Java>
+          </xsc:Item>
+        </Src>
+      </Headers>
+      <Bodies>
+        <Src Name="BodyadcXO6OMYIRCBD3ZNPPJMMZ34ARNM" Environment="explorer"/>
+      </Bodies>
+      <MethodGroup Id="cmgY4L3PZ6GSZFAHICHJKODQED5KQ" Name="Root"/>
+      <PropertyGroup Id="cpgTCKSLJIQPBF4LIAGVMBL5QWTCQ" Name="Root"/>
+      <Properties>
+        <Property Id="prd4257DIIZRVF2ZA5EQWLUESIVFY" Name="unitsWidget" Nature="2" IsConst="false" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="400" extStr="org.radixware.kernel.explorer.editors.monitoring.UnitsWidget"/>
+        </Property>
+      </Properties>
+      <Methods>
+        <Method Id="mthTQF6MRCXPVAUTFQVOH6AQJC24M" Name="ParagEditor_opened" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="widget" Id="mprWJ36WWHHWJG4LOMKE3FX7JQGWE">
+              <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="parCDX4BA646BG5DKJCYPHI77ECKM apmCDX4BA646BG5DKJCYPHI77ECKM prd4257DIIZRVF2ZA5EQWLUESIVFY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>=new UnitsWidget(widget,this,</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parCDX4BA646BG5DKJCYPHI77ECKM apmCDX4BA646BG5DKJCYPHI77ECKM mthY4NWIHH4IVCCBENVDQQSSGL77U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>());
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parCDX4BA646BG5DKJCYPHI77ECKM apmCDX4BA646BG5DKJCYPHI77ECKM prd4257DIIZRVF2ZA5EQWLUESIVFY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.open();
+
+widget.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthPUWBC7L4QFCCRCCPSXJY2HF5IY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().setMargin(0);
+widget.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthPUWBC7L4QFCCRCCPSXJY2HF5IY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().addWidget(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parCDX4BA646BG5DKJCYPHI77ECKM apmCDX4BA646BG5DKJCYPHI77ECKM prd4257DIIZRVF2ZA5EQWLUESIVFY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthY4NWIHH4IVCCBENVDQQSSGL77U" Name="createIdsGetter" Nature="0" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.editors.monitoring.UnitsWidget.IdsGetter"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>UnitsWidget.IdsGetter idsGetter=new UnitsWidget.IdsGetter(){
+    
+    public </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> getPropId(UnitsWidget.EPropertyName propName){       
+       if(UnitsWidget.EPropertyName.PARAM_CONTEXT_ID==propName)
+            return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="agcACQVZOMVVHWDBROXAAIT4AGD7E pgpC5NUYGXTMFDDNKAXRZLD5WCWSE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+       if(UnitsWidget.EPropertyName.PARAM_CONTEXT_TYPE==propName)
+            return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="agcACQVZOMVVHWDBROXAAIT4AGD7E pgpEHMEUTD3OVBXLKTYWCV4ZPCHSE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+      return null;
+    }
+
+//ExplorerItem
+    public </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> getExplorerItemId(UnitsWidget.EExplorerItemName explorerItemName){
+        if(UnitsWidget.EExplorerItemName.INSTANCE==explorerItemName)
+           return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parCDX4BA646BG5DKJCYPHI77ECKM xpiFHW6H3JOXBHTVMHXLTMPEZNHZI"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>; 
+        /*if(UnitsWidget.EExplorerItemName.INSTANCE_UNITS==explorerItemName)
+           return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E epr3M27YSVRRHNRDB5MAALOMT5GDM xpiOQENK3JCXTNRDB6QAALOMT5GDM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;*/
+//        if(UnitsWidget.EExplorerItemName.EVENTLOG==explorerItemName)
+//           return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parCDX4BA646BG5DKJCYPHI77ECKM xpiDWYBEZ57SVDH7CKCI7WNP2ANZ4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;    
+        if(UnitsWidget.EExplorerItemName.EVENTLOG_WITH_CONTEXT==explorerItemName)
+           return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parCDX4BA646BG5DKJCYPHI77ECKM xpi44KC6LQQ7BDJNPYGWD3MEOZT54"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;  
+       /* if(UnitsWidget.EExplorerItemName.INSTANCE_EVENTLOG==explorerItemName)
+           return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E epr3M27YSVRRHNRDB5MAALOMT5GDM xpiFBQHHMQD7FCYTDETSCZ43WSHNM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+        if(UnitsWidget.EExplorerItemName.UNIT_EVENTLOG==explorerItemName)
+           return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E eprXCFCDDGTRHNRDB5MAALOMT5GDM xpi4WMO3SCZAJCI3FZATPOE7NYPRI"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;// </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E eprPDXGNZYTFZCALDO2LBFUODKQJU xpiZOXL6SO5YBET3CQE4444AIRN6A"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+        if(UnitsWidget.EExplorerItemName.NET_CHANNEL_EVENTLOG==explorerItemName)
+           return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecHBE24OUE2DNRDB7AAALOMT5GDM eprFCNRWSZS2HNRDB7BAALOMT5GDM xpiBRI3VBA7XJCWXGJEMS4RNNRTK4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+        if(UnitsWidget.EExplorerItemName.METRIC_STATE==explorerItemName)
+           return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parCDX4BA646BG5DKJCYPHI77ECKM xpiNZGVNAE3OBFCZNXHZETJVPSOLI"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;  
+        if(UnitsWidget.EExplorerItemName.NET_CHANNEL_FOR_UNIT==explorerItemName)
+           return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aclK4UF4N3V3PNRDCEIAALOMT5GDM eprP7NUOAFYLVA5RPWVTPDLX4GNKI xpiK74BXXXOINA5XDK6RX6LUUNOOQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;// </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E eprPDXGNZYTFZCALDO2LBFUODKQJU xpiIFEHG2PZKRCWZIIJLQPUOS2YKI"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;*/
+        
+        if(UnitsWidget.EExplorerItemName.NET_CHANNEL==explorerItemName)
+           return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parCDX4BA646BG5DKJCYPHI77ECKM xpi4D4WLW6G2VA47GPU5BBIK7UVJA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+        if(UnitsWidget.EExplorerItemName.UNIT==explorerItemName)
+           return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parCDX4BA646BG5DKJCYPHI77ECKM xpiQO43ECU3VNFDVFAW4FR5ZQW6KI"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+        return null;
+    }
+    
+    public </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> getInstanceTableId(){
+        return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.changePrefix(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsHL2QKDVQX5FARACANDWKNIZ5OU aciVBTXX3CC5RBSZMHBPRLWWOMNKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+    }
+    public </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> getUnitTableId(){
+         return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.changePrefix(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsHL2QKDVQX5FARACANDWKNIZ5OU aciVBTXX3CC5RBSZMHBPRLWWOMNKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+    }    
+    public </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> getChannelTableId(){
+         return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.changePrefix(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecHBE24OUE2DNRDB7AAALOMT5GDM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsHL2QKDVQX5FARACANDWKNIZ5OU aciVBTXX3CC5RBSZMHBPRLWWOMNKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+    }
+ 
+    @Override
+    public </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> getCommandId(){
+        return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="clcROAUEPVUWBGCNHUKZNEVLLJE6U"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+    }    
+};
+return idsGetter;</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth5RGHEPKCKZEP5L3OOO363GZICQ" Name="ParagEditor_closed" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="parCDX4BA646BG5DKJCYPHI77ECKM apmCDX4BA646BG5DKJCYPHI77ECKM prd4257DIIZRVF2ZA5EQWLUESIVFY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.onClosed();
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parCDX4BA646BG5DKJCYPHI77ECKM apmCDX4BA646BG5DKJCYPHI77ECKM prd4257DIIZRVF2ZA5EQWLUESIVFY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>=null;</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+      </Methods>
+    </Model>
+    <View Id="cceCDX4BA646BG5DKJCYPHI77ECKM" Name="View">
+      <AccessRules IsPublished="false"/>
+      <ui:ui>
+        <ui:widget name="ParagEditor" id="wdgFKEQ3JFQDRDXJCJBG4M6SM7ACM" class="cceCDX4BA646BG5DKJCYPHI77ECKM" weight="0.0">
+          <ui:layout class="QVBoxLayout" name="verticalLayout"/>
+        </ui:widget>
+        <ui:connections>
+          <ui:connection>
+            <ui:sender>wdgFKEQ3JFQDRDXJCJBG4M6SM7ACM</ui:sender>
+            <ui:signal>opened(com.trolltech.qt.gui.QWidget widget)</ui:signal>
+            <ui:slot>mthTQF6MRCXPVAUTFQVOH6AQJC24M</ui:slot>
+          </ui:connection>
+          <ui:connection>
+            <ui:sender>wdgFKEQ3JFQDRDXJCJBG4M6SM7ACM</ui:sender>
+            <ui:signal>closed()</ui:signal>
+            <ui:slot>mth5RGHEPKCKZEP5L3OOO363GZICQ</ui:slot>
+          </ui:connection>
+        </ui:connections>
+      </ui:ui>
+    </View>
+  </AdsParagraphDefinition>
+</AdsDefinition>

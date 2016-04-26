@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdRZ3FCEGYPNBLNK7FFBK5K4WRWU" Name="ImpExpXsd" TargetNamespace="http://schemas.tranzaxis.com/scheduling-impExp.xsd" Environment="common"><ads:AccessRules IsPublished="false"/><xs:schema targetNamespace="http://schemas.tranzaxis.com/scheduling-impExp.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:t="http://schemas.radixware.org/types.xsd" xmlns:this="http://schemas.tranzaxis.com/scheduling-impExp.xsd">
+	<xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+	<xs:simpleType name="COper">
+		<xs:annotation>
+			<xs:documentation>Enum Scheduling::Oper</xs:documentation>
+			<xs:appinfo source="http://schemas.radixware.org/types.xsd">
+				<t:class classId="acsVA7VVTUNEBFXLNKSXHQ4A75NVY">org.radixware.ads.mdlOWL3XYSM2ZDNHOW7W7XKT54GRE.common.acsVA7VVTUNEBFXLNKSXHQ4A75NVY</t:class>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="t:CharEnum"/>
+	</xs:simpleType>
+	<xs:simpleType name="COffsetDir">
+		<xs:annotation>
+			<xs:documentation>Enum OffsetDir</xs:documentation>
+			<xs:appinfo source="http://schemas.radixware.org/types.xsd">
+				<t:class classId="acsDVW367ITGZA5RFDEOKSNUSKAFI">org.radixware.ads.mdlXYRYD6JFXBFV5OH6CM64X7Y7GA.common.acsDVW367ITGZA5RFDEOKSNUSKAFI</t:class>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="t:IntEnum"/>
+	</xs:simpleType>
+	<xs:complexType name="CalendarItem">
+		<xs:attribute name="Seq" type="t:Int" use="required"/>
+		<xs:attribute name="ClassId" type="t:Id" use="required"/>
+		<xs:attribute name="Oper" type="this:COper" use="required"/>
+		<xs:attribute name="Offset" type="t:Int" use="optional"/>
+		<xs:attribute name="OffsetDir" type="this:COffsetDir" use="optional"/>
+		<xs:attribute name="AbsDate" type="t:DateTime" use="optional"/>
+		<xs:attribute name="IncCalendarGuid" type="t:Str" use="optional"/>
+	</xs:complexType>
+	<xs:element name="CalendarItem" type="this:CalendarItem"/>
+	<xs:complexType name="Calendar">
+		<xs:sequence>
+			<xs:element name="Item" type="this:CalendarItem" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="Guid" type="t:Str" use="required"/>
+		<xs:attribute name="ClassId" type="t:Id" use="required"/>
+		<xs:attribute name="Title" type="t:Str" use="optional"/>
+		<xs:attribute name="Notes" type="t:Str" use="optional"/>
+	</xs:complexType>
+	<xs:element name="Calendar" type="this:Calendar"/>
+	<xs:complexType name="CalendarGroup">
+		<xs:sequence>
+			<xs:element name="Calendar" type="this:Calendar" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="CalendarGroup" type="this:CalendarGroup"/>
+	<xs:complexType name="IntervalItem">
+		<xs:attribute name="CalendarGuid" type="t:Str" use="optional"/>
+		<xs:attribute name="StartTime" type="t:Int" use="required"/>
+		<xs:attribute name="EndTime" type="t:Int" use="required"/>
+	</xs:complexType>
+	<xs:element name="IntervalItem" type="this:IntervalItem"/>
+	<xs:complexType name="IntervalSchedule">
+		<xs:sequence>
+			<xs:element name="Item" type="this:IntervalItem" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="Id" type="t:Int" use="required"/>
+		<xs:attribute name="Guid" type="t:Str" use="required"/>
+		<xs:attribute name="Title" type="t:Str" use="optional"/>
+		<xs:attribute name="Notes" type="t:Str" use="optional"/>
+	</xs:complexType>
+	<xs:element name="IntervalSchedule" type="this:IntervalSchedule"/>
+	<xs:complexType name="IntervalScheduleGroup">
+		<xs:sequence>
+			<xs:element name="Interval" type="this:IntervalSchedule" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="IntervalScheduleGroup" type="this:IntervalScheduleGroup"/>
+	<xs:complexType name="EventItem">
+		<xs:attribute name="CalendarGuid" type="t:Str" use="optional"/>
+                <xs:attribute name="TimeZoneRegion" type="t:Str" use="optional"/>
+		<xs:attribute name="Repeatable" type="t:Bool" use="required"/>
+		<xs:attribute name="StartTime" type="t:Int" use="required"/>
+		<xs:attribute name="EndTime" type="t:Int" use="required"/>
+		<xs:attribute name="Period" type="t:Int" use="optional"/>
+		<xs:attribute name="EventTime" type="t:Int" use="required"/>
+	</xs:complexType>
+	<xs:element name="EventItem" type="this:EventItem"/>
+	<xs:complexType name="EventSchedule">
+		<xs:sequence>
+			<xs:element name="Item" type="this:EventItem" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="Id" type="t:Int" use="required"/>
+		<xs:attribute name="Guid" type="t:Str" use="required"/>
+		<xs:attribute name="Title" type="t:Str" use="optional"/>
+		<xs:attribute name="Notes" type="t:Str" use="optional"/>
+	</xs:complexType>
+	<xs:element name="EventSchedule" type="this:EventSchedule"/>
+	<xs:complexType name="EventScheduleGroup">
+		<xs:sequence>
+			<xs:element name="Event" type="this:EventSchedule" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="EventScheduleGroup" type="this:EventScheduleGroup"/>
+</xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

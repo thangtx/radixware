@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicGH7XLOKTHVBOLOR7OD477M6LXM" Name="IChildNodesProvider" Type="5" Environment="web">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.wps.views.selector.tree.ISelectorTreeChildNodesProvider"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderaicGH7XLOKTHVBOLOR7OD477M6LXM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaicGH7XLOKTHVBOLOR7OD477M6LXM"/>
+    </Bodies>
+    <MethodGroup Id="cmgHV65JFCXXJC7PAONMNAJD5DA6Y" Name="Root"/>
+    <PropertyGroup Id="cpgFBLEJ2KSRBFC7JYW7HN4UTYSRA" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthU7JZBKO35RDUTBYTAQV5GTIIDA" Name="createChildNodes" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="createChildNodes(Lorg.radixware.wps.views.selector.tree.IRwtSelectorTree;Lorg.radixware.wps.views.selector.tree.SelectorTreeNode;)Ljava.util.List&lt;Lorg.radixware.wps.views.selector.tree.SelectorTreeNode;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="selectorTree" Id="mprD3KWZMVYXBDSLPYLTDJMV77AU4">
+            <Type TypeId="400" extStr="org.radixware.wps.views.selector.tree.IRwtSelectorTree"/>
+          </Parameter>
+          <Parameter Name="parentNode" Id="mpr2RUL5VHRRFDHHBAGNCEA24J3E4">
+            <Type TypeId="400" extStr="org.radixware.wps.views.selector.tree.SelectorTreeNode"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.wps.views.selector.tree.SelectorTreeNode"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

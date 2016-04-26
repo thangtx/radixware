@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="accHF7DJ7IEHREBLBUZQYNTUUOVBQ" Name="RecentlyActiveChildsCount" Type="4">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderaccHF7DJ7IEHREBLBUZQYNTUUOVBQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaccHF7DJ7IEHREBLBUZQYNTUUOVBQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgOQ55JCMTXBBYZENUGTG5C3MPWE" Name="Root"/>
+    <PropertyGroup Id="cpgHE3BGEWKRVCX5GFP4ZW225GNT4" Name="Root"/>
+    <Properties>
+      <Property Id="prm5NU7RLKGJBAEXPMQFQ2KHJJ2IE" Name="pParentId" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prfAZDGVKVTQNCEZAKQUV6UDYHTEI" Name="count" Nature="3" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="open" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="pParentId" Id="mpr5NU7RLKGJBAEXPMQFQ2KHJJ2IE">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="accHF7DJ7IEHREBLBUZQYNTUUOVBQ"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="true">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>select count(*) as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accHF7DJ7IEHREBLBUZQYNTUUOVBQ" PropId="prfAZDGVKVTQNCEZAKQUV6UDYHTEI" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" PropId="colBHMUC3KGIJE3PA6RVXKLXFHP3U" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prm5NU7RLKGJBAEXPMQFQ2KHJJ2IE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> 
+and (sysdate - greatest(</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" PropId="colMX5YRN5VQBDXDENSJNDBHHMKPE" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, cast(nvl(</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" PropId="colDQSM4MYVNVDZJIYOCLNDQG3HWM" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, nvl(</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" PropId="colU6DGXRTARRBNPLA6PLNVYQCOVM" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" PropId="colRMU7WRHOUZDINIVZWJHT6KSOFM" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>)) as date))) &lt; 1 / 24 / 60</xsc:Sql>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+        <UsedTable TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="411" Path="pdcCursor____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

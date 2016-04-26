@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="accFYRNNIJSMZFKFLRNHJPT3FSDFI" Name="CfgItemsCursor" Type="4">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderaccFYRNNIJSMZFKFLRNHJPT3FSDFI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaccFYRNNIJSMZFKFLRNHJPT3FSDFI"/>
+    </Bodies>
+    <MethodGroup Id="cmgN66AEON2DRFEJNAW46I4O44NUA" Name="Root"/>
+    <PropertyGroup Id="cpgOKZQWF3CCZBVDN44FBGSGE7HOY" Name="Root"/>
+    <Properties>
+      <Property Id="prmTVBG3QKDPFFX3IMCDAWENWQZ4I" Name="packetId" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prmW2OU2ZQ2SBHC7ARJXSNNO6XPIY" Name="filterByParent" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="1"/>
+      </Property>
+      <Property Id="prfTPRJENHWPZEIVHD6VIWB2U6RSY" Name="item" Nature="10" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="31" Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+        <FieldToColumnMap>
+          <Item ColumnId="colIUQVQZZKPFBRLG7DTABUYGLYBQ" FieldId="prf373P3MZY45BDNFQEUUCWRPMJLU"/>
+          <Item ColumnId="colJQK7LYSZW5FS7NYEXFUKCIR4O4" FieldId="prfQ57GWPHGXRHPNDGDIF5FUBGQH4"/>
+        </FieldToColumnMap>
+      </Property>
+      <Property Id="prf373P3MZY45BDNFQEUUCWRPMJLU" Name="id" Nature="3" IsConst="true" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prfQ57GWPHGXRHPNDGDIF5FUBGQH4" Name="classGuid" Nature="3" IsConst="true" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prm5JIEVGBZNNEXLIOTLQOXBMYFUQ" Name="parentId" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="open" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="packetId" Id="mprTVBG3QKDPFFX3IMCDAWENWQZ4I">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="filterByParent" Id="mprW2OU2ZQ2SBHC7ARJXSNNO6XPIY">
+            <Type TypeId="1"/>
+          </Parameter>
+          <Parameter Name="parentId" Id="mpr5JIEVGBZNNEXLIOTLQOXBMYFUQ">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="accFYRNNIJSMZFKFLRNHJPT3FSDFI"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>select </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblJ4WZRLJ23BGMBKQ2JBSOBEGBP4" PropId="colIUQVQZZKPFBRLG7DTABUYGLYBQ" Owner="NONE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accFYRNNIJSMZFKFLRNHJPT3FSDFI" PropId="prf373P3MZY45BDNFQEUUCWRPMJLU" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblJ4WZRLJ23BGMBKQ2JBSOBEGBP4" PropId="colJQK7LYSZW5FS7NYEXFUKCIR4O4" Owner="NONE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accFYRNNIJSMZFKFLRNHJPT3FSDFI" PropId="prfQ57GWPHGXRHPNDGDIF5FUBGQH4" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblJ4WZRLJ23BGMBKQ2JBSOBEGBP4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+where 
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblJ4WZRLJ23BGMBKQ2JBSOBEGBP4" PropId="colTUL7C3425VCCNC5ELKDFZBWJOY" Owner="NONE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmTVBG3QKDPFFX3IMCDAWENWQZ4I"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IfParam ParamId="prmW2OU2ZQ2SBHC7ARJXSNNO6XPIY" Operation="Equal">
+            <xsc:Value>1</xsc:Value>
+          </xsc:IfParam>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>    
+    and (
+        </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prm5JIEVGBZNNEXLIOTLQOXBMYFUQ"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> is null and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblJ4WZRLJ23BGMBKQ2JBSOBEGBP4" PropId="colJ5L5OI3X4BHYBPJFGAWUO4MKZM" Owner="NONE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> is null
+        or 
+        </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblJ4WZRLJ23BGMBKQ2JBSOBEGBP4" PropId="colJ5L5OI3X4BHYBPJFGAWUO4MKZM" Owner="NONE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prm5JIEVGBZNNEXLIOTLQOXBMYFUQ"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>)
+ORDER BY </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblJ4WZRLJ23BGMBKQ2JBSOBEGBP4" PropId="colIUQVQZZKPFBRLG7DTABUYGLYBQ" Owner="NONE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:ElseIf/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+START WITH </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblJ4WZRLJ23BGMBKQ2JBSOBEGBP4" PropId="colJ5L5OI3X4BHYBPJFGAWUO4MKZM" Owner="NONE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> is null
+CONNECT BY  </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblJ4WZRLJ23BGMBKQ2JBSOBEGBP4" PropId="colJ5L5OI3X4BHYBPJFGAWUO4MKZM" Owner="NONE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = PRIOR </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblJ4WZRLJ23BGMBKQ2JBSOBEGBP4" PropId="colIUQVQZZKPFBRLG7DTABUYGLYBQ" Owner="NONE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+ORDER SIBLINGS BY </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblJ4WZRLJ23BGMBKQ2JBSOBEGBP4" PropId="colIUQVQZZKPFBRLG7DTABUYGLYBQ" Owner="NONE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:EndIf/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>        
+    </xsc:Sql>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblJ4WZRLJ23BGMBKQ2JBSOBEGBP4"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="411" Path="pdcCursor____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

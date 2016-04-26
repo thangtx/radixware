@@ -1,0 +1,222 @@
+/*
+ * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. This Source Code is distributed
+ * WITHOUT ANY WARRANTY; including any implied warranties but not limited to
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * Mozilla Public License, v. 2.0. for more details.
+ */
+
+package org.radixware.kernel.designer.ads.build.dialogs;
+
+import java.awt.Component;
+import java.util.LinkedList;
+import java.util.Map;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.ListModel;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ListDataListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import org.radixware.kernel.common.repository.Layer;
+
+
+public class ReleaseNotesPanel extends javax.swing.JPanel {
+
+    private static class LayerListModelItem {
+
+        private final Layer layer;
+        private String comment;
+
+        public LayerListModelItem(Layer layer, String comment) {
+            this.layer = layer;
+            this.comment = comment;
+        }
+    }
+
+    private static class LayerListModel implements ListModel {
+
+        private LinkedList<LayerListModelItem> items = new LinkedList<LayerListModelItem>();
+
+        private LayerListModel(final Map<Layer, String> layerComments) {
+            for (Map.Entry<Layer, String> e : layerComments.entrySet()) {
+                items.add(new LayerListModelItem(e.getKey(), e.getValue()));
+            }
+        }
+
+        @Override
+        public int getSize() {
+            return items.size();
+        }
+
+        @Override
+        public Object getElementAt(int index) {
+            return items.get(index);
+        }
+
+        @Override
+        public void addListDataListener(ListDataListener l) {
+        }
+
+        @Override
+        public void removeListDataListener(ListDataListener l) {
+        }
+    }
+    private final LayerListModel model;
+    private LayerListModelItem currentItem;
+    private String commentValue;
+
+    private static class ListRenderer extends DefaultListCellRenderer {
+
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            if (value instanceof LayerListModelItem) {
+                Layer l = ((LayerListModelItem) value).layer;
+                JLabel label = new JLabel(l.getName() + " (" + l.getURI() + ")");
+                label.setBackground(c.getBackground());
+                label.setForeground(c.getForeground());
+                label.setIcon(l.getIcon().getIcon());
+                label.setOpaque(true);
+                return label;
+            } else {
+                return c;
+            }
+        }
+    }
+
+    /** Creates new form ReleaseNotesPanel */
+    public ReleaseNotesPanel(final Map<Layer, String> layerComments) {
+        initComponents();
+        //edNotes.setContentType("text/html");
+        model = new LayerListModel(layerComments);
+        edHint.setContentType("text/html");
+        this.lstLayers.setModel(model);
+        this.lstLayers.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                for (int i = e.getFirstIndex(); i <= e.getLastIndex(); i++) {
+                    if (lstLayers.isSelectedIndex(i)) {
+                        final LayerListModelItem item = (LayerListModelItem) model.getElementAt(i);
+                        SwingUtilities.invokeLater(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                setCurrentItem(item);
+                            }
+                        });
+                        break;
+                    }
+                }
+            }
+        });
+        this.lstLayers.setCellRenderer(new ListRenderer());
+        if (this.model.getSize() > 0) {
+            lstLayers.setSelectedIndex(0);
+        }
+    }
+
+    private void setCurrentItem(LayerListModelItem item) {
+        synchronized (this) {
+            save();
+            this.currentItem = item;
+            edHint.setText(item.comment);
+        }
+    }
+
+    private void save() {
+        synchronized (this) {
+            this.commentValue = edNotes.getHtml();//.getText();
+        }
+    }
+
+    /** This method is called from within the constructor to
+     * initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is
+     * always regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jSplitPane2 = new javax.swing.JSplitPane();
+        edNotes = new org.radixware.kernel.designer.ads.build.dialogs.HtmlEditorPane();
+        jPanel1 = new javax.swing.JPanel();
+        jSplitPane1 = new javax.swing.JSplitPane();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        lstLayers = new javax.swing.JList();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        edHint = new javax.swing.JEditorPane();
+        jLabel1 = new javax.swing.JLabel();
+
+        jSplitPane2.setDividerLocation(250);
+        jSplitPane2.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        jSplitPane2.setTopComponent(edNotes);
+
+        jSplitPane1.setDividerLocation(140);
+
+        jScrollPane1.setViewportView(lstLayers);
+
+        jSplitPane1.setLeftComponent(jScrollPane1);
+
+        edHint.setEditable(false);
+        jScrollPane2.setViewportView(edHint);
+
+        jSplitPane1.setRightComponent(jScrollPane2);
+
+        jLabel1.setText(org.openide.util.NbBundle.getMessage(ReleaseNotesPanel.class, "ReleaseNotesPanel.jLabel1.text")); // NOI18N
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jLabel1)
+                .addContainerGap())
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 661, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE))
+        );
+
+        jSplitPane2.setRightComponent(jPanel1);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jSplitPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 661, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jSplitPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 453, Short.MAX_VALUE)
+        );
+    }// </editor-fold>//GEN-END:initComponents
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JEditorPane edHint;
+    private org.radixware.kernel.designer.ads.build.dialogs.HtmlEditorPane edNotes;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JSplitPane jSplitPane2;
+    private javax.swing.JList lstLayers;
+    // End of variables declaration//GEN-END:variables
+
+    public String getResult() {
+        synchronized (this) {
+            save();
+            return commentValue;
+        }
+    }
+}

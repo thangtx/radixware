@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdF7OX3BB4S5EQ5HUH64YVESKNXE" Name="CommandsXsd" TargetNamespace="http://schemas.radixware.org/userreportcommands.xsd" Environment="common"><ads:AccessRules IsPublished="false"/><xs:schema targetNamespace="http://schemas.radixware.org/userreportcommands.xsd" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:this="http://schemas.radixware.org/userreportcommands.xsd">
+  <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+  <xs:element name="CompileRs">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="BrokenReport" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ModuleListRq">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Guid" type="xs:string" minOccurs="0"/>                 
+      </xs:sequence>
+    </xs:complexType>    
+  </xs:element>
+  <xs:element name="ModuleListRs">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Module" minOccurs="0" maxOccurs="unbounded">
+            <xs:complexType>
+                <xs:attribute name="Guid" type="xs:string"/>
+                <xs:attribute name="Name" type="xs:string"/>
+                <xs:attribute name="Description" type="xs:string"/>
+                <xs:attribute name="Images" type="xs:string"/>
+            </xs:complexType> 
+         </xs:element>          
+      </xs:sequence>
+    </xs:complexType>    
+  </xs:element>
+  <xs:element name="ReportDataRq">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="ReportData" minOccurs="0" maxOccurs="unbounded">
+            <xs:complexType>
+                <xs:attribute name="ReportId" type="xs:string"/>
+                <xs:attribute name="Version" type="xs:int"/>
+            </xs:complexType> 
+         </xs:element>          
+      </xs:sequence>
+    </xs:complexType>    
+  </xs:element>
+  <xs:element name="ReportDataRs">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="ReportData" minOccurs="0" maxOccurs="unbounded">
+            <xs:complexType>
+                <xs:attribute name="ReportId" type="xs:string"/>
+                <xs:attribute name="Version" type="xs:int"/>
+            </xs:complexType> 
+         </xs:element>          
+      </xs:sequence>
+    </xs:complexType>    
+  </xs:element>
+  <xs:element name="ReportValidationRs">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="ValidationResult" type="xs:string" minOccurs="0"/>                 
+      </xs:sequence>
+    </xs:complexType>    
+  </xs:element>
+</xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

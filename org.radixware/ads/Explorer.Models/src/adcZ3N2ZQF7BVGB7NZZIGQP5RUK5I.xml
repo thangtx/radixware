@@ -1,0 +1,821 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I" Name="GroupModel" Type="3" Environment="common-client">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.models.GroupModel"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcMBO4EABKTJAEPFNKAXPVAIDO74"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcMXE4GVC4JBFOFCUIUI7LAEGN3Y"/>
+    </Bodies>
+    <MethodGroup Id="cmgC27VFXGPWBAYBIEYOBUAL7546Q" Name="Root"/>
+    <PropertyGroup Id="cpgLUTLZ77Y5RGIBO2ZNXXFCV7U5U" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthCMMQA4Y6AZCZBONXZK7JOIPCVY" Name="afterDeleteAll" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="afterDeleteAll()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthE6AHF62NHVA7NGGS243MKALFLY" Name="beforeDeleteAll" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="beforeDeleteAll()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthWOCOO7FGIRAUZAXHW6GDP6MW44" Name="beforePresentClassList" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="beforePresentClassList(Ljava.util.List&lt;Lorg.radixware.kernel.common.client.types.InstantiatableClass;>;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="classes" Id="mprSLWCWVWDNVH27PYXNRBHCE5ZLU">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.types.InstantiatableClass"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthP2OXKJGPANG5BGZR4OOXTZADQY" Name="GroupModel" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.client.meta.RadSelectorPresentationDef;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprGCJH53VVZ5DGPLQV7KSHPB7YCQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="def" Id="mprJCVIXPLSXFGHNPZTWHVKWTASCU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.RadSelectorPresentationDef"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthALWOM6UFNBERLOKZDB2LFPVJIQ" Name="deleteAll" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="deleteAll(Z)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="forced" Id="mprVY2BLOLHWFHV5HMZDLLLRQS4FA">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthHSJRSDLLGNFC3FNFWH6JYKF6JU" Name="findEntityByPid" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="findEntityByPid(Lorg.radixware.kernel.common.client.types.Pid;)I"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="pid" Id="mpr3EK54KEPHVGXDHJPAHM5UCRVIQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.types.Pid"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mth4NPCIMYGRRHOREV4VOJUASXPNU" Name="getCondition" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getCondition()Lorg.radixware.schemas.xscml.Sqml;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.schemas.xscml.Sqml"/>
+      </Method>
+      <Method Id="mth6XVPXPFNRRFU3MZS5NKFXJIXBQ" Name="getCurrentFilter" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getCurrentFilter()Lorg.radixware.kernel.common.client.models.FilterModel;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.FilterModel"/>
+      </Method>
+      <Method Id="mthVXNK6YPP55GBTEQ5CQV7XGG7UA" Name="getEditorPresentationIdForChoosenEntity" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getEditorPresentationIdForChoosenEntity(Lorg.radixware.kernel.common.client.models.EntityModel;)Lorg.radixware.kernel.common.types.Id;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="entity" Id="mprZBBWJY6ZOJF6BCRRJFG7FYWY74">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+      </Method>
+      <Method Id="mthYHN55SVDIJB3NGDNZFL7WXHUUI" Name="getEntitiesCount" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getEntitiesCount()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthJPXQM7X2QJCKLPOPNBVIYDG2QU" Name="getFilters" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getFilters()Lorg.radixware.kernel.common.client.models.groupsettings.Filters;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.groupsettings.Filters"/>
+      </Method>
+      <Method Id="mth3ZOJ6C3GEFCDTPA6KWIQWOH5DM" Name="getGroupContext" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getGroupContext()Lorg.radixware.kernel.common.client.models.IContext.Group;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.IContext.Group"/>
+      </Method>
+      <Method Id="mthZXE6WCYOH5BDBAFPP42T4QYQVI" Name="getGroupView" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getGroupView()Lorg.radixware.kernel.common.client.views.ISelector;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.views.ISelector"/>
+      </Method>
+      <Method Id="mth7V2FKZWTGVDQZBAK5L5XDXXIQY" Name="getRestrictions" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getRestrictions()Lorg.radixware.kernel.common.client.types.GroupRestrictions;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.types.GroupRestrictions"/>
+      </Method>
+      <Method Id="mthZM4QG7TWRFFXBFRDNDZGY4FLGU" Name="getSelectorColumn" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getSelectorColumn(Lorg.radixware.kernel.common.types.Id;)Lorg.radixware.kernel.common.client.models.items.SelectorColumnModelItem;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="propertyId" Id="mprONIZSRWL4RAZBOCEKJHSZQQYWU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.items.SelectorColumnModelItem"/>
+      </Method>
+      <Method Id="mthQG2RNZD3Z5ADNARTXSPMI5RBSM" Name="getSelectorPresentationDef" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getSelectorPresentationDef()Lorg.radixware.kernel.common.client.meta.RadSelectorPresentationDef;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.RadSelectorPresentationDef"/>
+      </Method>
+      <Method Id="mth346TTHTMVFCOXEJVJ4ERJOBEYI" Name="hasMoreRows" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="hasMoreRows()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthS3Z4USODWVABXCICGE2P3UMGLA" Name="isEmpty" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isEmpty()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthPDBGJJ5O2NFR5PG2NRAF6BSTX4" Name="onSelectCreationClass" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="onSelectCreationClass()Lorg.radixware.kernel.common.types.Id;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+      </Method>
+      <Method Id="mthIVCGSFJ3BNDK5JABBYI6RVE4SI" Name="openChildTableSelectorModel" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="openChildTableSelectorModel(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.client.models.EntityModel;Lorg.radixware.kernel.common.client.models.Model;Lorg.radixware.kernel.common.client.meta.explorerItems.RadChildRefExplorerItemDef;)Lorg.radixware.kernel.common.client.models.GroupModel;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mpr5EDIXIPBXZE5JF2WMQSV2VW4AM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parentEntityModel" Id="mprP7BBR3XG5ZGR5C2JRWEMNA4HHA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+          <Parameter Name="holderModel" Id="mprHM3KGVDJKJBB5LQNPLRGSUMLZE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.Model"/>
+          </Parameter>
+          <Parameter Name="explorerItem" Id="mprHGAOC3MQKJBRRONV2KVS3N3CII">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.explorerItems.RadChildRefExplorerItemDef"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+      </Method>
+      <Method Id="mthGKBO5M5ZQVAZ5FZGH4XVC2SKKA" Name="openCreatingEntity" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="openCreatingEntity(Lorg.radixware.kernel.common.types.Id;Lorg.radixware.kernel.common.client.models.EntityModel;)Lorg.radixware.kernel.common.client.models.EntityModel;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="classId" Id="mprT5RVAZLFRBHZVLZRWYNJP66PYE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+          <Parameter Name="entity" Id="mprYCOQGVESLNEPJAASS2I3BDBG5A">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthLRNHEHWJCRFOFBLTY6AWEQP7WI" Name="openTableContextlessSelectorModel" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="openTableContextlessSelectorModel(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.client.meta.RadSelectorPresentationDef;)Lorg.radixware.kernel.common.client.models.GroupModel;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="env" Id="mpr3AM3SPPN5ZBWXDBAC2DBOKFRCY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="def" Id="mpr5AJ2SDW5SNAJFHI4O25SA5D6YY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.RadSelectorPresentationDef"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+      </Method>
+      <Method Id="mthVFNYFZMIBBBRZIWA6U4AZ5SQSI" Name="openTableSelectorModel" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="openTableSelectorModel(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.client.models.EntityModel;Lorg.radixware.kernel.common.client.models.Model;Lorg.radixware.kernel.common.client.meta.explorerItems.RadSelectorExplorerItemDef;)Lorg.radixware.kernel.common.client.models.GroupModel;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprQZCNSF64M5BQXDX6RQ6U7VEGKM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parentEntityModel" Id="mprKVURYRZYERDUJIIJQ5RKW2BWMI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+          <Parameter Name="holderModel" Id="mprJTKJ7DT5JJAVFFYX4NH744EH2Y">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.Model"/>
+          </Parameter>
+          <Parameter Name="explorerItem" Id="mprYU3LDGLSDJEBFDVXAP5GWPN6DY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.explorerItems.RadSelectorExplorerItemDef"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+      </Method>
+      <Method Id="mthYXWPDZ5WKFFPRL7HSQIANMSDLM" Name="readMore" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="readMore()V"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthTWGZXH7T4JF2FLJONDWDTAGIFA" Name="removeCondition" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="removeCondition()V"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthDODBRYCQPZHQ3LPAC3UUUXPFOY" Name="removeRow" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="removeRow(I)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="row" Id="mpr4HWABBSBEFEDJL4TRH62TF5MO4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthDDRJNUZBZREGPJL2UQOGDRVIPE" Name="reread" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="reread()V"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthUAHFQUVWTBERVKQEUR5YZSSLBU" Name="reset" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="reset()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth4FGM3PUDKVERFKZNQT2YMJY75M" Name="setColorScheme" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setColorScheme(Lorg.radixware.schemas.eas.ColorScheme;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="cs" Id="mprCFMA3RNZINE3RHPN7HSAOE6QWA">
+            <Type TypeId="400" extStr="org.radixware.schemas.eas.ColorScheme"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth3DVRUOM4HNGBJABKCV7VI7WDVU" Name="setCondition" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setCondition(Lorg.radixware.kernel.common.scml.SqmlExpression;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="expression" Id="mprNXBAP57THRHVJEX7KQCND6GQDI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.scml.SqmlExpression"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthW6SYUHIDLZEZDA6L2MIAXO4KIY" Name="setFilter" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setFilter(Lorg.radixware.kernel.common.client.models.FilterModel;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="filter" Id="mprLX5ERRN7QJFCVMIU2H4FN2ZVZE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.FilterModel"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.client.exceptions.InvalidPropertyValueException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.client.exceptions.PropertyIsMandatoryException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthH4JDQH4WZBDGNGEFAKIQFDAG7I" Name="afterRead" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="afterRead(Ljava.util.List&lt;Lorg.radixware.kernel.common.client.models.EntityModel;>;Ljava.util.List&lt;Lorg.radixware.kernel.common.types.Id;>;Ljava.util.EnumSet&lt;Lorg.radixware.kernel.common.enums.ERestriction;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="newEntities" Id="mpr2BSXBF62IZF6HBAH25ZAWU7IOE">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="serverDisabledCommands" Id="mprWFROAYC6WJCLVDOVLWXDJUDDQ4">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="serverRestrictions" Id="mprOOUPYK6Z3FBW5D344PGQA5TTGE">
+            <Type TypeId="400" extStr="java.util.EnumSet">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.enums.ERestriction"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth6WH2WYTT2RHGJNGVZOE5LGJI5A" Name="readMoreAsync" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="readMoreAsync()Lorg.radixware.kernel.common.client.eas.SelectRequestHandle;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.eas.SelectRequestHandle"/>
+      </Method>
+      <Method Id="mthJU5F2YHA6FDO7AWB7MLWQBP3SI" Name="setEntitySelectionController" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setEntitySelectionController(Lorg.radixware.kernel.common.client.models.IEntitySelectionController;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="controller" Id="mprEPTT5Y7HF5FRZCMX3TGCKKIDRE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.IEntitySelectionController"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth2WYIGFEZYRF37MLJQKURTWGEDQ" Name="openTableContextlessSelectorModel" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="openTableContextlessSelectorModel(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.types.Id;Lorg.radixware.kernel.common.types.Id;)Lorg.radixware.kernel.common.client.models.GroupModel;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="env" Id="mprAYB2CTIWGFHH3AKPQBX7RK7EPY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="classId" Id="mprJEVVA5W2NNDM7JGQITRBBKW2IU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+          <Parameter Name="selPresId" Id="mprWHAQXKPHXNGHDLLKLBMAD2CVNM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+      </Method>
+      <Method Id="mth2MZZOBQ3HRHTLAMQHMCCQ5Y7VI" Name="setCondition" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setCondition(Lorg.radixware.schemas.xscml.Sqml;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="condition" Id="mprFLEHNBSD7BBODOSGKP4ELD3SEM">
+            <Type TypeId="400" extStr="org.radixware.schemas.xscml.Sqml"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthI4E6W7FXTNAFREJGPHQT5NO7JA" Name="openCreatingEntity" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="openCreatingEntity(Lorg.radixware.kernel.common.types.Id;Lorg.radixware.kernel.common.client.models.EntityModel;Ljava.util.Map&lt;Lorg.radixware.kernel.common.types.Id;Ljava.lang.Object;>;)Lorg.radixware.kernel.common.client.models.EntityModel;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="classId" Id="mpr4KNOED3RJVC5JCBCAMMQ3BXOY4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+          <Parameter Name="entity" Id="mprM2P7LHW4KVGB5L5U6TP7QDNLCI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+          <Parameter Name="initValues" Id="mprDINTEZWYTZHN7GOTXUEWUSJFXU">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthLBVPXLYV6ZHI7HEKXQMWC565ZI" Name="isAuditEnabled" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isAuditEnabled()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth653QFY5NABGNNK2KYQZAY6NDWY" Name="getSelectorColumns" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getSelectorColumns()Lorg.radixware.kernel.common.client.models.items.SelectorColumns;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.items.SelectorColumns"/>
+      </Method>
+      <Method Id="mthGMOKCDRCKJDFVL5QKH4NN4366Y" Name="getCurrentSorting" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getCurrentSorting()Lorg.radixware.kernel.common.client.meta.RadSortingDef;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.RadSortingDef"/>
+      </Method>
+      <Method Id="mth5H5TN34RPVABHKDJF5FEEIF6G4" Name="getSortings" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getSortings()Lorg.radixware.kernel.common.client.models.groupsettings.Sortings;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.groupsettings.Sortings"/>
+      </Method>
+      <Method Id="mthZZLSLA72EFCD3PWDYEMGBKGK7I" Name="isBrokenEntity" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isBrokenEntity(I)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mpr2YR7DWCQFFHBVJR4MLVMPHA534">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthZ6CBD7LYXBHMBCFA4JIR2VGC3A" Name="applySettings" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="applySettings(Lorg.radixware.kernel.common.client.models.FilterModel;Lorg.radixware.kernel.common.client.meta.RadSortingDef;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="filter" Id="mprEENIZJD3BBA3NGFBBC2HTLICRA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.FilterModel"/>
+          </Parameter>
+          <Parameter Name="sorting" Id="mpr2VL4LHHSCBFEDJCJNKSGUL63VY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.RadSortingDef"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.client.exceptions.InvalidPropertyValueException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.client.exceptions.PropertyIsMandatoryException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthARV3U2S4MFEYPIPJYGXL2HZ5CI" Name="getEntity" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getEntity(I)Lorg.radixware.kernel.common.client.models.EntityModel;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="i" Id="mprHJ2XBQFIMVEM3IVEJO5DG3KJLI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.client.exceptions.BrokenEntityObjectException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth7G3BNSWD7RGU7FVV5SB4YNWZIE" Name="getRequestHandles" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getRequestHandles(Ljava.lang.Class&lt;+Lorg.apache.xmlbeans.XmlObject;>;)Ljava.util.Collection&lt;Lorg.radixware.kernel.common.client.eas.RequestHandle;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprZHQKNGQUHZGL5DHOVRT53QKG4Y">
+            <Type TypeId="400" extStr="java.lang.Class">
+              <xsc:GenericArguments>
+                <xsc:Argument DerivationRule="extends" Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.Collection">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.eas.RequestHandle"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthUQFP4QDWBFEKBGHQJYMFQKG7DE" Name="readToEntity" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="readToEntity(Lorg.radixware.kernel.common.client.types.Pid;Ljava.lang.String;)I"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="pid" Id="mprHIVZLTEPINFS3OGAXH3OG2PH3Y">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.types.Pid"/>
+          </Parameter>
+          <Parameter Name="processTitle" Id="mprYJUN6LYMVND75CCYL5QBEVIZEI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthSEYIKK35FBA6LHSAYPD3PHB3IQ" Name="setSorting" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setSorting(Lorg.radixware.kernel.common.client.meta.RadSortingDef;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="def" Id="mprLZGRUJRVZBBXFFFSUOHZWMZGJ4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.RadSortingDef"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth3KQIXBGMBFFY7BHMS3T7X7CHIA" Name="onChangeRestriction" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="onChangeRestriction()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthXV2RLTFTKZAR5M6H4DK3YYKAIQ" Name="getAsyncReader" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getAsyncReader()Lorg.radixware.kernel.common.client.models.GroupModelAsyncReader;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModelAsyncReader"/>
+      </Method>
+      <Method Id="mthMJLSX6G535DANKYK6Q3EVJUAEQ" Name="canOpenGroupView" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="canOpenGroupView()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthGIBKTRWYXRGCBJQDSHDC3343E4" Name="getReadPageSize" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getReadPageSize()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthTO3PZNETKRCTJJOZQOE54X2MM4" Name="setReadPageSize" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setReadPageSize(I)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="pageSize" Id="mprKIJGRTIBABF6BLH5WSQOUG3PEM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthIW24A6EVVZHGJCW5PG43YBGJMA" Name="beforeReadFirstPage" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="beforeReadFirstPage()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth7PYTKRWUSBE2TJMKX7YKN6SG3Q" Name="getRow" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getRow(I)Lorg.radixware.kernel.common.client.models.EntityModel;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="row" Id="mprNU6TD2KRH5E5RP75SA5SCSGKEE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+      </Method>
+      <Method Id="mthIM6FX4DKLVDLPCUVWH4W5FERCI" Name="getAllRows" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getAllRows()Ljava.util.List&lt;Lorg.radixware.kernel.common.client.models.EntityModel;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthDYHYWMQBNZGB7A66UL6GRDYNXM" Name="addRow" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="addRow(Lorg.radixware.kernel.common.client.models.EntityModel;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="entityModel" Id="mprIGJGSDSGTBDD7BZDALSGSN7JQY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthC2PXEX5VXVDR3PFDODWVBMARBM" Name="addRows" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="addRows(Ljava.util.List&lt;Lorg.radixware.kernel.common.client.models.EntityModel;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="entityModels" Id="mprQYZVCGVR6NEQFDH6TEZJUEZF34">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth35XI7Q3FQZGMHMOYELKHJH5LG4" Name="clearRows" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="clearRows()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth7J6XXPXQNRGQRENG2TRCHHTJPY" Name="setHasMoreRows" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="setHasMoreRows(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="hasMore" Id="mpr5AMC5EIF4BCLBD3U2YS37AOHOM">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthF6SABNYOFZEKLEL7T5VUSS5HWQ" Name="setRow" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="setRow(ILorg.radixware.kernel.common.client.models.EntityModel;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="row" Id="mprRE3TLMP4CZB3VBZXRPKAFTGOY4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="entityModel" Id="mprAPYOEZV4KNDXZNZU6G5UCKXD2A">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthG2BCOTOBA5D2ZN6IE3HNS7NTAY" Name="removeRows" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="removeRows(Ljava.util.List&lt;Lorg.radixware.kernel.common.client.models.EntityModel;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="entities" Id="mpr4YDTDB766ZFSVHWXY67DCB3JCY">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthLBLWSTZXBZHTNEBW6XYGOJCFFI" Name="canPaste" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="canPaste(Lorg.radixware.kernel.common.client.models.EntityModel;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="entityModel" Id="mpr5FK4MF6N5JASXNOKNWZJWZT75E">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth2OVVQZOKT5ANDHJOLKI3ARCPOQ" Name="openTableContextlessSelectorModel" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="openTableContextlessSelectorModel(Lorg.radixware.kernel.common.client.models.Model;Lorg.radixware.kernel.common.types.Id;Lorg.radixware.kernel.common.types.Id;)Lorg.radixware.kernel.common.client.models.GroupModel;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="holderModel" Id="mprGLQ5VK6ZQVDOBBLYEPPAYSCOUM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.Model"/>
+          </Parameter>
+          <Parameter Name="classId" Id="mprVYQ3LLZ4FBF57PLFUD5SUCRA7M">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+          <Parameter Name="presentationId" Id="mprF3M622DDVZBZVGKGXIJEXA4OFU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+      </Method>
+      <Method Id="mthUI5AOH6NB5C43JLTNFSZPPVXRY" Name="openTableContextlessSelectorModel" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="openTableContextlessSelectorModel(Lorg.radixware.kernel.common.client.models.Model;Lorg.radixware.kernel.common.client.meta.RadSelectorPresentationDef;)Lorg.radixware.kernel.common.client.models.GroupModel;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="holderModel" Id="mpr3KFG3QH2BZBQLKA5YEP6NHFMVU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.Model"/>
+          </Parameter>
+          <Parameter Name="selectorPresentation" Id="mprZVOWJXSUZFHU5IB4WAATCY6SCU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.RadSelectorPresentationDef"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+      </Method>
+      <Method Id="mthSBNBACDVNZBFVBPBG4YQNPES5M" Name="getSelection" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getSelection()Lorg.radixware.kernel.common.client.models.EntityObjectsSelection;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityObjectsSelection"/>
+      </Method>
+      <Method Id="mthKU2O5KZ6MZH4XMOQP3B5T42QEI" Name="addSelectionListener" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="addSelectionListener(Lorg.radixware.kernel.common.client.models.GroupModel.SelectionListener;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="listener" Id="mpr4FOZVEH4ZVDO7K6KBWWCSNUKGQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel.SelectionListener"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth7ERA3K7ADNHA3D6PNA7AS4TYPA" Name="removeSelectionListener" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="removeSelectionListener(Lorg.radixware.kernel.common.client.models.GroupModel.SelectionListener;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="listener" Id="mprKET3X4A4PBD67JJMRELPRUGD6M">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel.SelectionListener"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth7WXPHGI3RNHUFNZQGXSQU4BOTQ" Name="beforeChangeSelection" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="beforeChangeSelection(Lorg.radixware.kernel.common.client.models.EntityObjectsSelection;Lorg.radixware.kernel.common.client.models.EntityObjectsSelection;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="oldSelection" Id="mprRYTH5VY5V5GE7MY43VUKLY3JH4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityObjectsSelection"/>
+          </Parameter>
+          <Parameter Name="newSelection" Id="mprTAOLC6CLPFF43JGCMX3UTX54FU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityObjectsSelection"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthRUDON2CX6VB7LHSCRPMHPYCIZY" Name="afterSelectionChanged" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="afterSelectionChanged(Lorg.radixware.kernel.common.client.models.EntityObjectsSelection;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="selection" Id="mpr7JEINEZ3YBANBGE2ZODDHRGTPM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityObjectsSelection"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthZB4EKSCUARAV5P3XKAG4NGKWBM" Name="deleteSelectedObjects" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="deleteSelectedObjects(Z)Lorg.radixware.kernel.common.client.models.BatchDeleteResult;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprVKMT2C2MPJF27FQN2E34PSM75Y">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.BatchDeleteResult"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthWLI5YGP3NBCXNOVQBQS4GWA2WQ" Name="beforeDeleteSelectedObjects" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="beforeDeleteSelectedObjects(Lorg.radixware.kernel.common.client.models.EntityObjectsSelection;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="selection" Id="mprVVL37FNUTNH7TIXUJQTXNNIVKY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityObjectsSelection"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthC5K4W7STXFCJJHDGC5PBRPODQY" Name="afterDeleteSelectedObjects" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="afterDeleteSelectedObjects()V"/>
+        </AccessRules>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcRGCAH2OFZVFETKEAS4A2YGFWB4" Name="ValAsStr" Type="3" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.defs.value.ValAsStr"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcEBU6OOXGU5AW7LBQVWJX5BACIY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcGGRI3TGYV5GXFKPUA3I3NSKGUM"/>
+    </Bodies>
+    <MethodGroup Id="cmg6LGFIJ4DXZG4FNEBCUHHCL7SGQ" Name="Root"/>
+    <PropertyGroup Id="cpgFLKT4HFAVJG5NBLSIIGQ6BTBVA" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth5XQGA3MELNGYFCSGHHJUARBSVU" Name="toString" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="toString()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthESYN6NJAKBEV3HV6MRLYZ6NCBM" Name="toStr" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="toStr(Ljava.lang.Object;Lorg.radixware.kernel.common.enums.EValType;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="obj" Id="mprX3RD3QPIZJAFTKY6OSRV4IGWWM">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+          <Parameter Name="valType" Id="mprI2YL7V4SPNBRHGMNCR355DHQBE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthNCUFEE26OBB4HBUKTQEYKB4LRA" Name="fromStr" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="fromStr(Ljava.lang.String;Lorg.radixware.kernel.common.enums.EValType;)Ljava.lang.Object;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="valAsStr" Id="mprVBCVSAUNY5CP7CN5URFFDXYM3Y">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="valType" Id="mprNGQ5IBLJ6VA7RNAJL6FPCHPJAE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+      </Method>
+      <Method Id="mthHGQIXLKYBFGKHMTAPUBGRRCOFM" Name="toObject" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="toObject(Lorg.radixware.kernel.common.enums.EValType;)Ljava.lang.Object;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="valType" Id="mprNLUOH7RYIFD7HDKFT7Y4XL3VCQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,680 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:edit="http://schemas.radixware.org/editmask.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA" Name="ExportDiagnosticInfoForm" TitleId="mlsFMZRZNOCUNHYTLNRJDM2JZMFLI" Type="19">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderafhSZZQMAM5WZFIJD5ZI5NPJK4XIA"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyafhSZZQMAM5WZFIJD5ZI5NPJK4XIA"/>
+    </Bodies>
+    <MethodGroup Id="cmgX3JRM65JFREHDAXTWTRWHZCO4Q" Name="Root"/>
+    <PropertyGroup Id="cpgZIHMZO52WJDX3KYP52HJSFNEIU" Name="Root"/>
+    <Properties>
+      <Property Id="prdWKGSD4MXXVAF5HDBN6KG3LHV4U" Name="snapshotCount" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <InitialValue>
+          <ValAsStr>1</ValAsStr>
+        </InitialValue>
+        <Presentation TitleId="mlsGKQJMSWHU5BYNFA6XX4OXVMNAY" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true">
+            <EditMask>
+              <edit:Int MinValue="1" NumberBase="10" StepSize="1"/>
+            </EditMask>
+          </Editing>
+        </Presentation>
+      </Property>
+      <Property Id="prdFNOMHFVRONBSHCNX2JYORKHV2E" Name="snapshotPeriodMillis" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <InitialValue>
+          <ValAsStr>5000</ValAsStr>
+        </InitialValue>
+        <Presentation TitleId="mls3LRQLRORCBHYTOPUH6YG2PALTY" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true">
+            <EditMask>
+              <edit:Int MinValue="0" NumberBase="10" StepSize="1"/>
+            </EditMask>
+          </Editing>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthTYWXJRLODNAT7LXOISEO5SFPZU" Name="onSubmit" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="context" Id="mprAUJVTFLRCJAKHGGGNBS5GO52II">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.FormHandler.Context"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.types.FormHandler.NextDialogsRequest"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> inst = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) context.entity;
+
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().Instance.Id == inst.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E col3VINP666G5VDBFSUAAUMFADAIA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA mthFBP7BV3FZNFH7DRTONLQQM7WLQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+} else {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdLXYL5SRHO7OBDCJTAALOMT5GDM" extStr="GetDiagnosticInfoDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> doc = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdLXYL5SRHO7OBDCJTAALOMT5GDM" extStr="GetDiagnosticInfoDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Factory.newInstance();
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3VKTVP4UOXOBDCJRAALOMT5GDM" extStr="GetDiagnosticInfoRq"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> rq = doc.addNewGetDiagnosticInfo().addNewGetDiagnosticInfoRq();
+    rq.User = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthJQUPUAH4RPNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+
+    StringBuilder diagInfo = new StringBuilder();
+    try {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> rs = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthAEWBPU7ZXTNRDISQAAAAAAAAAA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(doc, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdLXYL5SRHO7OBDCJTAALOMT5GDM" extStr="GetDiagnosticInfoDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.class,
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsB7GRKCE5LPOBDCJEAALOMT5GDM aciZ5SIYGTRCJBAHC46LOVKGKIJCA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getValue() + "#" + inst.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E col3VINP666G5VDBFSUAAUMFADAIA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+                0, 120);
+        doc.set(rs);
+        diagInfo.append(doc.GetDiagnosticInfo.GetDiagnosticInfoRs.DiagnosticInfoStr);
+
+        for (int snapshotNum = 1; snapshotNum &lt; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdWKGSD4MXXVAF5HDBN6KG3LHV4U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.intValue(); snapshotNum++) {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcSFS2J5EHTFE65GWPGK6JFR7DFQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcSFS2J5EHTFE65GWPGK6JFR7DFQ mthS3PAMYUBRVFV7ASZNT7UE2S7OY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdFNOMHFVRONBSHCNX2JYORKHV2E" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.intValue());
+            rs = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthAEWBPU7ZXTNRDISQAAAAAAAAAA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(doc, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdLXYL5SRHO7OBDCJTAALOMT5GDM" extStr="GetDiagnosticInfoDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.class,
+                    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsB7GRKCE5LPOBDCJEAALOMT5GDM aciZ5SIYGTRCJBAHC46LOVKGKIJCA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getValue() + "#" + inst.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E col3VINP666G5VDBFSUAAUMFADAIA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+                    0, 120);
+            doc.set(rs);
+            diagInfo.append(doc.GetDiagnosticInfo.GetDiagnosticInfoRs.DiagnosticInfoStr);
+        }
+
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="afhI2FCQJQURZHGRARZPEAVUSKNTY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> form = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="afhI2FCQJQURZHGRARZPEAVUSKNTY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(this);
+        form.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhI2FCQJQURZHGRARZPEAVUSKNTY prdNCEN5MD6LBGONN6SJ6OPRE6THM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls54FKXLC3OFAXNNMHIWSF2XTMSY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+        form.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhI2FCQJQURZHGRARZPEAVUSKNTY prdW2TL44QHURDCVM7GJP2NUGF5DY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.server.instance.DiagnosticInfoUtils"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.formatDiagnosticInfoAsHtmlPage(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdWKGSD4MXXVAF5HDBN6KG3LHV4U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.intValue(), diagInfo.toString());
+
+        return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLK6F6YWZHFHXFBOCHN7F3YTZPA mthWX4RH72LYZFKBHU3I76PFR6XPM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(null, form);
+    } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcNCHTB2WP2BCVFLRT36WXFJFDTU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+        throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e.getMessage());
+    } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcKOGTAG2B25GNZELYJJFXHBJTC4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+        throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e.getMessage());
+    } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+        throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e.getMessage());
+    } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcFRK2HRXXBFARBEEIPQK4PX3RNE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+        throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e.getMessage());
+    }
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthFBP7BV3FZNFH7DRTONLQQM7WLQ" Name="getDiagnosticInfo" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <ReturnType TypeId="411" Path="adcLK6F6YWZHFHXFBOCHN7F3YTZPA"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>StringBuilder diagInfo = new StringBuilder();
+diagInfo.append(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.server.instance.DiagnosticInfoUtils"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.DiagnosticSnapshot);
+
+try {
+    for (int snapshotNum = 1; snapshotNum &lt; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdWKGSD4MXXVAF5HDBN6KG3LHV4U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.intValue(); snapshotNum++) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcSFS2J5EHTFE65GWPGK6JFR7DFQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcSFS2J5EHTFE65GWPGK6JFR7DFQ mthS3PAMYUBRVFV7ASZNT7UE2S7OY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdFNOMHFVRONBSHCNX2JYORKHV2E" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.intValue());
+        diagInfo.append(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.server.instance.DiagnosticInfoUtils"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.DiagnosticSnapshot);
+    }
+} catch (InterruptedException ex) {
+    //ignore
+}
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="afhI2FCQJQURZHGRARZPEAVUSKNTY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> form = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="afhI2FCQJQURZHGRARZPEAVUSKNTY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(this);
+form.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhI2FCQJQURZHGRARZPEAVUSKNTY prdNCEN5MD6LBGONN6SJ6OPRE6THM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsOQXBSU42XBGZHKIVGBADL4N7KM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+form.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhI2FCQJQURZHGRARZPEAVUSKNTY prdW2TL44QHURDCVM7GJP2NUGF5DY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.server.instance.DiagnosticInfoUtils"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.formatDiagnosticInfoAsHtmlPage(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdWKGSD4MXXVAF5HDBN6KG3LHV4U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.intValue(), diagInfo.toString());
+
+return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLK6F6YWZHFHXFBOCHN7F3YTZPA mthWX4RH72LYZFKBHU3I76PFR6XPM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(null, form);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Presentations>
+      <Form InheritanceMask="0">
+        <Model Id="afmSZZQMAM5WZFIJD5ZI5NPJK4XIA" Name="ExportDiagnosticInfoForm:Model" Type="18">
+          <AccessRules IsPublished="false"/>
+          <Headers>
+            <Src Name="HeaderafmSZZQMAM5WZFIJD5ZI5NPJK4XIA"/>
+          </Headers>
+          <Bodies>
+            <Src Name="BodyafmSZZQMAM5WZFIJD5ZI5NPJK4XIA"/>
+          </Bodies>
+          <MethodGroup Id="cmgUKFL42CLTBGIRNSAIWIVV4GYOQ" Name="Root"/>
+          <PropertyGroup Id="cpgCSKNCALUSZALJC5PK5UMAGHTOI" Name="Root"/>
+          <Properties/>
+          <Methods>
+            <Method Id="mthLEPTOI4XLZGDBBHX7QPLJTDADM" Name="snapshotCountPropEditor_edited" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+              <AccessRules IsPublished="false"/>
+              <Parameters>
+                <Parameter Name="value" Id="mprIM4XLFLUNRDELMVXL3XMU5HETY">
+                  <Type TypeId="400" extStr="java.lang.Object"/>
+                </Parameter>
+              </Parameters>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="2"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> snapshotCnt = (</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="2"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>) value;
+if(snapshotCnt != null &amp;&amp; snapshotCnt.intValue() > 1) {
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdFNOMHFVRONBSHCNX2JYORKHV2E" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.setVisible(true);
+} else {
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdFNOMHFVRONBSHCNX2JYORKHV2E" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.setVisible(false);
+}</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+            <Method Id="mthKQW7TFQYBRC5BLWJE5RP7PY77Q" Name="Form_opened" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+              <AccessRules IsPublished="false"/>
+              <Parameters>
+                <Parameter Name="widget" Id="mprSUMJF2YIKVEJPJYY7MVKVZF4YI">
+                  <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+                </Parameter>
+              </Parameters>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdFNOMHFVRONBSHCNX2JYORKHV2E" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.setVisible(false);</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+            <Method Id="mthXJ3E2ZHXQREXHPFXP4MX3XWMV4" Name="buttonBox_accepted" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+              <AccessRules IsPublished="false"/>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA cfdZZLBCUDKYVCBRKV45VFQTFZGVM wdgMUR5XHQZARBQVGKGC4RY4WFXOI" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.submit();</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+          </Methods>
+        </Model>
+        <EditorPages>
+          <PageOrder/>
+        </EditorPages>
+        <View Id="cfdZZLBCUDKYVCBRKV45VFQTFZGVM" Name="View">
+          <AccessRules IsPublished="false"/>
+          <ui:ui>
+            <ui:widget name="Form" id="wdgMUR5XHQZARBQVGKGC4RY4WFXOI" class="cfdZZLBCUDKYVCBRKV45VFQTFZGVM" weight="0.0">
+              <ui:layout class="QGridLayout" name="gridLayout">
+                <ui:item column="1" row="0" colSpan="1" rowSpan="1">
+                  <ui:widget name="snapshotCountPropEditor" id="wdgVNRDMBITEZEZVNFHEOHJG6ZR3U" class="org.radixware.kernel.explorer.widgets.propeditors.PropEditor" weight="0.0">
+                    <ui:property name="geometry">
+                      <ui:rect>
+                        <ui:x>347</ui:x>
+                        <ui:y>103</ui:y>
+                        <ui:width>100</ui:width>
+                        <ui:height>25</ui:height>
+                      </ui:rect>
+                    </ui:property>
+                    <ui:property name="property">
+                      <ui:propertyRef>prdWKGSD4MXXVAF5HDBN6KG3LHV4U</ui:propertyRef>
+                    </ui:property>
+                    <ui:property name="objectName">
+                      <ui:string>snapshotCountPropEditor</ui:string>
+                    </ui:property>
+                  </ui:widget>
+                </ui:item>
+                <ui:item column="1" row="1" colSpan="1" rowSpan="1">
+                  <ui:widget name="snapshotPeriodMillisPropEditor" id="wdgK4NVDYBBEJBV7KSKRQJ4FDNQ6M" class="org.radixware.kernel.explorer.widgets.propeditors.PropEditor" weight="0.0">
+                    <ui:property name="geometry">
+                      <ui:rect>
+                        <ui:x>293</ui:x>
+                        <ui:y>201</ui:y>
+                        <ui:width>100</ui:width>
+                        <ui:height>25</ui:height>
+                      </ui:rect>
+                    </ui:property>
+                    <ui:property name="property">
+                      <ui:propertyRef>prdFNOMHFVRONBSHCNX2JYORKHV2E</ui:propertyRef>
+                    </ui:property>
+                    <ui:property name="objectName">
+                      <ui:string>snapshotPeriodMillisPropEditor</ui:string>
+                    </ui:property>
+                  </ui:widget>
+                </ui:item>
+                <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                  <ui:widget name="snapshotCountPropTitle" id="wdg6DATDCVQMNDKNPEBK3DG2LLWVI" class="org.radixware.kernel.explorer.widgets.PropLabel" weight="0.0">
+                    <ui:property name="property">
+                      <ui:propertyRef>prdWKGSD4MXXVAF5HDBN6KG3LHV4U</ui:propertyRef>
+                    </ui:property>
+                    <ui:property name="objectName">
+                      <ui:string>snapshotCountPropTitle</ui:string>
+                    </ui:property>
+                  </ui:widget>
+                </ui:item>
+                <ui:item column="0" row="1" colSpan="1" rowSpan="1">
+                  <ui:widget name="snapshotPeriodMillisPropTitle" id="wdgAKJ2FC5KONARTH477356PGYHBI" class="org.radixware.kernel.explorer.widgets.PropLabel" weight="0.0">
+                    <ui:property name="property">
+                      <ui:propertyRef>prdFNOMHFVRONBSHCNX2JYORKHV2E</ui:propertyRef>
+                    </ui:property>
+                    <ui:property name="objectName">
+                      <ui:string>snapshotPeriodMillisPropTitle</ui:string>
+                    </ui:property>
+                  </ui:widget>
+                </ui:item>
+                <ui:item column="0" row="3" colSpan="2" rowSpan="1">
+                  <ui:widget name="buttonBox" id="wdgS3D3F5IKQNA4LD5KWLDIJ6NANU" class="QDialogButtonBox" weight="0.0">
+                    <ui:property name="standardButtons">
+                      <ui:set>org.radixware.kernel.common.enums.EDialogButtonType.OK | org.radixware.kernel.common.enums.EDialogButtonType.CANCEL</ui:set>
+                    </ui:property>
+                    <ui:property name="autoConnectAcceptSignal">
+                      <ui:bool>false</ui:bool>
+                    </ui:property>
+                    <ui:property name="autoConnectRejectSignal">
+                      <ui:bool>true</ui:bool>
+                    </ui:property>
+                    <ui:property name="geometry">
+                      <ui:rect>
+                        <ui:x>134</ui:x>
+                        <ui:y>268</ui:y>
+                        <ui:width>256</ui:width>
+                        <ui:height>23</ui:height>
+                      </ui:rect>
+                    </ui:property>
+                  </ui:widget>
+                </ui:item>
+                <ui:item column="1" row="2" colSpan="1" rowSpan="1">
+                  <ui:spacer name="spacer">
+                    <ui:property name="orientation">
+                      <ui:enum>com.trolltech.qt.core.Qt.Orientation.Vertical</ui:enum>
+                    </ui:property>
+                    <ui:property name="sizeHint">
+                      <ui:size>
+                        <ui:width>20</ui:width>
+                        <ui:height>40</ui:height>
+                      </ui:size>
+                    </ui:property>
+                  </ui:spacer>
+                </ui:item>
+              </ui:layout>
+            </ui:widget>
+            <ui:connections>
+              <ui:connection>
+                <ui:sender>wdgVNRDMBITEZEZVNFHEOHJG6ZR3U</ui:sender>
+                <ui:signal>edited(java.lang.Object value)</ui:signal>
+                <ui:slot>mthLEPTOI4XLZGDBBHX7QPLJTDADM</ui:slot>
+              </ui:connection>
+              <ui:connection>
+                <ui:sender>wdgMUR5XHQZARBQVGKGC4RY4WFXOI</ui:sender>
+                <ui:signal>opened(com.trolltech.qt.gui.QWidget widget)</ui:signal>
+                <ui:slot>mthKQW7TFQYBRC5BLWJE5RP7PY77Q</ui:slot>
+              </ui:connection>
+              <ui:connection>
+                <ui:sender>wdgS3D3F5IKQNA4LD5KWLDIJ6NANU</ui:sender>
+                <ui:signal>accepted()</ui:signal>
+                <ui:slot>mthXJ3E2ZHXQREXHPFXP4MX3XWMV4</ui:slot>
+              </ui:connection>
+            </ui:connections>
+          </ui:ui>
+        </View>
+        <WebView Id="cfdDQSDHK2JOJG6ZJJC6QKSU2QZ3Y" Name="WebView">
+          <ui:ui>
+            <ui:widget name="widget" id="wdgSDX7SR4UVVCKFDPRNG6ZMQSR5A" class="cfdDQSDHK2JOJG6ZJJC6QKSU2QZ3Y" weight="0.0">
+              <ui:property name="standardButtons">
+                <ui:set>Ok|Cancel</ui:set>
+              </ui:property>
+            </ui:widget>
+          </ui:ui>
+        </WebView>
+      </Form>
+    </Presentations>
+  </AdsClassDefinition>
+</AdsDefinition>

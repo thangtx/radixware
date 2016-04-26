@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0" language="jambi">
+ <class>CertificateManagerDialog</class>
+ <widget class="QDialog" name="CertificateManagerDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>559</width>
+    <height>308</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Certificate Manager</string>
+  </property>
+  <widget class="QTabWidget" name="tabWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>0</y>
+     <width>541</width>
+     <height>291</height>
+    </rect>
+   </property>
+   <property name="currentIndex">
+    <number>0</number>
+   </property>
+   <widget class="QWidget" name="tabPersonalKeys">
+    <attribute name="title">
+     <string>Personal Keys</string>
+    </attribute>
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QTableWidget" name="personalKeysTable">
+       <attribute name="horizontalHeaderStretchLastSection">
+        <bool>true</bool>
+       </attribute>
+       <column>
+        <property name="text">
+         <string>Alias</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Issued To</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Issued By</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Valid From</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Expiration</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Algorithm</string>
+        </property>
+       </column>
+      </widget>
+     </item>
+     <item>
+      <widget class="QWidget" name="widget_2" native="true">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QPushButton" name="generateKeyButton">
+          <property name="text">
+           <string>Generate Key</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="changePwdButton">
+          <property name="text">
+           <string>Change Key Password</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="requestCertificateButton">
+          <property name="text">
+           <string>Request Certificate</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="loadKeyCertificateButton">
+          <property name="text">
+           <string>Load Key Certificate</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="importKeyButton">
+          <property name="text">
+           <string>Import Key</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="deleteKeyButton">
+          <property name="text">
+           <string>Delete</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>31</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="tabTrustedCertificates">
+    <attribute name="title">
+     <string>Trusted Certificates</string>
+    </attribute>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QTableWidget" name="trustedCertificatesTable">
+       <attribute name="horizontalHeaderStretchLastSection">
+        <bool>true</bool>
+       </attribute>
+       <column>
+        <property name="text">
+         <string>Alias</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Issued To</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Issued By</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Valid From</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Expiration</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Algorithm</string>
+        </property>
+       </column>
+      </widget>
+     </item>
+     <item>
+      <widget class="QWidget" name="widget" native="true">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QPushButton" name="importTrustedCertificateButton">
+          <property name="text">
+           <string>Import</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="deleteTrustedCertificateButton">
+          <property name="text">
+           <string>Delete</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>206</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

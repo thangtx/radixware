@@ -1,0 +1,608 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcYLKFTWN4FNHEXIB52C5JAZWGHE" Name="AcsUtils" DescriptionId="mlsMOYCDCYF7RDO7OVB22JVW25XXI" Type="3" Environment="server">
+    <AccessRules IsFinal="true">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcI445I3EPJVAD5BUOMB2TWTFRGQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcJWWX333IGZF6DIIPC2CHTWAI3Y">
+        <xsc:Item>
+          <xsc:Java>final static public String ERR_CANT_CHECK_USER_RIGHTS_ = "Can\'t check user rights: ";
+final static public String ERR_CANT_PREPARE_DB_QRY = "Can\'t prepare Radix rights system service queries:\n";
+</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmgYYJYAXTDDBBKFPSU4A5YPVSWH4" Name="Root"/>
+    <PropertyGroup Id="cpgPIVPKXNPFZATXH4HOCQP2TJHWE" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthKE5JROUIBZEXNMZKRETLSN7MA4" Name="getCurUserAllRolesInAllAreas" DescriptionId="mlsD2E2OZHCGVCRFC7YKWDAB7A7HM" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="400" extStr="java.util.Set">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="E">
+              <xsc:Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final String roles = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="accVLI5757OLNETTOGSCOGGDTPRP4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accVLI5757OLNETTOGSCOGGDTPRP4 mthD4SSWMLQFBHILDYAKXXNGGE4OQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+
+if (roles==null || roles.isEmpty()) {
+    return java.util.Collections.emptySet();
+}
+
+final String[] idsStrArr = roles.split(",");
+final int len = idsStrArr.length;
+final java.util.Set&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> result = new java.util.HashSet&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>(len);
+for (int i=0; i&lt;len; i++){
+    final String idStr = idsStrArr[i];
+    if (idStr!=null &amp;&amp; !idStr.isEmpty()){
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> id = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthZCNI2JK4DFGNLEBCLZZCIM34TA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(idStr);
+        result.add(id);
+    }
+}
+return result;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthIAQ2AR4L75E6TIC4M6XDLGOQ6A" Name="isCurUserHasRole" DescriptionId="mls43MJ3GCUWVANFAT7BHZJHBMHKA" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="roles" DescriptionId="mlsGMURPUWPFVE53HALX5D7QDQETE" Id="mprMONWZ4ILSBGFTP5T2P45OPCT2A">
+            <Type TypeId="221"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (roles.isEmpty())
+    return false;
+
+final java.util.Set&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> curUserRoleIds = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYLKFTWN4FNHEXIB52C5JAZWGHE mthKE5JROUIBZEXNMZKRETLSN7MA4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+//if (curUserRoleIds.contains(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="rolSUPER_ADMIN_______________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)){
+//    return true;
+//}
+for (String idStr : roles){
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> id = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthZCNI2JK4DFGNLEBCLZZCIM34TA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(idStr);
+    if (curUserRoleIds.contains(id))
+        return true;
+}
+
+return false;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthY5QK4BXTRVGJZMOAZD4PDWAVJM" Name="isCurUserHasRole" DescriptionId="mlsDL7ISASAKNDMZGXQYOPHCR5JZA" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="roles" DescriptionId="mlsNBSRLBAV45FEXKAJY33LDDJFAA" Id="mprBZS7CSUNFFCDRKFSP2TLPNW4I4">
+            <Type TypeId="400" extStr="java.util.Collection">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="E">
+                  <xsc:Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (roles.isEmpty())
+    return false;
+
+final java.util.Set&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> curUserRoleIds = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYLKFTWN4FNHEXIB52C5JAZWGHE mthKE5JROUIBZEXNMZKRETLSN7MA4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+//if (curUserRoleIds.contains(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="rolSUPER_ADMIN_______________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)){
+//    return true;
+//}
+
+for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> id : roles) {
+    if (curUserRoleIds.contains(id))
+        return true;
+}
+
+return false;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthSBGGKVQ6SFCCNHAKOBD7AB7YXY" Name="isCurUserHasRoleWithRoleHierarchy" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="roles" Id="mprFOCYJ5LDQJGP3CEGOMYPENIMQY">
+            <Type TypeId="400" extStr="java.util.Collection">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (roles.isEmpty())
+    return false;
+
+for(org.radixware.kernel.server.meta.roles.RadRoleDef role : 
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().Rights.getCurUserAllRolesInAllAreasWithRolesHierarchy()) {
+    if(roles.contains(role.getId())) {
+        return true;
+    }
+}
+return false;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYIQCIIZ7BFGBRKGSUEPDYOO6MI" Name="isCurUserHasRoleWithRoleHierarchy" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="roles" Id="mprLNW7QXQUVRF2XKUFOTV74SWX5I">
+            <Type TypeId="221"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (roles.isEmpty())
+    return false;
+
+for(org.radixware.kernel.server.meta.roles.RadRoleDef role : 
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().Rights.getCurUserAllRolesInAllAreasWithRolesHierarchy()) {
+    if(roles.contains(role.getId().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcELH54EKVCJAATNTLFHHCSVHPZU mthCX6FRHR4VNG37LJWH7N6THCMMA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>())) {
+        return true;
+    }
+}
+
+return false;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthPDEDBJJ5I5BIXBML737COQ3YDU" Name="acceptedUserOrGroup" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="isUser" Id="mprCWBQU3UFN5H6FBSEP7MKYF3G3M">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="name" Id="mprZFVXCF6JPVE2VKBMQP26BMTBGM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451" Path="xsdQLUXCQIPKNBCZIQTOHKTT5Q664" extStr="AcceptedRolesDocument"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdQLUXCQIPKNBCZIQTOHKTT5Q664" extStr="AcceptedRolesDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> rez = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdQLUXCQIPKNBCZIQTOHKTT5Q664" extStr="AcceptedRolesDocument.Factory"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.newInstance();
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>&lt;java.util.List&lt;Integer>> ignoredRoles = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(); 
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>&lt;java.util.List&lt;String>> ignoredUsersOrGroups = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>&lt;Integer> addedRoleCount = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>&lt;Integer>();
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>&lt;Integer> replacedRoleCount = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>&lt;Integer>(); 
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>&lt;Integer> removedRoleCount = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>&lt;Integer>(); 
+
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>&lt;Integer> addedU2GCount = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>&lt;Integer>();
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>&lt;Integer> removedU2GCount = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>&lt;Integer>();
+
+
+
+rez.AcceptedRoles = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdQLUXCQIPKNBCZIQTOHKTT5Q664" extStr="AcceptedRolesDocument.AcceptedRoles.Factory"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.newInstance();
+
+
+
+if (isUser){
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getRights().
+        getDualControlController().acceptRolesForUser(name, ignoredRoles, ignoredUsersOrGroups, 
+            addedRoleCount, replacedRoleCount, removedRoleCount, 
+            addedU2GCount, removedU2GCount);
+}
+else{
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getRights().
+        getDualControlController().acceptRolesForGroup(name, ignoredRoles, ignoredUsersOrGroups, 
+            addedRoleCount, replacedRoleCount, removedRoleCount, 
+            addedU2GCount, removedU2GCount);    
+}
+
+
+
+
+
+
+
+if (addedRoleCount.get()!=null)
+    rez.AcceptedRoles.AddedRolesCount = addedRoleCount.get().longValue();
+
+if (replacedRoleCount.get()!=null)
+    rez.AcceptedRoles.ReplacedRolesCount = replacedRoleCount.get().longValue();
+
+if (removedRoleCount.get()!=null)
+    rez.AcceptedRoles.RemovedRolesCount = removedRoleCount.get().longValue();
+
+
+if (addedU2GCount.get()!=null)
+    rez.AcceptedRoles.AddedUser2GroupCount = addedU2GCount.get().longValue();
+
+if (removedU2GCount.get()!=null)
+    rez.AcceptedRoles.RemovedUser2GroupCount = removedU2GCount.get().longValue();
+
+java.util.List&lt;Integer> ignoredRolesAsList = ignoredRoles.get();
+if (!ignoredRolesAsList.isEmpty()){   
+    final java.lang.StringBuilder tmpBuilder = new java.lang.StringBuilder();
+    boolean isFirst = true;
+    
+    for (Integer ignoredRole : ignoredRolesAsList){          
+        if (isUser){
+            final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec42K4K2TTGLNRDHRZABQAQH3XQ4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> newUser2Role = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec42K4K2TTGLNRDHRZABQAQH3XQ4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec42K4K2TTGLNRDHRZABQAQH3XQ4 mth_loadByPK_________________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ignoredRole.longValue(), true);
+            if (newUser2Role!=null){
+               if (isFirst){
+                   isFirst = false;
+               }
+               else{
+                   tmpBuilder.append(", ");
+               }
+               tmpBuilder.append(newUser2Role.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthQCGEEZOUAHOBDA26AAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+            }
+        }
+        else{
+            final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecFJAEQT3TGLNRDHRZABQAQH3XQ4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> newUser2Role = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecFJAEQT3TGLNRDHRZABQAQH3XQ4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec42K4K2TTGLNRDHRZABQAQH3XQ4 mth_loadByPK_________________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ignoredRole.longValue(), true);
+            if (newUser2Role!=null){
+               if (isFirst){
+                   isFirst = false;
+               }
+               else{
+                   tmpBuilder.append(", ");
+               }
+               tmpBuilder.append(newUser2Role.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthQCGEEZOUAHOBDA26AAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+            }
+        }
+    }
+    rez.AcceptedRoles.UnacceptedRoles = tmpBuilder.toString();
+}
+
+
+java.util.List&lt;String> ignoredUsersOrGroupsAsList = ignoredUsersOrGroups.get();
+if (!ignoredUsersOrGroupsAsList.isEmpty()){
+    final java.lang.StringBuilder tmpBuilder = new java.lang.StringBuilder();
+    boolean isFirst = true;
+    for (String ignoredUserOrGroup : ignoredUsersOrGroupsAsList){
+        if (isFirst){
+            isFirst = false;
+        }
+        else{
+            tmpBuilder.append(", ");
+        }
+        tmpBuilder.append(ignoredUserOrGroup);
+    }
+    rez.AcceptedRoles.UnacceptedUsersOrGroups = tmpBuilder.toString();
+}
+
+return rez;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

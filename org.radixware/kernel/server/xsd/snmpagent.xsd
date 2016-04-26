@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 sp2 U (http://www.altova.com) by pc (pc) -->
+<xs:schema xmlns:mess="http://schemas.radixware.org/snmpagent.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:types="http://schemas.radixware.org/types.xsd" targetNamespace="http://schemas.radixware.org/snmpagent.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:complexType name="NotifyRq">
+        <xs:sequence>
+            <xs:element name="MetricType" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="MetricState" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:attribute name="Id" type="types:Int" use="required"/>
+                                <xs:attribute name="BegTime" type="types:DateTime" use="optional"/>
+                                <xs:attribute name="EndTime" type="types:DateTime" use="required"/>
+                                <xs:attribute name="OldSeverity" type="types:Int" use="required"/>
+                                <xs:attribute name="NewSeverity" type="types:Int" use="required"/>
+                                <xs:attribute name="ChangeTime" type="types:DateTime" use="required"/>
+                                <xs:attribute name="ValueAsString" type="types:Str" use="required"/>
+                                <xs:attribute name="IsEscalation" type="types:Bool" use="required"/>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="Id" type="types:Int" use="required"/>
+                    <xs:attribute name="Kind" type="types:Str" use="required"/>
+                    <xs:attribute name="Title" type="types:Str" use="optional"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="NotifyRs">
+    </xs:complexType>
+    <xs:complexType name="NotifyMess">
+        <xs:choice>
+            <xs:element name="NotifyRq" type="mess:NotifyRq"/>
+            <xs:element name="NotifyRs" type="mess:NotifyRs"/>
+        </xs:choice>
+    </xs:complexType>
+</xs:schema>

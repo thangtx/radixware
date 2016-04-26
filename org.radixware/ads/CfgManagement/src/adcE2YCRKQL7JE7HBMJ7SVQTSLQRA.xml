@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcE2YCRKQL7JE7HBMJ7SVQTSLQRA" Name="CfgExportData" Type="3" Environment="server">
+    <AccessRules IsFinal="true">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcE2YCRKQL7JE7HBMJ7SVQTSLQRA"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcE2YCRKQL7JE7HBMJ7SVQTSLQRA"/>
+    </Bodies>
+    <MethodGroup Id="cmgCRKFCJBKTVHVBEYVW2C5Q7HROI" Name="Root"/>
+    <PropertyGroup Id="cpgNK4WQNSG2VCPXIDS6VUMTCOH2Q" Name="Root"/>
+    <Properties>
+      <Property Id="prdLVEOXBUEYBDEFJLZDCYUZFOZSY" Name="object" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="411" Path="pdcEntity____________________"/>
+      </Property>
+      <Property Id="prdJLPCPCN4ENBYFP3VVXHCMETKQI" Name="itemClassId" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+      </Property>
+      <Property Id="prdTHDSUUUK6RCDLJB5GNXMX7F4PM" Name="data" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="451"/>
+      </Property>
+      <Property Id="prdHTE6WGDJ35FFJGQAKSHOWDQWXY" Name="fileContent" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="451"/>
+      </Property>
+      <Property Id="prdCTAMF5IVBVDFLACES33SCZPA74" Name="children" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="adcE2YCRKQL7JE7HBMJ7SVQTSLQRA"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </Type>
+        <InitialValue>
+          <Jml>
+            <xsc:Item>
+              <xsc:Java>new java.util.ArrayList&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcE2YCRKQL7JE7HBMJ7SVQTSLQRA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>()</xsc:Java>
+            </xsc:Item>
+          </Jml>
+        </InitialValue>
+      </Property>
+      <Property Id="prdEWO7AKREINBOPGFPBU3KW6LM3Y" Name="objectRid" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthTUPNAPASTJFQLIL3RVUGKTV5AM" Name="CfgExportData" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthXKSVXXJ2YRDFLGEW4YXTUZZYLQ" Name="CfgExportData" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="object" Id="mprG3WWVE4MFZCSNJSN2Y3DUIFHIU">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcE2YCRKQL7JE7HBMJ7SVQTSLQRA prdLVEOXBUEYBDEFJLZDCYUZFOZSY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = object;
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth6SKCDX3ZZRGNVL4M3ECZI2M54E" Name="CfgExportData" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="object" Id="mprG3WWVE4MFZCSNJSN2Y3DUIFHIU">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="rid" Id="mprKJXPCDZCTFHQVDZ6TEHMCSNUQ4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="itemClassId" Id="mprJZNCQ24POFBOPIG5UOTM7C5C6E">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="data" Id="mprGFKROREKYNACNIOYO35IVRTCMA">
+            <Type TypeId="451"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcE2YCRKQL7JE7HBMJ7SVQTSLQRA prdLVEOXBUEYBDEFJLZDCYUZFOZSY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = object;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcE2YCRKQL7JE7HBMJ7SVQTSLQRA prdEWO7AKREINBOPGFPBU3KW6LM3Y" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = rid;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcE2YCRKQL7JE7HBMJ7SVQTSLQRA prdJLPCPCN4ENBYFP3VVXHCMETKQI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = itemClassId;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcE2YCRKQL7JE7HBMJ7SVQTSLQRA prdTHDSUUUK6RCDLJB5GNXMX7F4PM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = data;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

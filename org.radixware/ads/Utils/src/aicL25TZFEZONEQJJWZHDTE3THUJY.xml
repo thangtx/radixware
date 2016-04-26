@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicL25TZFEZONEQJJWZHDTE3THUJY" Name="UDSDefCustomLoader" Type="5" Environment="server">
+    <AccessRules IsPublished="false" IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.builder.api.userext.UDSDefCustomLoader"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderaicL25TZFEZONEQJJWZHDTE3THUJY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaicL25TZFEZONEQJJWZHDTE3THUJY"/>
+    </Bodies>
+    <MethodGroup Id="cmgQ4I3J6QQ6ZHRZBX7ZPLYJ2LK3Y" Name="Root"/>
+    <PropertyGroup Id="cpgEMQDYSK5CNB3RLLHJINWKCVFTQ" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthJMTTTGYUQRFDVDGF4YBTBKIHMQ" Name="listDefinitions" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="listDefinitions(Lorg.radixware.kernel.common.builder.api.userext.UDSAdsModuleRepository;)[Lorg.radixware.kernel.common.repository.ads.fs.IRepositoryAdsDefinition;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="moduleRepo" Id="mprOT6SEH5NWBHPHKGRPZYVKFWZTE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.builder.api.userext.UDSAdsModuleRepository"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.repository.ads.fs.IRepositoryAdsDefinition" Dimension="1"/>
+      </Method>
+      <Method Id="mthX4NPH5Y2CZB4DJP5KRTLRO5U3A" Name="listModuleIds" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="listModuleIds()[Lorg.radixware.kernel.common.types.Id;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.types.Id" Dimension="1"/>
+      </Method>
+      <Method Id="mthM7UT76BQLBAG5F3GCLWFDTUJ2Q" Name="loadDefinitionToModuleContext" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="loadDefinitionToModuleContext(Lorg.radixware.kernel.common.builder.api.userext.UDSAdsModule;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="module" Id="mprE34WWFNMM5GMVNMZUBNDAOX5HY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.builder.api.userext.UDSAdsModule"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth7TEO2C7Y55CBZPEVWFJCGS2KPA" Name="listImages" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="listImages(Lorg.radixware.kernel.common.builder.api.userext.UDSAdsModuleRepository;)[Lorg.radixware.kernel.common.repository.ads.fs.IRepositoryAdsImageDefinition;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="moduleRepo" Id="mprX7MIDFPF3VFT3IJYSQD5HCYNTQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.builder.api.userext.UDSAdsModuleRepository"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.repository.ads.fs.IRepositoryAdsImageDefinition" Dimension="1"/>
+      </Method>
+      <Method Id="mthUGVSL275C5ETXMF4ERPZLXABCU" Name="getImageData" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getImageData(Lorg.radixware.kernel.common.builder.api.userext.UDSAdsModuleRepository;Lorg.radixware.kernel.common.types.Id;)Ljava.io.InputStream;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="moduleRepo" Id="mprI4P4RSUMYZEV5M7JOQDTXHHCLM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.builder.api.userext.UDSAdsModuleRepository"/>
+          </Parameter>
+          <Parameter Name="imageId" Id="mprBTNDSMTWM5F2BGE3OO5RETNDMM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.io.InputStream"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

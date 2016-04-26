@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcDDSGVUZM7BHOFBVS6YIZILF3BM" Name="AddressUtils" DescriptionId="mlsCGRDSAM5XJAMLEDVLLTZE3UFPI" Type="3" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcA3IYKT5P7NG6ZNJIRQGRZA5ORQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc54QDOSCK7RHF5BGTCP4OC56KPQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgINE3Z72M3VCJBHKLDTOEEPTQJI" Name="Root"/>
+    <PropertyGroup Id="cpgY7QYMKEN2VDBNOV5FNMUWCXDXI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthP2GKDPA5R5CGHKZ5DLOSODCZLE" Name="getSapAddress" DescriptionId="mlsMWYFETF6AZGG5M5A5GL57XYYTU" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="sapId" DescriptionId="mlsFQE2FQ5KCZDL3EKEBQVZ7JWSRY" Id="mprX7WACSQZEZCFRC367NAY3V33E4">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21" DescriptionId="mls6Q67HFEPLBBZVJHV24O7SOD6OY"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (sapId != null) {
+    return "sap://" + sapId;
+}
+return "sap://&lt;null>";</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,2966 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="pdcArte______________________" Name="Arte" DescriptionId="mlsQ6JTWBUYR5DL3APNGBUXQGHYZA" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcHVFS2N6HZRHMXEIEHWAVD42UDA"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcI4U2TL3KUFCBJAJT3J4XYV7QRE">
+        <xsc:Item>
+          <xsc:Java>private static final org.radixware.kernel.server.arte.Arte ARTE_INSTANCE_INTERNAL;
+
+static {
+    ARTE_INSTANCE_INTERNAL=(pdcArte______________________.class.getClassLoader() instanceof org.radixware.kernel.common.environment.IRadixClassLoader) ? (org.radixware.kernel.server.arte.Arte)((org.radixware.kernel.common.environment.IRadixClassLoader)pdcArte______________________.class.getClassLoader()).getEnvironment() : null;
+}
+
+public static org.radixware.kernel.server.arte.Arte __getArteInstanceInternal() {
+    return ARTE_INSTANCE_INTERNAL;
+}</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmg7ZDWO3MJCRG6ZJKBHD3DZRJZYI" Name="Root">
+      <Group Id="cmg44GSISZOFNFBDOBUK64Z7GFUG4" Name="Time" Members="mth3L7WEOQM4HNRDOLZABIFNQAABA mthH5UTIPGXTPNRDISQABIFNQAABA mth4G5FL3ND6PNRDA2JAAMPGXSZKU mthRH7ZCDFE6PNRDA2JAAMPGXSZKU mthGW7UM5FE6PNRDA2JAAMPGXSZKU mthFXBG6AQXQ3ORDMNEABIFNQAABA mthO6E3U4KDA5A5FFVCN7JGELDMAU mthOZ6IRS25V5BVFHBC7ZSKNZNTP4"/>
+      <Group Id="cmgYDPIGP4GTRGBTJ27OIJ72CCWBI" Name="Database" Members="mthVR3O4RAGRTNRDCISABIFNQAABA mthVPNKSAORTPNRDISQABIFNQAABA mthDV3GVFXTA3PBDLT5AAN7YHKUNI mthEYROCYIR7HORDHO4ABIFNQAABA mthKVZWVQOQTPNRDISQABIFNQAABA mthEVPFPGQR7HORDHO4ABIFNQAABA mthKYS3RPTKXLNRDISQAAAAAAAAAA mthH2FKAOYGRTNRDCISABIFNQAABA mth35TKQI3R7DNRDOMIABIFNQAABA mthFAPPRHDR7DNRDOMIABIFNQAABA mthPDUPVLPYXTNRDISQAAAAAAAAAA mth4NEMAH6JSRFVLIOZQKNPABN6FA mthCMZ3E67XBRBQLHZXVQEHGG2SMI mthAKYZJ7KCMRGZPBKVVH4TBA4FKE mthJYYZZHYNINDKBPQEKUOMRM4ZSY mth3FHH7DLMOBAQ7COVKYGC2PSMZE mthHN3PL5HSKRASXAANJU5WMXT6VQ mthGKMEGEYP5BH3HOEQTMOHA72HFI mthXTVU25DCIZEUTJPIDXHYN5RT5E mthRISRVXXNTVBC5PIQYMK6EBFY7A mthYCJD3DO3HNEZ5GOREDH37CMTVQ"/>
+      <Group Id="cmg3LTWYAK62RASLMHYKMGTVFYSRU" Name="State" Members="mth2RRXTVLCXLNRDISQAAAAAAAAAA mthSBMW6GP4RPNRDCISABIFNQAABA mthJQUPUAH4RPNRDCISABIFNQAABA mthW2YVQDWLWHNRDOLCABIFNQAABA mthFK5KUXGNY7NRDISQAAAAAAAAAA mthXFUZQYL2ATOBDA26AAMPGXSZKU mthMSK2MTNVO3PBDICMABIFNQAABA mth3KOPVW4FS7PBDEWRABIFNQAABA mth2QT4RSOMLNCW3JOQ2SA57EEYJE mthMRSCGDAXNBHPFGFTCNBKUW6FP4 mthZWJYABENAVEWHEOIDMMFECBL4E mth5NZQM372ZNACXGR66DJCYM66OE mthEVT5IREU7NEA5JW2MSIIJIFHSU mthRUFBDP2JWZB65BRLAXJ67RJ4X4 mthRMAJBM7RKRENNMYLGX2F3PTBGI mthSHFVGI3P5RANZGTEZYTZMBQWQE mthFM6HJCMTEBDD5LIWGXT66HOGYA"/>
+      <Group Id="cmgBFA24BM4B5ARBB3QMN2I4KX63U" Name="Misc" Members="mthYMUE52FPAPOBDA26AAMPGXSZKU mthQWUOD223LTOBDB2CAAN7YHKUNI mth5JI4ZZQGR3OBDCWOAAMPGXSZKU mthYFY5PGIHR3OBDCWOAAMPGXSZKU mthONIEWR6P33OBDCSKABIFNQAABA mthE5V4QN6ITBBSLD6DL3M3OXO4BY mthGQ7ZCUZLTTPBDBKLABIFNQAABA mthVBYT7JGPANGVVCVLOVN434UO44 mthRCSWGPQALFCKFHNAQBDPJ23WWA mthLE3IKXC2DBCVJCBDMCMLDUJAMQ mthQCH5JDACGBEWDC2I26QLFZM7DM mth54DKS3WG3ZEYRC5AL4Y222OA4U mthJZVQGO24W5HSFHNQF4KSBSKPIQ mth7VQAVPW32ZHHFNSV4WSSLFEARU"/>
+      <Group Id="cmgUOFIOH4XJNDYNL4DH4GMUBOWX4" Name="Meta" Members="mth3L3ZXJE233NRDCK7ABIFNQAABA mthO5PKKKU533NRDCK7ABIFNQAABA mthYY6FOOADRTNRDCISABIFNQAABA mth5ASSCJP3DXPBDFHQABIFNQAABA mthJ22YS76JKFBLHMS32FAYSH3QNI mth7ISAWVM4QBE2VIC5WNQD3OZKBY mth6U2XAAFFIFEB5AFSJDIWGPUT6Y"/>
+      <Group Id="cmgHYHRNM3H55HC7EFUUCCEKZI2EE" Name="Sqml" Members="mthJMKRQCVOSND2XCKKOLLHD2U67M mthX7SDARD7DJHXTKSDE3SQCZOE3Q mth7WWFVLOVXJCPJM7VLTOAL3USIQ mthBY2ZMGTXXBAS7LYLSOB5DQ2I4E"/>
+      <Group Id="cmgZTPBHKR63RE3RJZ42FSZVJZFSE" Name="Profiler" Members="mthSHFTB32QK5CRZCRIHVSAGNAJ64 mthU4PRIYWVBNDBLLVBK6AQ6YH5XY mthXILF3LTJVJFZ5JFJ6AWRON3NOY mth3CHE3V6EGVEETJS36BT5RTMLZY"/>
+      <Group Id="cmgM4SH7FD5NJDTZHW5P5P2KWNDIE" Name="ServiceClient" Members="mthWJE7EQFPP5AU7I2X5QTHQLGU5E mthCUDB2SCLUNEAFFUK77ANDMJFWI mthB42AEKKYRFBSJG3IIG3D4CVTWE mthAC6QWAIA6JGSHOA4U4FCPNXFME mth6B35BO32E5AAFEAAT4PKR7AODM mthAEWBPU7ZXTNRDISQAAAAAAAAAA mth7PCOMY6NBJEHVJE2WHBZVJJT3Q mthWOPPFDISTFE2LGWN5EF7SZCPU4"/>
+    </MethodGroup>
+    <PropertyGroup Id="cpgEK7PYXTCBFCD5IFXQGQFF3526U" Name="Root">
+      <Group Id="cpgQ5F7P7K6R5EQBMEUAZWKAL3WTQ" Name="Private" Members="prdPGYYQTFE6PNRDA2JAAMPGXSZKU prdELZG7NQQRZAVXNZ2UKELJUMY5Q prdKSRSYOI72RA3THS6KJBOQ2GOI4 prdEHTVFCFEWRGQFC25CPB27UVT7I prdFRUH4AKG5VFMBMRCG5XK5JJV7E"/>
+    </PropertyGroup>
+    <Properties>
+      <Property Id="prdELZG7NQQRZAVXNZ2UKELJUMY5Q" Name="stSysdate" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Type TypeId="411" Path="pdcSqlStatement______________"/>
+        <GetterSources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ prdELZG7NQQRZAVXNZ2UKELJUMY5Q" Invoke="true" extStr="#STD_PROP_VALUE#"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>==null)
+  </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ prdELZG7NQQRZAVXNZ2UKELJUMY5Q" Invoke="true" extStr="#STD_PROP_VALUE#"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcSqlStatement______________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcSqlStatement______________ mthUW3PTWPGO7OBDCPUABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Select sysdate from Dual", false);
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ prdELZG7NQQRZAVXNZ2UKELJUMY5Q" Invoke="true" extStr="#STD_PROP_VALUE#"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </GetterSources>
+      </Property>
+      <Property Id="prdPGYYQTFE6PNRDA2JAAMPGXSZKU" Name="timeZone" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Type TypeId="400" extStr="java.util.TimeZone"/>
+        <InitialValue>
+          <ValAsStr>null</ValAsStr>
+        </InitialValue>
+      </Property>
+      <Property Id="prdKSRSYOI72RA3THS6KJBOQ2GOI4" Name="stSystimestamp" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Type TypeId="411" Path="pdcSqlStatement______________"/>
+        <GetterSources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ prdKSRSYOI72RA3THS6KJBOQ2GOI4" Invoke="true" extStr="#STD_PROP_VALUE#"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>==null)
+  </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ prdKSRSYOI72RA3THS6KJBOQ2GOI4" Invoke="true" extStr="#STD_PROP_VALUE#"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcSqlStatement______________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcSqlStatement______________ mthUW3PTWPGO7OBDCPUABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Select systimestamp from Dual", false);
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ prdKSRSYOI72RA3THS6KJBOQ2GOI4" Invoke="true" extStr="#STD_PROP_VALUE#"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </GetterSources>
+      </Property>
+      <Property Id="prdEHTVFCFEWRGQFC25CPB27UVT7I" Name="userCache" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Type TypeId="411" Path="adcB2AD534UJJCC7HGTB7H5MKRYAA"/>
+        <InitialValue>
+          <Jml>
+            <xsc:Item>
+              <xsc:Java>new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcB2AD534UJJCC7HGTB7H5MKRYAA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()</xsc:Java>
+            </xsc:Item>
+          </Jml>
+        </InitialValue>
+      </Property>
+      <Property Id="prdFRUH4AKG5VFMBMRCG5XK5JJV7E" Name="INITIALIZED" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Type TypeId="401" extStr="boolean"/>
+        <InitialValue>
+          <Jml>
+            <xsc:Item>
+              <xsc:Java>false</xsc:Java>
+            </xsc:Item>
+          </Jml>
+        </InitialValue>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth2RRXTVLCXLNRDISQAAAAAAAAAA" Name="getVersion" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="2"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getVersion();
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth3KOPVW4FS7PBDEWRABIFNQAABA" Name="isEasRequestProcessing" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> rq=</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getCurrentProcessedServiceRq();
+if (rq == null || rq.schemaType() == null || rq.schemaType().getName() == null)
+   return false;
+return rq.schemaType().getName().getNamespaceURI()==</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6JHHAUMDPXORDBMMABIFNQAABA" extStr="Request"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.type.getName().getNamespaceURI();
+
+
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth3L3ZXJE233NRDCK7ABIFNQAABA" Name="invokeByClassId" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="classId" Id="mprSPQOZNLHPZCXDO6FSFK5JIJCEQ">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="methodName" Id="mprJQV6S3A65JBTDIQX3AIIJBOXXA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="paramTypes" Id="mprAV6SUC36LJGGVPV4OZZPAX2CYY">
+            <Type TypeId="400" extStr="java.lang.Class" Dimension="1">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?"/>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="paramVals" Id="mprZUOGLRRZANHY5JZSNF3IZBGSRE">
+            <Type TypeId="400" extStr="java.lang.Object" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().invokeByClassId( classId, methodName, paramTypes, paramVals );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth3L7WEOQM4HNRDOLZABIFNQAABA" Name="getCurrentGreenwichTime" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>long curr=System.currentTimeMillis();
+return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(curr - </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcQ46YBRNDL7ORDI2YABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQ46YBRNDL7ORDI2YABIFNQAABA mthZTWRDW5DL7ORDI2YABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(curr));
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth4G5FL3ND6PNRDA2JAAMPGXSZKU" Name="getCurrentLocalTimeMillis" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="401" extStr="long"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return System.currentTimeMillis();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth5ASSCJP3DXPBDFHQABIFNQAABA" Name="getClassById" DescriptionId="mls47HO6GGHBNFK3LLMH4MFDC72BI" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="id" DescriptionId="mlsALXXAVXY7JAEJNHYJSUNWVYBTU" Id="mprBOAUYQ3Z2VGZXOUQVYMXLHCLWU">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Class" DescriptionId="mlsUUUQIOI6HVBPHC5JTU2IMJW4E4">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?"/>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getDefManager().getClass(id);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth5JI4ZZQGR3OBDCWOAAMPGXSZKU" Name="enterCachingSession" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="2"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getCache().enterSection();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthFK5KUXGNY7NRDISQAAAAAAAAAA" Name="checkBreak" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcJL423HF43RGRLCFDLH7USYPJP4"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().checkBreak();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthFXBG6AQXQ3ORDMNEABIFNQAABA" Name="getCurrentLocalDate" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcQ46YBRNDL7ORDI2YABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQ46YBRNDL7ORDI2YABIFNQAABA mthZLWRDW5DL7ORDI2YABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(System.currentTimeMillis()));
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthGW7UM5FE6PNRDA2JAAMPGXSZKU" Name="getTimeOffset" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="localMillis" Id="mprYUZSUQYML5G5FDMTDPLJAMRTIU">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ prdPGYYQTFE6PNRDA2JAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>==null)
+   </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ prdPGYYQTFE6PNRDA2JAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>=java.util.TimeZone.getDefault();
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ prdPGYYQTFE6PNRDA2JAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getOffset(localMillis);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthH5UTIPGXTPNRDISQABIFNQAABA" Name="getCurrentLocalTime" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( System.currentTimeMillis() );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthJQUPUAH4RPNRDCISABIFNQAABA" Name="getUserName" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getUserName();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthMSK2MTNVO3PBDICMABIFNQAABA" Name="changeClientLanguage" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="newLang" Id="mprIGPWJGSHDJEVBPVCEOELQB6W2A">
+            <Type TypeId="21" Path="acs2G44GBNBE5D7RO2QHQSVRZNLG4"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21" Path="acs2G44GBNBE5D7RO2QHQSVRZNLG4"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21" Path="acs2G44GBNBE5D7RO2QHQSVRZNLG4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> prevLang = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getClientLanguage();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().setClientLanguage(newLang);
+return prevLang;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthO5PKKKU533NRDCK7ABIFNQAABA" Name="newObject" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="classId" Id="mpr5VXKUHHDFBF7THMQGPI5XAD5IE">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().newObject( classId );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthONIEWR6P33OBDCSKABIFNQAABA" Name="sleep" DescriptionId="mlsLINXK3AN2RD3NOP2DUSGXLPBVI" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="millis" DescriptionId="mlsZ3JEPFSAP5CSHNG2TSKQBT7BCU" Id="mprRS5C6L7QPNHCVA2KXH3V2SSGLE">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try
+{
+   java.lang.Thread.sleep( millis );
+}
+catch( Throwable e )   
+{
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( "Thread sleep interrupted:\n" + e.getMessage() );
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthQWUOD223LTOBDB2CAAN7YHKUNI" Name="radixEncoding2Msdl" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="encoding" Id="mprU4I5JYG5V5BODILQU4W4Q7DXCY">
+            <Type TypeId="21" Path="acsVXR524YMLLOBDB6NAAN7YHKUNI"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>//return null if appropriate encoding not found
+
+if(encoding==null)
+   return null;
+switch(encoding) {
+   case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsVXR524YMLLOBDB6NAAN7YHKUNI aciJQWFFBMBHFAEVORSDXAZ375HZA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> : return  </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd7L7YUS4CLPOBDBEAAAN7YHKUNI" extStr="EncodingDef"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.CP_866.toString();  
+   case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsVXR524YMLLOBDB6NAAN7YHKUNI aci4OLAFRNYSJDTFPGWUNDDFHOHRM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>: return  </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd7L7YUS4CLPOBDBEAAAN7YHKUNI" extStr="EncodingDef"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.CP_1251.toString(); 
+   case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsVXR524YMLLOBDB6NAAN7YHKUNI aciBVT7LZQ6NFCJTBPKMRFFF3GCV4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> :  return  </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd7L7YUS4CLPOBDBEAAAN7YHKUNI" extStr="EncodingDef"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.UTF_8.toString();  
+   case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsVXR524YMLLOBDB6NAAN7YHKUNI aci7QNRLNRDNVD7FPKXQJQNGXLVNA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:  return  </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd7L7YUS4CLPOBDBEAAAN7YHKUNI" extStr="EncodingDef"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.ASCII.toString();   
+   case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsVXR524YMLLOBDB6NAAN7YHKUNI aci5TAECJTQHJBZPE5ENDISZ3GQUU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>: return  </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd7L7YUS4CLPOBDBEAAAN7YHKUNI" extStr="EncodingDef"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.DEFAULT_CP.toString();   
+   default: return null;
+   }   
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthRH7ZCDFE6PNRDA2JAAMPGXSZKU" Name="getCurrentGreenwichTimeMillis" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="401" extStr="long"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>long curr=System.currentTimeMillis();
+return curr - </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcQ46YBRNDL7ORDI2YABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQ46YBRNDL7ORDI2YABIFNQAABA mthZTWRDW5DL7ORDI2YABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(curr);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthSBMW6GP4RPNRDCISABIFNQAABA" Name="getStationName" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getStationName();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthW2YVQDWLWHNRDOLCABIFNQAABA" Name="needBreak" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().needBreak();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Name="getInstance" CompilerWarnings="16777233" DescriptionId="mlsASX43RB6EVC37AF5HYDQQQKDYA" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.arte.Arte" DescriptionId="mls24NOGVIHURDVDHDEVQLMTVCNG4"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return __getArteInstanceInternal();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthXFUZQYL2ATOBDA26AAMPGXSZKU" Name="getClientLanguage" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="21" Path="acs2G44GBNBE5D7RO2QHQSVRZNLG4"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getClientLanguage();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYFY5PGIHR3OBDCWOAAMPGXSZKU" Name="leaveCachingSession" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="sessionId" Id="mprAAM46JZDGFDHPGDP4TKOLA3LKE">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getCache().leaveSection(sessionId);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYMUE52FPAPOBDA26AAMPGXSZKU" Name="generateGuid" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return org.radixware.kernel.common.utils.Guid.generateGuid();
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYY6FOOADRTNRDCISABIFNQAABA" Name="getEntityObject" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="pid" Id="mprXAQFMW6H7VEVFIYIA3KNTM3LB4">
+            <Type TypeId="411" Path="pdcPid_______________________"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="pdcEntity____________________"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return ( </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcEntity____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> )</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getEntityObject( pid );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthJ22YS76JKFBLHMS32FAYSH3QNI" Name="getDefManager" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.arte.DefManager"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().DefManager;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthE5V4QN6ITBBSLD6DL3M3OXO4BY" Name="valAsStr2ObjVal" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="valAsStr" Id="mpr73HDDBGB2RG4XJJV3HDCNNZFQU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="valType" Id="mprVF476GS4ANBINDBPT3DJV6WMDQ">
+            <Type TypeId="2" Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return org.radixware.kernel.server.utils.SrvValAsStr.fromStr(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), valAsStr, valType);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthGQ7ZCUZLTTPBDBKLABIFNQAABA" Name="objVal2valAsStr" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="valAsObject" Id="mprTBGFOS6CZNHKPOV2FTETNMZTLU">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+          <Parameter Name="valType" Id="mprVJR4JWP5AFHFFAWXDFPWFB7QIU">
+            <Type TypeId="2" Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return org.radixware.kernel.server.utils.SrvValAsStr.toStr(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(),valAsObject, valType);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthJMKRQCVOSND2XCKKOLLHD2U67M" Name="translateSqml" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="sqml" Id="mprQ2JOAYQOGVCEFOYWFCXQ7Q2W2E">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="tableId" Id="mprQLVFBIPL35GEJB7FUJJXT5DQFQ">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="entityClassId" Id="mprVWP3ETWAKFFTPKGCP4FDUIFDGU">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="tableAlias" Id="mprNSHCP3PZSRC4BABF54JBRKSQSQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adc5JOVP535CRGEXAILV2LOPRVLCE"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return org.radixware.kernel.server.dbq.SqmlTranslator.translate(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), sqml, tableId, entityClassId, tableAlias);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthX7SDARD7DJHXTKSDE3SQCZOE3Q" Name="translateSqml" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="sqml" Id="mprXTFCK3CDMZFZDOJA24NTNFFZ2Q">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="table" Id="mprFUTDBUONKRDAPEZPB7GQIBOYRI">
+            <Type TypeId="411" Path="adcKDLXOOC7QVCEHNZTTHWDJH62BU"/>
+          </Parameter>
+          <Parameter Name="entityClassId" Id="mprRKVJ4V7GSREJPKI7XQY4USVIQ4">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="tableAlias" Id="mpr66NPKXDN2ZCDRAEPFPQEO4QOVI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adc5JOVP535CRGEXAILV2LOPRVLCE"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return org.radixware.kernel.server.dbq.SqmlTranslator.translate(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), sqml, table, entityClassId, tableAlias);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth7WWFVLOVXJCPJM7VLTOAL3USIQ" Name="translateSqml" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="sqml" Id="mprG2II7CTRCRGQJMDHAVBN5OU7Y4">
+            <Type TypeId="451" Path="xsdY5AELJNM7FG77FZD4ATT7SFMXA" extStr="Sqml"/>
+          </Parameter>
+          <Parameter Name="tableId" Id="mprLF44ZT4ADRG6ZLPPZVVXVYLOQY">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="entityClassId" Id="mprLIWTINOCWZFNHEOCHB5VXSFAOA">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="tableAlias" Id="mprRJNNYMWXOBBNFMOB2SHJLQGMOA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adc5JOVP535CRGEXAILV2LOPRVLCE"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return org.radixware.kernel.server.dbq.SqmlTranslator.translate(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), sqml, tableId, entityClassId, tableAlias);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthBY2ZMGTXXBAS7LYLSOB5DQ2I4E" Name="translateSqml" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="sqml" Id="mprKSHVH32CWZCVZMVA4SAUSAUP6Q">
+            <Type TypeId="451" Path="xsdY5AELJNM7FG77FZD4ATT7SFMXA" extStr="Sqml"/>
+          </Parameter>
+          <Parameter Name="table" Id="mprFZ2M6VAJWRDY3F3XMSTGXXFHCI">
+            <Type TypeId="411" Path="adcKDLXOOC7QVCEHNZTTHWDJH62BU"/>
+          </Parameter>
+          <Parameter Name="entityClassId" Id="mprEWMDOYI5WZD4BDAVKVWZ5D2DJM">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="tableAlias" Id="mprF4QSEFDWIFBBPMEP2XPBKSWB3M">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adc5JOVP535CRGEXAILV2LOPRVLCE"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return org.radixware.kernel.server.dbq.SqmlTranslator.translate(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), sqml, table, entityClassId, tableAlias);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthVR3O4RAGRTNRDCISABIFNQAABA" Name="rollback" DescriptionId="mlsKOJDV4UCBVCH7OU54BC5XZSNCM" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().rollback();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthVPNKSAORTPNRDISQABIFNQAABA" Name="rollbackToSavepoint" DescriptionId="mlsWCRSNFCRZ5G6BLYZNOTXOD7DOI" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="id" DescriptionId="mlsJOIUBRVCXBE7XCEZHFBN3OQYNM" Id="mprU3VOJIV5B5AVZH7BXK26WVVZ2M">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().rollbackToSavepoint(id);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthDV3GVFXTA3PBDLT5AAN7YHKUNI" Name="sendBatches" DescriptionId="mlsMRUUG3J3BZDW3LHP4L6SYC2Y6A" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getDefManager().getDbQueryBuilder().sendBatches(true);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthEYROCYIR7HORDHO4ABIFNQAABA" Name="setCreatesBatchSize" DescriptionId="mlsP4XUD3EPU5EWXJEDYN6GRRLFLU" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="tableId" DescriptionId="mls6XN7KHBQHBAIDNB6PHOFQK5E5Y" Id="mpr6Z5EHLQPPVCPVLMMEHTRXAE7CI">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="batchSize" DescriptionId="mlsOKB7V6C4VJHU7OUJDJCHXQZIUM" Id="mprXRNGFGREVFCBJL7TRCAE2IY5W4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getDefManager().getDbQueryBuilder().setCreatesBatchSize(tableId, batchSize);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthKVZWVQOQTPNRDISQABIFNQAABA" Name="setSavepoint" DescriptionId="mlsZVMRV2JOFNHXNGHEC52UEBGPZA" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="21" DescriptionId="mls6LDXA7ADWJESPK3UHQXSQBKMFI"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().setSavepoint();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthEVPFPGQR7HORDHO4ABIFNQAABA" Name="setUpdatesBatchSize" DescriptionId="mls35PMITMDMBGFRPK7NFGAIYLFDU" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="tableId" DescriptionId="mlsUHRTN2T3M5BJFBKDWTCMYD4Q4Q" Id="mprOA3WJFBHABEAVEVAK7YIMMDUEE">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="batchSize" DescriptionId="mlsLYI7HRF5CRGQLD4AQOLWTNI6BQ" Id="mprBSP75NUGSFFNZIMVURCAABQJFE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getDefManager().getDbQueryBuilder().setUpdatesBatchSize(tableId, batchSize);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthKYS3RPTKXLNRDISQAAAAAAAAAA" Name="updateDatabase" DescriptionId="mlsZPVSOOUF6VBJFP2LHKZCZOAA2A" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().updateDatabase(null);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthH2FKAOYGRTNRDCISABIFNQAABA" Name="commit" DescriptionId="mlsUJ7LU74JJZCW7JYZIW62PGPWL4" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().commit();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth35TKQI3R7DNRDOMIABIFNQAABA" Name="createTemporaryBlob" DescriptionId="mlsGN5W7DVDGRC5VIWLP2U7TADW2A" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="400" extStr="java.sql.Blob" DescriptionId="mlsPNYFYMYNVVCBNNYJCRXWXJ7HCM"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+   return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getDbConnection().createTemporaryBlob();  
+   }
+catch(java.sql.SQLException e) {
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mth2XWD35QT2BASFBJ7LDVLOSC66U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Can't create temporary Blob: "+e.getMessage(),e);
+   }   </xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthFAPPRHDR7DNRDOMIABIFNQAABA" Name="createTemporaryClob" DescriptionId="mlsY7NZSVPVW5AI7NGJVDYWRRJTYM" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="400" extStr="java.sql.Clob" DescriptionId="mlsKL3XBY35DJCFFDQQ6GD7E75UFY"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+   return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getDbConnection().createTemporaryClob();
+   }
+catch(java.sql.SQLException e) {
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mth2XWD35QT2BASFBJ7LDVLOSC66U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Can't create temporary Clob: "+e.getMessage(),e);
+   }   </xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthPDUPVLPYXTNRDISQAAAAAAAAAA" Name="getDbConnection" DescriptionId="mlsKFAZC6LRBZF7RHNP7PVVESBYRE" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="400" extStr="java.sql.Connection" DescriptionId="mlsHDIJCKI6ZVCGXBCW66XR767WCA"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getDbConnection().get();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth7ISAWVM4QBE2VIC5WNQD3OZKBY" Name="invokeByClassName" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="className" Id="mprAPJRMGAG75D5BBFP4MH4Q5MNQE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="methodName" Id="mprXW2SN5USBZCJLMYA3EPLDMACKU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="paramTypes" Id="mprHQP5WIIORBGMTA5DQTZJSBHCOQ">
+            <Type TypeId="400" extStr="java.lang.Class" Dimension="1">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?"/>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="paramVals" Id="mprNGRT3OU2EJAKHNW3NNMZFJEIYM">
+            <Type TypeId="400" extStr="java.lang.Object" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().invokeByClassName( className, methodName, paramTypes, paramVals );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthSHFTB32QK5CRZCRIHVSAGNAJ64" Name="enterTimingSection" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="timingSectionId" Id="mpr5F6NWELUSJCSNBQDQTELKYDL6Y">
+            <Type TypeId="21" Path="acsJIXOZF6PJJAM5AZKRLYLYFA75E"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().Profiler.enterTimingSection(timingSectionId.Value);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthU4PRIYWVBNDBLLVBK6AQ6YH5XY" Name="leaveTimingSection" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="timingSectionId" Id="mpr6CPFHVKCKBDM7PLFFDWCLGAI4E">
+            <Type TypeId="21" Path="acsJIXOZF6PJJAM5AZKRLYLYFA75E"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().Profiler.leaveTimingSection(timingSectionId.Value);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthXILF3LTJVJFZ5JFJ6AWRON3NOY" Name="enterTimingSection" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="timingSectionId" Id="mprDRQNBHBONVDMTHHNKCM7T5RIQU">
+            <Type TypeId="21" Path="acsJIXOZF6PJJAM5AZKRLYLYFA75E"/>
+          </Parameter>
+          <Parameter Name="path" Id="mpr7ULWVJEHGZAGBHHJLIOV7WDLFY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().Profiler.enterTimingSection(timingSectionId.Value+":"+path);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth3CHE3V6EGVEETJS36BT5RTMLZY" Name="leaveTimingSection" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="timingSectionId" Id="mpr637P7ZJPYFEYPM4JNUVBWZAEDA">
+            <Type TypeId="21" Path="acsJIXOZF6PJJAM5AZKRLYLYFA75E"/>
+          </Parameter>
+          <Parameter Name="path" Id="mprJACLEYYXIVEE7FS7EJBNB6QUUA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().Profiler.leaveTimingSection(timingSectionId.Value+":"+path);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth4NEMAH6JSRFVLIOZQKNPABN6FA" Name="getDbDataSource" DescriptionId="mls6QNF2BHSRZFDHED3LBO5PI5CAM" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <ReturnType TypeId="411" Path="adc6ZUT3E6WPJB35I22SQH7VHWGIA" DescriptionId="mls5XK4SPEX6ZHR7LWBEWYSKPLV4E"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getDataSource();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthVBYT7JGPANGVVCVLOVN434UO44" Name="getAppParams" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="400" extStr="java.util.Map">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="21"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="21"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().AppParams;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth2QT4RSOMLNCW3JOQ2SA57EEYJE" Name="getClientEnvironment" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true"/>
+        <ReturnType TypeId="21" Path="acsMZRCOG2E6FFA7AWAMSHCXA5JBU"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getClientEnvironment();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthMRSCGDAXNBHPFGFTCNBKUW6FP4" Name="getClientCountry" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="21" Path="acsQK3EKSSOTZDKVFKO3FY5PTAV7A"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getClientCountry();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthZWJYABENAVEWHEOIDMMFECBL4E" Name="changeClientCountry" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="newCountry" Id="mprACEA3356VZAAJON3OUHIXBSO2U">
+            <Type TypeId="21" Path="acsQK3EKSSOTZDKVFKO3FY5PTAV7A"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21" Path="acsQK3EKSSOTZDKVFKO3FY5PTAV7A"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21" Path="acsQK3EKSSOTZDKVFKO3FY5PTAV7A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> prevCountry = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getClientCountry();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().setClientCountry(newCountry);
+return prevCountry;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth5NZQM372ZNACXGR66DJCYM66OE" Name="getClientLocale" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="400" extStr="java.util.Locale"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getClientLocale();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthEVT5IREU7NEA5JW2MSIIJIFHSU" Name="changeClientLocale" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="newLocale" Id="mpr6DM6YKWHY5EBRAXG3FHPIHJWWU">
+            <Type TypeId="400" extStr="java.util.Locale"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.Locale"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final java.util.Locale prevLocale = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getClientLocale();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().setClientLocale(newLocale);
+return prevLocale;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthRCSWGPQALFCKFHNAQBDPJ23WWA" Name="createLocalTracer" DescriptionId="mlsHUQPSN65Q5ENTB5LIHMYXXIA3E" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="eventSource" DescriptionId="mlsP5W2PZPHVZGKTGC2NB5ZIJI22E" Id="mpr6TTQJLHAOJBWDOIR2A67RT7TIE">
+            <Type TypeId="21" Path="acsTNLJBZADHTNRDIPGABQAQNO6EY"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adcWHTDO4CBHBF6XAHSVUIBZFUQGQ" DescriptionId="mlsEM5FS7WSQVGP7K2RGXDRGX5YPE"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().createLocalTracer(eventSource.Value);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth6U2XAAFFIFEB5AFSJDIWGPUT6Y" Name="getAllLayerVersionsAsString" DescriptionId="mlsJBIQGLA2X5B2VI7UMOFG6JDBSE" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="21" DescriptionId="mlsIQMQ4SOHHZAPHHMJQLAWVCG3DY"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.starter.radixloader.RadixClassLoader"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getRevisionMeta(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()).LayerVersionsString;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthLE3IKXC2DBCVJCBDMCMLDUJAMQ" Name="getUserCache" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="411" Path="adcB2AD534UJJCC7HGTB7H5MKRYAA"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ prdEHTVFCFEWRGQFC25CPB27UVT7I" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthRUFBDP2JWZB65BRLAXJ67RJ4X4" Name="markActive" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().markActive();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthRMAJBM7RKRENNMYLGX2F3PTBGI" Name="markInactive" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().markInactive();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthSHFVGI3P5RANZGTEZYTZMBQWQE" Name="getScpName" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getScpName();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthT25AIBSXLJBCDLJEBVCGDAEV5A" Name="onStart" Nature="0" IsReflectiveCallable="true" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ prdFRUH4AKG5VFMBMRCG5XK5JJV7E" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+    return;
+}
+
+int classesLoaded = 0;
+int classesFailed = 0;
+try {
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> instance = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mth_loadByPK_________________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().Instance.Id, true);
+    if (instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E col7UQLYTWVCJEUDHVXJFXYGP7KN4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="accTJMTVF7PMBBAPPBJWULZYNO7TY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> cur = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="accTJMTVF7PMBBAPPBJWULZYNO7TY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accTJMTVF7PMBBAPPBJWULZYNO7TY mth_stmt_execute_____________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E colMJMKGEQX2FG53KHYXUTIJMMKYE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        try {
+            while (cur.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+                try {
+                    java.lang.Class.forName(cur.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accTJMTVF7PMBBAPPBJWULZYNO7TY prfMJ55IKQ3WVDV3FMUERFV4QDAYA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, true, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthJ22YS76JKFBLHMS32FAYSH3QNI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getReleaseCache().getPrivateClassloader());
+                    classesLoaded++;
+                } catch (Exception ex) {
+                    classesFailed++;
+                    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthS7A5F7KSRPNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Error while loading class '" + cur.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accTJMTVF7PMBBAPPBJWULZYNO7TY prfMJ55IKQ3WVDV3FMUERFV4QDAYA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + "'from class loading profile: " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthBXQY2BN2DVEUNP7D645ZOVXZM4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ex), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci6WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+                }
+            }
+        } finally {
+            cur.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mth_stmt_close_______________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+        }
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthS7A5F7KSRPNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Class loading profile '" + instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E col7UQLYTWVCJEUDHVXJFXYGP7KN4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthQCGEEZOUAHOBDA26AAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() +  "' has been applied, classes loaded: " + classesLoaded + ", errors: " + classesFailed, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci6WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        if (classesFailed > 0) {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthP66N3O2SRPNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsUUA7AYFIHJCHHKTCOSTLHLV6LI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E col7UQLYTWVCJEUDHVXJFXYGP7KN4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthQCGEEZOUAHOBDA26AAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), classesFailed), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci6WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        }
+    }
+} catch (Exception ex) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthP66N3O2SRPNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsUXFPP4SVCNHINKBQMTC56H544E"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthBXQY2BN2DVEUNP7D645ZOVXZM4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ex), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci6WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}
+
+
+try {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecX5TD7JDVVHWDBROXAAIT4AGD7E"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> system = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecX5TD7JDVVHWDBROXAAIT4AGD7E"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecX5TD7JDVVHWDBROXAAIT4AGD7E mth_loadByPK_________________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(1l, true);
+    if (system.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecX5TD7JDVVHWDBROXAAIT4AGD7E pruFXLCNMISE5EALECQELQKF5XGMI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+        system.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecX5TD7JDVVHWDBROXAAIT4AGD7E pruFXLCNMISE5EALECQELQKF5XGMI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclMZEXQBYWYBEYFOLCIZCSSOBTOM mth6FB2VE4CJVAKRGFLAHDHCRIJ2E" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    }
+} catch (Exception ex) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthP66N3O2SRPNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Exception in ARTE initialization UDF: " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthBXQY2BN2DVEUNP7D645ZOVXZM4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ex), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci6WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ prdFRUH4AKG5VFMBMRCG5XK5JJV7E" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = true;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthWJE7EQFPP5AU7I2X5QTHQLGU5E" Name="invokeService" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="rq" Id="mprT2VRMA42WRCJ3KEYVYGRMA53IU">
+            <Type TypeId="451"/>
+          </Parameter>
+          <Parameter Name="resultClass" Id="mprFRWN7PM3FJEWVHMG3I5H36H7KA">
+            <Type TypeId="400" extStr="java.lang.Class">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?"/>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="systemId" Id="mprCJ23ESFRPVA5JIYS3E4I44BRMA">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="service" Id="mprQII4ENFGYZEFFCXFHOGCQGKLW4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="scpName" Id="mprHYNK3RTB7NCSPFDSPSSLO75SBY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="keepConnectTime" Id="mprPVKJMUNFIVBFVLM2XZRNFWP4XU">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="timeout" Id="mpr5JW5APUAKVHWFOPUY3A4IWSLM4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
+          <Exception TypeId="411" Path="axcKOGTAG2B25GNZELYJJFXHBJTC4"/>
+          <Exception TypeId="411" Path="axcNCHTB2WP2BCVFLRT36WXFJFDTU"/>
+          <Exception TypeId="411" Path="axcFRK2HRXXBFARBEEIPQK4PX3RNE"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getArteSocket().invokeService( rq, resultClass, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcFTLY2XIEXLOBDA6IAAMPGXSZKU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcFTLY2XIEXLOBDA6IAAMPGXSZKU mthF5TH2ZQEXLOBDA6IAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(systemId,1), service, scpName, keepConnectTime, timeout);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthCUDB2SCLUNEAFFUK77ANDMJFWI" Name="invokeService" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="rq" Id="mprHYD734HRFZDLFPNWP6S4DJQCJE">
+            <Type TypeId="451"/>
+          </Parameter>
+          <Parameter Name="soapRequestParams" Id="mpr5HCPHNZIZZA7PJ7GSQ26JZ2ITY">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="resultClass" Id="mprWSL2J3GZRBCHZOZSSQWJUZCBHU">
+            <Type TypeId="400" extStr="java.lang.Class">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?"/>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="systemId" Id="mprQ2PDOIKTLBEM3PK2GCIDHL7VLQ">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="service" Id="mprRXKU3E6BRVFA3OSJPNC4L7ZSII">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="scpName" Id="mprFVYJ3NAGWJBHRJDSKEXR244LHI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="keepConnectTime" Id="mpr5LWDEHZEOVCODH3B4UN4LVID7Q">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="timeout" Id="mprHMX6VQBVQNEV5JBD7RZD4ID2EY">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
+          <Exception TypeId="411" Path="axcKOGTAG2B25GNZELYJJFXHBJTC4"/>
+          <Exception TypeId="411" Path="axcNCHTB2WP2BCVFLRT36WXFJFDTU"/>
+          <Exception TypeId="411" Path="axcFRK2HRXXBFARBEEIPQK4PX3RNE"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getArteSocket().invokeService(rq, soapRequestParams, resultClass, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcFTLY2XIEXLOBDA6IAAMPGXSZKU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcFTLY2XIEXLOBDA6IAAMPGXSZKU mthF5TH2ZQEXLOBDA6IAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(systemId,1), service, scpName, keepConnectTime, timeout);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthB42AEKKYRFBSJG3IIG3D4CVTWE" Name="invokeService" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="rq" Id="mprUFD3SDUPYBCR7EKSEY3JVEPVYQ">
+            <Type TypeId="451"/>
+          </Parameter>
+          <Parameter Name="soapRequestParams" Id="mprQ6TQYFC56ZCRZDRRUIMVCZUBTQ">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="resultClass" Id="mpr2FCMPZQD2BBRHOSQTC3HB6SS3A">
+            <Type TypeId="400" extStr="java.lang.Class">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?"/>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="systemId" Id="mpr4SCRIH2VSBABTOMSVKWPXNZ6VE">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="service" Id="mprCWFGZWANEJD2TLCXG2PJ2VFOQU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="scpName" Id="mprVHA6M45QS5BO3LA6J45O4DNUZY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="additionalSaps" Id="mpr7KBBKMILINC5LB6W45AWEVRSTA">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.sc.SapClientOptions"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="keepConnectTime" Id="mpr5QAT46PWBFE7DG6WW7WHWEEFT4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="timeout" Id="mprW52KESKPSBDXLIANQSZ7FLGXQA">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
+          <Exception TypeId="411" Path="axcKOGTAG2B25GNZELYJJFXHBJTC4"/>
+          <Exception TypeId="411" Path="axcNCHTB2WP2BCVFLRT36WXFJFDTU"/>
+          <Exception TypeId="411" Path="axcFRK2HRXXBFARBEEIPQK4PX3RNE"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getArteSocket().invokeService(rq, soapRequestParams, resultClass, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcFTLY2XIEXLOBDA6IAAMPGXSZKU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcFTLY2XIEXLOBDA6IAAMPGXSZKU mthF5TH2ZQEXLOBDA6IAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(systemId,1), service, scpName, additionalSaps, keepConnectTime, timeout);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthAC6QWAIA6JGSHOA4U4FCPNXFME" Name="invokeService" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="rq" Id="mprUFD3SDUPYBCR7EKSEY3JVEPVYQ">
+            <Type TypeId="451"/>
+          </Parameter>
+          <Parameter Name="soapRequestParams" Id="mprQ6TQYFC56ZCRZDRRUIMVCZUBTQ">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="resultClass" Id="mpr2FCMPZQD2BBRHOSQTC3HB6SS3A">
+            <Type TypeId="400" extStr="java.lang.Class">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?"/>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="systemId" Id="mpr4SCRIH2VSBABTOMSVKWPXNZ6VE">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="service" Id="mprCWFGZWANEJD2TLCXG2PJ2VFOQU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="scpName" Id="mprVHA6M45QS5BO3LA6J45O4DNUZY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="additionalSaps" Id="mpr7KBBKMILINC5LB6W45AWEVRSTA">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.sc.SapClientOptions"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="keepConnectTime" Id="mpr5QAT46PWBFE7DG6WW7WHWEEFT4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="receiveTimeout" Id="mprW52KESKPSBDXLIANQSZ7FLGXQA">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="connectTimeout" Id="mprATZCZ3M6J5CMPFO4IQRQ6NOBH4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
+          <Exception TypeId="411" Path="axcKOGTAG2B25GNZELYJJFXHBJTC4"/>
+          <Exception TypeId="411" Path="axcNCHTB2WP2BCVFLRT36WXFJFDTU"/>
+          <Exception TypeId="411" Path="axcFRK2HRXXBFARBEEIPQK4PX3RNE"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getArteSocket().invokeService(rq, soapRequestParams, resultClass, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcFTLY2XIEXLOBDA6IAAMPGXSZKU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcFTLY2XIEXLOBDA6IAAMPGXSZKU mthF5TH2ZQEXLOBDA6IAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(systemId,1), service, scpName, additionalSaps, keepConnectTime, receiveTimeout, connectTimeout);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth6B35BO32E5AAFEAAT4PKR7AODM" Name="invokeService" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="rq" Id="mprT2VRMA42WRCJ3KEYVYGRMA53IU">
+            <Type TypeId="451"/>
+          </Parameter>
+          <Parameter Name="resultClass" Id="mprFRWN7PM3FJEWVHMG3I5H36H7KA">
+            <Type TypeId="400" extStr="java.lang.Class">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?"/>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="systemId" Id="mprCJ23ESFRPVA5JIYS3E4I44BRMA">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="service" Id="mprQII4ENFGYZEFFCXFHOGCQGKLW4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="scpName" Id="mprHYNK3RTB7NCSPFDSPSSLO75SBY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="keepConnectTime" Id="mprPVKJMUNFIVBFVLM2XZRNFWP4XU">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="receiveTimeout" Id="mpr5JW5APUAKVHWFOPUY3A4IWSLM4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="connectTimeout" Id="mprZDJWMGNNSREQRGZW7LDDT2KSCE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
+          <Exception TypeId="411" Path="axcKOGTAG2B25GNZELYJJFXHBJTC4"/>
+          <Exception TypeId="411" Path="axcNCHTB2WP2BCVFLRT36WXFJFDTU"/>
+          <Exception TypeId="411" Path="axcFRK2HRXXBFARBEEIPQK4PX3RNE"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getArteSocket().invokeService(rq, null, resultClass, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcFTLY2XIEXLOBDA6IAAMPGXSZKU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcFTLY2XIEXLOBDA6IAAMPGXSZKU mthF5TH2ZQEXLOBDA6IAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(systemId,1), service, scpName, null, keepConnectTime, receiveTimeout, connectTimeout);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthAEWBPU7ZXTNRDISQAAAAAAAAAA" Name="invokeInternalService" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="rq" Id="mpr4RMG5457DZDQJLE6Q4EPPU54WY">
+            <Type TypeId="451"/>
+          </Parameter>
+          <Parameter Name="resultClass" Id="mprAW33BDLQJZCHFEMX35UFLJEDL4">
+            <Type TypeId="400" extStr="java.lang.Class">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?"/>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="service" Id="mpr2WJOZH2K4ZEQLBQNGIFGTEFIDI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="keepConnectTime" Id="mpr2S62DEKM4BCKZFTKEPR3XBANLI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="timeout" Id="mprADM36G556NCW5E6M53V2P4LSEY">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
+          <Exception TypeId="411" Path="axcKOGTAG2B25GNZELYJJFXHBJTC4"/>
+          <Exception TypeId="411" Path="axcNCHTB2WP2BCVFLRT36WXFJFDTU"/>
+          <Exception TypeId="411" Path="axcFRK2HRXXBFARBEEIPQK4PX3RNE"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getArteSocket().invokeInternalService( rq, resultClass, service, keepConnectTime, timeout);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth7PCOMY6NBJEHVJE2WHBZVJJT3Q" Name="invokeInternalService" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="rq" Id="mpr4RMG5457DZDQJLE6Q4EPPU54WY">
+            <Type TypeId="451"/>
+          </Parameter>
+          <Parameter Name="resultClass" Id="mprAW33BDLQJZCHFEMX35UFLJEDL4">
+            <Type TypeId="400" extStr="java.lang.Class">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?"/>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="service" Id="mpr2WJOZH2K4ZEQLBQNGIFGTEFIDI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="keepConnectTime" Id="mpr2S62DEKM4BCKZFTKEPR3XBANLI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="receiveTimeout" Id="mprADM36G556NCW5E6M53V2P4LSEY">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="connectTimeout" Id="mprWHAJCI7NIJDGVKN7N4O5AISHRQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
+          <Exception TypeId="411" Path="axcKOGTAG2B25GNZELYJJFXHBJTC4"/>
+          <Exception TypeId="411" Path="axcNCHTB2WP2BCVFLRT36WXFJFDTU"/>
+          <Exception TypeId="411" Path="axcFRK2HRXXBFARBEEIPQK4PX3RNE"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getArteSocket().invokeInternalService(rq, resultClass, service, keepConnectTime, receiveTimeout, connectTimeout);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthCMZ3E67XBRBQLHZXVQEHGG2SMI" Name="unlock" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="lockName" Id="mprRS5C6L7QPNHCVA2KXH3V2SSGLE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="2"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="spcQDJQLMY45FFJDLQPYF47ZABP3I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> proc = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="spcQDJQLMY45FFJDLQPYF47ZABP3I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="spcQDJQLMY45FFJDLQPYF47ZABP3I mth_stmt_execute_____________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(lockName, "");
+return proc.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="spcQDJQLMY45FFJDLQPYF47ZABP3I prm7EG3WM676ZBONIHF524PPZ4MGM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthAKYZJ7KCMRGZPBKVVH4TBA4FKE" Name="getSessionLockOwnerInfo" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="entityId" Id="mprVKPQLCJA5FCXNGQBYB77MGIEG4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="pid" Id="mprVDZ3EWXGSBCCHL6LZZF6KPVITQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adcITCGGRJ7FFAGBCKG5AUFHKDDOE"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (entityId == null || pid == null) {
+    return null;
+}
+
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="spc3K3WGFROHFGHFKBQCDDLVDRU6Y"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> proc = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="spc3K3WGFROHFGHFKBQCDDLVDRU6Y"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="spc3K3WGFROHFGHFKBQCDDLVDRU6Y mth_stmt_execute_____________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(entityId, pid);
+if (proc.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="spc3K3WGFROHFGHFKBQCDDLVDRU6Y prmUZWZ3HKPSRCCZD2H5HDMWO4VG4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+    return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcITCGGRJ7FFAGBCKG5AUFHKDDOE mthV6AZKYJEFZCXLN4Q7S2WCPBD7U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(proc.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="spc3K3WGFROHFGHFKBQCDDLVDRU6Y prmUZWZ3HKPSRCCZD2H5HDMWO4VG4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, proc.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="spc3K3WGFROHFGHFKBQCDDLVDRU6Y prm5ZZDXCYVBRC2TNC7X4X5EBPEAE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, proc.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="spc3K3WGFROHFGHFKBQCDDLVDRU6Y prm2AYWMKVPANFXFDM4KCXDNQNMYU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+} else {
+    return null;
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthJYYZZHYNINDKBPQEKUOMRM4ZSY" Name="lock" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="lockName" Id="mprRS5C6L7QPNHCVA2KXH3V2SSGLE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="2"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="spc42U57ZHYHZEWXHGLMZFBMWKM7E"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> proc = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="spc42U57ZHYHZEWXHGLMZFBMWKM7E"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="spc42U57ZHYHZEWXHGLMZFBMWKM7E mth_stmt_execute_____________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(lockName, "", null);
+return proc.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="spc42U57ZHYHZEWXHGLMZFBMWKM7E prmMJFRMXYZ3JBAND6AZTVAWTSYTE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthWOPPFDISTFE2LGWN5EF7SZCPU4" Name="getServiceSaps" DescriptionId="mls7QXEF77VKJGAVOBKXRN27DBMXA" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="systemId" Id="mprKPPAQO6S3FA75HNRPTR2MDPBPM">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="serviceUri" Id="mprQJPAUMYG5NDX3F7VGO3NB5B6T4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="scpName" Id="mprC4S4GV4RD5FY7BPHPTAZQ3R5K4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.sc.SapClientOptions"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcKOGTAG2B25GNZELYJJFXHBJTC4"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getArteSocket().getServiceSaps(systemId, serviceUri, scpName);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthO6E3U4KDA5A5FFVCN7JGELDMAU" Name="getDatabaseSysDate" DescriptionId="mlsSSJAH4QR65CU7BDTXGFMOIYCSI" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <ReturnType TypeId="12" DescriptionId="mlsO5TFGKZFTJDHHAVZY2ZNW7AHCE"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcResultSet_________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> rs = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ prdELZG7NQQRZAVXNZ2UKELJUMY5Q" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcSqlStatement______________ mthK5ULGFQYYDNRDCKAABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+try
+{  rs.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();  return rs.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcResultSet_________________ mth2PFQ47S7YXNRDCKEABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(1); }
+finally
+{  rs.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mth_stmt_close_______________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(); }
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthOZ6IRS25V5BVFHBC7ZSKNZNTP4" Name="getDatabaseSysTimestamp" DescriptionId="mlsMC4AZIAZXVBJ7IQODDP5HVUA7U" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <ReturnType TypeId="12" DescriptionId="mlsSGXOA3Q6DNH3XMTUUVUEQUWX2Y"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcResultSet_________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> rs = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ prdKSRSYOI72RA3THS6KJBOQ2GOI4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcSqlStatement______________ mthK5ULGFQYYDNRDCKAABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+try {
+    rs.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    return rs.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcResultSet_________________ mth2PFQ47S7YXNRDCKEABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(1);
+} finally {
+    rs.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mth_stmt_close_______________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+}
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthQCH5JDACGBEWDC2I26QLFZM7DM" Name="canHandleAasRequestsForScp" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="scpName" Id="mprS3RWSLWIWZDMFCWLEV3Q73BAVQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mth54DKS3WG3ZEYRC5AL4Y222OA4U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsYKHG3Q4XU5H3PFBQCQIZ6ACBNI aciV7S3IRAV3VCSRLI5J3CTMBRFPM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value, scpName);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth54DKS3WG3ZEYRC5AL4Y222OA4U" Name="canHandleArteServiceRequestsForScp" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="serviceUri" Id="mprTNG4TMSO4JEG7CCQRE5XHWI6KI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="scpName" Id="mprOCPTMEZDVRBCPA2TYCX7DL3XZI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (serviceUri == null) {
+    return false;
+}
+if (scpName == null) {
+    return true;
+}
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="acc3KNGGLP6GRFDRC66RVK5BS7YSI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> cur = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="acc3KNGGLP6GRFDRC66RVK5BS7YSI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acc3KNGGLP6GRFDRC66RVK5BS7YSI mth_stmt_execute_____________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(serviceUri, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().Instance.getId());
+try {
+    while (cur.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+        if (java.util.Objects.equals(scpName, cur.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acc3KNGGLP6GRFDRC66RVK5BS7YSI prfUPIZJAE53BDKJISY2YJG4FS5BU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)) {
+            return true;
+        }
+    }
+    return false;
+} finally {
+    cur.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mth_stmt_close_______________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth3FHH7DLMOBAQ7COVKYGC2PSMZE" Name="getDbSid" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <ReturnType TypeId="2"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getDbSid();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthHN3PL5HSKRASXAANJU5WMXT6VQ" Name="getDbSerial" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <ReturnType TypeId="2"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getDbSerial();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthGKMEGEYP5BH3HOEQTMOHA72HFI" Name="freeTemporaryBlob" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="blob" Id="mprGBDAZJCVHZDZBCQFTLN5GQ6PFQ">
+            <Type TypeId="28"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().DbConnection.freeTemporaryBlob(blob);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthXTVU25DCIZEUTJPIDXHYN5RT5E" Name="freeTemporaryClob" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="clob" Id="mprRKVBXXTTG5BLJMYHOQMEPWONGQ">
+            <Type TypeId="27"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().DbConnection.freeTemporaryClob(clob);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthRISRVXXNTVBC5PIQYMK6EBFY7A" Name="freeTemporaryBlobs" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="blobs" Id="mprH6RKSUZVJJEBZH242W7FFTNMRY">
+            <Type TypeId="400" extStr="java.util.Collection">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="28"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().DbConnection.freeTemporaryBlobs(blobs);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYCJD3DO3HNEZ5GOREDH37CMTVQ" Name="freeTemporaryClobs" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="clobs" Id="mprH6RKSUZVJJEBZH242W7FFTNMRY">
+            <Type TypeId="400" extStr="java.util.Collection">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="27"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().DbConnection.freeTemporaryClobs(clobs);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthFM6HJCMTEBDD5LIWGXT66HOGYA" Name="isEasSessionKeyAccessible" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().isEasSessionKeyAccessible();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthJZVQGO24W5HSFHNQF4KSBSKPIQ" Name="encryptByEasSessionKey" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="data" Id="mprQN3QL6SOOBGK3JMLZA4VIOL2MA">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="byte" Dimension="1"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().encryptByEasSessionKey(data);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth7VQAVPW32ZHHFNSV4WSSLFEARU" Name="decryptByEasSessionKey" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="encryptedData" Id="mpr6BQOEAXBNFFWBIGKF3XVDLQL2Y">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="byte" Dimension="1"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().decryptByEasSessionKey(encryptedData);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

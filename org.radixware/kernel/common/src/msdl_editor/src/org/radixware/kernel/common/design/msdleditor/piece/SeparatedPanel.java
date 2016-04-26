@@ -1,0 +1,332 @@
+/*
+ * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. This Source Code is distributed
+ * WITHOUT ANY WARRANTY; including any implied warranties but not limited to
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * Mozilla Public License, v. 2.0. for more details.
+ */
+
+/*
+ * Separated.java
+ *
+ * Created on 19 Ноябрь 2008 г., 11:58
+ */
+
+package org.radixware.kernel.common.design.msdleditor.piece;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+
+import org.radixware.kernel.common.design.msdleditor.AbstractEditItem;
+import org.radixware.kernel.common.design.msdleditor.DefaultLayout;
+import org.radixware.kernel.common.design.msdleditor.enums.EShieldedFormat;
+import org.radixware.kernel.common.design.msdleditor.field.panel.SetHexDialog;
+import org.radixware.kernel.common.msdl.enums.EEncoding;
+import org.radixware.kernel.common.msdl.fields.AbstractFieldModel;
+import org.radixware.kernel.common.utils.Hex;
+import org.radixware.schemas.msdl.SeparatedDef;
+
+
+public class SeparatedPanel extends AbstractEditItem implements ActionListener {
+    private SeparatedDef separated;
+    private AbstractFieldModel fieldModel;
+    private Vector<String> shieldedList;
+
+    /** Creates new form Separated */
+    public SeparatedPanel() {
+        initComponents();
+        ArrayList<JLabel> l = new ArrayList<JLabel>();
+        l.add(jLabelStart);
+        l.add(jLabelEnd);
+        l.add(jLabelFormat);
+        l.add(jLabelShield);
+        ArrayList<JComponent> e = new ArrayList<JComponent>();
+        e.add(startSepPanel);
+        e.add(endSepPanel);
+        e.add(shieldedFormatPanel);
+        e.add(shieldPanel);
+        DefaultLayout.doLayout(jPanel2, l, e,true);
+    }
+
+    public void open(AbstractFieldModel fieldModel, SeparatedDef separated) {
+        super.open(fieldModel.getMsdlField());
+        this.fieldModel = fieldModel;
+        this.separated = separated;
+
+        update();
+
+
+        startSepPanel.addActionListener(this);
+        endSepPanel.addActionListener(this);
+        shieldedFormatPanel.addActionListener(this);
+        shieldedFormatPanel.getSetParentPanel().addActionListener(this);
+        shieldPanel.addActionListener(this);
+    }
+
+    @Override
+    public void update() {
+        startSepPanel.setValue(separated.getStartSeparator(),
+                               fieldModel.getStartSeparator(true), 
+                               EEncoding.getInstanceForHexViewType(separated.getStartSeparatorViewType()), 
+                               EEncoding.getInstanceForHexViewType(fieldModel.getStartSeparatorViewType(true)));
+        endSepPanel.setValue(separated.getEndSeparator(),
+                               fieldModel.getEndSeparator(true),
+                               EEncoding.getInstanceForHexViewType(separated.getEndSeparatorViewType()),
+                               EEncoding.getInstanceForHexViewType(fieldModel.getEndSeparatorViewType(true)));
+        shieldedFormatPanel.setShieldedFormat(EShieldedFormat.getInstance(separated.getShieldedFormat()),
+                                              EShieldedFormat.getInstance(fieldModel.getShieldedFormat(true)));
+        shieldPanel.setValue(separated.getShield(), fieldModel.getShield(true),
+                EEncoding.getInstanceForHexViewType(separated.getShieldViewType()),
+                EEncoding.getInstanceForHexViewType(fieldModel.getShieldViewType(true)));
+        List<byte[]> l = separated.getShieldedList();
+        shieldedList = new Vector<String>();
+        for (byte[] b : l)
+            shieldedList.add(Hex.encode(b));
+        jList.setListData(shieldedList);
+        removeButton.setEnabled(!isReadOnly() && jList.getSelectedIndex()!=-1);
+        super.update();
+    }
+
+    private void save() {
+        separated.setStartSeparator(startSepPanel.getValue());
+        separated.setStartSeparatorViewType(startSepPanel.getViewEncodingAsStr());
+        separated.setEndSeparator(endSepPanel.getValue());
+        separated.setEndSeparatorViewType(endSepPanel.getViewEncodingAsStr());
+        separated.setShield(shieldPanel.getValue());
+        separated.setShieldViewType(shieldPanel.getViewEncodingAsStr());
+        separated.setShieldedFormat(shieldedFormatPanel.getShieldedFormat().getValue());
+        fieldModel.setModified();
+    }
+
+    /** This method is called from within the constructor to
+     * initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is
+     * always regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel2 = new javax.swing.JPanel();
+        startSepPanel = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtHexPanel();
+        endSepPanel = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtHexPanel();
+        shieldPanel = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtHexPanel();
+        shieldedFormatPanel = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.ShieldedFormatPanel();
+        jLabelStart = new javax.swing.JLabel();
+        jLabelEnd = new javax.swing.JLabel();
+        jLabelFormat = new javax.swing.JLabel();
+        jLabelShield = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        toolBar = new javax.swing.JToolBar();
+        addButton = new javax.swing.JButton(new AbstractAction("Add"){
+            public void actionPerformed(ActionEvent evt){
+                add();
+            }}
+        );
+        removeButton = new javax.swing.JButton(new AbstractAction("Remove"){
+            public void actionPerformed(ActionEvent evt){
+                delete();
+            }
+        });
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jList = new javax.swing.JList();
+
+        jLabelStart.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("org/radixware/kernel/common/design/msdleditor/Bundle"); // NOI18N
+        jLabelStart.setText(bundle.getString("START_SEPARATOR")); // NOI18N
+
+        jLabelEnd.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabelEnd.setText(bundle.getString("END_SEPARATOR")); // NOI18N
+
+        jLabelFormat.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabelFormat.setText(bundle.getString("SHIELDED_FORMAT")); // NOI18N
+
+        jLabelShield.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabelShield.setText(bundle.getString("SHIELD")); // NOI18N
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabelEnd, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jLabelFormat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabelStart, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
+                        .addComponent(jLabelShield, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(shieldPanel, 0, 0, Short.MAX_VALUE)
+                    .addComponent(endSepPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
+                    .addComponent(startSepPanel, 0, 0, Short.MAX_VALUE)
+                    .addComponent(shieldedFormatPanel, 0, 0, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabelStart, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(startSepPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabelEnd, javax.swing.GroupLayout.DEFAULT_SIZE, 20, Short.MAX_VALUE)
+                    .addComponent(endSepPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jLabelFormat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(shieldedFormatPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabelShield, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(shieldPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("SHIELDED_LIST"))); // NOI18N
+        jPanel1.setLayout(new java.awt.BorderLayout());
+
+        toolBar.setFloatable(false);
+        toolBar.setAlignmentX(0.0F);
+
+        addButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/radixware/kernel/common/design/msdleditor/img/add.png"))); // NOI18N
+        addButton.setText("Add");
+        addButton.setFocusable(false);
+        addButton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        addButton.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        addButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        addButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addButtonActionPerformed(evt);
+            }
+        });
+        toolBar.add(addButton);
+
+        removeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/radixware/kernel/common/design/msdleditor/img/delete.png"))); // NOI18N
+        removeButton.setText("Remove");
+        removeButton.setEnabled(false);
+        removeButton.setFocusable(false);
+        removeButton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        removeButton.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        removeButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        toolBar.add(removeButton);
+
+        jPanel1.add(toolBar, java.awt.BorderLayout.NORTH);
+
+        jList.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                jListValueChanged(evt);
+            }
+        });
+        jList.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jListPropertyChange(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jList);
+
+        jPanel1.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void jListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jListValueChanged
+        removeButton.setEnabled(!isReadOnly() && evt.getFirstIndex() >= 0);
+    }//GEN-LAST:event_jListValueChanged
+
+    private void jListPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jListPropertyChange
+    }//GEN-LAST:event_jListPropertyChange
+
+    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
+        // do nothing
+    }//GEN-LAST:event_addButtonActionPerformed
+
+    private void add() {
+        SetHexDialog d = new SetHexDialog(null,true,(byte)0);
+        d.pack();
+        d.setLocationRelativeTo(null);
+        d.setVisible(true);
+        if (d.result != null) {
+            byte arr[] = new byte[1];
+            arr[0] = d.result;
+            shieldedList.add(Hex.encode(arr));
+            jList.setListData(shieldedList);
+            jList.setSelectedIndex(shieldedList.size()-1);
+            separated.getShieldedList().add(arr);
+            fieldModel.setModified();
+            fieldModel.setModified();
+        }
+        d.dispose();
+    }
+
+    private void delete() {
+        int idx = jList.getSelectedIndex();
+        if (idx >= 0) {
+            separated.getShieldedList().remove(idx);
+            shieldedList.remove(idx);
+            jList.setListData(shieldedList);
+            removeButton.setEnabled(false);
+            fieldModel.setModified();
+            fieldModel.setModified();
+        }
+    }
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addButton;
+    private org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtHexPanel endSepPanel;
+    private javax.swing.JLabel jLabelEnd;
+    private javax.swing.JLabel jLabelFormat;
+    private javax.swing.JLabel jLabelShield;
+    private javax.swing.JLabel jLabelStart;
+    private javax.swing.JList jList;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton removeButton;
+    private org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtHexPanel shieldPanel;
+    private org.radixware.kernel.common.design.msdleditor.field.panel.simple.ShieldedFormatPanel shieldedFormatPanel;
+    private org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtHexPanel startSepPanel;
+    private javax.swing.JToolBar toolBar;
+    // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        save();
+    }
+
+}

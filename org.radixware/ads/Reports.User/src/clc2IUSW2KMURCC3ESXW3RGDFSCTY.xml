@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsContextlessCommandDefinition Id="clc2IUSW2KMURCC3ESXW3RGDFSCTY" Name="ListLibUserFuncs" Nature="2" IsVisible="true" IsConfirmationRequired="false">
+    <AccessRules IsPublished="false"/>
+    <OutType TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="LibUserFuncsListRsDocument"/>
+    <Source>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="LibUserFuncsListRsDocument"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> xDoc=</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="LibUserFuncsListRsDocument.Factory"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.newInstance();
+</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="LibUserFuncsListRs"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> xLibFuncs=xDoc.addNewLibUserFuncsListRs();
+
+</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="accEAUKV3MYHBB3FMPQGUJX5LCBQQ"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> cursor=</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="accEAUKV3MYHBB3FMPQGUJX5LCBQQ"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="accEAUKV3MYHBB3FMPQGUJX5LCBQQ mth_stmt_execute_____________" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(null);
+while(cursor.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>()){
+   </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="LibUserFuncsListRs.LibUserFunc"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>  xLibFunc= xLibFuncs.addNewLibUserFunc();
+   xLibFunc.LibFuncId=cursor.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="accEAUKV3MYHBB3FMPQGUJX5LCBQQ prfOCJS7EBMTFGBJPBM2KVPI63WCI" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>;
+   String strProfile = cursor.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="accEAUKV3MYHBB3FMPQGUJX5LCBQQ prfXD5ZC3Q6DVBFZLAKSCUP2SJ6RI" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>;
+    try {
+        if (!(cursor.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="accEAUKV3MYHBB3FMPQGUJX5LCBQQ prfULCR7QMT7BCIZADLQKULRHN4GI" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aecW7BRVVQLHBE2FCNK7ZBRMAUJGM pruSVH5HTN7GNAR7MTQFFWAZRZ2YI" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> instanceof </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aclO6J5TMLZSRD3NJRWZUT7F3EL5Y"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>) &amp;&amp; strProfile != null) {
+            int endIndex = strProfile.indexOf("(");
+            if (endIndex != -1) {
+                String s = strProfile.substring(0, endIndex);
+                int startIndex = s.lastIndexOf(" ");
+                s = strProfile.substring(0, startIndex + 1);
+                strProfile = s + cursor.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="accEAUKV3MYHBB3FMPQGUJX5LCBQQ prfOCJS7EBMTFGBJPBM2KVPI63WCI" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> + strProfile.substring(endIndex);
+            }
+        }
+    } catch (</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> e) {
+        </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcTrace_____________________ mthS7A5F7KSRPNRDCISABIFNQAABA" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthBXQY2BN2DVEUNP7D645ZOVXZM4" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(e), </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciVHTSMNFUNNBTJFRXGWTPCZA2FI" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>);
+    }
+   xLibFunc.LibFuncName=strProfile;   
+   xLibFunc.LibId=cursor.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="accEAUKV3MYHBB3FMPQGUJX5LCBQQ prf2KIXAP5HSZGUXIY2VLHV7CNAK4" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>;
+   xLibFunc.LibName=cursor.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="accEAUKV3MYHBB3FMPQGUJX5LCBQQ prf2KIXAP5HSZGUXIY2VLHV7CNAK4" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>;
+}
+return xDoc;</xsc:Java>
+      </xsc:Item>
+    </Source>
+  </AdsContextlessCommandDefinition>
+</AdsDefinition>

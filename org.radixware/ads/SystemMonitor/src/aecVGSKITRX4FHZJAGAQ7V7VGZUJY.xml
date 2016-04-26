@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aecVGSKITRX4FHZJAGAQ7V7VGZUJY" Name="DashConfig" Type="1">
+    <AccessRules IsFinal="true"/>
+    <Headers>
+      <Src Name="HeaderaecBRZO7GXH3FFEHOFSTFRMXWSOW4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaecBRZO7GXH3FFEHOFSTFRMXWSOW4"/>
+    </Bodies>
+    <MethodGroup Id="cmgZP6EXDN6Y5G5PFHOOBNLU6SBJ4" Name="Root">
+      <Group Id="cmgXIOJGU433FHYNE7WTQ22BNU5MY" Name="DashboardsXmlCache" Members="mthIPJCMVQKRBGI7AD3BO4MYZCUKY"/>
+    </MethodGroup>
+    <PropertyGroup Id="cpgZA5XQMRGAZGS3DKUS4EKPUJJVY" Name="Root"/>
+    <Properties>
+      <Property Id="colQU77X4CEHNCMPMBTEGPP2OQ3IY" Name="guid" Nature="0" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mls3VMUBOPSH5DU7GIL5YUZD5DMI4" InheritanceMask="4">
+          <Editing NotNull="true" EditPossibility="2" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colQVV4T5O6B5COJMBD3EZL53BF3A" Name="title" Nature="0" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsUFW3DSYQKFDDVETRYFWPEWYBZU" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colXTE7QVLZ3FGCFDGLAXN7EWNN54" Name="xmlContent" Nature="0" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="27"/>
+        <Presentation TitleId="mlsS5GHBZGTBNBTDOFKOQK6RZ4CPY" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true" ReadSeparately="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="col2JC6467ZUBDORDSTW5SLDQMFVI" Name="lastUpdateUser" Nature="0" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsD36QI6DIZVE73H5MT5HZXR3D6A" InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colBD47EI456VGBLLZ5AUVGEZFKOU" Name="lastUpdateTime" Nature="0" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="12"/>
+        <Presentation TitleId="mlsJ47RUGDGZBEQTC45BMJSTPZKIQ" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prdGZCEXBNWYFFIBJ5KCV76K2FN3U" Name="storeInCacheDurationSec" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="401" extStr="int"/>
+        <InitialValue>
+          <Jml>
+            <xsc:Item>
+              <xsc:Java>600</xsc:Java>
+            </xsc:Item>
+          </Jml>
+        </InitialValue>
+        <Presentation InheritanceMask="4" IsPresentable="false">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_loadByPidStr_____________" Name="loadByPidStr" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="pidAsStr" Id="mprPidAsStr__________________">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="checkExistance" Id="mprCheckExisstance___________">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aecVGSKITRX4FHZJAGAQ7V7VGZUJY"/>
+      </Method>
+      <Method Id="mth_loadByPK_________________" Name="loadByPK" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="guid" Id="mprQU77X4CEHNCMPMBTEGPP2OQ3IY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="checkExistance" Id="mprCheckExisstance___________">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aecVGSKITRX4FHZJAGAQ7V7VGZUJY"/>
+      </Method>
+      <Method Id="mthIPJCMVQKRBGI7AD3BO4MYZCUKY" Name="getCachedDashDocXml" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <ReturnType TypeId="451" Path="xsdGVYAU63UXJD2FJUYRDFP5U32OU" extStr="DashboardDocument"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final String cacheKey = "Dashboard~" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecVGSKITRX4FHZJAGAQ7V7VGZUJY colQU77X4CEHNCMPMBTEGPP2OQ3IY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecVGSKITRX4FHZJAGAQ7V7VGZUJY adcMQHOW5W57RBOXOB3SM7PFJCUQE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> cacheEntry = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecVGSKITRX4FHZJAGAQ7V7VGZUJY adcMQHOW5W57RBOXOB3SM7PFJCUQE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthLE3IKXC2DBCVJCBDMCMLDUJAMQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcB2AD534UJJCC7HGTB7H5MKRYAA mthSRJPA73DRRDQBJXAVYSNMCCGE4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(cacheKey);
+if (cacheEntry != null &amp;&amp; cacheEntry.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecVGSKITRX4FHZJAGAQ7V7VGZUJY adcMQHOW5W57RBOXOB3SM7PFJCUQE prdPURP77PITZA4TKFFUH7ERM3IKI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecVGSKITRX4FHZJAGAQ7V7VGZUJY colBD47EI456VGBLLZ5AUVGEZFKOU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Time) {
+    return cacheEntry.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecVGSKITRX4FHZJAGAQ7V7VGZUJY adcMQHOW5W57RBOXOB3SM7PFJCUQE prdQ4BW3YI2NFGNTHVWHEYGX56KKE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+} else {
+    try {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdGVYAU63UXJD2FJUYRDFP5U32OU" extStr="DashboardDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xDashboardDoc = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdGVYAU63UXJD2FJUYRDFP5U32OU" extStr="DashboardDocument.Factory"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.parse(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecVGSKITRX4FHZJAGAQ7V7VGZUJY colXTE7QVLZ3FGCFDGLAXN7EWNN54" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getCharacterStream());
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthLE3IKXC2DBCVJCBDMCMLDUJAMQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcB2AD534UJJCC7HGTB7H5MKRYAA mthAWZOKNLOKFHA7NNLYAWFFNFXBM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(
+                cacheKey,
+                new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecVGSKITRX4FHZJAGAQ7V7VGZUJY adcMQHOW5W57RBOXOB3SM7PFJCUQE mthEBZBNXGTNNBCDATOBRIT4AGPI4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(xDashboardDoc, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecVGSKITRX4FHZJAGAQ7V7VGZUJY colBD47EI456VGBLLZ5AUVGEZFKOU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Time),
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecVGSKITRX4FHZJAGAQ7V7VGZUJY prdGZCEXBNWYFFIBJ5KCV76K2FN3U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>
+        );
+        return xDashboardDoc;
+    } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthD6XIGP2SRPNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ex), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci4VSRGAWJBFEH3IAVZIWZJQVMTI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    }
+}
+return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <InnerClasses>
+      <Clazz Id="adcMQHOW5W57RBOXOB3SM7PFJCUQE" Name="DashboardCacheEntry" Type="3" Environment="server">
+        <AccessRules IsPublished="false">
+          <Transparence Extendable="false"/>
+        </AccessRules>
+        <Headers>
+          <Src Name="HeaderadcMQHOW5W57RBOXOB3SM7PFJCUQE"/>
+        </Headers>
+        <Bodies>
+          <Src Name="BodyadcMQHOW5W57RBOXOB3SM7PFJCUQE"/>
+        </Bodies>
+        <MethodGroup Id="cmgO7U7RBT25ZCZXMD3I6GFJ3CO7U" Name="Root"/>
+        <PropertyGroup Id="cpgVJLDAXHV3BDYTPGUT3QV5F2UMU" Name="Root"/>
+        <Properties>
+          <Property Id="prdQ4BW3YI2NFGNTHVWHEYGX56KKE" Name="xDashDoc" Nature="2" IsConst="false" IsOverride="false">
+            <AccessRules IsPublished="false"/>
+            <Type TypeId="451" Path="xsdGVYAU63UXJD2FJUYRDFP5U32OU" extStr="DashboardDocument"/>
+          </Property>
+          <Property Id="prdPURP77PITZA4TKFFUH7ERM3IKI" Name="lastUpdateTime" Nature="2" IsConst="false" IsOverride="false">
+            <AccessRules IsPublished="false"/>
+            <Type TypeId="401" extStr="long"/>
+          </Property>
+        </Properties>
+        <Methods>
+          <Method Id="mthPVPRWFCHNNAQ3DIGR6QDW642FE" Name="release" DescriptionId="mlsAV64OITKVNBJBE3QMVV7SYTVTY" Nature="0" IsOverride="true">
+            <AccessRules/>
+            <Sources>
+              <Src>
+                <xsc:Item>
+                  <xsc:Java>//do nothing</xsc:Java>
+                </xsc:Item>
+              </Src>
+            </Sources>
+          </Method>
+          <Method Id="mthEBZBNXGTNNBCDATOBRIT4AGPI4" Name="DashboardCacheEntry" Nature="0" IsConstructor="true" IsOverride="false">
+            <AccessRules IsPublished="false"/>
+            <Parameters>
+              <Parameter Name="xDashDoc" Id="mprSAG2VDQ73VDJLAIBWZUAI2LQY4">
+                <Type TypeId="451" Path="xsdGVYAU63UXJD2FJUYRDFP5U32OU" extStr="DashboardDocument"/>
+              </Parameter>
+              <Parameter Name="lastUpdateTime" Id="mprV4S522BYSNEJPPLM4RWI4CRTUA">
+                <Type TypeId="401" extStr="long"/>
+              </Parameter>
+            </Parameters>
+            <Sources>
+              <Src>
+                <xsc:Item>
+                  <xsc:IdReference Path="aecVGSKITRX4FHZJAGAQ7V7VGZUJY adcMQHOW5W57RBOXOB3SM7PFJCUQE prdQ4BW3YI2NFGNTHVWHEYGX56KKE" Invoke="true"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java> = xDashDoc;
+</xsc:Java>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:IdReference Path="aecVGSKITRX4FHZJAGAQ7V7VGZUJY adcMQHOW5W57RBOXOB3SM7PFJCUQE prdPURP77PITZA4TKFFUH7ERM3IKI" Invoke="true"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java> = lastUpdateTime;</xsc:Java>
+                </xsc:Item>
+              </Src>
+            </Sources>
+          </Method>
+        </Methods>
+        <Implements>
+          <Interface TypeId="411" Path="aicXXJAMYMIXNAB5GVEZKDMHKLT7M"/>
+        </Implements>
+      </Clazz>
+    </InnerClasses>
+    <Entity EntityId="tblVGSKITRX4FHZJAGAQ7V7VGZUJY">
+      <AccessAreas Type="Own">
+        <AccessArea Name="DashConfig">
+          <Partition FamilyId="apf4PQ4U65VK5HFVJ32XCUORBKRJM" PropId="colQU77X4CEHNCMPMBTEGPP2OQ3IY"/>
+        </AccessArea>
+      </AccessAreas>
+    </Entity>
+    <Presentations ObjectTitleId="mlsX24SICCPQNDG5BUNUR6D3MJVVM" EntityTitleId="mlsUBJR3SBGZRHLBL47TM7P2SIVWQ" DefaultSelectorPresentationId="spr2HCHE6TFHFEZVN2LALVY2CK3U4" Restrictions="0">
+      <ObjectTitleFormat Id="etfDFOYO2DMR5DW3MT7RPLHC2CKK4">
+        <TitleItem PropId="colQVV4T5O6B5COJMBD3EZL53BF3A">
+          <Pattern>{0}</Pattern>
+        </TitleItem>
+      </ObjectTitleFormat>
+      <EditorPresentations>
+        <EditorPresentation Id="eprYEHWQLSO2ZC6HN23VV65FTZYWM" Name="General" InheritanceMask="2192" Restrictions="0" EnabledCommandIds="" RightsInheritanceMode="0">
+          <AccessRules IsPublished="false"/>
+          <ChildExplorerItems/>
+          <EditorPages>
+            <Page Id="epgACUCWVG3YND45MWRVBVFVNGOM4" Name="GeneralPage" Type="1">
+              <AccessRules IsPublished="false"/>
+              <Properties>
+                <Property Id="colQVV4T5O6B5COJMBD3EZL53BF3A" Row="0" Column="0"/>
+              </Properties>
+            </Page>
+            <PageOrder>
+              <Item PageId="epgACUCWVG3YND45MWRVBVFVNGOM4" Level="1"/>
+            </PageOrder>
+          </EditorPages>
+          <ObjectTitleFormat Id="etfBDB4DRXZTJFHLAAXUVZMQS5R4E"/>
+        </EditorPresentation>
+      </EditorPresentations>
+      <SelectorPresentations>
+        <SelectorPresentation Id="spr2HCHE6TFHFEZVN2LALVY2CK3U4" Name="General" InheritanceMask="144" Restrictions="32" EnabledCommandIds="" CreationEditorPresentationIds="eprYEHWQLSO2ZC6HN23VV65FTZYWM" EditorPresentationIds="eprYEHWQLSO2ZC6HN23VV65FTZYWM">
+          <AccessRules IsPublished="false"/>
+          <Condition>
+            <ConditionWhere/>
+            <ConditionFrom/>
+          </Condition>
+          <Addons AnyBaseFilterEnabled="false" AnyBaseSortingEnabled="false" CustomFilterEnabled="true" CustomSortingEnabled="false" FilterIsObligatory="false">
+            <DefaultHint/>
+          </Addons>
+          <SelectorColumns>
+            <Column Align="-1" PropId="colQU77X4CEHNCMPMBTEGPP2OQ3IY" TitleId="mlsJGX6ZWGYBRA5NL5I6VB6XVEQCU" Visibility="1" SizePolicy="0"/>
+            <Column Align="-1" PropId="colQVV4T5O6B5COJMBD3EZL53BF3A" TitleId="mlsBBTUQEM7CVG23IIHYZCPEWXMWA" Visibility="1" SizePolicy="0"/>
+            <Column Align="-1" PropId="colXTE7QVLZ3FGCFDGLAXN7EWNN54" TitleId="mlsHIZ42C7525EIFIPH3BXCJKMJWA" Visibility="1" SizePolicy="0"/>
+            <Column Align="-1" PropId="colBD47EI456VGBLLZ5AUVGEZFKOU" Visibility="1" SizePolicy="0"/>
+            <Column Align="-1" PropId="col2JC6467ZUBDORDSTW5SLDQMFVI" Visibility="1" SizePolicy="0"/>
+          </SelectorColumns>
+        </SelectorPresentation>
+        <SelectorPresentation Id="sprPXXAJTTI25FEBDAS2XVEWSLNUA" Name="WithoutXmlContent" BasePresentationId="spr2HCHE6TFHFEZVN2LALVY2CK3U4" InheritanceMask="16560" Restrictions="32" EnabledCommandIds="" CreationEditorPresentationIds="eprYEHWQLSO2ZC6HN23VV65FTZYWM" EditorPresentationIds="eprYEHWQLSO2ZC6HN23VV65FTZYWM">
+          <AccessRules IsPublished="false"/>
+          <Condition>
+            <ConditionWhere/>
+            <ConditionFrom/>
+          </Condition>
+          <Addons AnyBaseFilterEnabled="false" AnyBaseSortingEnabled="false" CustomFilterEnabled="false" CustomSortingEnabled="false" FilterIsObligatory="false">
+            <DefaultHint/>
+          </Addons>
+          <SelectorColumns>
+            <Column Align="-1" PropId="colQU77X4CEHNCMPMBTEGPP2OQ3IY" TitleId="mlsQ4TMNSTCYJAKPNRTPXKEIAZI44" Visibility="1"/>
+            <Column Align="-1" PropId="colQVV4T5O6B5COJMBD3EZL53BF3A" TitleId="mlsF73O7PPGKRCTHBN7Z74F5GGNPU" Visibility="1"/>
+            <Column Align="-1" PropId="colBD47EI456VGBLLZ5AUVGEZFKOU" Visibility="1" SizePolicy="0"/>
+            <Column Align="-1" PropId="col2JC6467ZUBDORDSTW5SLDQMFVI" Visibility="1" SizePolicy="0"/>
+          </SelectorColumns>
+        </SelectorPresentation>
+      </SelectorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="pdcEntity____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

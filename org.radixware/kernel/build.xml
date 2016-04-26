@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="distributive" name="org.radixware-kernel-distributive">
+
+   <property name="modules" value="common/project/build.xml starter/project/build.xml explorer/project/build.xml server/project/build.xml utils/project/build.xml  web/project/build.xml  web-app/project/build.xml" />
+
+   <property name="devtools" value="designer/src/suite.common/build.xml designer/src/suite.reports/build.xml designer/src/suite.report-editor/build.xml designer/src/suite/build.xml" />
+
+   <target name="build-directory">
+       <echo message="BUILD directory-layer.xml"/>
+       <java classname="org.radixware.kernel.common.build.directory.DirectoryFileBuilder"
+             fork="true" dir="../">
+		<!-- Command line must be: DirectoryFile excludeRegexp group1 regexp1  group2 regexp2 ... -->
+		<arg value="directory-layer.xml"/>
+		<arg value="(\.svn/||ads/||dds/||kernel/)" />
+		<arg value="KernelCommon"/>
+		<arg value="(layer.xml||licenses.xml)" />
+		<classpath>
+   			<fileset dir="common/bin/">
+		        	<include name="**/*.jar"/>
+			</fileset>
+   			<fileset dir="common/lib/">
+		        	<include name="**/*.jar"/>
+			</fileset>
+        	</classpath>
+       </java>
+       <echo message="SIGN directory-layer.xml"/>
+       <java classname="org.radixware.kernel.common.build.directory.DirectoryFileSigner"
+              fork="true" dir="../">
+		<arg value="directory-layer.xml"/>
+		<classpath>
+   			<fileset dir="common/bin/">
+		        	<include name="**/*.jar"/>
+			</fileset>
+   			<fileset dir="common/lib/">
+		        	<include name="**/*.jar"/>
+			</fileset>
+        	</classpath>
+       </java>
+    </target>
+
+
+    <target name="clean" depends="check-netbeans-path">
+        <echo message="CLEAN ${modules}"/>
+        <subant>
+            <filelist dir="." files="${modules}"/>
+            <target name="clean"/>
+            <property name="j2ee.server.home" value=""/>
+            <property name="libs.CopyLibs.classpath" value="${netbeans.installation.dir}/java/ant/extra/org-netbeans-modules-java-j2seproject-copylibstask.jar"/>
+        </subant>
+    </target>
+
+    <target name="distributive" depends="check-netbeans-path">
+        <subant>
+            <filelist dir="." files="${modules}"/>
+            <target name="distributive"/>
+            <property name="j2ee.server.home" value=""/>
+            <property name="libs.CopyLibs.classpath" value="${netbeans.installation.dir}/java/ant/extra/org-netbeans-modules-java-j2seproject-copylibstask.jar"/>
+        </subant>
+	<antcall target = "build-directory"/>
+    </target>
+
+    <target name="check-netbeans-path">
+        <echo message="Checking netbeans.installation.dir..."/>
+        <fail unless="netbeans.installation.dir">Property netbeans.installation.dir should be defined (ant -Dnetbeans.installation.dir=??? ...)</fail>
+        <echo message="Netbeans installation path is set to ${netbeans.installation.dir}"/>
+        <fail message="The directory '${netbeans.installation.dir}' is not available">
+            <condition>
+                <not>
+                    <available file="${netbeans.installation.dir}" type="dir"/>
+                </not>
+            </condition>
+        </fail>
+    </target>
+
+    <target name="clean-devtools" depends="check-netbeans-path">
+        <echo message="CLEAN ${devtools}"/>
+        <subant>
+            <filelist dir="." files="${devtools}"/>
+            <target name="clean"/>
+            <property name="nbplatform.default.netbeans.dest.dir" value="${netbeans.installation.dir}"/>
+            <property name="nbplatform.default.harness.dir" value="${netbeans.installation.dir}/harness"/>
+            <property name="j2ee.server.home" value=""/>
+        </subant>
+    </target>
+
+    <target name="distributive-devtools" depends="check-netbeans-path">
+        <subant>
+            <filelist dir="." files="${devtools}"/>
+            <target name="distributive"/>
+            <property name="j2ee.server.home" value=""/>
+            <property name="nbplatform.default.netbeans.dest.dir" value="${netbeans.installation.dir}"/>
+            <property name="nbplatform.default.harness.dir" value="${netbeans.installation.dir}/harness"/>
+        </subant>
+	<antcall target = "build-directory"/>
+    </target>
+
+    <target name="check-3party-licenses">
+        <java jar="../etc/ThirdPartyLicenseGenerator/ThirdPartyLicenseFileGenerator.jar"
+             fork="true" dir="../etc/ThirdPartyLicenseGenerator/" failonerror="true">
+             <arg value="testMode"/>
+             <jvmarg value="-Djava.util.logging.SimpleFormatter.format=%4$-7s: %5$s%6$s%n"/>
+             <jvmarg value="-DdiffUtil=diff -u --strip-trailing-cr"/>
+             <!-- Diff util parameter for Windows OS. -->
+             <!-- <jvmarg value="-DdiffUtil=cmd /c fc /w"/> -->
+         </java>
+    </target>
+
+    <target name="actualize_check-3party-licenses">
+        <java jar="../etc/ThirdPartyLicenseGenerator/ThirdPartyLicenseFileGenerator.jar"
+             fork="true" dir="../etc/ThirdPartyLicenseGenerator/" failonerror="true">
+             <jvmarg value="-Djava.util.logging.SimpleFormatter.format=%4$-7s: %5$s%6$s%n"/>
+         </java>
+    </target>
+</project>

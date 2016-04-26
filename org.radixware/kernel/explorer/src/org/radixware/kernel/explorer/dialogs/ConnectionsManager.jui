@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0" language="jambi">
+ <class>ConnectionsDialog</class>
+ <widget class="QDialog" name="ConnectionsDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>483</width>
+    <height>269</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Connections Manager</string>
+  </property>
+  <widget class="QWidget" name="contentsWidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>-40</x>
+     <y>10</y>
+     <width>378</width>
+     <height>150</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout">
+    <property name="margin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="QListWidget" name="connectionsList">
+      <property name="focusPolicy">
+       <enum>com.trolltech.qt.core.Qt.FocusPolicy.WheelFocus</enum>
+      </property>
+      <property name="frameShape">
+       <enum>com.trolltech.qt.gui.QFrame.Shape.WinPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>com.trolltech.qt.gui.QFrame.Shadow.Sunken</enum>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="commandsWidget" native="true">
+      <layout class="QVBoxLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QToolButton" name="addBtn">
+         <property name="focusPolicy">
+          <enum>com.trolltech.qt.core.Qt.FocusPolicy.TabFocus</enum>
+         </property>
+         <property name="toolTip">
+          <string>Create Connection</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../../../../../images/add.svg</normaloff>../../../../../images/add.svg</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="shortcut">
+          <string>Ins</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="cloneBtn">
+         <property name="focusPolicy">
+          <enum>com.trolltech.qt.core.Qt.FocusPolicy.TabFocus</enum>
+         </property>
+         <property name="toolTip">
+          <string>Create a Copy of Connection</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="editorBtn">
+         <property name="focusPolicy">
+          <enum>com.trolltech.qt.core.Qt.FocusPolicy.TabFocus</enum>
+         </property>
+         <property name="toolTip">
+          <string>Edit Connection</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../../../../../images/edit.png</normaloff>../../../../../images/edit.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="removeBtn">
+         <property name="focusPolicy">
+          <enum>com.trolltech.qt.core.Qt.FocusPolicy.TabFocus</enum>
+         </property>
+         <property name="toolTip">
+          <string>Delete Connection</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../../../../../images/delete.svg</normaloff>../../../../../images/delete.svg</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="shortcut">
+          <string>Del</string>
+         </property>
+         <property name="arrowType">
+          <enum>com.trolltech.qt.core.Qt.ArrowType.NoArrow</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer>
+         <property name="orientation">
+          <enum>com.trolltech.qt.core.Qt.Orientation.Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

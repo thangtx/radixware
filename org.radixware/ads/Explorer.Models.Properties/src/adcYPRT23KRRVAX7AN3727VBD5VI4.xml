@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcYPRT23KRRVAX7AN3727VBD5VI4" Name="Property" Type="3" Environment="common-client">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.models.items.properties.Property"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcLILTCMYTQ5FXFF2ULZSG37WMHQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcCZX2EDKXKBBCFD4P63IGR6ND74"/>
+    </Bodies>
+    <MethodGroup Id="cmgCMDYFUVWW5HH3LOBU67HYKMPKE" Name="Root"/>
+    <PropertyGroup Id="cpgFLQLIYMDMJARJMQ4VNDIZL2RZY" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth3TCH777DFVHPHDHYWLXPH6MBDM" Name="cancelChanges" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="cancelChanges()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthXKXJXR3XFBGKZIZR46WPB2TEDA" Name="Property" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.models.Model;Lorg.radixware.kernel.common.client.meta.RadPropertyDef;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="owner" Id="mprKDGN243JFBERJPKKXHUDOHFAFA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.Model"/>
+          </Parameter>
+          <Parameter Name="def" Id="mprUJW2SEFTGFB25DIGLR7MYP23IU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.RadPropertyDef"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthJCS46VBSFZCQLATGWZPQ5TIWKA" Name="doSynchronization" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="doSynchronization()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth2I3KW4SXSJCSNJX3SQYZB3SGUQ" Name="execPropEditorDialog" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="execPropEditorDialog()Lorg.radixware.kernel.common.client.views.IDialog.DialogResult;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.views.IDialog.DialogResult"/>
+      </Method>
+      <Method Id="mth6HV53SJY7JAERJSV6IQDJJYX2Y" Name="execPropEditorDialog" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="execPropEditorDialog(I)Lorg.radixware.kernel.common.client.views.IDialog.DialogResult;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arrayIndex" Id="mprUPMHU5JXWRBJBB4ZKUVIE6WQ7I">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.views.IDialog.DialogResult"/>
+      </Method>
+      <Method Id="mthRNLOSPBD7VHCBO4M63UPOGB4ME" Name="finishEdit" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="finishEdit()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthOUS63YL4KRC3RGX5X4DSBLJ74I" Name="getEditMask" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getEditMask()Lorg.radixware.kernel.common.client.meta.mask.EditMask;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
+      </Method>
+      <Method Id="mthBYJXJBQPAZCEBI4334HA4XUAMI" Name="getEnabledCommands" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getEnabledCommands()Ljava.util.List&lt;Lorg.radixware.kernel.common.types.Id;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthBKASRL56RBBXFDGNFYWPIBM7LE" Name="createPropertyEditor" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="createPropertyEditor()Lorg.radixware.kernel.common.client.views.IPropEditor;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.views.IPropEditor"/>
+      </Method>
+      <Method Id="mth5CIBIQRGVNG4PF6BGH4ZJNPKWE" Name="getServerValObject" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getServerValObject()Ljava.lang.Object;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+      </Method>
+      <Method Id="mthL7NBE6M475HVBP5EDTN2LXKQCU" Name="getTitle" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getTitle()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthZKKSPDGEFNBN7GNMIVW3RLFJ7Q" Name="getValClass" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getValClass()Ljava.lang.Class&lt;*>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.lang.Class">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?"/>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthWXZMLCHWN5FVBHOXU4EU7EB66I" Name="getValObjectImpl" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getValObjectImpl()Ljava.lang.Object;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+      </Method>
+      <Method Id="mthLSANOBLXINHNPFDVOGRUZDVNV4" Name="getValueObject" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getValueObject()Ljava.lang.Object;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+      </Method>
+      <Method Id="mth6BES2266UFFRHBIJG6D5O4FWVI" Name="hasOwnValue" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="hasOwnValue()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthGEEY3STCEFENZPTET7RC7O4LJM" Name="isMandatory" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isMandatory()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthRW4PMU4LZZBPHNXA6VCQA6DQNQ" Name="isReadonly" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isReadonly()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthFJRFBZVMXVFGVBQMI5VJTWXLF4" Name="isValEdited" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isValEdited()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthQ533XUS7HZE4VGOEVGEDKQDTUM" Name="isValueDefined" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isValueDefined()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthQNIP5JWJYBFZHLPIGNB2E5KLFM" Name="isVisible" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isVisible()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth5JGI3YTHWBFEVOVN43E3Z2XXEA" Name="setFocused" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setFocused()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthT4TIHPBGA5CJ3B3H6S7BUVZNUA" Name="setMandatory" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setMandatory(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="mandatory" Id="mprLRAWQXFV6BGSRIEBB5U55DHIUA">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthYMZDXTF2N5BMRCHSYLIM42UGTQ" Name="setReadonly" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setReadonly(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="readonly" Id="mprQSZMSLBOZFBSRIRDGQ3K3VQZGA">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth4QCNLFI7ONAVBO5RVYC2RDZF7E" Name="setServerValue" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setServerValue(Lorg.radixware.kernel.common.client.models.items.properties.PropertyValue;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="value" Id="mprVWAAFGCIVREX3GVFOARKJ7N4CA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.PropertyValue"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthDGGAZAISHBF6LD64QKB7VKQUR4" Name="setTitle" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setTitle(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" Id="mprOQS7JV4F2FAADDTK2VZKQSMN34">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthUAAXZSYXZZHK7DYWSV7K5ENSQM" Name="setValEdited" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setValEdited(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="wasChanged" Id="mprLPA3ECXQ2JDPLBZVVTB2XSHHXY">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthM4SEJNCH4RCCZLFUKH7CGMOYMY" Name="setValObjectImpl" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setValObjectImpl(Ljava.lang.Object;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="object" Id="mprXJ3RQZA4UNAH7JUSNA2JX5O5UY">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthZBTI63XF4RBXJJXOH54ZV3GT6I" Name="setValueObject" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setValueObject(Ljava.lang.Object;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="object" Id="mprSVV7UPH35BFLVNJWDFX3DIWJ7E">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthYNQQVLTKWJAHZB6DDCMLJSOHAI" Name="setVisible" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setVisible(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="visible" Id="mpr3N2GKEJDRJDKVLCRBDEJUETP3Q">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthH647DDTFJ5DUVBHJMX2B2DXA2A" Name="startSynchronization" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="startSynchronization(Lorg.radixware.kernel.common.client.models.items.properties.Property;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="property" Id="mpr2L6PNS6V5NDABDEJCD62W3WWPM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthZWT3YFRZZBCRHNQKLUWE3S4NPY" Name="stopSynchronization" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="stopSynchronization()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth7OXSCLQHDFCWJNUZN7LX5OO7VE" Name="getValueAsString" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getValueAsString()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthJTH7PP5ZQVCKJO63DDXY4Y6OIY" Name="writeValue2Xml" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="writeValue2Xml(Lorg.radixware.schemas.eas.Property;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="xmlProp" Id="mprQHGLLFGZT5AEDDDSMXJT4TCURE">
+            <Type TypeId="400" extStr="org.radixware.schemas.eas.Property"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthIH55BBBZNBC47DG3UG43R7YZRU" Name="createPropertyLabel" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="createPropertyLabel()Lorg.radixware.kernel.common.client.views.IPropLabel;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.views.IPropLabel"/>
+      </Method>
+      <Method Id="mthUKCW7TRK2RBL7FY46YWEY6BCMM" Name="isActivated" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isActivated()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthELLSCKNEEVCVHFGCYHIKDPG45Y" Name="isEnabled" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isEnabled()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthXVZBWZBTVRHC5HFQN2EQFQOJ4E" Name="setEnabled" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setEnabled(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isEnabled" Id="mpr7P54WZIAANETBAXJ45UREH7YNQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthV7AK6DAGN5FMDFCHMCY6D7XNRE" Name="setHasOwnValue" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setHasOwnValue(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="hasOwnValue" Id="mprWR3V2EPP3JDJZDOH6AIU5UYL5A">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.client.exceptions.ModelException"/>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth462BN7F2HBHRTKVEAI7BXE2E3E" Name="isCustomEditOnly" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isCustomEditOnly()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthFP3VLLXXKVGWRCYJ7DKP2EMH4M" Name="setCustomEditOnly" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setCustomEditOnly(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isCustomEditOnly" Id="mpr4G4ZG2KMRNEG5GKFN7YM5ORENU">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthWNXLT6RD6ZE3LIS2ZTZETO5LZM" Name="getHint" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getHint()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthCUDEKNARO5BPXF2XYGT5MUW7UQ" Name="setHint" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setHint(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="newHint" Id="mpr5M25RLAG3BETNPBQM334MMXLDU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthR2OYWXJYHJCLDBTG344ID2W4EY" Name="canOpenPropEditorDialog" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="canOpenPropEditorDialog()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthQXJHWTIQYJGYTLWROO2R4MAYSI" Name="setCanOpenPropEditorDialog" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setCanOpenPropEditorDialog(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="canOpen" Id="mprCZA4VPSCRVGDLFR6ACBGUDX7BU">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthRLUNV6WLIZFMLA5VRNTG7J7YCE" Name="getDefinition" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getDefinition()Lorg.radixware.kernel.common.client.meta.RadPropertyDef;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.RadPropertyDef"/>
+      </Method>
+      <Method Id="mthCF46AWFTWJGGTCUKZQ35EOY4AY" Name="getPredefinedValues" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getPredefinedValues()Ljava.util.List&lt;Ljava.lang.Object;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthZWA45DOAZRDZDMMF46YND4YKXI" Name="setPredefinedValues" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setPredefinedValues(Ljava.util.List&lt;Ljava.lang.Object;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="values" Id="mprPEXXPDG6PBH5BJQE6CXIIPIIRI">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth6QIQONDMKFCR5GJXMCKQMYN3NI" Name="isValueModifiedByChangingParentRef" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isValueModifiedByChangingParentRef()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthBHWAWDLU6FDD5E4HVPKP5P3F7Q" Name="getEditPossibility" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getEditPossibility()Lorg.radixware.kernel.common.enums.EEditPossibility;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.enums.EEditPossibility"/>
+      </Method>
+      <Method Id="mthD6QMXI5LMBAODKVYITH37Y6UVI" Name="getTextOptions" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getTextOptions(Ljava.util.EnumSet&lt;Lorg.radixware.kernel.common.client.enums.ETextOptionsMarker;>;Lorg.radixware.kernel.common.client.text.ITextOptions;)Lorg.radixware.kernel.common.client.text.ITextOptions;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="markers" Id="mprHJUMBRWM7BBZ7PWH5YLRQT6MLA">
+            <Type TypeId="400" extStr="java.util.EnumSet">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.ETextOptionsMarker"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="options" Id="mprEFQGYLZ765HKZGIV5BBG4PXYJM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.text.ITextOptions"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.text.ITextOptions"/>
+      </Method>
+      <Method Id="mthJPD3AYKGT5DUNKO7COYEI7N3YQ" Name="getTextOptionsMarkers" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getTextOptionsMarkers()Ljava.util.EnumSet&lt;Lorg.radixware.kernel.common.client.enums.ETextOptionsMarker;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.EnumSet">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.ETextOptionsMarker"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mth7BRYC5UTPVEGXDRZ4QMWVPMRBM" Name="validateValue" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="validateValue()Lorg.radixware.kernel.common.client.meta.mask.validators.ValidationResult;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.validators.ValidationResult"/>
+      </Method>
+      <Method Id="mthYFKDQESMZFDRDNCQTQMP2GWIDI" Name="getTitleTextOptions" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getTitleTextOptions()Lorg.radixware.kernel.common.client.models.items.properties.Property.PropertyTextOptions;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property.PropertyTextOptions"/>
+      </Method>
+      <Method Id="mth3MRX3KMDXRF4BMZME5GKINLW2I" Name="getValueTextOptions" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getValueTextOptions()Lorg.radixware.kernel.common.client.models.items.properties.Property.PropertyTextOptions;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property.PropertyTextOptions"/>
+      </Method>
+      <Method Id="mthOI3P2IK3QNBONKC73EZYZYOJPE" Name="onFinishEditValue" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="onFinishEditValue(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="accepted" Id="mprO5FZ3R2MT5GCBE66OXROYJHOSU">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthL6Q3LIYBQRAM5GBZ6BL6S5M6LA" Name="onStartEditValue" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="onStartEditValue()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthHIDFO27WHRCMVCJ2PYWEVSTAG4" Name="getInitialValue" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getInitialValue()Ljava.lang.Object;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+      </Method>
+      <Method Id="mthG5DA2K63DVFQ7CUN6MYKDCGHQQ" Name="getType" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getType()Lorg.radixware.kernel.common.enums.EValType;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+      </Method>
+      <Method Id="mthE4WHCQQH2VHDJCBO2VKOP45OAE" Name="isLocal" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isLocal()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthKGPVDZUZ6ZHG3NAIMKR7WY5UUI" Name="hasValidMandatoryValue" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="hasValidMandatoryValue()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthSQA2R253YFBP3DN4PF2T2BKEAI" Name="getUnacceptableInput" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getUnacceptableInput()Lorg.radixware.kernel.common.client.types.UnacceptableInput;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.types.UnacceptableInput"/>
+      </Method>
+      <Method Id="mth63WS2WBTMZHLTKBPNYQCRUFD4M" Name="isUnacceptableInputRegistered" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isUnacceptableInputRegistered()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthLRIRFTKKA5CIFJGGIQOUBHQHFY" Name="registerUnacceptableInput" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="registerUnacceptableInput(Lorg.radixware.kernel.common.client.types.UnacceptableInput;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="input" Id="mprUN7JEJ3ZTJF6BCAACW3N2NVQCQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.types.UnacceptableInput"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthLPW6TMV7DZGERJXW65MWIHQQEY" Name="removeUnacceptableInputRegistration" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="removeUnacceptableInputRegistration()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthBMFEL4PVQZBQTN2S2ZYWFLLCXA" Name="setPropertyValueStorePossiblity" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setPropertyValueStorePossiblity(Lorg.radixware.kernel.common.enums.EPropertyValueStorePossibility;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="possibility" Id="mpr4DYFCOYHGNCRTFGAFLJPTHRYLM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EPropertyValueStorePossibility"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthGBGFNSE5RZFG5MGO7NS3W2BEJA" Name="valueMatchesToSearchString" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="valueMatchesToSearchString(Ljava.lang.String;Ljava.lang.String;Lorg.radixware.kernel.common.client.types.MatchOptions;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="displayString" Id="mprGARDEC6DDBCEJEE75D6MO6LPPE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="searchString" Id="mprYW2PRNUZ5RFBPA6SRBQODYK7XI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="options" Id="mprSXHBVYYZL5F47E6B4H3E2BGU5Q">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.types.MatchOptions"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthUKT4I5L3NBACZKIKJRC4T2XAJU" Name="afterChangeValueInheritance" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="afterChangeValueInheritance(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isOwnValue" Id="mprKKRHT5EDPBFXHMW5GRDAHUAGGU">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

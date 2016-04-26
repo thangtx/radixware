@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:com="http://schemas.radixware.org/commondef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcT3DVNG4MO5HURASC6JRTGBWHGE" Name="CertificateUtils" DescriptionId="mlsQU5XAYHKLRFFBMMDLMBXSWATEA" Type="3" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.ssl.CertificateUtils"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcF7HNVE34KVBQRGTZCYGZIEN274"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcPFVSNWU7DREDFFQE4ML5IGU7YE"/>
+    </Bodies>
+    <MethodGroup Id="cmgLFR7ONEXFNAUNAALHX7W4ZLPQQ" Name="Root"/>
+    <PropertyGroup Id="cpgG6BWBU4YJNE5PFW4T6VLPJK2GA" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth7MFFKWDZSBGYDEXAAQJGCLP4BM" Name="prepareServerSslContext" Nature="0" IsOverride="false">
+        <com:Description>Prepares SSLContext for server classes</com:Description>
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="prepareServerSslContext(Ljava.util.List&lt;Ljava.lang.String;>;Ljava.util.List&lt;Ljava.lang.String;>;)Ljavax.net.ssl.SSLContext;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="ownKeyAliases" Id="mprFWM4TVIDJNE6NGO4AS7IUN2U34">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+            <Description>aliases of keys to be used for self-authentication</Description>
+          </Parameter>
+          <Parameter Name="trustedCertificateAliases" Id="mprUCIAOHWZDNGJVDVU67EIZQK43E">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+            <Description>aliases of trusted certificates to be used for peer authentication</Description>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="javax.net.ssl.SSLContext"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.CertificateUtilsException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth3H25NSZ3YBDDNAXO5T2WGRU7NI" Name="prepareSslContext" Nature="0" IsOverride="false">
+        <com:Description>Prepares a SSLContext</com:Description>
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="prepareSslContext(Lorg.radixware.kernel.common.ssl.KeystoreController;[C)Ljavax.net.ssl.SSLContext;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="keystoreController" Id="mprL4HCW4QCNRCKHMCIZE5QKABHPY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.ssl.KeystoreController"/>
+          </Parameter>
+          <Parameter Name="sslAuthKeyPassword" Id="mpr5Z7IIEQOXBFNFHSOQIBNW5KNZA">
+            <Type TypeId="401" extStr="char" Dimension="1"/>
+            <Description>password for accessing a (single) private key in  keystore; if ssl self-authentication is not needed then null</Description>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="javax.net.ssl.SSLContext"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.CertificateUtilsException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthFCQGBPPLSVBG7CVTQF5NEXAR5U" Name="getCertificateFingerprintAsString" Nature="0" IsOverride="false">
+        <com:Description>Calculates certificate's fingerprint and brings it to readable form</com:Description>
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getCertificateFingerprintAsString(Ljava.lang.String;Ljava.security.cert.X509Certificate;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="algorithm" Id="mprSYWH4UHRENEVBNV5RBBEKFYGQE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="certificate" Id="mprDOXPS6TZ4FD5VJUUBPISGNQRMY">
+            <Type TypeId="400" extStr="java.security.cert.X509Certificate"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.CertificateUtilsException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthFSMR25WQR5HSFPONSEJ6SGRFRQ" Name="buildDistinguishedName" Nature="0" IsOverride="false">
+        <com:Description>Builds a distinguished name from components</com:Description>
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="buildDistinguishedName(Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="CN" Id="mprZPS3BMZF7JHMPGRZHGPMFVXFW4">
+            <Type TypeId="21"/>
+            <Description>common name</Description>
+          </Parameter>
+          <Parameter Name="OU" Id="mprSD7LQP7VVNCOFJYTGBZBUETRXM">
+            <Type TypeId="21"/>
+            <Description>organization unit</Description>
+          </Parameter>
+          <Parameter Name="O" Id="mprS2TK6RTDPVHJDA7RIIJAQRVANY">
+            <Type TypeId="21"/>
+            <Description>organization</Description>
+          </Parameter>
+          <Parameter Name="L" Id="mprQUQ4KQJN7RGYVHE23JUJ3KNX4M">
+            <Type TypeId="21"/>
+            <Description>locality</Description>
+          </Parameter>
+          <Parameter Name="ST" Id="mprPDFV2SP3HJHGVO6QXJJCMUU5LI">
+            <Type TypeId="21"/>
+            <Description>state</Description>
+          </Parameter>
+          <Parameter Name="C" Id="mprP7FAENEIUNDZFBSUO3LVKMNRXQ">
+            <Type TypeId="21"/>
+            <Description>country</Description>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthVNLRQOO7QNFL7MNGIZEMARKSX4" Name="parseDistinguishedName" Nature="0" IsOverride="false">
+        <com:Description>Splits a distinguished name into pairs "property-value"</com:Description>
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="parseDistinguishedName(Ljava.lang.String;)Ljava.util.HashMap&lt;Ljava.lang.String;Ljava.lang.String;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="distinguishedName" Id="mprTFT2KKY3WFG5BMGAVDVQ2U44FA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.HashMap">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="21"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="21"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mth27OGOVC7TFGW5JKSHEF67MY6W4" Name="getCertificateFingerprint" Nature="0" IsOverride="false">
+        <com:Description>Calculates a certificate's fingerprint</com:Description>
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getCertificateFingerprint(Ljava.lang.String;Ljava.security.cert.X509Certificate;)[B"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="algorithm" Id="mpr4H5I6NDRPRAQXG5LVHPW6XWOJE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="certificate" Id="mprK5J62ZZB5VDKTIKRT3ZLIBQPT4">
+            <Type TypeId="400" extStr="java.security.cert.X509Certificate"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="byte" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.CertificateUtilsException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthIHQBNZ2QYFASZIB7U2LS3DYKNI" Name="exportCertificate" Nature="0" IsOverride="false">
+        <com:Description>Exports a certificate to a file</com:Description>
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="exportCertificate(Ljava.security.cert.X509Certificate;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="certificate" Id="mprFHDSMHZJKJGK3P6GHBMOLUGBHU">
+            <Type TypeId="400" extStr="java.security.cert.X509Certificate"/>
+            <Description>X.509 certificate to be exported</Description>
+          </Parameter>
+          <Parameter Name="filePath" Id="mpr6XFLVU2EZ5FCFEGBQQ7MBUTACA">
+            <Type TypeId="21"/>
+            <Description>file path</Description>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.CertificateUtilsException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthW5WAT4M5SVH7JE44GZTE5EZWCQ" Name="readCertificateChain" Nature="0" IsOverride="false">
+        <com:Description>Reads a certificate chain from a file</com:Description>
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="readCertificateChain(Ljava.lang.String;)[Ljava.security.cert.X509Certificate;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="filePath" Id="mprTWSDG4P5FBHDFKMZ2JDFLMNAAY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.security.cert.X509Certificate" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.CertificateUtilsException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthD2BCTYGJWFAHTES5WA2OYZEPLM" Name="readTrustedCertificate" Nature="0" IsOverride="false">
+        <com:Description>Reads a trusted certificate from a file</com:Description>
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="readTrustedCertificate(Ljava.lang.String;)Ljava.security.cert.X509Certificate;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="filePath" Id="mpr7U6P7OZLLNBNVC2ZK5KGU75N24">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.security.cert.X509Certificate"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.CertificateUtilsException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth34U4HWCNNBBXZIMBOKRMJFY56A" Name="generateAndSignKey" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="generateAndSignKey(IILjava.lang.String;Ljava.util.Date;)Lorg.radixware.kernel.common.ssl.KeystoreRsaKeyEntry;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="keySize" Id="mprEUZW6MYBNFE63C7WDNJ7G3UJXI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="publicExponent" Id="mpr4D6LXFZZABFC5KNDOZ3AUG4OUM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="distinguishedName" Id="mprXG75STBR7VFL3K4H7KGAHD5SDY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="expiration" Id="mprNBD7XMI5CJDGHGRTD7N7TLWO2E">
+            <Type TypeId="400" extStr="java.util.Date"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.ssl.KeystoreRsaKeyEntry"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.CertificateUtilsException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthLFTO3OL6H5GL3BHGC7BH6PXPNQ" Name="processCertificateRequest" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="processCertificateRequest(Lorg.radixware.kernel.common.ssl.KeystoreRsaKeyEntry;Ljava.lang.String;Ljava.util.Date;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="signingKeyEntry" Id="mpr3LPPVH5XTNGAZPEYZSM5ALXX2I">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.ssl.KeystoreRsaKeyEntry"/>
+          </Parameter>
+          <Parameter Name="requestFilePath" Id="mpr6V7AM6CPSBGJVB3WDVBZWCKWPM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="expiration" Id="mprNC7UKGMKO5AX7AR3QJUIMZ6SQE">
+            <Type TypeId="400" extStr="java.util.Date"/>
+          </Parameter>
+          <Parameter Name="responseFilePath" Id="mprMLK4VXY7TVFDDJSBWLL642L3BU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.CertificateUtilsException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthPOTZ3XEOVRHRXE3JHQUDFL24OE" Name="requestCertificate" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="requestCertificate(Lorg.radixware.kernel.common.ssl.KeystoreRsaKeyEntry;Ljava.lang.String;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="keyEntry" Id="mprXIPVBSE46VEYJEFQNWL6MUEKFU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.ssl.KeystoreRsaKeyEntry"/>
+          </Parameter>
+          <Parameter Name="filePath" Id="mprPLWBQLVLQBDLDKETOW7MKMEYRE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="keystoreProviderName" Id="mprO2AAVYURPZH7NKIF73ETKAUDQE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.CertificateUtilsException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthNX7BU5TXEZEM7N3EQKEKNSEGCE" Name="prepareSslContext" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="prepareSslContext(Lorg.radixware.kernel.common.ssl.KeystoreController;[CLjavax.net.ssl.X509TrustManager;Ljava.lang.String;)Ljavax.net.ssl.SSLContext;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="keystoreController" Id="mprSEEU3VBLFBA4HO222UHOKNOKIY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.ssl.KeystoreController"/>
+          </Parameter>
+          <Parameter Name="sslAuthKeyPassword" Id="mpr7BZ2QL5Y2ZBCJDW4KBUMOFUQDA">
+            <Type TypeId="401" extStr="char" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="trustManager" Id="mpr234DAIFVK5CFBF6D6UZHYMG5PI">
+            <Type TypeId="400" extStr="javax.net.ssl.X509TrustManager"/>
+          </Parameter>
+          <Parameter Name="alias" Id="mprMYRD6BI5DBGT7LGIO62QTDJFMY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="javax.net.ssl.SSLContext"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.CertificateUtilsException"/>
+        </ThrownExceptions>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>
