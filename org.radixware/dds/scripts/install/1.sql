@@ -2412,48 +2412,6 @@ create sequence SQN_RDX_TESTCASEID
 grant select on SQN_RDX_TESTCASEID to &USER&_RUN_ROLE
 /
 
-create sequence SQN_RDX_TST_AUDIT
-	order
-/
-
-grant select on SQN_RDX_TST_AUDIT to &USER&_RUN_ROLE
-/
-
-create sequence SQN_RDX_TST_DMTESTCHILDID
-	order
-/
-
-grant select on SQN_RDX_TST_DMTESTCHILDID to &USER&_RUN_ROLE
-/
-
-create sequence SQN_RDX_TST_DMTESTID
-	order
-/
-
-grant select on SQN_RDX_TST_DMTESTID to &USER&_RUN_ROLE
-/
-
-create sequence SQN_RDX_TST_INHERITANCENODESEQ
-	order
-/
-
-grant select on SQN_RDX_TST_INHERITANCENODESEQ to &USER&_RUN_ROLE
-/
-
-create sequence SQN_RDX_TST_SQNTEDCCHILD
-	order
-/
-
-grant select on SQN_RDX_TST_SQNTEDCCHILD to &USER&_RUN_ROLE
-/
-
-create sequence SQN_RDX_TST_SQNTEDCPARENT
-	order
-/
-
-grant select on SQN_RDX_TST_SQNTEDCPARENT to &USER&_RUN_ROLE
-/
-
 create sequence SQN_RDX_UNITID
 	increment by 1
 	start with 10
@@ -4030,240 +3988,6 @@ create table RDX_TESTCASE(
 grant select, update, insert, delete on RDX_TESTCASE to &USER&_RUN_ROLE
 /
 
-create table RDX_TST_AUDITDETAIL(
-	PKCOLINT NUMBER(9,0) not null,
-	PKCOLCHAR CHAR(1 char) not null,
-	PKCOLNUM NUMBER not null,
-	PKCOLDATE DATE not null,
-	PKCOLTIMESTAMP TIMESTAMP(6) not null,
-	PKCOLSTR VARCHAR2(100 char) not null,
-	TITLE VARCHAR2(100 char) null)
-/
-
-grant select, update, insert, delete on RDX_TST_AUDITDETAIL to &USER&_RUN_ROLE
-/
-
-create table RDX_TST_AUDITMASTER(
-	PKCOLINT NUMBER(9,0) not null,
-	PKCOLCHAR CHAR(1 char) default 'C' not null,
-	PKCOLNUM NUMBER default 123.456 not null,
-	PKCOLDATE DATE default SYSDATE not null,
-	PKCOLTIMESTAMP TIMESTAMP(6) default SYSTIMESTAMP not null,
-	PKCOLSTR VARCHAR2(100 char) default 'Some String' not null,
-	CLASSGUID VARCHAR2(100 char) null,
-	COLINT NUMBER(9,0) null,
-	COLCHAR CHAR(1 char) null,
-	COLNUM NUMBER null,
-	COLDATE DATE null,
-	COLTIMESTAMP TIMESTAMP(6) null,
-	COLSTR VARCHAR2(100 char) null,
-	COLBIN RAW(2000) null,
-	COLBLOB BLOB null,
-	COLCLOB CLOB null,
-	COLARRBOOL CLOB null,
-	COLARRINT VARCHAR2(4000 char) null,
-	COLARRCHAR CLOB null,
-	COLARRSTR CLOB null,
-	COLARRNUM VARCHAR2(4000 char) null,
-	COLARRDATETIME CLOB null,
-	COLARRBIN CLOB null,
-	COLARRPARENTREF CLOB null)
-/
-
-grant select, update, insert, delete on RDX_TST_AUDITMASTER to &USER&_RUN_ROLE
-/
-
-create table RDX_TST_CHILD(
-	AUDITSCHEME VARCHAR2(9 char) null,
-	ID NUMBER(9,0) not null,
-	PARENTID NUMBER(9,0) not null,
-	TITLE VARCHAR2(9 char) not null,
-	CHILDTYPE NUMBER(9,0) null,
-	COLBOOL NUMBER(1,0) null,
-	COLINT NUMBER(9,0) null,
-	COLCHAR CHAR(1 char) null,
-	COLNUM NUMBER(9,3) null,
-	COLDATETIME DATE null,
-	COLSTR VARCHAR2(9 char) null,
-	COLBIN RAW(2000) null,
-	COLCLOB CLOB null,
-	COLCLOBASXML CLOB null,
-	COLBLOB BLOB null,
-	COLARRBOOL CLOB null,
-	COLARRINT CLOB null,
-	COLARRCHAR CLOB null,
-	COLARRNUM CLOB null,
-	COLARRDATETIME CLOB null,
-	COLARRBIN CLOB null,
-	COLARRSTR CLOB null,
-	VALTYPE NUMBER(9,0) null,
-	DEFINITIONIDPREFIX VARCHAR2(64 char) null)
-/
-
-grant select, update, insert, delete on RDX_TST_CHILD to &USER&_RUN_ROLE
-/
-
-create table RDX_TST_DMTEST(
-	ID NUMBER(9,0) not null,
-	KEYINT NUMBER(9,0) null,
-	KEYSTR VARCHAR2(100 char) null,
-	TITLE VARCHAR2(9 char) not null,
-	COLBOOL NUMBER(1,0) null,
-	COLINT NUMBER(9,0) null,
-	COLCHAR CHAR(1 char) null,
-	COLNUM NUMBER(9,3) null,
-	COLDATETIME DATE null,
-	COLSTR VARCHAR2(9 char) null,
-	COLBIN RAW(2000) null,
-	COLCLOB CLOB null,
-	COLBLOB BLOB null,
-	COLARRBOOL CLOB null,
-	COLARRINT CLOB null,
-	COLARRCHAR CLOB null,
-	COLARRNUM CLOB null,
-	COLARRDATETIME CLOB null,
-	COLARRBIN CLOB null,
-	COLARRSTR CLOB null,
-	VALTYPE NUMBER(9,0) null)
-/
-
-grant select, update, insert, delete on RDX_TST_DMTEST to &USER&_RUN_ROLE
-/
-
-create table RDX_TST_DMTESTA(
-	PKINT NUMBER(9,0) not null,
-	PKSTR VARCHAR2(100 char) not null,
-	CLASSGUID VARCHAR2(100 char) null,
-	TITLE VARCHAR2(9 char) not null)
-/
-
-grant select, update, insert, delete on RDX_TST_DMTESTA to &USER&_RUN_ROLE
-/
-
-create table RDX_TST_DMTESTB(
-	PKINT NUMBER(9,0) not null,
-	PKSTR VARCHAR2(100 char) not null,
-	TITLE VARCHAR2(9 char) not null)
-/
-
-grant select, update, insert, delete on RDX_TST_DMTESTB to &USER&_RUN_ROLE
-/
-
-create table RDX_TST_DMTESTCHILD(
-	ID NUMBER(9,0) not null,
-	KEYID NUMBER(9,0) null,
-	TITLE VARCHAR2(9 char) not null)
-/
-
-grant select, update, insert, delete on RDX_TST_DMTESTCHILD to &USER&_RUN_ROLE
-/
-
-create table RDX_TST_IMAGES(
-	ID NUMBER(9,0) not null,
-	DATA BLOB not null,
-	MIMETYPE VARCHAR2(64 char) not null)
-/
-
-grant select, update, insert, delete on RDX_TST_IMAGES to &USER&_RUN_ROLE
-/
-
-create table RDX_TST_INHERITANCENODE(
-	ID NUMBER(9,0) not null,
-	COLCLOB CLOB null,
-	COLBLOB BLOB null,
-	COLINT NUMBER(9,0) null,
-	COLARRPARENTREF CLOB null,
-	PARENTID NUMBER(9,0) null)
-/
-
-grant select, update, insert, delete on RDX_TST_INHERITANCENODE to &USER&_RUN_ROLE
-/
-
-create table RDX_TST_NEWTABLE(
-	NEWCOLUMN NUMBER(9,0) not null)
-/
-
-grant select, update, insert, delete on RDX_TST_NEWTABLE to &USER&_RUN_ROLE
-/
-
-create table RDX_TST_PARENT(
-	AUDITSCHEME VARCHAR2(50 char) null,
-	COLCLOBASXML CLOB null,
-	ID NUMBER(9,0) not null,
-	TITLE VARCHAR2(100 char) not null)
-/
-
-grant select, update, insert, delete on RDX_TST_PARENT to &USER&_RUN_ROLE
-/
-
-create table RDX_TST_TABLEWITHDATEPK(
-	DATEPK DATE not null,
-	INTVALUE NUMBER(9,0) null)
-/
-
-grant select, update, insert, delete on RDX_TST_TABLEWITHDATEPK to &USER&_RUN_ROLE
-/
-
-create table RDX_TST_TEDCCHILD(
-	ID NUMBER(9,0) not null,
-	CLASSGUID VARCHAR2(100 char) not null,
-	PARENTID NUMBER(9,0) null,
-	NOTES VARCHAR2(100 char) null)
-/
-
-grant select, update, insert, delete on RDX_TST_TEDCCHILD to &USER&_RUN_ROLE
-/
-
-create table RDX_TST_TEDCCHILDDETAIL(
-	ID NUMBER(9,0) not null,
-	DETAILPARENTID NUMBER(9,0) null)
-/
-
-grant select, update, insert, delete on RDX_TST_TEDCCHILDDETAIL to &USER&_RUN_ROLE
-/
-
-create table RDX_TST_TEDCPARENT(
-	ID NUMBER(9,0) not null,
-	CLASSGUID VARCHAR2(100 char) not null,
-	NOTES VARCHAR2(100 char) null)
-/
-
-grant select, update, insert, delete on RDX_TST_TEDCPARENT to &USER&_RUN_ROLE
-/
-
-create table RDX_TST_TESTPAIR(
-	KEY NUMBER(9,0) not null,
-	VALUE NUMBER(9,0) not null,
-	CLASSGUID VARCHAR2(100 char) null)
-/
-
-grant select, update, insert, delete on RDX_TST_TESTPAIR to &USER&_RUN_ROLE
-/
-
-create table RDX_TST_USERCHILD(
-	ID NUMBER(9,0) not null)
-/
-
-grant select, update, insert, delete on RDX_TST_USERCHILD to &USER&_RUN_ROLE
-/
-
-create table RDX_TST_USERPARENTCOMPLEX(
-	PK_INT NUMBER(9,0) not null,
-	PK_CHAR CHAR(1 char) not null,
-	PK_DATE TIMESTAMP(6) not null,
-	PK_STR VARCHAR2(100 char) not null)
-/
-
-grant select, update, insert, delete on RDX_TST_USERPARENTCOMPLEX to &USER&_RUN_ROLE
-/
-
-create table RDX_TST_USERPARENTSIMPLE(
-	ID NUMBER(18,0) not null)
-/
-
-grant select, update, insert, delete on RDX_TST_USERPARENTSIMPLE to &USER&_RUN_ROLE
-/
-
 create table RDX_UNIT(
 	ID NUMBER(9,0) not null,
 	INSTANCEID NUMBER(9,0) not null,
@@ -4683,60 +4407,6 @@ insert into RDX_SCP (NAME, SYSTEMID) values (
 	1)
 /
 
-insert into RDX_TST_CHILD (AUDITSCHEME, ID, PARENTID, TITLE, VALTYPE, DEFINITIONIDPREFIX) values (
-	NULL,
-	1,
-	1,
-	'Child 1.1',
-	2,
-	'tbl')
-/
-
-insert into RDX_TST_CHILD (AUDITSCHEME, ID, PARENTID, TITLE, VALTYPE, DEFINITIONIDPREFIX) values (
-	NULL,
-	2,
-	2,
-	'Child 2.2',
-	21,
-	'col')
-/
-
-insert into RDX_TST_CHILD (AUDITSCHEME, ID, PARENTID, TITLE, VALTYPE, DEFINITIONIDPREFIX) values (
-	NULL,
-	3,
-	2,
-	'Child 2.2',
-	NULL,
-	NULL)
-/
-
-insert into RDX_TST_CHILD (AUDITSCHEME, ID, PARENTID, TITLE, VALTYPE, DEFINITIONIDPREFIX) values (
-	NULL,
-	4,
-	3,
-	'Child 3.1',
-	NULL,
-	NULL)
-/
-
-insert into RDX_TST_CHILD (AUDITSCHEME, ID, PARENTID, TITLE, VALTYPE, DEFINITIONIDPREFIX) values (
-	NULL,
-	5,
-	3,
-	'Child 3.2',
-	NULL,
-	NULL)
-/
-
-insert into RDX_TST_CHILD (AUDITSCHEME, ID, PARENTID, TITLE, VALTYPE, DEFINITIONIDPREFIX) values (
-	NULL,
-	6,
-	3,
-	'Child 3.3',
-	NULL,
-	NULL)
-/
-
 insert into RDX_SERVICE (SYSTEMID, URI, WSDLURI, TITLE, IMPLEMENTEDINARTE, ACCESSIBILITY) values (
 	1,
 	'http://schemas.radixware.org/eas.wsdl',
@@ -4767,26 +4437,6 @@ insert into RDX_SERVICE (SYSTEMID, URI, WSDLURI, TITLE, IMPLEMENTEDINARTE, ACCES
 insert into RDX_STATION (NAME, SCPNAME) values (
 	'ServerConsole',
 	'Local')
-/
-
-insert into RDX_TST_PARENT (ID, TITLE) values (
-	1,
-	'Parent One')
-/
-
-insert into RDX_TST_PARENT (ID, TITLE) values (
-	2,
-	'Parent Two')
-/
-
-insert into RDX_TST_PARENT (ID, TITLE) values (
-	3,
-	'Parent Three')
-/
-
-insert into RDX_TST_PARENT (ID, TITLE) values (
-	4,
-	'Parent Four')
 /
 
 insert into RDX_JS_EVENTSCHD (ID, GUID, TITLE, LASTUPDATETIME, LASTUPDATEUSER) values (
@@ -5456,63 +5106,6 @@ create unique index PK_RDX_SYSTEM on RDX_SYSTEM (ID asc)
 create unique index PK_RDX_TESTCASE on RDX_TESTCASE (ID asc)
 /
 
-create unique index PK_RDX_TST_AUDITDETAIL on RDX_TST_AUDITDETAIL (PKCOLINT asc, PKCOLCHAR asc, PKCOLNUM asc, PKCOLDATE asc, PKCOLSTR asc, PKCOLTIMESTAMP asc)
-/
-
-create unique index PK_RDX_TST_AUDITMASTER on RDX_TST_AUDITMASTER (PKCOLINT asc, PKCOLCHAR asc, PKCOLNUM asc, PKCOLDATE asc, PKCOLSTR asc, PKCOLTIMESTAMP asc)
-/
-
-create unique index PK_RDX_TST_CHILD on RDX_TST_CHILD (ID asc)
-/
-
-create unique index PK_RDX_TST_DMTEST on RDX_TST_DMTEST (ID asc)
-/
-
-create unique index PK_RDX_TST_DMTESTA on RDX_TST_DMTESTA (PKINT asc, PKSTR asc)
-/
-
-create unique index PK_RDX_TST_DMTESTB on RDX_TST_DMTESTB (PKINT asc, PKSTR asc)
-/
-
-create unique index PK_RDX_TST_DMTESTCHILD on RDX_TST_DMTESTCHILD (ID asc)
-/
-
-create unique index PK_RDX_TST_IMAGES on RDX_TST_IMAGES (ID asc)
-/
-
-create unique index PK_RDX_TST_INHERITANCENODE on RDX_TST_INHERITANCENODE (ID asc)
-/
-
-create unique index PK_RDX_TST_NEWTABLE on RDX_TST_NEWTABLE (NEWCOLUMN asc)
-/
-
-create unique index PK_RDX_TST_PARENT on RDX_TST_PARENT (ID asc)
-/
-
-create unique index PK_RDX_TST_TABLEWITHDATEPK on RDX_TST_TABLEWITHDATEPK (DATEPK asc)
-/
-
-create unique index PK_RDX_TST_TEDCCHILD on RDX_TST_TEDCCHILD (ID asc)
-/
-
-create unique index PK_RDX_TST_TEDCCHILDDETAIL on RDX_TST_TEDCCHILDDETAIL (ID asc)
-/
-
-create unique index PK_RDX_TST_TEDCPARENT on RDX_TST_TEDCPARENT (ID asc)
-/
-
-create unique index PK_RDX_TST_TESTPAIR on RDX_TST_TESTPAIR (KEY asc, VALUE asc)
-/
-
-create unique index PK_RDX_TST_USERCHILD on RDX_TST_USERCHILD (ID asc)
-/
-
-create unique index PK_RDX_TST_USERPARENTCOMPLEX on RDX_TST_USERPARENTCOMPLEX (PK_INT asc, PK_CHAR asc, PK_DATE asc, PK_STR asc)
-/
-
-create unique index PK_RDX_TST_USERPARENTSIMPLE on RDX_TST_USERPARENTSIMPLE (ID asc)
-/
-
 create unique index PK_RDX_UNIT on RDX_UNIT (ID asc)
 /
 
@@ -5865,63 +5458,6 @@ alter table RDX_SYSTEM add constraint PK_RDX_SYSTEM primary key (ID) rely
 /
 
 alter table RDX_TESTCASE add constraint PK_RDX_TESTCASE primary key (ID) rely
-/
-
-alter table RDX_TST_AUDITDETAIL add constraint PK_RDX_TST_AUDITDETAIL primary key (PKCOLINT, PKCOLCHAR, PKCOLNUM, PKCOLDATE, PKCOLSTR, PKCOLTIMESTAMP) rely
-/
-
-alter table RDX_TST_AUDITMASTER add constraint PK_RDX_TST_AUDITMASTER primary key (PKCOLINT, PKCOLCHAR, PKCOLNUM, PKCOLDATE, PKCOLSTR, PKCOLTIMESTAMP) rely
-/
-
-alter table RDX_TST_CHILD add constraint PK_RDX_TST_CHILD primary key (ID) rely
-/
-
-alter table RDX_TST_DMTEST add constraint PK_RDX_TST_DMTEST primary key (ID) rely
-/
-
-alter table RDX_TST_DMTESTA add constraint PK_RDX_TST_DMTESTA primary key (PKINT, PKSTR) rely
-/
-
-alter table RDX_TST_DMTESTB add constraint PK_RDX_TST_DMTESTB primary key (PKINT, PKSTR) rely
-/
-
-alter table RDX_TST_DMTESTCHILD add constraint PK_RDX_TST_DMTESTCHILD primary key (ID) rely
-/
-
-alter table RDX_TST_IMAGES add constraint PK_RDX_TST_IMAGES primary key (ID) rely
-/
-
-alter table RDX_TST_INHERITANCENODE add constraint PK_RDX_TST_INHERITANCENODE primary key (ID) rely
-/
-
-alter table RDX_TST_NEWTABLE add constraint PK_RDX_TST_NEWTABLE primary key (NEWCOLUMN) rely
-/
-
-alter table RDX_TST_PARENT add constraint PK_RDX_TST_PARENT primary key (ID) rely
-/
-
-alter table RDX_TST_TABLEWITHDATEPK add constraint PK_RDX_TST_TABLEWITHDATEPK primary key (DATEPK) rely
-/
-
-alter table RDX_TST_TEDCCHILD add constraint PK_RDX_TST_TEDCCHILD primary key (ID) rely
-/
-
-alter table RDX_TST_TEDCCHILDDETAIL add constraint PK_RDX_TST_TEDCCHILDDETAIL primary key (ID) rely
-/
-
-alter table RDX_TST_TEDCPARENT add constraint PK_RDX_TST_TEDCPARENT primary key (ID) rely
-/
-
-alter table RDX_TST_TESTPAIR add constraint PK_RDX_TST_TESTPAIR primary key (KEY, VALUE) rely
-/
-
-alter table RDX_TST_USERCHILD add constraint PK_RDX_TST_USERCHILD primary key (ID) rely
-/
-
-alter table RDX_TST_USERPARENTCOMPLEX add constraint PK_RDX_TST_USERPARENTCOMPLEX primary key (PK_INT, PK_CHAR, PK_DATE, PK_STR) rely
-/
-
-alter table RDX_TST_USERPARENTSIMPLE add constraint PK_RDX_TST_USERPARENTSIMPLE primary key (ID) rely
 /
 
 alter table RDX_UNIT add constraint PK_RDX_UNIT primary key (ID) rely
@@ -6697,51 +6233,6 @@ alter table RDX_TESTCASE
 alter table RDX_TESTCASE
 	add constraint FK_RDX_TESTCASE_TESTCASE_GRP foreign key (GROUPID)
 	references RDX_TESTCASE (ID) on delete set null
-/
-
-alter table RDX_TST_AUDITDETAIL
-	add constraint FK_RDX_TST_AUDITDETAIL_AUDITMA foreign key (PKCOLINT, PKCOLCHAR, PKCOLNUM, PKCOLDATE, PKCOLSTR, PKCOLTIMESTAMP)
-	references RDX_TST_AUDITMASTER (PKCOLINT, PKCOLCHAR, PKCOLNUM, PKCOLDATE, PKCOLSTR, PKCOLTIMESTAMP) on delete cascade
-/
-
-alter table RDX_TST_CHILD
-	add constraint FK_RDX_TST_CHILD_PARENT foreign key (PARENTID)
-	references RDX_TST_PARENT (ID) on delete cascade
-/
-
-alter table RDX_TST_DMTESTCHILD
-	add constraint FK_RDX_TST_DMTESTCHILD_DMTEST foreign key (KEYID)
-	references RDX_TST_DMTEST (ID) on delete cascade
-/
-
-alter table RDX_TST_DMTEST
-	add constraint FK_RDX_TST_DMTEST_DMTESTA foreign key (KEYINT, KEYSTR)
-	references RDX_TST_DMTESTA (PKINT, PKSTR) on delete cascade
-/
-
-alter table RDX_TST_INHERITANCENODE
-	add constraint FK_RDX_TST_INHERITANCENODE_INH foreign key (PARENTID)
-	references RDX_TST_INHERITANCENODE (ID) on delete cascade
-/
-
-alter table RDX_TST_PARENT
-	add constraint FK_RDX_TST_PARENT_SCHEME foreign key (AUDITSCHEME)
-	references RDX_AU_SCHEME (GUID) on delete cascade
-/
-
-alter table RDX_TST_TEDCCHILDDETAIL
-	add constraint FK_RDX_TST_TEDCCHILDDTL_TEDCLD foreign key (ID)
-	references RDX_TST_TEDCCHILD (ID) on delete cascade
-/
-
-alter table RDX_TST_TEDCCHILDDETAIL
-	add constraint FK_RDX_TST_TEDCCHILDDTL_TED_P foreign key (DETAILPARENTID)
-	references RDX_TST_TEDCPARENT (ID)
-/
-
-alter table RDX_TST_TEDCCHILD
-	add constraint FK_RDX_TST_TEDCCHILD_TEDCPAREN foreign key (PARENTID)
-	references RDX_TST_TEDCPARENT (ID)
 /
 
 alter table RDX_UNIT
@@ -14915,14 +14406,6 @@ begin
 end;
 /
 
-create or replace trigger UPO_4UBCGVD5ZZF6ZIJN4J3YISPFZA
-after delete on RDX_TST_AUDITMASTER
-for each row
-begin
-   RDX_ENTITY.UserPropOnDelOwner('tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA', :old.PKCOLINT||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLCHAR)||'~'||Replace(:old.PKCOLNUM, ',', '.')||'~'||to_char(:old.PKCOLDATE,'yyyy-mm-dd hh24:mi:ss')||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLSTR)||'~'||to_char(:old.PKCOLTIMESTAMP,'yyyy-mm-dd hh24:mi:ss.FF'));
-end;
-/
-
 create or replace trigger UPO_5HP4XTP3EGWDBRCRAAIT4AGD7E
 after delete on RDX_UNIT
 for each row
@@ -14939,43 +14422,11 @@ begin
 end;
 /
 
-create or replace trigger UPO_73I26X3GUNGMPDAF3YPGJE272Y
-after delete on RDX_TST_TEDCCHILD
-for each row
-begin
-   RDX_ENTITY.UserPropOnDelOwner('tbl73I26X3GUNGMPDAF3YPGJE272Y', :old.ID);
-end;
-/
-
 create or replace trigger UPO_7HTJAWJXVLOBDCLSAALOMT5GDM
 after delete on RDX_PC_EVENTSUBSCRIPTION
 for each row
 begin
    RDX_ENTITY.UserPropOnDelOwner('tbl7HTJAWJXVLOBDCLSAALOMT5GDM', :old.ID);
-end;
-/
-
-create or replace trigger UPO_B6QEDVV5BNEWZHKZRTVR67TKOY
-after delete on RDX_TST_CHILD
-for each row
-begin
-   RDX_ENTITY.UserPropOnDelOwner('tblB6QEDVV5BNEWZHKZRTVR67TKOY', :old.ID);
-end;
-/
-
-create or replace trigger UPO_CJ53NERF4VBJDEDGNHBFXRNNC4
-after delete on RDX_TST_DMTESTA
-for each row
-begin
-   RDX_ENTITY.UserPropOnDelOwner('tblCJ53NERF4VBJDEDGNHBFXRNNC4', :old.PKINT||'~'||RDX_ENTITY.PackPIDStr(:old.PKSTR));
-end;
-/
-
-create or replace trigger UPO_FW5F7B7PS5DVXPQS2XAUUSITJQ
-after delete on RDX_TST_USERCHILD
-for each row
-begin
-   RDX_ENTITY.UserPropOnDelOwner('tblFW5F7B7PS5DVXPQS2XAUUSITJQ', :old.ID);
 end;
 /
 
@@ -15008,14 +14459,6 @@ after delete on RDX_CM_ITEM
 for each row
 begin
    RDX_ENTITY.UserPropOnDelOwner('tblJ4WZRLJ23BGMBKQ2JBSOBEGBP4', :old.ID);
-end;
-/
-
-create or replace trigger UPO_KPUY4CMANZH3XDOZZB7FXKHWEY
-after delete on RDX_TST_DMTEST
-for each row
-begin
-   RDX_ENTITY.UserPropOnDelOwner('tblKPUY4CMANZH3XDOZZB7FXKHWEY', :old.ID);
 end;
 /
 
@@ -15091,14 +14534,6 @@ begin
 end;
 /
 
-create or replace trigger UPO_XD3B6CBJ4BFIDJ2LUNLMJ4CXOE
-after delete on RDX_TST_TEDCPARENT
-for each row
-begin
-   RDX_ENTITY.UserPropOnDelOwner('tblXD3B6CBJ4BFIDJ2LUNLMJ4CXOE', :old.ID);
-end;
-/
-
 create or replace trigger UPO_XI6CAOIGDBAGJEE6JQEGJME43Q
 after delete on RDX_WF_PROCESSTYPE
 for each row
@@ -15131,47 +14566,11 @@ begin
 end;
 /
 
-create or replace trigger UPV_73I26X3GUNGMPDAF3YPGJE272Y
-after delete on RDX_TST_TEDCCHILD
-for each row
-begin
-    RDX_ENTITY.userPropOnDelValue('tbl73I26X3GUNGMPDAF3YPGJE272Y', :old.ID);
-end;
-
-/
-
-create or replace trigger UPV_IOIXD5DJVVD53KTA2RNHOYYJGY
-after delete on RDX_TST_USERPARENTSIMPLE
-for each row
-begin
-    RDX_ENTITY.userPropOnDelValue('tblIOIXD5DJVVD53KTA2RNHOYYJGY', :old.ID);
-end;
-
-/
-
-create or replace trigger UPV_OIKKJ54YSNFLTMVHR4R6DKTYBQ
-after delete on RDX_TST_USERPARENTCOMPLEX
-for each row
-begin
-    RDX_ENTITY.userPropOnDelValue('tblOIKKJ54YSNFLTMVHR4R6DKTYBQ', :old.PK_INT||'~'||RDX_ENTITY.PackPIDStr(:old.PK_CHAR)||'~'||to_char(:old.PK_DATE,'yyyy-mm-dd hh24:mi:ss.FF6')||'~'||RDX_ENTITY.PackPIDStr(:old.PK_STR));
-end;
-
-/
-
 create or replace trigger UPV_QZ2AJHN3PFDWXC5BT6I66OS5PQ
 after delete on RDX_MESSAGEQUEUE
 for each row
 begin
     RDX_ENTITY.userPropOnDelValue('tblQZ2AJHN3PFDWXC5BT6I66OS5PQ', :old.ID);
-end;
-
-/
-
-create or replace trigger UPV_XD3B6CBJ4BFIDJ2LUNLMJ4CXOE
-after delete on RDX_TST_TEDCPARENT
-for each row
-begin
-    RDX_ENTITY.userPropOnDelValue('tblXD3B6CBJ4BFIDJ2LUNLMJ4CXOE', :old.ID);
 end;
 
 /
@@ -15244,56 +14643,6 @@ end;
 
 begin
    RDX_AUDIT.updateTableAuditStateEventType('tbl42K4K2TTGLNRDHRZABQAQH3XQ4', 'D','tbl42K4K2TTGLNRDHRZABQAQH3XQ4');
-end;
-/
-
-create or replace trigger atd4UBCGVD5ZZF6ZIJN4J3YISPFZA
-after delete on RDX_TST_AUDITMASTER
-for each row
-disable
-declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
-begin
-   begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
-      if vSchemeId IS NULL then 
-           select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
-      end if;
-      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
-      from RDX_AU_SCHEMEITEM
-      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
-         and RDX_AU_SCHEMEITEM.TABLEID = 'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA'
-         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'D';
-   exception
-      when no_data_found then return;
-   end;
-   vPID:=:old.PKCOLINT||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLCHAR)||'~'||Replace(:old.PKCOLNUM, ',', '.')||'~'||to_char(:old.PKCOLDATE,'yyyy-mm-dd hh24:mi:ss')||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLSTR)||'~'||to_char(:old.PKCOLTIMESTAMP,'yyyy-mm-dd hh24:mi:ss.FF6');
-   if vSaveData=1 then
-            RDX_AUDIT.addValueInt(vChangeData,'old.colIY54HRUWQRC5LI4AMLNJDHNCAU',:old.COLINT);
-            RDX_AUDIT.addValueStr(vChangeData,'old.colSW4DJGZ5LRCLFJCYZLQZGDNAME',:old.COLCHAR);
-            RDX_AUDIT.addValueNum(vChangeData,'old.col6WWL3SC5TZBMZGHZSPPPJVV2BQ',:old.COLNUM);
-            RDX_AUDIT.addValueDate(vChangeData,'old.colJ7FU6BTM75HQTCIAKYQDRXDY5U',:old.COLDATE);
-            RDX_AUDIT.addValueDate(vChangeData,'old.col4TWPKWPOL5EB3GHUIUL6UFRHWQ',:old.COLTIMESTAMP);
-            RDX_AUDIT.addValueStr(vChangeData,'old.colV5EPQ4QOLREEZOV2UUHUWZHYEE',:old.COLSTR);
-            RDX_AUDIT.addValueRaw(vChangeData,'old.colTGVNWDGLGNBI3N5BYXZLI5RXQQ',:old.COLBIN);
-            RDX_AUDIT.addValueBlob(vChangeData,'old.colFDVZCLAYD5HZRN2JGORFYFA3NE',:old.COLBLOB);
-            RDX_AUDIT.addValueClob(vChangeData,'old.colL76ZGR3OPVHQFHYKDPWUIZQA34',:old.COLCLOB);
-            RDX_AUDIT.addValueStr(vChangeData,'old.colI7RDFSIDUZE4PPBNSJFU4RCEIM',:old.COLARRINT);
-            RDX_AUDIT.addValueClob(vChangeData,'old.colGAR4IF3GRVAFLA4DTQXPQGCSME',:old.COLARRCHAR);
-            RDX_AUDIT.addValueClob(vChangeData,'old.colY5PXD2VKE5FBTFGVSCPTLGE46U',:old.COLARRSTR);
-            RDX_AUDIT.addValueStr(vChangeData,'old.colE3SYXVPOCVEIFEEYBEIFXY66XQ',:old.COLARRNUM);
-            RDX_AUDIT.addValueClob(vChangeData,'old.colYZYQHXB75VHEVG2BTGNGPNJZEA',:old.COLARRDATETIME);
-            RDX_AUDIT.addValueClob(vChangeData,'old.col54URWAVOAVE4ZFLUZI7QEQYCDM',:old.COLARRBIN);
-            RDX_AUDIT.addValueClob(vChangeData,'old.colD6G6MRNNKVGJFGSYHPF3DFQ66Y',:old.COLARRPARENTREF);
-   end if;
-
-   vClassGuid := :old.CLASSGUID;
-   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
-   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA',vClassGuid,vPID,'D',vChangeData);
-end;
-/
-
-begin
-   RDX_AUDIT.updateTableAuditStateEventType('tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA', 'D','tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA');
 end;
 /
 
@@ -15536,44 +14885,6 @@ end;
 
 begin
    RDX_AUDIT.updateTableAuditStateEventType('tblARTOV5KBI3OBDCIOAALOMT5GDM', 'D','tblARTOV5KBI3OBDCIOAALOMT5GDM');
-end;
-/
-
-create or replace trigger atdB6QEDVV5BNEWZHKZRTVR67TKOY
-after delete on RDX_TST_CHILD
-for each row
-disable
-declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
-begin
-   begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
-      if vSchemeId IS NULL then 
-           select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
-      end if;
-      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
-      from RDX_AU_SCHEMEITEM
-      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
-         and RDX_AU_SCHEMEITEM.TABLEID = 'tblB6QEDVV5BNEWZHKZRTVR67TKOY'
-         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'D';
-   exception
-      when no_data_found then return;
-   end;
-   vPID:=:old.ID;
-   if vSaveData=1 then
-            RDX_AUDIT.addValueInt(vChangeData,'old.col6OTOT3XC7BHKVIE3Y6WRX4O2OY',:old.CHILDTYPE);
-            RDX_AUDIT.addValueInt(vChangeData,'old.colZDX2SYK7TJAFTJENP6ATORQOTI',:old.COLBOOL);
-            RDX_AUDIT.addValueStr(vChangeData,'old.colVTKWXW5C7RHLVACWBAAOZ3XJGY',:old.COLCHAR);
-            RDX_AUDIT.addValueDate(vChangeData,'old.col7CYI2GEMAJA5LNUWSJ27NVIUZ4',:old.COLDATETIME);
-   end if;
-
-   vClassGuid := 'aecB6QEDVV5BNEWZHKZRTVR67TKOY';
-   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
-   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tblB6QEDVV5BNEWZHKZRTVR67TKOY',vClassGuid,vPID,'D',vChangeData);
-end;
-/
-
-begin
-   RDX_AUDIT.updateTableAuditStateEventType('tblB6QEDVV5BNEWZHKZRTVR67TKOY', 'D','tblB6QEDVV5BNEWZHKZRTVR67TKOY');
 end;
 /
 
@@ -15843,38 +15154,6 @@ end;
 
 begin
    RDX_AUDIT.updateTableAuditStateEventType('tblHC6VVBZ4I3OBDCIOAALOMT5GDM', 'D','tblHC6VVBZ4I3OBDCIOAALOMT5GDM');
-end;
-/
-
-create or replace trigger atdJ5AGLYGB6RGKNJ36XBBX5AZ4ZA
-after delete on RDX_TST_PARENT
-for each row
-disable
-declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
-begin
-   begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
-      if vSchemeId IS NULL then 
-           select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
-      end if;
-      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
-      from RDX_AU_SCHEMEITEM
-      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
-         and RDX_AU_SCHEMEITEM.TABLEID = 'tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA'
-         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'D';
-   exception
-      when no_data_found then return;
-   end;
-   vPID:=:old.ID;
-
-   vClassGuid := 'aecJ5AGLYGB6RGKNJ36XBBX5AZ4ZA';
-   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
-   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA',vClassGuid,vPID,'D',vChangeData);
-end;
-/
-
-begin
-   RDX_AUDIT.updateTableAuditStateEventType('tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA', 'D','tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA');
 end;
 /
 
@@ -16150,41 +15429,6 @@ end;
 
 begin
    RDX_AUDIT.updateTableAuditStateEventType('tblR7FXMYDVVHWDBROXAAIT4AGD7E', 'D','tblR7FXMYDVVHWDBROXAAIT4AGD7E');
-end;
-/
-
-create or replace trigger atdS4NVQKVQI5HLTG33G43UK5QMXU
-after delete on RDX_TST_AUDITDETAIL
-for each row
-disable
-declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
-begin
-   begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
-      if vSchemeId IS NULL then 
-           select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
-      end if;
-      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
-      from RDX_AU_SCHEMEITEM
-      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
-         and RDX_AU_SCHEMEITEM.TABLEID = 'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA'
-         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'D';
-   exception
-      when no_data_found then return;
-   end;
-   vPID:=:old.PKCOLINT||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLCHAR)||'~'||Replace(:old.PKCOLNUM, ',', '.')||'~'||to_char(:old.PKCOLDATE,'yyyy-mm-dd hh24:mi:ss')||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLSTR)||'~'||to_char(:old.PKCOLTIMESTAMP,'yyyy-mm-dd hh24:mi:ss.FF6');
-   if vSaveData=1 then
-            RDX_AUDIT.addValueStr(vChangeData,'old.colB7LCJXCMXVFF7PZ7UH3YBVJXOQ',:old.TITLE);
-   end if;
-
-   vClassGuid := 'aecS4NVQKVQI5HLTG33G43UK5QMXU';
-   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
-   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA',vClassGuid,vPID,'D',vChangeData);
-end;
-/
-
-begin
-   RDX_AUDIT.updateTableAuditStateEventType('tblS4NVQKVQI5HLTG33G43UK5QMXU', 'D','tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA');
 end;
 /
 
@@ -16628,53 +15872,6 @@ begin
 end;
 /
 
-create or replace trigger ati4UBCGVD5ZZF6ZIJN4J3YISPFZA
-after insert on RDX_TST_AUDITMASTER
-for each row
-disable
-declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
-begin
-   begin
-      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
-      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
-      from RDX_AU_SCHEMEITEM
-      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
-         and RDX_AU_SCHEMEITEM.TABLEID = 'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA'
-         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'I';
-   exception
-      when no_data_found then return;
-   end;
-   vPID:=:new.PKCOLINT||'~'||RDX_ENTITY.PackPIDStr(:new.PKCOLCHAR)||'~'||Replace(:new.PKCOLNUM, ',', '.')||'~'||to_char(:new.PKCOLDATE,'yyyy-mm-dd hh24:mi:ss')||'~'||RDX_ENTITY.PackPIDStr(:new.PKCOLSTR)||'~'||to_char(:new.PKCOLTIMESTAMP,'yyyy-mm-dd hh24:mi:ss.FF6');
-   if vSaveData=1 then
-            RDX_AUDIT.addValueInt(vChangeData,'new.colIY54HRUWQRC5LI4AMLNJDHNCAU',:new.COLINT);
-            RDX_AUDIT.addValueStr(vChangeData,'new.colSW4DJGZ5LRCLFJCYZLQZGDNAME',:new.COLCHAR);
-            RDX_AUDIT.addValueNum(vChangeData,'new.col6WWL3SC5TZBMZGHZSPPPJVV2BQ',:new.COLNUM);
-            RDX_AUDIT.addValueDate(vChangeData,'new.colJ7FU6BTM75HQTCIAKYQDRXDY5U',:new.COLDATE);
-            RDX_AUDIT.addValueDate(vChangeData,'new.col4TWPKWPOL5EB3GHUIUL6UFRHWQ',:new.COLTIMESTAMP);
-            RDX_AUDIT.addValueStr(vChangeData,'new.colV5EPQ4QOLREEZOV2UUHUWZHYEE',:new.COLSTR);
-            RDX_AUDIT.addValueRaw(vChangeData,'new.colTGVNWDGLGNBI3N5BYXZLI5RXQQ',:new.COLBIN);
-            RDX_AUDIT.addValueBlob(vChangeData,'new.colFDVZCLAYD5HZRN2JGORFYFA3NE',:new.COLBLOB);
-            RDX_AUDIT.addValueClob(vChangeData,'new.colL76ZGR3OPVHQFHYKDPWUIZQA34',:new.COLCLOB);
-            RDX_AUDIT.addValueStr(vChangeData,'new.colI7RDFSIDUZE4PPBNSJFU4RCEIM',:new.COLARRINT);
-            RDX_AUDIT.addValueClob(vChangeData,'new.colGAR4IF3GRVAFLA4DTQXPQGCSME',:new.COLARRCHAR);
-            RDX_AUDIT.addValueClob(vChangeData,'new.colY5PXD2VKE5FBTFGVSCPTLGE46U',:new.COLARRSTR);
-            RDX_AUDIT.addValueStr(vChangeData,'new.colE3SYXVPOCVEIFEEYBEIFXY66XQ',:new.COLARRNUM);
-            RDX_AUDIT.addValueClob(vChangeData,'new.colYZYQHXB75VHEVG2BTGNGPNJZEA',:new.COLARRDATETIME);
-            RDX_AUDIT.addValueClob(vChangeData,'new.col54URWAVOAVE4ZFLUZI7QEQYCDM',:new.COLARRBIN);
-            RDX_AUDIT.addValueClob(vChangeData,'new.colD6G6MRNNKVGJFGSYHPF3DFQ66Y',:new.COLARRPARENTREF);
-   end if;
-
-   vClassGuid := :new.CLASSGUID;
-   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
-   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA',vClassGuid,vPID,'I',vChangeData);
-end;
-/
-
-begin
-   RDX_AUDIT.updateTableAuditStateEventType('tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA', 'I','tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA');
-end;
-/
-
 create or replace trigger ati52CHFNO3EGWDBRCRAAIT4AGD7E
 after insert on RDX_INSTANCE
 for each row
@@ -16960,41 +16157,6 @@ begin
 end;
 /
 
-create or replace trigger atiB6QEDVV5BNEWZHKZRTVR67TKOY
-after insert on RDX_TST_CHILD
-for each row
-disable
-declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
-begin
-   begin
-      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
-      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
-      from RDX_AU_SCHEMEITEM
-      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
-         and RDX_AU_SCHEMEITEM.TABLEID = 'tblB6QEDVV5BNEWZHKZRTVR67TKOY'
-         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'I';
-   exception
-      when no_data_found then return;
-   end;
-   vPID:=:new.ID;
-   if vSaveData=1 then
-            RDX_AUDIT.addValueInt(vChangeData,'new.col6OTOT3XC7BHKVIE3Y6WRX4O2OY',:new.CHILDTYPE);
-            RDX_AUDIT.addValueInt(vChangeData,'new.colZDX2SYK7TJAFTJENP6ATORQOTI',:new.COLBOOL);
-            RDX_AUDIT.addValueStr(vChangeData,'new.colVTKWXW5C7RHLVACWBAAOZ3XJGY',:new.COLCHAR);
-            RDX_AUDIT.addValueDate(vChangeData,'new.col7CYI2GEMAJA5LNUWSJ27NVIUZ4',:new.COLDATETIME);
-   end if;
-
-   vClassGuid := 'aecB6QEDVV5BNEWZHKZRTVR67TKOY';
-   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
-   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tblB6QEDVV5BNEWZHKZRTVR67TKOY',vClassGuid,vPID,'I',vChangeData);
-end;
-/
-
-begin
-   RDX_AUDIT.updateTableAuditStateEventType('tblB6QEDVV5BNEWZHKZRTVR67TKOY', 'I','tblB6QEDVV5BNEWZHKZRTVR67TKOY');
-end;
-/
-
 create or replace trigger atiC2OWQGDVVHWDBROXAAIT4AGD7E
 after insert on RDX_SERVICE
 for each row
@@ -17266,35 +16428,6 @@ begin
 end;
 /
 
-create or replace trigger atiJ5AGLYGB6RGKNJ36XBBX5AZ4ZA
-after insert on RDX_TST_PARENT
-for each row
-disable
-declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
-begin
-   begin
-      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
-      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
-      from RDX_AU_SCHEMEITEM
-      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
-         and RDX_AU_SCHEMEITEM.TABLEID = 'tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA'
-         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'I';
-   exception
-      when no_data_found then return;
-   end;
-   vPID:=:new.ID;
-
-   vClassGuid := 'aecJ5AGLYGB6RGKNJ36XBBX5AZ4ZA';
-   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
-   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA',vClassGuid,vPID,'I',vChangeData);
-end;
-/
-
-begin
-   RDX_AUDIT.updateTableAuditStateEventType('tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA', 'I','tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA');
-end;
-/
-
 create or replace trigger atiJ6SOXKD3ZHOBDCMTAALOMT5GDM
 after insert on RDX_USERFUNC
 for each row
@@ -17548,43 +16681,6 @@ end;
 
 begin
    RDX_AUDIT.updateTableAuditStateEventType('tblR7FXMYDVVHWDBROXAAIT4AGD7E', 'I','tblR7FXMYDVVHWDBROXAAIT4AGD7E');
-end;
-/
-
-create or replace trigger atiS4NVQKVQI5HLTG33G43UK5QMXU
-after insert on RDX_TST_AUDITDETAIL
-for each row
-disable
-declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
-begin
-   begin
-      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
-      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
-      from RDX_AU_SCHEMEITEM
-      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
-         and RDX_AU_SCHEMEITEM.TABLEID = 'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA'
-         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'I';
-   exception
-      when no_data_found then return;
-   end;
-   vPID:=:new.PKCOLINT||'~'||RDX_ENTITY.PackPIDStr(:new.PKCOLCHAR)||'~'||Replace(:new.PKCOLNUM, ',', '.')||'~'||to_char(:new.PKCOLDATE,'yyyy-mm-dd hh24:mi:ss')||'~'||RDX_ENTITY.PackPIDStr(:new.PKCOLSTR)||'~'||to_char(:new.PKCOLTIMESTAMP,'yyyy-mm-dd hh24:mi:ss.FF6');
-   if vSaveData=1 then
-            RDX_AUDIT.addValueStr(vChangeData,'new.colB7LCJXCMXVFF7PZ7UH3YBVJXOQ',:new.TITLE);
-   end if;
-
-   begin
-       select CLASSGUID into vClassGuid from RDX_TST_AUDITMASTER M
-       where M.PKCOLINT=:new.PKCOLINT and M.PKCOLCHAR=:new.PKCOLCHAR and M.PKCOLNUM=:new.PKCOLNUM and M.PKCOLDATE=:new.PKCOLDATE and M.PKCOLSTR=:new.PKCOLSTR and M.PKCOLTIMESTAMP=:new.PKCOLTIMESTAMP;
-   exception
-      when no_data_found then null;
-   end;
-   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
-   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA',vClassGuid,vPID,'I',vChangeData);
-end;
-/
-
-begin
-   RDX_AUDIT.updateTableAuditStateEventType('tblS4NVQKVQI5HLTG33G43UK5QMXU', 'I','tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA');
 end;
 /
 
@@ -18059,53 +17155,6 @@ begin
 end;
 /
 
-create or replace trigger atu4UBCGVD5ZZF6ZIJN4J3YISPFZA
-after update of COLARRNUM, COLBIN, COLCHAR, COLDATE, COLINT, COLNUM, COLSTR, COLTIMESTAMP on RDX_TST_AUDITMASTER
-for each row
-disable
-declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
-begin
-   begin
-      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
-      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
-      from RDX_AU_SCHEMEITEM
-      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
-         and RDX_AU_SCHEMEITEM.TABLEID = 'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA'
-         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'U';
-   exception
-      when no_data_found then return;
-   end;
-   vPID:=:old.PKCOLINT||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLCHAR)||'~'||Replace(:old.PKCOLNUM, ',', '.')||'~'||to_char(:old.PKCOLDATE,'yyyy-mm-dd hh24:mi:ss')||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLSTR)||'~'||to_char(:old.PKCOLTIMESTAMP,'yyyy-mm-dd hh24:mi:ss.FF6');
-   if vSaveData=1 then
-            RDX_AUDIT.addChangedValueInt(vChangeData,'colIY54HRUWQRC5LI4AMLNJDHNCAU',:old.COLINT,:new.COLINT);
-            RDX_AUDIT.addChangedValueStr(vChangeData,'colSW4DJGZ5LRCLFJCYZLQZGDNAME',:old.COLCHAR,:new.COLCHAR);
-            RDX_AUDIT.addChangedValueNum(vChangeData,'col6WWL3SC5TZBMZGHZSPPPJVV2BQ',:old.COLNUM,:new.COLNUM);
-            RDX_AUDIT.addChangedValueDateTime(vChangeData,'colJ7FU6BTM75HQTCIAKYQDRXDY5U',:old.COLDATE,:new.COLDATE);
-            RDX_AUDIT.addChangedValueDateTime(vChangeData,'col4TWPKWPOL5EB3GHUIUL6UFRHWQ',:old.COLTIMESTAMP,:new.COLTIMESTAMP);
-            RDX_AUDIT.addChangedValueStr(vChangeData,'colV5EPQ4QOLREEZOV2UUHUWZHYEE',:old.COLSTR,:new.COLSTR);
-            RDX_AUDIT.addChangedValueRaw(vChangeData,'colTGVNWDGLGNBI3N5BYXZLI5RXQQ',:old.COLBIN,:new.COLBIN);
-            RDX_AUDIT.addChangedValueBlob(vChangeData,'colFDVZCLAYD5HZRN2JGORFYFA3NE',:old.COLBLOB,:new.COLBLOB);
-            RDX_AUDIT.addChangedValueClob(vChangeData,'colL76ZGR3OPVHQFHYKDPWUIZQA34',:old.COLCLOB,:new.COLCLOB);
-            RDX_AUDIT.addChangedValueStr(vChangeData,'colI7RDFSIDUZE4PPBNSJFU4RCEIM',:old.COLARRINT,:new.COLARRINT);
-            RDX_AUDIT.addChangedValueClob(vChangeData,'colGAR4IF3GRVAFLA4DTQXPQGCSME',:old.COLARRCHAR,:new.COLARRCHAR);
-            RDX_AUDIT.addChangedValueClob(vChangeData,'colY5PXD2VKE5FBTFGVSCPTLGE46U',:old.COLARRSTR,:new.COLARRSTR);
-            RDX_AUDIT.addChangedValueStr(vChangeData,'colE3SYXVPOCVEIFEEYBEIFXY66XQ',:old.COLARRNUM,:new.COLARRNUM);
-            RDX_AUDIT.addChangedValueClob(vChangeData,'colYZYQHXB75VHEVG2BTGNGPNJZEA',:old.COLARRDATETIME,:new.COLARRDATETIME);
-            RDX_AUDIT.addChangedValueClob(vChangeData,'col54URWAVOAVE4ZFLUZI7QEQYCDM',:old.COLARRBIN,:new.COLARRBIN);
-            RDX_AUDIT.addChangedValueClob(vChangeData,'colD6G6MRNNKVGJFGSYHPF3DFQ66Y',:old.COLARRPARENTREF,:new.COLARRPARENTREF);
-   end if;
-
-   vClassGuid := :old.CLASSGUID;
-   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
-   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA',vClassGuid,vPID,'U',vChangeData);
-end;
-/
-
-begin
-   RDX_AUDIT.updateTableAuditStateEventType('tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA', 'U','tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA');
-end;
-/
-
 create or replace trigger atu52CHFNO3EGWDBRCRAAIT4AGD7E
 after update of ARTEINSTLIVETIME, DBTRACEPROFILE, FILETRACEPROFILE, GUITRACEPROFILE, HIGHARTEINSTCOUNT, KEYSTOREPATH, KEYSTORETYPE, KEYTABPATH, LOWARTEINSTCOUNT, MAXTRACEFILECNT, MAXTRACEFILESIZEKB, SCPNAME, STARTOSCOMMAND, STOPOSCOMMAND, TRACEFILESDIR on RDX_INSTANCE
 for each row
@@ -18360,41 +17409,6 @@ begin
 end;
 /
 
-create or replace trigger atuB6QEDVV5BNEWZHKZRTVR67TKOY
-after update of CHILDTYPE, COLBOOL, COLCHAR, COLDATETIME on RDX_TST_CHILD
-for each row
-disable
-declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
-begin
-   begin
-      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
-      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
-      from RDX_AU_SCHEMEITEM
-      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
-         and RDX_AU_SCHEMEITEM.TABLEID = 'tblB6QEDVV5BNEWZHKZRTVR67TKOY'
-         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'U';
-   exception
-      when no_data_found then return;
-   end;
-   vPID:=:old.ID;
-   if vSaveData=1 then
-            RDX_AUDIT.addChangedValueInt(vChangeData,'col6OTOT3XC7BHKVIE3Y6WRX4O2OY',:old.CHILDTYPE,:new.CHILDTYPE);
-            RDX_AUDIT.addChangedValueInt(vChangeData,'colZDX2SYK7TJAFTJENP6ATORQOTI',:old.COLBOOL,:new.COLBOOL);
-            RDX_AUDIT.addChangedValueStr(vChangeData,'colVTKWXW5C7RHLVACWBAAOZ3XJGY',:old.COLCHAR,:new.COLCHAR);
-            RDX_AUDIT.addChangedValueDateTime(vChangeData,'col7CYI2GEMAJA5LNUWSJ27NVIUZ4',:old.COLDATETIME,:new.COLDATETIME);
-   end if;
-
-   vClassGuid := 'aecB6QEDVV5BNEWZHKZRTVR67TKOY';
-   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
-   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tblB6QEDVV5BNEWZHKZRTVR67TKOY',vClassGuid,vPID,'U',vChangeData);
-end;
-/
-
-begin
-   RDX_AUDIT.updateTableAuditStateEventType('tblB6QEDVV5BNEWZHKZRTVR67TKOY', 'U','tblB6QEDVV5BNEWZHKZRTVR67TKOY');
-end;
-/
-
 create or replace trigger atuC2OWQGDVVHWDBROXAAIT4AGD7E
 after update of ACCESSIBILITY, WSDLURI on RDX_SERVICE
 for each row
@@ -18610,35 +17624,6 @@ end;
 
 begin
    RDX_AUDIT.updateTableAuditStateEventType('tblHC6VVBZ4I3OBDCIOAALOMT5GDM', 'U','tblHC6VVBZ4I3OBDCIOAALOMT5GDM');
-end;
-/
-
-create or replace trigger atuJ5AGLYGB6RGKNJ36XBBX5AZ4ZA
-after update on RDX_TST_PARENT
-for each row
-disable
-declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
-begin
-   begin
-      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
-      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
-      from RDX_AU_SCHEMEITEM
-      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
-         and RDX_AU_SCHEMEITEM.TABLEID = 'tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA'
-         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'U';
-   exception
-      when no_data_found then return;
-   end;
-   vPID:=:old.ID;
-
-   vClassGuid := 'aecJ5AGLYGB6RGKNJ36XBBX5AZ4ZA';
-   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
-   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA',vClassGuid,vPID,'U',vChangeData);
-end;
-/
-
-begin
-   RDX_AUDIT.updateTableAuditStateEventType('tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA', 'U','tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA');
 end;
 /
 
@@ -18907,43 +17892,6 @@ end;
 
 begin
    RDX_AUDIT.updateTableAuditStateEventType('tblR7FXMYDVVHWDBROXAAIT4AGD7E', 'U','tblR7FXMYDVVHWDBROXAAIT4AGD7E');
-end;
-/
-
-create or replace trigger atuS4NVQKVQI5HLTG33G43UK5QMXU
-after update of TITLE on RDX_TST_AUDITDETAIL
-for each row
-disable
-declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
-begin
-   begin
-      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
-      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
-      from RDX_AU_SCHEMEITEM
-      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
-         and RDX_AU_SCHEMEITEM.TABLEID = 'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA'
-         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'U';
-   exception
-      when no_data_found then return;
-   end;
-   vPID:=:old.PKCOLINT||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLCHAR)||'~'||Replace(:old.PKCOLNUM, ',', '.')||'~'||to_char(:old.PKCOLDATE,'yyyy-mm-dd hh24:mi:ss')||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLSTR)||'~'||to_char(:old.PKCOLTIMESTAMP,'yyyy-mm-dd hh24:mi:ss.FF6');
-   if vSaveData=1 then
-            RDX_AUDIT.addChangedValueStr(vChangeData,'colB7LCJXCMXVFF7PZ7UH3YBVJXOQ',:old.TITLE,:new.TITLE);
-   end if;
-
-   begin
-       select CLASSGUID into vClassGuid from RDX_TST_AUDITMASTER M
-       where M.PKCOLINT=:old.PKCOLINT and M.PKCOLCHAR=:old.PKCOLCHAR and M.PKCOLNUM=:old.PKCOLNUM and M.PKCOLDATE=:old.PKCOLDATE and M.PKCOLSTR=:old.PKCOLSTR and M.PKCOLTIMESTAMP=:old.PKCOLTIMESTAMP;
-   exception
-      when no_data_found then null;
-   end;
-   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
-   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA',vClassGuid,vPID,'U',vChangeData);
-end;
-/
-
-begin
-   RDX_AUDIT.updateTableAuditStateEventType('tblS4NVQKVQI5HLTG33G43UK5QMXU', 'U','tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA');
 end;
 /
 
