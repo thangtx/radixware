@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:this="http://schemas.radixware.org/monitoringSettings.xsd" xmlns:types="http://schemas.radixware.org/types.xsd" targetNamespace="http://schemas.radixware.org/monitoringSettings.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+        <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+<xs:element name="MonitoringSettings">
+	<xs:complexType>
+		<xs:sequence>
+			<xs:element name="Page" type="this:MonitoringPage" maxOccurs="unbounded"/>									
+		</xs:sequence>
+	</xs:complexType>
+</xs:element>
+<xs:complexType name="MonitoringPage">
+	<xs:sequence>
+		<xs:element name="Diagram" type="this:MonitoringDiagram" minOccurs="0" maxOccurs="unbounded"/>			
+	</xs:sequence>
+	<xs:attribute name="Name" type="xs:string" use="optional"/>
+	<xs:attribute name="TimeScaleMs" type="xs:long" use="optional"/>
+</xs:complexType>
+<xs:complexType name="MonitoringDiagram">
+	<xs:sequence>
+		<xs:element name="MetricSettings" type="this:MonitoringMetricSettings" minOccurs="1" maxOccurs="unbounded"/>
+		<xs:element name="ValueRange" type="this:MonitoringValueRange" minOccurs="0"/>
+		<xs:element name="TimeRange" type="this:MonitoringTimeRange" minOccurs="0"/>
+		<xs:element name="Position" type="this:MonitoringDiagramPosition" minOccurs="0"/>		
+	</xs:sequence>
+	<xs:attribute name="Name" type="xs:string" use="optional"/>
+	<xs:attribute name="IsHistogram" type="xs:boolean" use="optional" default="false"/>
+	<xs:attribute name="IsPie" type="xs:boolean" use="required"/>
+	<xs:attribute name="IsShowChangeRange" type="xs:boolean" use="optional" default="true"/>
+	<xs:attribute name="IsShowVals" type="xs:boolean"/>
+	<xs:attribute name="IsPercent" type="xs:boolean"/>
+</xs:complexType>
+<xs:complexType name="MonitoringDiagramPosition">
+	<xs:attribute name="Column" type="xs:long" use="optional"/>
+	<xs:attribute name="Row" type="xs:long" use="optional" />
+	<xs:attribute name="ColumnSpan" type="xs:long" use="optional" default="2"/>
+	<xs:attribute name="RowSpan" type="xs:long" use="optional" default="2"/>
+</xs:complexType>
+<xs:complexType name="MonitoringMetricSettings">
+	<xs:attribute name="NormalColor" type="xs:string" use="optional"/>
+	<xs:attribute name="WarningColor" type="xs:string" use="optional"/>
+	<xs:attribute name="ErrorColor" type="xs:string" use="optional"/>
+	<xs:attribute name="Title" type="xs:string" use="optional"/>
+	<xs:attribute name="MetricName" type="xs:string" use="optional"/>
+	<xs:attribute name="MetricStateId" type="xs:long" use="required"/>
+	<xs:attribute name="MetricStatePid" type="xs:string" use="required"/>
+</xs:complexType>
+<xs:complexType name="MonitoringValueRange">
+	<xs:attribute name="MinValue" type="xs:double" use="required"/>
+	<xs:attribute name="MaxValue" type="xs:double" use="required"/>
+</xs:complexType>
+<xs:complexType name="MonitoringTimeRange">
+	<xs:attribute name="TimePeriod" type="xs:double" use="required"/>
+	<xs:attribute name="PeriodUnit" type="xs:long" use="required"/>
+</xs:complexType>
+</xs:schema>

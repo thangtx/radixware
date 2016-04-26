@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcHYTEYEV7G3OBDLVOAAMPGXSZKU" Name="TraceContext" DescriptionId="mlsUUZWXKNPKREKLOTOYS6CGYRRNA" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcL2Y5G3OZWRENDIM4PNNQFYZGYQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcCBLGNXYPXVCKDCS2LQPCIA6JXQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgEF5RQV6I7NDEVAIR6P4MKKZVOE" Name="Root"/>
+    <PropertyGroup Id="cpgZZRN2YNZDFEXFFEEZHGTFTLOFA" Name="Root"/>
+    <Properties>
+      <Property Id="prdCIUBHE57G3OBDLVOAAMPGXSZKU" Name="type" DescriptionId="mlsQH22T7SJKRHH3DQPJBQNYGOGBQ" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="21" Path="acsPVLIUELSKTNRDAQSABIFNQAAAE"/>
+      </Property>
+      <Property Id="prdLLCFKIN7G3OBDLVOAAMPGXSZKU" Name="id" DescriptionId="mlsLOK5W656WVCYPFAMWQF6AGPHTA" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthCYYZNGN7G3OBDLVOAAMPGXSZKU" Name="TraceContext" DescriptionId="mlsJGSGUI4JI5EKLAJNA7HGHM4SVQ" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="type" DescriptionId="mlsCHSHJZKW55APZISVFPKOZDT4IM" Id="mprMXRTQJULQFG35JIZNGTZ2IWNOA">
+            <Type TypeId="21" Path="acsPVLIUELSKTNRDAQSABIFNQAAAE"/>
+          </Parameter>
+          <Parameter Name="id" DescriptionId="mlsDVB6SKPEU5FZRHDXUOYMAWNJOQ" Id="mprUW7TTIHWA5EF5CRIEWBPXT6GYA">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcHYTEYEV7G3OBDLVOAAMPGXSZKU prdCIUBHE57G3OBDLVOAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>= type;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcHYTEYEV7G3OBDLVOAAMPGXSZKU prdLLCFKIN7G3OBDLVOAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>= id==null?null:id.toString();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthVJ7M3S57G3OBDLVOAAMPGXSZKU" Name="TraceContext" DescriptionId="mlsMDKQVMANSJCAZM45SUE6WWRSPY" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="type" DescriptionId="mlsRD5SXZRVLVE2NJKAGBX5545TDI" Id="mpr2ARSZNMKGRHJHBK6HNMIANGDLU">
+            <Type TypeId="21" Path="acsPVLIUELSKTNRDAQSABIFNQAAAE"/>
+          </Parameter>
+          <Parameter Name="id" DescriptionId="mlsXEZTO5OI3VGB5JLVXZ6L54FSDI" Id="mprJ3QBNYCU7BBR5A5CYEHAFVLSEI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcHYTEYEV7G3OBDLVOAAMPGXSZKU prdCIUBHE57G3OBDLVOAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>=type;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcHYTEYEV7G3OBDLVOAAMPGXSZKU prdLLCFKIN7G3OBDLVOAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>=id;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

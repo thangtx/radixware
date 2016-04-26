@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="acl3ZXPKTG3FVEW7OPT3QJWILGFJ4" Name="UserFuncLibParamInt" Type="2">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="Headeracl3ZXPKTG3FVEW7OPT3QJWILGFJ4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyacl3ZXPKTG3FVEW7OPT3QJWILGFJ4"/>
+    </Bodies>
+    <MethodGroup Id="cmgRYXLFWTHRBENHE4A4MNUCVPXNI" Name="Root"/>
+    <PropertyGroup Id="cpgJJL7HQUC45GCLGL4VBZUNBTGWE" Name="Root"/>
+    <Properties>
+      <Property Id="colHIUNTM53AFBXNG6CGXUZGGDGIY" Name="intValue" Nature="0" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <Presentation TitleId="mlsHZKI2BQASNBKDANIBYMPW2H4JY" InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthXIHSVQWG3NBQJAI4GJPYOG3N7I" Name="getDisplayValue" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl3ZXPKTG3FVEW7OPT3QJWILGFJ4 colHIUNTM53AFBXNG6CGXUZGGDGIY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null ? null : String.valueOf(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl3ZXPKTG3FVEW7OPT3QJWILGFJ4 colHIUNTM53AFBXNG6CGXUZGGDGIY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.longValue());</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthE7MR4XW6EVGX7MJUTKCOSMBRTQ" Name="getIntValue" Nature="0" IsOverride="true">
+        <AccessRules IsPublished="false"/>
+        <ReturnType TypeId="2"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl3ZXPKTG3FVEW7OPT3QJWILGFJ4 colHIUNTM53AFBXNG6CGXUZGGDGIY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthZQ2LV3ICBVA6RKBWBFLLG3KJ7Q" Name="getValueGroup" Nature="0" IsOverride="true" SuppressedWarnings="3001">
+        <AccessRules Access="1" IsPublished="false"/>
+        <ReturnType TypeId="451" Path="xsdLL3UFHA3MBDWJBXUX6GNNLJH7Q" extStr="ValueGroup"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdLL3UFHA3MBDWJBXUX6GNNLJH7Q" extStr="ValueGroup"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> item = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdLL3UFHA3MBDWJBXUX6GNNLJH7Q" extStr="ValueGroup.Factory"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.newInstance();
+item.IntegerValue=this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl3ZXPKTG3FVEW7OPT3QJWILGFJ4 colHIUNTM53AFBXNG6CGXUZGGDGIY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+return item;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthU5UW5AF4AZBTHFH3PUFDVOSLB4" Name="setValue" Nature="0" IsOverride="true" SuppressedWarnings="3001">
+        <AccessRules Access="1" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="paramGroup" Id="mprGHAIEMODKNBSPMBCFUM72P4CMY">
+            <Type TypeId="451" Path="xsdLL3UFHA3MBDWJBXUX6GNNLJH7Q" extStr="ValueGroup"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl3ZXPKTG3FVEW7OPT3QJWILGFJ4 colHIUNTM53AFBXNG6CGXUZGGDGIY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = paramGroup.IntegerValue;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tbl6GD2KMGAFZFNBLR7WK4T45VLOQ"/>
+    <Presentations ObjectTitleId="mlsE57PISPRSNB5PE5SWAI7HES73M">
+      <ClassCatalogs>
+        <ClassCatalog Id="eccG3BUEOQWRZFXFCHANXK2D32YD4" Name="Params">
+          <AccessRules IsPublished="false"/>
+          <ClassRef Order="30.0"/>
+        </ClassCatalog>
+      </ClassCatalogs>
+      <EditorPresentations>
+        <EditorPresentation Id="epr2XOTK3ABHVGHDGRRIG6HIW4ROQ" Name="General" BasePresentationId="eprZZ52DBSE65EJXC2CAQEBRZVCKI" IconId="imgMX4OQ6HR3NXYMMQL5FVIYH37QZXSLFHX" InheritanceMask="36002" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprZZ52DBSE65EJXC2CAQEBRZVCKI">
+          <AccessRules IsPublished="false"/>
+          <ChildExplorerItems/>
+          <EditorPages>
+            <Page Id="epgC33SXJGMRBDGFIJ322I27FROJU" Name="Main" Type="1">
+              <AccessRules IsPublished="false"/>
+              <Properties>
+                <Property Id="colHIUNTM53AFBXNG6CGXUZGGDGIY" Row="1" Column="0"/>
+                <Property Id="colSSOTVEHQERHMTABMXKJ4FI3JAY" Row="0" Column="0"/>
+              </Properties>
+            </Page>
+            <PageOrder>
+              <Item PageId="epgC33SXJGMRBDGFIJ322I27FROJU" Level="1"/>
+            </PageOrder>
+          </EditorPages>
+          <ObjectTitleFormat Id="etfYEU4HFZLI5AYJGREXVLAPK6TXM"/>
+        </EditorPresentation>
+      </EditorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="aec6GD2KMGAFZFNBLR7WK4T45VLOQ"/>
+  </AdsClassDefinition>
+</AdsDefinition>

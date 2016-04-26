@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcTE6JVU2WKNDPVBW7ACNR2QBONM" Name="InputBoxController" Type="3" Environment="web">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.wps.views.editors.valeditors.InputBoxController"/>
+    </AccessRules>
+    <TypeArguments>
+      <xsc:Argument DerivationRule="extends" Alias="T">
+        <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+      </xsc:Argument>
+      <xsc:Argument DerivationRule="extends" Alias="V">
+        <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
+      </xsc:Argument>
+    </TypeArguments>
+    <Headers>
+      <Src Name="HeaderadcTE6JVU2WKNDPVBW7ACNR2QBONM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcTE6JVU2WKNDPVBW7ACNR2QBONM"/>
+    </Bodies>
+    <MethodGroup Id="cmg2HID5BRBYFEYPNKXCEHBMTR2GI" Name="Root"/>
+    <PropertyGroup Id="cpg4E2PAG3JOJG7FLT5CVGFUZUGDA" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthAI7HY3PJSZEONNEIPNGEDK4PNE" Name="afterChangeReadOnly" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="afterChangeReadOnly()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthF6UYKCYZ75E5XEWMYKF3ETUBUQ" Name="applyEditMask" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="applyEditMask(Lorg.radixware.wps.rwt.InputBox;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="inputBox" Id="mprSI3DTSCO5VDXRA5YMK7D2LSEA4">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.InputBox"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthYCS2WO73ANBVZAK6AGVAVAZXJQ" Name="calcFocusedText" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="calcFocusedText(TT;TV;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="value" Id="mprLX35JSUUONBMNN5BQYTHNCQ7BQ">
+            <Type TypeId="400" extStr="T" IsArgumentType="true"/>
+          </Parameter>
+          <Parameter Name="editMask" Id="mprJ3YQ43RXMJBNJLH45M2E6DW73M">
+            <Type TypeId="400" extStr="V" IsArgumentType="true"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthSYIL3PQ7SBCRZAH66KR5HCXB6Q" Name="calcValidationResult" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="calcValidationResult(TT;)Lorg.radixware.kernel.common.client.meta.mask.validators.ValidationResult;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="value" Id="mprVAQ2OQ4DZRDCFIXNTD4NFRQNS4">
+            <Type TypeId="400" extStr="T" IsArgumentType="true"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.validators.ValidationResult"/>
+      </Method>
+      <Method Id="mthFQDY77UEGZDWJOIN4DHY6YACCE" Name="createDisplayController" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="createDisplayController()Lorg.radixware.wps.rwt.InputBox.DisplayController&lt;TT;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.rwt.InputBox.DisplayController">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="T" IsArgumentType="true"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthDINZAOCUG5FQDN4U7YWIF3HUNE" Name="createInputFormat" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="createInputFormat()Lorg.radixware.wps.rwt.InputFormat;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.rwt.InputFormat"/>
+      </Method>
+      <Method Id="mthLPSA6KE6YVG2VPGHJ65WDOULIU" Name="createLabel" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="createLabel()Lorg.radixware.wps.rwt.Label;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.rwt.Label"/>
+      </Method>
+      <Method Id="mthX5PW4U4A3REFFDSYMYU3TJBCRY" Name="createValEditor" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="createValEditor()Lorg.radixware.wps.views.editors.valeditors.IValEditor&lt;TT;TV;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.views.editors.valeditors.IValEditor">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="T" IsArgumentType="true"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="V" IsArgumentType="true"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthVZQ3FQFP7VBBVHJ7V6BATUGPBE" Name="createValueController" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="createValueController()Lorg.radixware.wps.rwt.InputBox.ValueController&lt;TT;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.rwt.InputBox.ValueController">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="T" IsArgumentType="true"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthQ2OZID6KZZCL3FB2N2BTFW6XEQ" Name="getController" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getController()Lorg.radixware.wps.views.editors.valeditors.ValEditorController&lt;TT;TV;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.views.editors.valeditors.ValEditorController">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="T" IsArgumentType="true"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="V" IsArgumentType="true"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthI66RZUTGYBG5RPJIBRJSDCPZEI" Name="getInputBox" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getInputBox()Lorg.radixware.wps.rwt.InputBox&lt;TT;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.rwt.InputBox">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="T" IsArgumentType="true"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthBF7BKSUTHZGZRHWA6V6WLIV6FQ" Name="getLabel" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getLabel()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthWVZSXQO5Z5DV3HTG5NWFXFN6JI" Name="getLabelVisible" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getLabelVisible()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthXKBS4HS5IBFJFDWNJCNCGGTTQQ" Name="getValueController" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getValueController()Lorg.radixware.wps.rwt.InputBox.ValueController&lt;TT;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.rwt.InputBox.ValueController">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="T" IsArgumentType="true"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthEO5MMLRXNNAYLFMY3PSYWOW33E" Name="isLabelVisible" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isLabelVisible()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth5P67Y7TENJEO5AV3VTSHJYAJVM" Name="setEditMask" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setEditMask(TV;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprVSIOGEUBOZGCPJH5N6R4DTSG4E">
+            <Type TypeId="400" extStr="V" IsArgumentType="true"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthBQX7P6UCR5A5RIR3KGACTD5JMA" Name="setLabel" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setLabel(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprQADSGYDV3BFBHCWSWOGGSIIVLM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthCMSQ63SPD5CTXBLY6QDSLWJZFY" Name="setLabelVisible" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setLabelVisible(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isVisible" Id="mprJYCMMOIQLZGCJCCPONOF5AD6VU">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthFQS6T3ZTLVHLVKR564R5QRFD6E" Name="setMandatory" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setMandatory(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isMandatory" Id="mprBKMHAOHSSBB3JFHPWY6PV52DIU">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthJDWBZEPRHRF6ZAICHD4VUMMKWE" Name="setReadOnly" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setReadOnly(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isReadonly" Id="mprQT3KRYOGPFELRHYEVPFF2BWZOE">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth3VKTDF2VYVEITIZ3EFNHAJJMCA" Name="valueEdited" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="valueEdited(TT;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="value" Id="mpr6ZHW5VD5GBGBVKDK2OXBR2IC6A">
+            <Type TypeId="400" extStr="T" IsArgumentType="true"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthTLZ26MEXING5FPUFYIQTL3X4BE" Name="calcInitialText" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="calcInitialText(TT;TV;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="value" Id="mpr2XYSYE6IGVGR7AYQQ6AQJB23SI">
+            <Type TypeId="400" extStr="T" IsArgumentType="true"/>
+          </Parameter>
+          <Parameter Name="editMask" Id="mprHF2BLPE7UJA6FPWZKXJ3GV4N4I">
+            <Type TypeId="400" extStr="V" IsArgumentType="true"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

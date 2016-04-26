@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="spcRPYB2QP54FDTZC33UEIWPDT23I" Name="GetUserGroupHasNewRoles" Type="10">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="true" PublishedName="org.radixware.kernel.server.types.SqlClass"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderspcRPYB2QP54FDTZC33UEIWPDT23I"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyspcRPYB2QP54FDTZC33UEIWPDT23I"/>
+    </Bodies>
+    <MethodGroup Id="cmgWMOOEJSBLNAHDFXLCUBGCHEEA4" Name="Root"/>
+    <PropertyGroup Id="cpgQ75OQLVFIRDCZDX6HWYVKXM7TQ" Name="Root"/>
+    <Properties>
+      <Property Id="prmUGQOEG27SBE35N2C3YY5LPRMIY" Name="hasNewRoles" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prmVQ7IC4FO7ZACBMY6OISQJTONPM" Name="groupName" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="execute" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="groupName" Id="mprVQ7IC4FO7ZACBMY6OISQJTONPM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="spcRPYB2QP54FDTZC33UEIWPDT23I"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>declare
+hasNewRoles integer;
+begin
+    begin
+        select 1 into hasNewRoles from dual where exists (select </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblFJAEQT3TGLNRDHRZABQAQH3XQ4" PropId="colC3327E6VZNB3RBSQSYPLWSO5KI" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblFJAEQT3TGLNRDHRZABQAQH3XQ4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblFJAEQT3TGLNRDHRZABQAQH3XQ4" PropId="colC3327E6VZNB3RBSQSYPLWSO5KI" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> =1 and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblFJAEQT3TGLNRDHRZABQAQH3XQ4" PropId="colXDHHLFZRY3NBDGMCABQAQH3XQ4" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> =  </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmVQ7IC4FO7ZACBMY6OISQJTONPM"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> and ROWNUM&lt;=1);
+    exception 
+        when others then
+            hasNewRoles := 0;
+    end; 
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmUGQOEG27SBE35N2C3YY5LPRMIY" Direction="1"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> := hasNewRoles;
+end;</xsc:Sql>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblFJAEQT3TGLNRDHRZABQAQH3XQ4"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="400" extStr="org.radixware.kernel.server.types.SqlClass"/>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,748 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://schemas.radixware.org/xscml.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:utils="http://schemas.radixware.org/utils.xsd" xmlns:types="http://schemas.radixware.org/types.xsd" targetNamespace="http://schemas.radixware.org/xscml.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified"
+           xmlns:jxb="http://java.sun.com/xml/ns/jaxb" jxb:version="1.0"
+           xmlns:this="http://schemas.radixware.org/xscml.xsd">    
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/utils.xsd" schemaLocation="utils.xsd"/>
+    <!--                   Enumerations    -->
+    <xs:simpleType name="SqmlPidTranslationMode">
+        <xs:annotation>
+            <xs:documentation>SQML translator can replace PID by PidStr, Coma-separeted primary key properties in parenthesis,  Coma-separeted secondary key properties in parenthesis</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="AsStr"/>
+            <xs:enumeration value="PrimaryKeyProps"/>
+            <xs:enumeration value="SecondaryKeyProps"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:annotation>
+        <xs:documentation>------ Types -------</xs:documentation>
+    </xs:annotation>
+    <xs:complexType name="JmlType">
+        <xs:sequence>
+            <xs:element name="Item" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:choice>
+                            <xs:element name="Java" type="xs:string"/>
+                            <xs:element name="Literal">
+                                <xs:complexType>
+                                    <xs:attribute name="Literal" type="xs:string"/>
+                                    <xs:attribute name="Title" type="xs:string"/>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="IdReference">
+                                <xs:complexType>
+                                    <xs:attribute name="Path" use="required">
+                                        <xs:simpleType>
+                                            <xs:list itemType="types:Id"/>
+                                        </xs:simpleType>
+                                    </xs:attribute>
+                                    <xs:attribute name="Invoke" type="xs:boolean"/>
+                                    <xs:attribute name="Soft" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="Mode" type="xs:int" use="optional" default="0"/>
+                                    <xs:attribute name="dbName" type="xs:boolean"/>
+                                    <xs:attribute name="extStr" type="xs:string"/>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="LocalizedString">
+                                <xs:complexType>
+                                    <xs:attribute name="OwnerId" type="xs:string"/>
+                                    <xs:attribute name="StringId" type="xs:string"/>
+                                    <xs:attribute name="Type" type="xs:int" use="optional" default="0"/>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="EventCode">
+                                <xs:complexType>
+                                    <xs:attribute name="OwnerId" type="xs:string"/>
+                                    <xs:attribute name="StringId" type="xs:string"/>
+                                    <xs:attribute name="Type" type="xs:int" use="optional" default="0"/>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="DbEntity">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="PidAsStr" type="xs:string"/>
+                                    </xs:sequence>
+                                    <xs:attribute name="EntityId" type="types:Id"/>
+                                    <xs:attribute name="CheckExistance" type="xs:boolean"/>
+                                    <xs:attribute name="IsUFOwner" type="xs:boolean"/>
+                                    <xs:attribute name="Title" type="xs:string"/>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="TypeDeclaration" type="TypeDeclaration"/>
+                            <xs:element name="Task" type="TaskTagType"/>
+                            <xs:element name="Pin">
+                                <xs:complexType>
+                                    <xs:attribute name="Id" type="xs:string" use="required"/>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="Data">
+                                <xs:complexType>
+                                    <xs:attribute name="Id" type="types:Id" use="required"/>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="ReadLicense">
+                                <xs:complexType>
+                                    <xs:attribute name="Id" type="xs:integer" use="required"/>
+                                    <xs:attribute name="License" type="xs:string" use="required"/>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="CheckLicense">
+                                <xs:complexType>
+                                    <xs:attribute name="Id" type="xs:integer" use="required"/>
+                                    <xs:attribute name="License" type="xs:string" use="required"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:choice>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="Description" type="xs:string" use="optional" default=""/>
+    </xs:complexType>
+    <xs:complexType name="TypeArguments">
+        <xs:sequence>
+            <xs:element name="Argument" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Type" type="TypeDeclaration"/>
+                    </xs:sequence>
+                    <xs:attribute name="DerivationRule" use="optional">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="super"/>
+                                <xs:enumeration value="extends"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:attribute>
+                    <xs:attribute name="Alias" type="xs:string"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TypeDeclaration">
+        <xs:sequence>
+            <xs:element name="GenericArguments" type="TypeArguments" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="TypeId" use="required">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EValType</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:IntEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Path">
+            <xs:simpleType>
+                <xs:list itemType="types:Id"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="extStr" type="xs:string"/>
+        <xs:attribute name="Dimension" type="xs:int" use="optional" default="0"/>
+        <xs:attribute name="IsArgumentType" type="xs:boolean" use="optional" default="false"/>
+    </xs:complexType>
+    <xs:complexType name="Sqml">
+        <xs:annotation>
+            <xs:documentation>SQL markup language </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Item" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:choice>
+                        <xs:element name="Sql" type="xs:string"/>
+                        <xs:element name="CalcField">
+                            <xs:complexType>
+                                <xs:attribute name="Name" type="xs:string" use="required"/>
+                                <xs:attribute name="ValType" use="required">
+                                    <xs:simpleType>
+                                        <xs:annotation>
+                                            <xs:documentation>Enum EValType</xs:documentation>
+                                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                <types:class>org.radixware.kernel.common.enums.EValType</types:class>
+                                            </xs:appinfo>
+                                        </xs:annotation>
+                                        <xs:restriction base="types:IntEnum"/>
+                                    </xs:simpleType>
+                                </xs:attribute>
+                                <xs:attribute name="Length" type="xs:long" use="optional"/>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="ConstValue">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Sql" type="xs:string" minOccurs="0"/>
+                                </xs:sequence>
+                                <xs:attribute name="EnumId" type="types:Id" use="required"/>
+                                <xs:attribute name="ItemId" type="types:Id" use="required"/>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="TargetDbPreprocessor">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Option" minOccurs="0" maxOccurs="unbounded">
+                                        <xs:complexType>
+                                            <xs:attribute name="Name" type="types:Str" use="required"/>
+                                            <xs:attribute name="Value">
+                                                <xs:simpleType>
+                                                    <xs:annotation>
+                                                        <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                            <types:class>org.radixware.kernel.common.enums.EOptionMode</types:class>
+                                                        </xs:appinfo>
+                                                    </xs:annotation>
+                                                    <xs:restriction base="types:StrEnum"/>
+                                                </xs:simpleType>
+                                            </xs:attribute>
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:sequence>
+                                <xs:attribute name="DbTypeName" type="types:Str" use="required"/>
+                                <xs:attribute name="DbVersion" type="types:Str" use="optional"/>
+                                <xs:attribute name="CheckVersion" type="types:Bool" use="required"/>
+                                <xs:attribute name="VersionOperator" use="optional">
+                                    <xs:simpleType>
+                                        <xs:annotation>
+                                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                <types:class>org.radixware.kernel.common.enums.EComparisonOperator</types:class>
+                                            </xs:appinfo>
+                                        </xs:annotation>
+                                        <xs:restriction base="types:StrEnum"/>
+                                    </xs:simpleType>
+                                </xs:attribute>
+                                <xs:attribute name="CheckOptions" type="types:Bool" use="required"/>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="DbFuncCall">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Sql" type="xs:string" minOccurs="0"/>
+                                    <xs:element name="Params" minOccurs="0">
+                                        <xs:complexType>
+                                            <xs:sequence>
+                                                <xs:element name="Param" minOccurs="0" maxOccurs="unbounded">
+                                                    <xs:complexType>
+                                                        <xs:sequence>
+                                                            <xs:element name="Value" type="xs:string" minOccurs="0"/>
+                                                        </xs:sequence>
+                                                        <xs:attribute name="ParamId" type="types:Id" use="required"/>
+                                                    </xs:complexType>
+                                                </xs:element>
+                                            </xs:sequence>
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:sequence>
+                                <xs:attribute name="FuncId" type="types:Id" use="required"/>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="DbName">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Sql" type="xs:string" minOccurs="0"/>
+                                </xs:sequence>
+                                <xs:attribute name="Path" use="required">
+                                    <xs:simpleType>
+                                        <xs:list itemType="types:Id"/>
+                                    </xs:simpleType>
+                                </xs:attribute>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="IfParam">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Value" type="xs:string" minOccurs="0"/>
+                                </xs:sequence>
+                                <xs:attribute name="ParamId" type="types:Id" use="required"/>
+                                <xs:attribute name="Operation" use="required">
+                                    <xs:simpleType>
+                                        <xs:annotation>
+                                            <xs:documentation>Enum EIfParamTagOperator</xs:documentation>
+                                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                <types:class>org.radixware.kernel.common.enums.EIfParamTagOperator</types:class>
+                                            </xs:appinfo>
+                                        </xs:annotation>
+                                        <xs:restriction base="types:StrEnum"/>
+                                    </xs:simpleType>
+                                </xs:attribute>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="ElseIf">
+                            <xs:complexType/>
+                        </xs:element>
+                        <xs:element name="EndIf">
+                            <xs:complexType/>
+                        </xs:element>
+                        <xs:element name="Id">
+                            <xs:complexType>
+                                <xs:attribute name="Path" use="required">
+                                    <xs:simpleType>
+                                        <xs:list itemType="types:Id"/>
+                                    </xs:simpleType>
+                                </xs:attribute>
+                                <xs:attribute name="Soft" use="optional" default="false" type="xs:boolean"/>
+                                    
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="IndexDbName">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Sql" type="xs:string" minOccurs="0"/>
+                                </xs:sequence>
+                                <xs:attribute name="TableId" type="types:Id" use="required"/>
+                                <xs:attribute name="IndexId" type="types:Id" use="optional"/>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="Join">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="ChildTableAlias" type="xs:string" minOccurs="0"/>
+                                    <xs:element name="ParentTableAlias" type="xs:string" minOccurs="0"/>
+                                </xs:sequence>
+                                <xs:attribute name="Type" use="required">
+                                    <xs:annotation>
+                                        <xs:documentation>see enumeration</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:simpleType>
+                                        <xs:restriction base="xs:string">
+                                            <xs:enumeration value="LEFT"/>
+                                            <xs:enumeration value="RIGHT"/>
+                                            <xs:enumeration value="INNER"/>
+                                            <xs:enumeration value="FULL"/>
+                                        </xs:restriction>
+                                    </xs:simpleType>
+                                </xs:attribute>
+                                <xs:attribute name="ReferenceId" type="types:Id" use="required"/>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="OracleHint">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Items">
+                                        <xs:complexType>
+                                            <xs:sequence>
+                                                <xs:element name="Item" maxOccurs="unbounded">
+                                                    <xs:complexType>
+                                                        <xs:annotation>
+                                                            <xs:appinfo>
+                                                                <jxb:class name="HintItem"/>
+                                                            </xs:appinfo>
+                                                        </xs:annotation>
+                                                        <xs:choice>
+                                                            <xs:element name="Index">
+                                                                <xs:complexType>
+                                                                    <xs:sequence>
+                                                                        <xs:element name="TableAlias" type="xs:string" minOccurs="0">
+                                                                            <xs:annotation>
+                                                                                <xs:documentation>not used if owner=THIS</xs:documentation>
+                                                                            </xs:annotation>
+                                                                        </xs:element>
+                                                                    </xs:sequence>
+                                                                    <xs:attribute name="TableId" type="types:Id" use="required"/>
+                                                                    <xs:attribute name="IndexId" type="types:Id" use="optional">
+                                                                        <xs:annotation>
+                                                                            <xs:documentation>not defined - primary key</xs:documentation>
+                                                                        </xs:annotation>
+                                                                    </xs:attribute>
+                                                                    <xs:attribute name="Owner" use="optional" default="TABLE">
+                                                                        <xs:simpleType>
+                                                                            <xs:restriction base="xs:string">
+                                                                                <xs:enumeration value="THIS"/>
+                                                                                <xs:enumeration value="TABLE"/>
+                                                                            </xs:restriction>
+                                                                        </xs:simpleType>
+                                                                    </xs:attribute>
+                                                                    <xs:attribute name="Order" use="required">
+                                                                        <xs:simpleType>
+                                                                            <xs:annotation>
+                                                                                <xs:documentation>Enum EOrder</xs:documentation>
+                                                                                <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                                                    <types:class>org.radixware.kernel.common.enums.EOrder</types:class>
+                                                                                </xs:appinfo>
+                                                                            </xs:annotation>
+                                                                            <xs:restriction base="types:StrEnum"/>
+                                                                        </xs:simpleType>
+                                                                    </xs:attribute>
+                                                                </xs:complexType>
+                                                            </xs:element>
+                                                            <xs:element name="FirstRow">
+                                                                <xs:complexType>
+                                                                    <xs:attribute name="RowCount" type="xs:long" use="optional"/>
+                                                                </xs:complexType>
+                                                            </xs:element>
+                                                            <xs:element name="AllRows">
+                                                                <xs:complexType/>
+                                                            </xs:element>
+                                                            <xs:element name="Custom" type="xs:string"/>
+                                                        </xs:choice>
+                                                    </xs:complexType>
+                                                </xs:element>
+                                            </xs:sequence>
+                                        </xs:complexType>
+                                    </xs:element>
+                                    <xs:element name="Sql" type="xs:string" minOccurs="0"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="Parameter">
+                            <xs:annotation>
+                                <xs:documentation>Parameter tag  is replaced by parameter value </xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:attribute name="ParamId" type="types:Id" use="required"/>
+                                <xs:attribute name="Literal" type="xs:boolean" use="optional"/>
+                                <xs:attribute name="Direction" use="optional">
+                                    <xs:simpleType>
+                                        <xs:annotation>
+                                            <xs:documentation>Enum EParamDirection</xs:documentation>
+                                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                <types:class>org.radixware.kernel.common.enums.EParamDirection</types:class>
+                                            </xs:appinfo>
+                                        </xs:annotation>
+                                        <xs:restriction base="types:IntEnum"/>
+                                    </xs:simpleType>
+                                </xs:attribute>
+                                <xs:attribute name="PropId" type="types:Id" use="optional">
+                                    <xs:annotation>
+                                        <xs:documentation>for parameter by entity class</xs:documentation>
+                                    </xs:annotation>
+                                </xs:attribute>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="EntityRefParameter">
+                            <xs:annotation>
+                                <xs:documentation>Parameter tag  is replaced by parameter value </xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:attribute name="ParamId" type="types:Id" use="required"/>
+                                <xs:attribute name="ReferencedTableId" type="types:Id" use="required"/>
+                                <xs:attribute name="PidTranslationMode" default="PrimaryKeyProps">
+                                    <xs:simpleType>
+                                        <xs:annotation>
+                                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                <types:class>org.radixware.kernel.common.enums.EPidTranslationMode</types:class>
+                                            </xs:appinfo>
+                                        </xs:annotation>
+                                        <xs:restriction base="types:StrEnum"/>
+                                    </xs:simpleType>
+                                </xs:attribute>
+                                <xs:attribute name="PidTranslationSecondaryKeyId" type="types:Id">
+                                    <xs:annotation>
+                                        <xs:documentation>Mandatory if PidTranslationMode = SecondaryKeyProps. Is not used in other modes.</xs:documentation>
+                                    </xs:annotation>
+                                </xs:attribute>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="EntityRefValue">
+                            <xs:annotation>
+                                <xs:documentation>Tag  is replaced by ref value  according translation options</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="DisplayValue" type="xs:string"/>
+                                </xs:sequence>
+                                <xs:attribute name="ReferencedTableId" type="types:Id" use="required"/>
+                                <xs:attribute name="ReferencedObjectPidAsStr" type="xs:string" use="required">
+                                    <xs:annotation>
+                                        <xs:documentation>Referenced object's PK as PID string (that does not include entityId) </xs:documentation>
+                                    </xs:annotation>
+                                </xs:attribute>
+                                <xs:attribute name="PidTranslationMode" default="PrimaryKeyProps">
+                                    <xs:simpleType>
+                                        <xs:annotation>
+                                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                <types:class>org.radixware.kernel.common.enums.EPidTranslationMode</types:class>
+                                            </xs:appinfo>
+                                        </xs:annotation>
+                                        <xs:restriction base="types:StrEnum"/>
+                                    </xs:simpleType>
+                                </xs:attribute>
+                                <xs:attribute name="PidTranslationSecondaryKeyId" type="types:Id">
+                                    <xs:annotation>
+                                        <xs:documentation>Mandatory if PidTranslationMode = SecondaryKeyProps. Is not used in other modes.</xs:documentation>
+                                    </xs:annotation>
+                                </xs:attribute>
+                                <xs:attribute name="Literal" type="xs:boolean" use="optional" default="false"/>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="ParentCondition">
+                            <xs:annotation>
+                                <xs:documentation>For user-defined filter only</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="ParentTitle" type="xs:string" minOccurs="0"/>
+                                </xs:sequence>
+                                <xs:attribute name="TableId" type="types:Id" use="required"/>
+                                <xs:attribute name="PropId" type="types:Id" use="required"/>
+                                <xs:attribute name="Operator" use="required">
+                                    <xs:simpleType>
+                                        <xs:restriction base="xs:string">
+                                            <xs:enumeration value="EQUAL"/>
+                                            <xs:enumeration value="NOT_EQUAL"/>
+                                            <xs:enumeration value="IS_NULL"/>
+                                            <xs:enumeration value="IS_NOT_NULL"/>
+                                        </xs:restriction>
+                                    </xs:simpleType>
+                                </xs:attribute>
+                                <xs:attribute name="ParentPid" type="xs:string"/>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="ParentRefPropSqlName">
+                            <xs:annotation>
+                                <xs:documentation>Name of parent/grandfather column</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="ReferenceId" type="types:Id" maxOccurs="unbounded"/>
+                                </xs:sequence>
+                                <xs:attribute name="PropId" type="types:Id" use="required"/>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="PropSqlName">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="TableAlias" type="xs:string" minOccurs="0"/>
+                                    <xs:element name="PropAlias" type="xs:string" minOccurs="0"/>
+                                    <xs:element name="Sql" type="xs:string" minOccurs="0"/>
+                                </xs:sequence>
+                                <xs:attribute name="SuppressedWarnings" type="utils:SuppressedWarnings"/>
+                                <xs:attribute name="TableId" type="types:Id" use="required"/>
+                                <xs:attribute name="PropId" type="types:Id" use="required"/>
+                                <xs:attribute name="Owner" use="required">
+                                    <xs:simpleType>
+                                        <xs:restriction base="xs:string">
+                                            <xs:enumeration value="CHILD"/>
+                                            <xs:enumeration value="PARENT"/>
+                                            <xs:enumeration value="THIS"/>
+                                            <xs:enumeration value="TABLE"/>
+                                            <xs:enumeration value="NONE"/>
+                                        </xs:restriction>
+                                    </xs:simpleType>
+                                </xs:attribute>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="SequenceDbName">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Sql" type="xs:string" minOccurs="0"/>
+                                </xs:sequence>
+                                <xs:attribute name="SequenceId" type="types:Id" use="required"/>
+                                <xs:attribute name="Postfix" use="optional" default="NONE">
+                                    <xs:simpleType>
+                                        <xs:restriction base="xs:string">
+                                            <xs:enumeration value="CUR_VAL"/>
+                                            <xs:enumeration value="NEXT_VAL"/>
+                                            <xs:enumeration value="NONE"/>
+                                        </xs:restriction>
+                                    </xs:simpleType>
+                                </xs:attribute>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="TableSqlName">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="TableAlias" type="xs:string" minOccurs="0"/>
+                                    <xs:element name="Sql" type="xs:string" minOccurs="0"/>
+                                </xs:sequence>
+                                <xs:attribute name="TableId" type="types:Id" use="required"/>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="Task" type="TaskTagType"/>
+                        <xs:element name="ThisTableId"/>
+                        <xs:element name="ThisTableSqlName">
+                            <xs:annotation>
+                                <xs:documentation>For substitution of alias</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="ThisTableRef">
+                            <xs:complexType>
+                                <xs:attribute name="PidTranslationMode" default="PrimaryKeyProps">
+                                    <xs:simpleType>
+                                        <xs:annotation>
+                                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                <types:class>org.radixware.kernel.common.enums.EPidTranslationMode</types:class>
+                                            </xs:appinfo>
+                                        </xs:annotation>
+                                        <xs:restriction base="types:StrEnum"/>
+                                    </xs:simpleType>
+                                </xs:attribute>
+                                <xs:attribute name="PidTranslationSecondaryKeyId" type="types:Id">
+                                    <xs:annotation>
+                                        <xs:documentation>Mandatory if PidTranslationMode = SecondaryKeyProps. Is not used in other modes.</xs:documentation>
+                                    </xs:annotation>
+                                </xs:attribute>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="TypifiedValue">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Value" type="xs:string" minOccurs="0"/>
+                                    <xs:element name="DisplayValue" type="xs:string" minOccurs="0"/>
+                                </xs:sequence>
+                                <xs:attribute name="TableId" type="types:Id" use="required"/>
+                                <xs:attribute name="PropId" type="types:Id" use="required"/>
+                                <xs:attribute name="Literal" type="xs:boolean" use="optional" default="false"/>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="TypifiedCalcField">
+                            <xs:complexType>
+                                <xs:attribute name="Name" type="xs:string" use="required"/>
+                                <xs:attribute name="TableId" type="types:Id" use="required"/>
+                                <xs:attribute name="PropId" type="types:Id" use="required"/>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="XPath">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Item" maxOccurs="unbounded">
+                                        <xs:complexType>
+                                            <xs:annotation>
+                                                <xs:appinfo>
+                                                    <jxb:class name="XPathItem"/>
+                                                </xs:appinfo>
+                                            </xs:annotation>
+                                            <xs:sequence>
+                                                <xs:element name="Condition" type="xs:string" minOccurs="0"/>
+                                            </xs:sequence>
+                                            <xs:attribute name="Name" type="xs:string" use="required"/>
+                                            <xs:attribute name="SchemaId" type="types:Id" use="required"/>
+                                            <xs:attribute name="IsAttribute" type="xs:boolean" use="optional" default="false"/>
+                                            <xs:attribute name="Index" type="xs:long" use="optional"/>
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="Data">
+                            <xs:complexType>
+                                <xs:attribute name="Id" type="types:Id" use="required"/>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="EventCode">
+                            <xs:complexType>
+                                <xs:attribute name="OwnerId" type="types:Id"/>
+                                <xs:attribute name="StringId" type="types:Id"/>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:choice>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:annotation>
+        <xs:documentation>------ Elements -------</xs:documentation>
+    </xs:annotation>
+    <xs:element name="Jml" type="JmlType">
+        <xs:annotation>
+            <xs:documentation>Java markup language</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Sqml" type="Sqml">
+        <xs:annotation>
+            <xs:documentation>SQL markup language </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:simpleType name="NewIdType0">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+    <xs:complexType name="TaskTagType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="Type" use="optional">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:documentation>Enum ETaskTagType</xs:documentation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.ETaskTagType</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:StrEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="Priority" use="optional">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:documentation>Enum ETaskTagPriority</xs:documentation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.ETaskTagPriority</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                         <xs:restriction base="types:StrEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="Assignee" type="xs:string" use="optional"/>
+                <xs:attribute name="CreateDate" type="xs:string" use="optional"/>
+                <xs:attribute name="ControlDate" type="xs:string" use="optional"/>
+                <xs:attribute name="DueDate" type="xs:string" use="optional"/>
+                <xs:attribute name="Behavior" use="optional">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:documentation>Enum ETaskTagBehavior</xs:documentation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.ETaskTagBehavior</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:StrEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:element name="TypeDeclaration" type="this:TypeDeclaration"/>
+    <xs:complexType name="JmlParameterDeclaration">
+        <xs:annotation>
+            <xs:documentation> method's parameter</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Type" type="this:TypeDeclaration"/>
+            <xs:element name="Description" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute name="Name" type="xs:string" use="required"/>
+        <xs:attribute name="Id" type="types:Id" use="required"/>
+        <xs:attribute name="Variable" type="xs:boolean" use="optional"/>
+        <xs:attribute name="DescriptionId" type="types:Id" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="JmlFuncProfile">        
+        <xs:sequence>
+            <xs:element name="Parameters" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Parameter" type="this:JmlParameterDeclaration" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="ReturnType" minOccurs="0">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="this:TypeDeclaration">
+                            <xs:sequence>
+                                <xs:element name="Description" type="xs:string"/>
+                            </xs:sequence>
+                            <xs:attribute name="DescriptionId" type="types:Id" use="optional"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="ThrownExceptions" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Exception" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:complexContent>
+                                    <xs:extension base="this:TypeDeclaration">
+                                        <xs:sequence>
+                                            <xs:element name="Description" type="xs:string"/>
+                                        </xs:sequence>
+                                        <xs:attribute name="DescriptionId" type="types:Id" use="optional"/>
+                                    </xs:extension>
+                                </xs:complexContent>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>                                                            
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="MethodName" type="xs:string" use="required"/>        
+    </xs:complexType>
+</xs:schema>

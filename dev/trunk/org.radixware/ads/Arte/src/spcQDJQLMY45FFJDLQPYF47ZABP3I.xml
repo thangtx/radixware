@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="spcQDJQLMY45FFJDLQPYF47ZABP3I" Name="ReleaseSessionLockProc" Type="10">
+    <AccessRules>
+      <Transparence Extendable="true" PublishedName="org.radixware.kernel.server.types.SqlClass"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderspcQDJQLMY45FFJDLQPYF47ZABP3I"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyspcQDJQLMY45FFJDLQPYF47ZABP3I"/>
+    </Bodies>
+    <MethodGroup Id="cmgOHFJRZFRYNDNLPGBNRZPDXXTHU" Name="Root"/>
+    <PropertyGroup Id="cpg6ZL5DYJV4JDADM2V3QPLBGF6IM" Name="Root"/>
+    <Properties>
+      <Property Id="prmLWWHQP7N4NC53IPRUVZFXGS6YQ" Name="pTableId" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmC66WW4OPWZHQTIMODODHE46KZE" Name="pPid" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prm7EG3WM676ZBONIHF524PPZ4MGM" Name="oResult" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="execute" Nature="15" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="pTableId" Id="mprLWWHQP7N4NC53IPRUVZFXGS6YQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="pPid" Id="mprC66WW4OPWZHQTIMODODHE46KZE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="spcQDJQLMY45FFJDLQPYF47ZABP3I"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>declare
+begin
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prm7EG3WM676ZBONIHF524PPZ4MGM" Direction="1"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> := </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:DbFuncCall FuncId="dfnKRKTU6RGSNBYNES2AOVZKBZLJA"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>(</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:DbFuncCall FuncId="dfnEXDZCJUTVZAZXNGA73DDGECZAQ"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>(</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmLWWHQP7N4NC53IPRUVZFXGS6YQ"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmC66WW4OPWZHQTIMODODHE46KZE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>));
+end</xsc:Sql>
+        </xsc:Item>
+      </Source>
+    </Sql>
+    <Extends TypeId="400" extStr="org.radixware.kernel.server.types.SqlClass"/>
+  </AdsClassDefinition>
+</AdsDefinition>

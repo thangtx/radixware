@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdEPL6ACAQ3FHRDHMSXC5WGRNJ7Y" Name="SelectorAddonsInfoXsd" TargetNamespace="http://schemas.radixware.org/saddonsinfo.xsd" Environment="common"><ads:AccessRules IsPublished="false"/><xs:schema targetNamespace="http://schemas.radixware.org/saddonsinfo.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:t="http://schemas.radixware.org/types.xsd" xmlns:this="http://schemas.radixware.org/saddonsinfo.xsd" xmlns:xscml="http://schemas.radixware.org/xscml.xsd">
+  <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+  <xs:import namespace="http://schemas.radixware.org/xscml.xsd" schemaLocation="xscml.xsd"/>
+  <xs:complexType name="FilterInfo">
+    <xs:attribute name="Id" type="t:Id" use="required"/>
+    <xs:attribute name="ownerClassId" type="t:Id" use="required"/>
+    <xs:attribute name="tableId" type="t:Id" use="required"/>
+    <xs:attribute name="Name" type="t:Str" use="required"/>
+    <xs:attribute name="FullName" type="t:Str" use="required"/>
+    <xs:attribute name="ownerClassName" type="t:Str" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="SelectorPresentationInfo">
+    <xs:attribute name="Id" type="t:Id" use="required"/>
+    <xs:attribute name="ownerClassId" type="t:Id" use="required"/>
+    <xs:attribute name="tableId" type="t:Id" use="required"/>
+    <xs:attribute name="Name" type="t:Str" use="required"/>
+    <xs:attribute name="FullName" type="t:Str" use="required"/>
+    <xs:attribute name="ownerClassName" type="t:Str" use="required"/>
+  </xs:complexType>
+  <xs:element name="FiltersList">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="FilterInfo" type="this:FilterInfo" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SelectorPresentationsList">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="SelectorPresentationInfo" type="this:SelectorPresentationInfo" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

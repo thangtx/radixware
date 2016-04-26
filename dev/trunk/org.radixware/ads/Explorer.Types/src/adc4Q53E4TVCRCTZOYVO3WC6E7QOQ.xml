@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc4Q53E4TVCRCTZOYVO3WC6E7QOQ" Name="RequestHandle" Type="3" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.eas.RequestHandle"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcWWDZB3B3ABDJBDLUVGY44B73AA"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcBL6YOSMLUVGNNITH4IMKFKDFPQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgWAUNK2RHEVEPDF3AQVMODFY4RQ" Name="Root"/>
+    <PropertyGroup Id="cpgHR47RJJ2TVDX5MTLCVGZQ25GW4" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth5CIWSIPYG5CYNLQIEVSUPSRHBA" Name="getUserData" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getUserData()Ljava.lang.Object;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+      </Method>
+      <Method Id="mth263ACAMDNVEAXCQAQJ33ZJHYMM" Name="wasCancelled" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="wasCancelled()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthM7T7AMXI7NGHXEM73GRVDUAQUA" Name="setUserData" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setUserData(Ljava.lang.Object;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="userData" Id="mprTW3HBMQQ3RH5ZDRP5J2W36KQDM">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthYVSSQAGXJRFQBAIBVKDZ6Z42KM" Name="cancel" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="cancel()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthGWQ4Z3PQGJE6ZCDNYEBRGKJV3U" Name="getRequest" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getRequest()Lorg.apache.xmlbeans.XmlObject;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+      </Method>
+      <Method Id="mth7BSZC7THQJC2BNAMA2EPKPI2IE" Name="RequestHandle" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.apache.xmlbeans.XmlObject;Ljava.lang.Class&lt;+Lorg.apache.xmlbeans.XmlObject;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprH5ZTEOEITBG5VGPEMQEKSFDQPM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="request" Id="mpr6ZWGW74P6FDWJCG37IFRS5Y5JY">
+            <Type TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+          </Parameter>
+          <Parameter Name="responseClass" Id="mprE4QCXM3L6FB6DIBDPW33O6IVHU">
+            <Type TypeId="400" extStr="java.lang.Class">
+              <xsc:GenericArguments>
+                <xsc:Argument DerivationRule="extends" Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthVSQFQZE2AZAAXLB7NBYLHHXYAU" Name="hasListeners" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="hasListeners()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthSZGTRXPP3RDVVLKAHDZELRD6ZY" Name="isDone" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isDone()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthF62GYUKLONHK3FJ343ZC4BXOYA" Name="getExpectedResponseMessageClass" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getExpectedResponseMessageClass()Ljava.lang.Class&lt;+Lorg.apache.xmlbeans.XmlObject;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.lang.Class">
+          <xsc:GenericArguments>
+            <xsc:Argument DerivationRule="extends" Alias="?">
+              <xsc:Type TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthMEVWVHRGXBFN5B2Y7GFJYYMNBE" Name="addListener" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="addListener(Lorg.radixware.kernel.common.client.eas.IResponseListener;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="listener" Id="mprUT35PBZRSJAXTCQKGJRXQBE2OE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.eas.IResponseListener"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthQG2OLNXLEBDJNBNBJSADKVCACI" Name="inProgress" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="inProgress()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthMNQGEIWA6BF5LI5NGP4SOEWAHM" Name="getServiceClientException" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getServiceClientException()Lorg.radixware.kernel.common.exceptions.ServiceClientException;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+      </Method>
+      <Method Id="mthC6NN2EPQQVCLZB2K5M6ZGVRZGM" Name="isActive" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isActive()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth4J2LHX63VRDUPNWM656PKOSZ5M" Name="removeListener" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="removeListener(Lorg.radixware.kernel.common.client.eas.IResponseListener;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="listener" Id="mprASJ7ZUCVOJAFZPEVGCTKQUFO74">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.eas.IResponseListener"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth4XXAHLE4ANFTDNEJAAE6FXWJXE" Name="getResponse" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getResponse()Lorg.apache.xmlbeans.XmlObject;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+        </ThrownExceptions>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

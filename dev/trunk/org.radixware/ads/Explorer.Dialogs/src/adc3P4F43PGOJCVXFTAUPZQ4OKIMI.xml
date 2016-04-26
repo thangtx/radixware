@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc3P4F43PGOJCVXFTAUPZQ4OKIMI" Name="XmlEditorDialog" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.explorer.dialogs.XmlEditorDialog"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc47QPLNHNWVCYNJ2ZAXXJ7BCACI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcU5INN6XFOVFZNDY52POZKSFQRI"/>
+    </Bodies>
+    <MethodGroup Id="cmgUE4GFRJNS5AKZAUGHUGRWIGM6M" Name="Root"/>
+    <PropertyGroup Id="cpgPJAZPNBMFVCM3OO6QVPGTMZC7Q" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth5FLSF4WPI5HMLGO7XM7JWTTLHI" Name="create" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="create(Ljava.lang.Class&lt;*>;Lorg.radixware.kernel.common.types.Id;)Lorg.apache.xmlbeans.XmlObject;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="documentClass" Id="mprW4UKY6HFNZAVPFG6TFLMXRIHO4">
+            <Type TypeId="400" extStr="java.lang.Class">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?"/>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="id" Id="mprSCR2SDSG25F2ZECC3INCN53KX4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+      </Method>
+      <Method Id="mthUEYBJ6DQJJCX7IOTJ4XDVIY2VA" Name="edit" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="edit(Lorg.apache.xmlbeans.XmlObject;Lorg.radixware.kernel.common.types.Id;Z)Lorg.apache.xmlbeans.XmlObject;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="document" Id="mprHANENBWWFNDURJBHGYNKBWI4ZU">
+            <Type TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+          </Parameter>
+          <Parameter Name="schemaId" Id="mprABNSLWDCZZCKTHB3XB5VLROWQI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+          <Parameter Name="readonly" Id="mprICSUA6EJAZGEPEC7SON32CBSL4">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+      </Method>
+      <Method Id="mthG4VVAB5LDFBR7ADB3IFVHAAN3Q" Name="edit" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="edit(Lorg.apache.xmlbeans.XmlObject;Ljava.lang.String;Z)Lorg.apache.xmlbeans.XmlObject;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="document" Id="mpr2AFHLVPQ3FDLFIGWZQUGDR2POM">
+            <Type TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+          </Parameter>
+          <Parameter Name="schemaAsStr" Id="mprEEHWWFRQE5GFLETC7IOPREA2LI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="isReadonly" Id="mprW2VDA45XARAU3CBA77DHUXWS3Q">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+      </Method>
+      <Method Id="mth75QY7WZ6BNDY5FMLLFERJOXLJU" Name="edit" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="edit(Lorg.apache.xmlbeans.XmlObject;Z)Lorg.apache.xmlbeans.XmlObject;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="document" Id="mprLFERPH43C5CE5ETHJUQGN2WDWY">
+            <Type TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+          </Parameter>
+          <Parameter Name="isReadonly" Id="mprFAYEENWP4FHQ3OAQZOFRADY2MM">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+      </Method>
+      <Method Id="mthG7WDQXWNHNGNBEV7LRLLULHHXA" Name="XmlEditorDialog" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Lcom.trolltech.qt.gui.QWidget;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprOG7SUDC4H5F5FETN7QV57IWB3Q">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parentWidget" Id="mprAZX2DB6TBVGWRE3DYDKQDPFZBQ">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+          <Parameter Name="dialogTitle" Id="mprY2AZNY7RLFF6ZANCR5Y54K7HXM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

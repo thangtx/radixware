@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcVKXKNGIEEFFXLAXY7RYQ5DYDBQ" Name="DefaultDecoratorFactory" Type="3" Environment="explorer">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcVKXKNGIEEFFXLAXY7RYQ5DYDBQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcVKXKNGIEEFFXLAXY7RYQ5DYDBQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgZBFY64TV6FCA3E5PY3CBCKXDZI" Name="Root"/>
+    <PropertyGroup Id="cpgHYUJOIJ2HBD43PXHDZVHI4G4HA" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthXBDZXYIBJZELZFSVHOBVLHHGEI" Name="createDecorators" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprIIP3GZERPVFODJOLTZ347T72VQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.explorer.editors.monitoring.tree.MonitoringTreeItemDecorator"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>java.util.List&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicX3M3B334EJBLRBYSMCKN2U2YXY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> decorators = new java.util.ArrayList&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicX3M3B334EJBLRBYSMCKN2U2YXY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();
+decorators.add(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcSJ7ILMRGHFAGROIT2SE6EFMN74"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+decorators.add(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKMKOY5X7SFHSXE4KOLGYS7E2FQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+return decorators;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Implements>
+      <Interface TypeId="411" Path="aic2CBIKW6J2RANJD6CG2SCCG744A"/>
+    </Implements>
+  </AdsClassDefinition>
+</AdsDefinition>

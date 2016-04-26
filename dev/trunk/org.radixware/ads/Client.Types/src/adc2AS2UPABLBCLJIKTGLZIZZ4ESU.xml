@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc2AS2UPABLBCLJIKTGLZIZZ4ESU" Name="AbstractBatchOperationResult" Type="3" Environment="common-client">
+    <AccessRules IsPublished="false" IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.models.AbstractBatchOperationResult"/>
+    </AccessRules>
+    <TypeArguments>
+      <xsc:Argument DerivationRule="extends" Alias="T">
+        <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+      </xsc:Argument>
+    </TypeArguments>
+    <Headers>
+      <Src Name="Headeradc2AS2UPABLBCLJIKTGLZIZZ4ESU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc2AS2UPABLBCLJIKTGLZIZZ4ESU"/>
+    </Bodies>
+    <MethodGroup Id="cmgEOCP3U3DLVBTLKXCIQEXNFNKLA" Name="Root"/>
+    <PropertyGroup Id="cpgSQX2U47X3NATPBPCOHXDIGYBCE" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth6UUHLOKU5VCNTOV6GIMYWJSIJE" Name="getExceptionInfo" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getExceptionInfo(Lorg.radixware.kernel.common.client.types.Pid;)Lorg.radixware.kernel.common.client.models.AbstractBatchOperationResult.ExceptionInfo;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="pid" Id="mprBZKHV5SBMVFQPDF6DAFFHMGNJM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.types.Pid"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.AbstractBatchOperationResult.ExceptionInfo"/>
+      </Method>
+      <Method Id="mthPCIVO5UFOVFV5JG2NF2FEZYLDE" Name="getExceptionInfo" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getExceptionInfo(Ljava.lang.String;)Lorg.radixware.kernel.common.client.models.AbstractBatchOperationResult.ExceptionInfo;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="pidAsString" Id="mprRU2EQ42IY5G2LF3UA2VTQXP2EA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.AbstractBatchOperationResult.ExceptionInfo"/>
+      </Method>
+      <Method Id="mthNYPBRZT3ZNE6BFQBQXTEQ6NFRI" Name="getNumberOfRejections" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getNumberOfRejections()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mth4TX7FLZ3AFGTFOAEJVN6BUOJ4I" Name="getRejectedObjectPids" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getRejectedObjectPids()Ljava.util.List&lt;Ljava.lang.String;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="21"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mth7TA6WUSD2FFK7NJG2SHYFDZVEI" Name="getRejectionMessage" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getRejectionMessage(Lorg.radixware.kernel.common.client.types.Pid;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="pid" Id="mprQRHQ4M5WQZDKTJK2AHMDN4AZKQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.types.Pid"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mth4NOE2Z5EX5F5DJWLATYARNW3V4" Name="getRejectionMessage" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getRejectionMessage(Ljava.lang.String;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="pidAsString" Id="mprYD5DVGE7T5F37P5DLFNEOQEVTQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mth2CFITTZA75G5LM5R27FVGU524Y" Name="getRejectionMessages" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getRejectionMessages()Ljava.util.List&lt;Ljava.lang.String;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="21"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mth2MAR6BJJN5F6VIOIOECQB7VWZM" Name="getRejectionReason" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getRejectionReason(Lorg.radixware.kernel.common.client.types.Pid;)TT;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="pid" Id="mprY3QCTLQLJFAZFBDKTHACNN6FXY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.types.Pid"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="T" IsArgumentType="true"/>
+      </Method>
+      <Method Id="mthJSXR6P3AJZB2DIHKEFLSZQSDNA" Name="getRejectionReason" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getRejectionReason(Ljava.lang.String;)TT;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="pidAsString" Id="mprDN6SVQ6V7BBCVNRXZDQ65OLNBQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="T" IsArgumentType="true"/>
+      </Method>
+      <Method Id="mthPLBQLPH3BRDLXG3OMUPHFR7EQQ" Name="wasCancelledByUser" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="wasCancelledByUser()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthL5UJCYVWJVBFTO5ZLCC2IXBVMQ" Name="wasCancelledProgrammatically" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="wasCancelledProgrammatically()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

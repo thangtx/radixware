@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aecQZWAUN4CFZF53OBH7NVJCP535Q" Name="MetricControlData" Type="1">
+    <AccessRules IsFinal="true"/>
+    <Headers>
+      <Src Name="Headeradc45NQBRRVTNGBTJUMIRNEXA2PXA"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcJHDYH6J7CFFDFN4WGGZQ3XPSMM"/>
+    </Bodies>
+    <MethodGroup Id="cmgLZZHI6SROZAMDEL5IKT6SDKJU4" Name="Root"/>
+    <PropertyGroup Id="cpgQDXWE3WAAZCVDOURBT54VUWOYE" Name="Root"/>
+    <Properties>
+      <Property Id="colAXL3DKGODVC3DKU3BVFGAEZKTQ" Name="lastControlActionMask" Nature="0" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4" IsPresentable="false">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colNOKDH37F3RH6TGGXRHIQ5PVLEE" Name="lastControlSeverity" Nature="0" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4" IsPresentable="false">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colSFIUZXGFHRCZLDHOABMOO7UCGE" Name="lastControlTime" Nature="0" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="12"/>
+        <Presentation InheritanceMask="4" IsPresentable="false">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colCHMIHLA6NVFNLFSIDPSO4RLS74" Name="lastErrorTime" Nature="0" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="12"/>
+        <Presentation InheritanceMask="4" IsPresentable="false">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colJW2LSIY7RNGCRMEP5WZZFS3P4Q" Name="lastErrorVal" Nature="0" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="11"/>
+        <Presentation InheritanceMask="4" IsPresentable="false">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colML3Z2LRIGNCURCSPA42Z5MK5QE" Name="lastWarnTime" Nature="0" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="12"/>
+        <Presentation InheritanceMask="4" IsPresentable="false">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colEJXXN7LBPBGEBKUQPK2FAT7ZXI" Name="lastWarnVal" Nature="0" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="11"/>
+        <Presentation InheritanceMask="4" IsPresentable="false">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colRBTZ4GAAEFAKBIQKK7WLVPVIOE" Name="stateId" Nature="0" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4" IsPresentable="false">
+          <Editing NotNull="true" EditPossibility="2" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colLUG2MUPCGBBXTKKKB62IET7HZM" Name="lastProcessedHistId" Nature="0" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_loadByPidStr_____________" Name="loadByPidStr" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="pidAsStr" Id="mprLXU3DNWMSRBQTILYIH5DKS75IY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="checkExistance" Id="mprBBOJQOPS5VC47JCK7OJP6O7J2Y">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aecQZWAUN4CFZF53OBH7NVJCP535Q"/>
+      </Method>
+      <Method Id="mth_loadByPK_________________" Name="loadByPK" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="stateId" Id="mprTRPJMSZAFRCYFA6S5VI2EP2U2M">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="checkExistance" Id="mprHRCEOPHN6VEF3AWTGYLSD2KGVQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aecQZWAUN4CFZF53OBH7NVJCP535Q"/>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblQZWAUN4CFZF53OBH7NVJCP535Q">
+      <AccessAreas Type="None"/>
+    </Entity>
+    <Presentations Restrictions="0">
+      <ObjectTitleFormat Id="etfLVO7NMBE2VEGRHFKQGUBLGRCVE"/>
+    </Presentations>
+    <Extends TypeId="411" Path="pdcEntity____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcC4GOABFS6VHJJMB6S3WQBFAAVQ" Name="AsyncEasRequestExecutor" DescriptionId="mls3IINHUGILNASLORA2U476DMFWM" Type="3" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.eas.AsyncEasRequestExecutor"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcC4GOABFS6VHJJMB6S3WQBFAAVQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcC4GOABFS6VHJJMB6S3WQBFAAVQ"/>
+    </Bodies>
+    <MethodGroup Id="cmg5ALWQMJLEJBXBBEGCWN4BLSSEE" Name="Root"/>
+    <PropertyGroup Id="cpgTPFVIVQNQ5ABVKTQQHGO3FW4XQ" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthVMPEZMUGJBA4VA7AOIEJIEVUQU" Name="AsyncEasRequestExecutor" DescriptionId="mlsXICHKHBDGBC3JCBCEHH5MJUJPA" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;I)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="env" DescriptionId="mlsHEAUK7Y7WNHRXD237MBWO4CAX4" Id="mprJ3HOILQFLZFJFGJLZAPT2YD42Q">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="maxRequestsCount" DescriptionId="mlsVYHTX4UWIBFJ5FX5KJBUMOOSVA" Id="mprTOR654K65ZAT3BUKXEREDIVXLQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthQET7MPKBNNDTXLRGY2BXEXJ7ZM" Name="getFressSessionsCount" DescriptionId="mlsLYGVGIWS55BIVFHLLSAS7VH25U" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getFressSessionsCount()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int" DescriptionId="mls55MDT2T5MJEU3BERKLGWGYOHLM"/>
+      </Method>
+      <Method Id="mthBNJ6HRA4NZFGRGOQGKZ27D25YM" Name="getOpenedSessionsCount" DescriptionId="mlsX33YX5WG4VE4PMLUFASQKQ5MDE" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getOpenedSessionsCount()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int" DescriptionId="mlsEXM3AWJL45ANDMTFG4P3W3HJKE"/>
+      </Method>
+      <Method Id="mthEGRHCRMH6FGNHOKRJMIEQIN22I" Name="getScheduledTasksCount" DescriptionId="mlsNUGC6JQSFFCL3A4QCYMQXYXSGM" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getScheduledTasksCount()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mth6TEO4C4OMFAGFLVETJJKQCA3TE" Name="sendAsync" DescriptionId="mlsMJMICP3DMJD2LOXSCFUDYX75OU" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="sendAsync(Lorg.radixware.kernel.common.client.eas.CommandRequestHandle;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="requestHandle" DescriptionId="mlsANHE7V4UT5HJZB3DAUMYTO2BJA" Id="mprOANBLIPN6REOXFF4PNSM3QPWD4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.eas.CommandRequestHandle"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthYAB46TGT7FAYRGNUUMXGLQVI24" Name="sendAsync" DescriptionId="mls4XJIHMYBTBEDLBG2ZMTEXIZMYI" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="sendAsync(Lorg.radixware.kernel.common.client.eas.CommandRequestHandle;I)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="requestHandle" DescriptionId="mlsIPWMSA3SSVE6PKDZI5TJMG6I7Q" Id="mprNCTRQINO6NHZFF3PWE2BDXKEHE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.eas.CommandRequestHandle"/>
+          </Parameter>
+          <Parameter Name="timoutSec" DescriptionId="mlsJZLZVQMK5NB3LNXQ4L2HK372EU" Id="mprHLMXMI5TLFDVBB7ZUC5E2H2KIY">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthIZL425JBVFC2JKC5DBD7M3RGWQ" Name="sendAsync" DescriptionId="mlsCRE3C6APWRH7XLUN5C7RVYKUN4" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="sendAsync(Lorg.radixware.kernel.common.client.eas.RequestHandle;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="requestHandle" DescriptionId="mlsNMFVAWJ7BRCHRBPAVYPK5FFOFE" Id="mpr6I5OXKXP3NGDXHGAHPLS4OORVU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.eas.RequestHandle"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthNDTLPAKKOZEDDFQ3JM4R7FISIM" Name="sendAsync" DescriptionId="mlsVQBV4NOEBFH57POKC5NPHMV324" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="sendAsync(Lorg.radixware.kernel.common.client.eas.RequestHandle;I)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="requestHandle" DescriptionId="mlsMPZJGC5F4FA7RLUHQQ57G24Y6E" Id="mprGKVI5P3JFVDAZNX34LYP2M7AVI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.eas.RequestHandle"/>
+          </Parameter>
+          <Parameter Name="timeoutSec" DescriptionId="mls4KKETCPC6JBT5B3IC2H54RF6V4" Id="mpr72PTAW5RJFHHBLG2NTHVHXLFJE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthGEZR4BBNGBE2BB2Y2ZHRL2NZRA" Name="close" DescriptionId="mlsQWN7Q3MBYZHMVF57UTIFIMN7NU" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="close()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthE7CJM6SKFZCTPCGQDTNRC7YIWY" Name="closeWhenLastRequestFinished" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="closeWhenLastRequestFinished()V"/>
+        </AccessRules>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

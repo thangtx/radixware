@@ -1,0 +1,556 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" xmlns:com="http://schemas.radixware.org/commondef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcTOODFIMLETOBDOMVABIFNQAABA" Name="String" Type="3" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcRFJOW53WYFGYJFQH3JMZN7DMJY">
+        <xsc:Item>
+          <xsc:Java>import java.util.Arrays;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+
+</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcX7FEMC73F5E3JMU5Y4SDATTJMM">
+        <xsc:Item>
+          <xsc:Java>private static final char START_CHAR = 'Ё';
+private static final String[] charTable = new String[81];
+static
+{  </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcTOODFIMLETOBDOMVABIFNQAABA mthA2LX7D74LNAI3DB3KWRBBTDSU4" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>(); }
+
+private static MessageDigest mdSha1 = null;
+
+static 
+{
+   try 
+   {
+       mdSha1  = MessageDigest.getInstance( "SHA-1" );
+   } 
+   catch ( NoSuchAlgorithmException e) 
+   {
+       throw new </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>( "Failed to initialize SHA-1 messаge digest algorithm" );
+   }   
+}
+
+</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmgXEGSMX6EBRBNNCNEOFSBKR4JO4" Name="Root"/>
+    <PropertyGroup Id="cpgBGZO545UGZCXDLAO7TVNKWNKJM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth4W7W2V36TRADVMYWFV7H2HA5VI" Name="truncLead" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="s" Id="mprHZCF3MWWGNAALM3DVNAVZ3HWIM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="len" Id="mpr3WOLB2KHSJBZ3F5RQN73O5BOUI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if(s==null || len>=s.length())
+   return s;
+return s.substring(s.length()-len,s.length());</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth55TXFAKITPOBDCNHAAMPGXSZKU" Name="transliteToLat" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="text" Id="mprWS7G4YTFUVEHTPRMNENYJYVTY4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>/*
+Диапазон 00-1F занят неотображаемыми управляющими кодами, большинство из которых 
+уже вышли из употребления
+Диапазон 20-7F занят самыми распространёнными знаками пунктуации, цифрами и буквами латинского алфавита.
+*/
+
+char chars[] = text.toCharArray();
+final StringBuilder sb = new StringBuilder(text.length());
+
+char symbol;        
+for (int c = 0 ; c &lt; chars.length; c++){
+    symbol = chars[c];
+    final int i = symbol - START_CHAR;
+    if (i>=0 &amp;&amp; i&lt;charTable.length){
+         final String replace = charTable[i];
+         if (replace == null) {
+             sb.append('?');
+         } else {
+             if (//NEYVABANKRU-268
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="3"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.isUpperCase(symbol) &amp;&amp; 
+                (
+                    c &lt; chars.length-1 ?
+                        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="3"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.isUpperCase(chars[c+1]) :
+                        c > 0 &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="3"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.isUpperCase(chars[c-1])
+                )    
+             ){
+                 sb.append(replace.toUpperCase()); 
+             } else {    
+                 sb.append(replace);
+             }   
+         }   
+    } else {
+        sb.append(symbol);
+    }           
+}
+return sb.toString();
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthA2LX7D74LNAI3DB3KWRBBTDSU4" Name="fillCharTable" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>charTable['А'- START_CHAR] = "A";
+charTable['Б'- START_CHAR] = "B";
+charTable['В'- START_CHAR] = "V";
+charTable['Г'- START_CHAR] = "G";
+charTable['Д'- START_CHAR] = "D";
+charTable['Е'- START_CHAR] = "E";
+charTable['Ё'- START_CHAR] = "E";  //NEYVABANKRU-268: old: "Yo";
+charTable['Ж'- START_CHAR] = "Zh";
+charTable['З'- START_CHAR] = "Z";
+charTable['И'- START_CHAR] = "I";
+charTable['Й'- START_CHAR] = "I";    //NEYVABANKRU-268: old: "Y";
+charTable['К'- START_CHAR] = "K";
+charTable['Л'- START_CHAR] = "L";
+charTable['М'- START_CHAR] = "M";
+charTable['Н'- START_CHAR] = "N";
+charTable['О'- START_CHAR] = "O";
+charTable['П'- START_CHAR] = "P";
+charTable['Р'- START_CHAR] = "R";
+charTable['С'- START_CHAR] = "S";
+charTable['Т'- START_CHAR] = "T";
+charTable['У'- START_CHAR] = "U";
+charTable['Ф'- START_CHAR] = "F";
+charTable['Х'- START_CHAR] = "Kh";   //NEYVABANKRU-268: old: "X";
+charTable['Ц'- START_CHAR] = "Tc";   //NEYVABANKRU-268: old: "C";
+charTable['Ч'- START_CHAR] = "Ch";
+charTable['Ш'- START_CHAR] = "Sh";
+charTable['Щ'- START_CHAR] = "Shch"; //NEYVABANKRU-268: old: "Shh";
+charTable['Ъ'- START_CHAR] = "";     //NEYVABANKRU-268: old: "``";
+charTable['Ы'- START_CHAR] = "Y";    //NEYVABANKRU-268: old: "Y'";
+charTable['Ь'- START_CHAR] = "";     //NEYVABANKRU-268: old: "'"
+charTable['Э'- START_CHAR] = "E";
+charTable['Ю'- START_CHAR] = "Iu";   //NEYVABANKRU-268: old: "Yu";
+charTable['Я'- START_CHAR] = "Ia";   //NEYVABANKRU-268: old: "Ya";
+
+for (int count = 0; count&lt;charTable.length; count++) 
+{
+   char indx = (char)((char)count + START_CHAR);
+   char lower = new String(new char[]{indx}).toLowerCase().charAt(0);
+   if (charTable[count] != null) 
+     charTable[lower - START_CHAR] = charTable[count].toLowerCase();
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthAZH2BGENETOBDOMVABIFNQAABA" Name="truncTrail" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="s" Id="mprS6R444V5FZBOVNKPEPKMIYX7SY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="len" Id="mprEDA5MRUEGBFHXFSLO6GIRBEOHA">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if(s==null || len>=s.length())
+   return s;
+return s.substring(0,len);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthDRFIKPENETOBDOMVABIFNQAABA" Name="padTrail" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="s" Id="mprR7ARLECU65BW3OVTV56EOFSTS4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="len" Id="mprMRC7SUEFQ5HKXLVFD63QRTQ6KI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="ch" Id="mpr5PY5PC2KONFZZAYMAYUKJSLXBE">
+            <Type TypeId="401" extStr="char"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>int padLen=len-s.length();
+if(padLen&lt;=0) 
+   return s;
+
+char[] pad=new char[padLen]; Arrays.fill(pad,ch); 
+StringBuilder sb= (s==null ? new StringBuilder() : new StringBuilder(s));
+return sb.append(pad).toString();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthOGXFBL5QD3PBDHKOAAN7YHKUNI" Name="collectionToString" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="col" Id="mprGZALKTPV3RFA3FOV2KWSMAQ3OQ">
+            <Type TypeId="400" extStr="java.util.Collection">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?"/>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="delimeter" Id="mprJX3L6UEZIZF3XCK2DNWNQIMB7Y">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>String res="";
+for(Object obj : col) {
+	res+=(res!=""? delimeter :"")+obj.toString();
+	}
+return res;	</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthPAY6JM4LETOBDOMVABIFNQAABA" Name="padLead" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="s" Id="mprL6SQPLERKJFH7HK7IHJGNL5X2U">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="len" Id="mprYIW3LLZIUNH5DAOKA7WCPCCLLQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="ch" Id="mprVTNF4UD53RBJJM42ZIB4E6XLQE">
+            <Type TypeId="401" extStr="char"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>int padLen=len-s.length();
+if(padLen&lt;=0) 
+   return s;
+
+char[] pad=new char[padLen]; Arrays.fill(pad,ch);    
+StringBuilder sb= (s==null ? new StringBuilder() : new StringBuilder(s));
+return sb.insert(0,pad).toString();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthPWTNHLJMNDOBDCPCABIFNQAABA" Name="sha1" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="b" Id="mprDZSVTYPATVA4REPU5D6H4KS4Y4">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="byte" Dimension="1"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if(b != null){
+   mdSha1.reset();
+   mdSha1.update(b);
+   return mdSha1.digest();
+} else {
+   return null;
+}
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthUX2FCPUOETOBDOMVABIFNQAABA" Name="trimLead" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="s" Id="mprMCJZYHCZEJDUNGEHQJEHOA6EQE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="ch" Id="mprOGK32CZNJ5ALTHQE4QPLE3VK4U">
+            <Type TypeId="401" extStr="char"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if(s==null)
+   return s;
+int i;
+for(i=0;i&lt;s.length();i++) {
+   if(s.charAt(i)!=ch) 
+      break; 
+   }
+return i&lt;s.length() ? s.substring(i) : "";</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthX57LROUPETOBDOMVABIFNQAABA" Name="trimTrail" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="s" Id="mpr2XRJTM2VQRCQZPSXY6VNNYTP4A">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="ch" Id="mprKTJVYRKXKRCJRJGN77BMQEHMYU">
+            <Type TypeId="401" extStr="char"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if(s==null)
+   return s;
+int i;
+for(i=s.length()-1;i>=0;i--) {
+   if(s.charAt(i)!=ch) 
+      break; 
+   }
+return i>=0 ? s.substring(0,i+1) : "";</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthXFHPALEDCTPBDEQYAAN7YHKUNI" Name="collectionToString" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="col" Id="mprDGEK4ZRBD5H43MEHZUQ2UFLCIY">
+            <Type TypeId="400" extStr="java.util.Collection">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?"/>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcTOODFIMLETOBDOMVABIFNQAABA mthOGXFBL5QD3PBDHKOAAN7YHKUNI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(col,", ");
+	</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthGLXAZHUXUNEHLDV37APSSGPY2E" Name="adjustStrLength" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="s" Id="mprNDEBTNCHE5G4VKE2SACRPQGIWY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="len" Id="mprNA5BFD7WRZAPDJRYSJSE6EJSJI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="padChar" Id="mprG6C6CFZK6BFJDJLXVKJO4QFIVE">
+            <Type TypeId="401" extStr="char"/>
+          </Parameter>
+          <Parameter Name="padLead" Id="mpr6MBFHWUCJVEPBONMMBLDRO4X6Y">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> res = s==null?"":s;
+if ( len&lt;0||res.length()==len)
+    return res;
+if (res.length()>len)
+    res = padLead ? res.substring(0,len) : res.substring(res.length()-len);
+if (res.length()&lt;len)
+    res = padLead? </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcTOODFIMLETOBDOMVABIFNQAABA mthPAY6JM4LETOBDOMVABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(res, len, padChar): </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcTOODFIMLETOBDOMVABIFNQAABA mthDRFIKPENETOBDOMVABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(res, len, padChar);
+return res;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth4C65AQ5MD5DBZOEOJE5L7VC4BU" Name="toLiteralStr" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="date" Id="mprUOFERYIXOFCBLK5RU2QDMXQKZM">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="language" Id="mprXIZANW6NXFDHFBQPEVUGFAXSWE">
+            <Type TypeId="21" Path="acs2G44GBNBE5D7RO2QHQSVRZNLG4"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return org.radixware.kernel.common.utils.DateConverter.convertDate(date, language);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthMGOCNFO23BAW5LZODVKNVXTZMQ" Name="toLiteralStr" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="number" Id="mprFV3A2SXMXVEXXL3YS2FVEXH65E">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="language" Id="mprQ4ZWSKKG4NEB5GQVHCLVTHSWOI">
+            <Type TypeId="21" Path="acs2G44GBNBE5D7RO2QHQSVRZNLG4"/>
+          </Parameter>
+          <Parameter Name="gender" Id="mprD7ZGH2APKJE4TGDGHD2XVF6FZU">
+            <Type TypeId="3" Path="acs44T6RG6OY5DMJIM3U5UHEOBCTE"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return org.radixware.kernel.common.utils.NumericConverter.convertNumber(number.longValue(), language, gender);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthREYWVGDYHBGXPEIT7IKGJVAVKM" Name="toLiteralStr" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="number" Id="mprL35II7FMINFXNJHORKVKUT4LGE">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="language" Id="mprD5OYQYZW65GK3PJT2H2AEFRMTE">
+            <Type TypeId="21" Path="acs2G44GBNBE5D7RO2QHQSVRZNLG4"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return org.radixware.kernel.common.utils.NumericConverter.convertNumber(number.longValue(), language);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth4TJFLLXJZFDERD6POQTPUQUMIQ" Name="sha1" Nature="0" IsOverride="false">
+        <com:Description>Return SHA1 hash by UTF8 string representation</com:Description>
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="s" Id="mprSJFGTSWCRRC65GHZCJL25NCTAI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="byte" Dimension="1"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcTOODFIMLETOBDOMVABIFNQAABA mthPWTNHLJMNDOBDCPCABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( s!=null ? s.getBytes("utf-8") : null ) ;
+} catch (java.io.UnsupportedEncodingException e) {
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e.getMessage(), e);
+}
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

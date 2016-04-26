@@ -1,0 +1,2215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y" Name="AddressConflict" Type="3" Environment="server">
+    <AccessRules Access="4" IsFinal="true" IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcMXABYCP3VRFJ7LSURY4ISULYII">
+        <xsc:Item>
+          <xsc:Java>import java.util.Collection;
+</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>import java.util.ArrayList;
+import java.util.List;
+</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcHO6L3NEAWVDBNAGHSAIZ7X7H54">
+        <xsc:Item>
+          <xsc:Java>private static class AddressObject {
+
+    private </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> addressInfo;
+    private boolean theSameInstance;
+
+    public AddressObject(</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> info, boolean theSameInstance) {
+        this.addressInfo = info;
+        this.theSameInstance = theSameInstance;
+    }
+}
+
+private static boolean isConflicted(</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> address1, </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> address2, boolean theSameInstance) {
+    try {
+        if (address1.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdZTBDEJAERVFW5BQ4H54RYWEZ3M" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> != address2.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdZTBDEJAERVFW5BQ4H54RYWEZ3M" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>) {
+            return false;
+        }
+
+        if (address1.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdZTBDEJAERVFW5BQ4H54RYWEZ3M" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> == </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="acsYDEB2YYGTJDEFDQWYPIDMD256I aciXAFOY6SOQFDGTBQP7H5M4D4PSU" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.Value) {
+            return theSameInstance &amp;&amp; (address1.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> == null || address1.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.equals(address2.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>));
+        } else if (address1.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdZTBDEJAERVFW5BQ4H54RYWEZ3M" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> == </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="acsYDEB2YYGTJDEFDQWYPIDMD256I aciHIZ5E5NJFVHOBMBFX4GVPNJLLQ" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.Value) {
+            return false;
+        } else if (address1.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdZTBDEJAERVFW5BQ4H54RYWEZ3M" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> == </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="acsYDEB2YYGTJDEFDQWYPIDMD256I aciHCK7YAZFSFBZ7OEZJQA5NGQD5U" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.Value || address1.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdZTBDEJAERVFW5BQ4H54RYWEZ3M" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> == </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdSBAZGCCZDZF2TI4DPXZ5VOVEYE" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>) {
+            String addr1Str = address1.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>;
+            String addr2Str = address2.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>;
+
+            if (address1.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdZTBDEJAERVFW5BQ4H54RYWEZ3M" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> == </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdSBAZGCCZDZF2TI4DPXZ5VOVEYE" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>) {
+                //dirty hack for supporting format of SNMP Agent address imposed by snmp4j library
+                addr1Str = tryDecodeSnmp4jAddress(addr1Str);
+                addr2Str = tryDecodeSnmp4jAddress(addr2Str);
+            }
+
+            java.net.InetSocketAddress isa1 = </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcBHRY2PEXXZCSVAHMRH7O7OXJXY"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcBHRY2PEXXZCSVAHMRH7O7OXJXY mth36LNF46VDJCZDEAAJ6FOEZUV6I" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>(addr1Str).</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcLZKTDVPMVVE7XGL3FIAJTW2LPU mthW77AYFIFC5HBBBSMCETH57TYSY" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>();
+            java.net.InetSocketAddress isa2 = </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcBHRY2PEXXZCSVAHMRH7O7OXJXY"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcBHRY2PEXXZCSVAHMRH7O7OXJXY mth36LNF46VDJCZDEAAJ6FOEZUV6I" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>(addr2Str).</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcLZKTDVPMVVE7XGL3FIAJTW2LPU mthW77AYFIFC5HBBBSMCETH57TYSY" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>();
+
+            if (isa1 == null || isa2 == null) {
+                return false;
+            }
+
+            if (isa1.equals(isa2)) {
+                if (isa1.Address != null &amp;&amp; isa1.Address.isLoopbackAddress()) {
+                    return theSameInstance;
+                } else {
+                    return true;
+                }
+            }
+        }
+    } catch (Exception ex) {
+        //something went wrong, just skip
+    }
+    return false;
+}
+
+private static String tryDecodeSnmp4jAddress(String address) {
+    final String prefix = "udp:";
+    if (address != null &amp;&amp; address.toLowerCase().startsWith(prefix)) {
+        address = address.substring(prefix.length()).replace("/", ":").trim();
+    }
+    return address;
+}
+
+private static class TableBuilder {
+
+    private final int columnsCount;
+    private final List&lt;</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>[]> data;
+    private final List&lt;</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>> headers;
+    private final List&lt;</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>> rowBgColors;
+    private </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> headerColor = null;
+    private boolean useHeader = false;
+
+    public TableBuilder(int columnsCount) {
+        this.columnsCount = columnsCount;
+        data = new ArrayList&lt;</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>[]>();
+        headers = new ArrayList&lt;</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>>();
+        for (int i = 0; i &lt; columnsCount; i++) {
+            headers.add(null);
+        }
+        rowBgColors = new ArrayList&lt;</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>>();
+    }
+
+    public void setColumnHeader(int column, </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> header) {
+        headers.set(column, header);
+        useHeader = true;
+    }
+
+    public void setHeaderColor(</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> headerColor) {
+        this.headerColor = headerColor;
+        useHeader = true;
+    }
+
+    public void addRow() {
+        data.add(new </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>[columnsCount]);
+        rowBgColors.add(null);
+    }
+
+    public void setColumn(int column, </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> value) {
+        data.get(data.size() - 1)[column] = value;
+    }
+
+    public void setRowBackground(</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> bgColor) {
+        rowBgColors.set(data.size() - 1, bgColor);
+    }
+
+    public </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java><![CDATA[ getHtml() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<table border=\"0\" cellpadding=\"4\" cellspacing=\"0\" width=\"100%\">");
+        if (useHeader) {
+            sb.append("<tr");
+            if (headerColor != null && !headerColor.isEmpty()) {
+                sb.append(" bgcolor=\"");
+                sb.append(headerColor);
+                sb.append("\"");
+            }
+
+            sb.append(" style=\"font-weight: 200%;\"");
+            sb.append(">");
+            for (int i = 0; i < columnsCount; i++) {
+                sb.append("<td>");
+                sb.append(headers.get(i));
+                sb.append("</td>");
+            }
+            sb.append("</tr>");
+        }
+        for (int i = 0; i < data.size(); i++) {
+            sb.append("<tr");
+            ]]></xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java><![CDATA[ color = rowBgColors.get(i);
+            if (color != null && !color.isEmpty()) {
+                sb.append(" bgcolor=\"");
+                sb.append(color);
+                sb.append("\"");
+            }
+            sb.append(">");
+            for (int j = 0; j < columnsCount; j++) {
+                sb.append("<td");
+                if (j == 0) {
+                    sb.append(" style=\"font-weight:bold 110%;\"");
+                } else if (j == 1) {
+                    sb.append(" style=\"font-weight:bold;\"");
+                }
+                sb.append(">");
+                if (data.get(i)[j] != null) {
+                    sb.append(data.get(i)[j]);
+                }
+                sb.append("</td>");
+            }
+            sb.append("</tr>");
+        }
+        sb.append("</table>");
+        return sb.toString();
+    }
+}
+private static final String PORT_COLOR = "#FFFFFF";
+private static final String UNIT_COLOR = "#F5F7FF";
+private static final String HEADER_COLOR = "#FFFFFF";
+private static final String INSTANCE_COLOR = "#E6F3FF";
+
+private static void printInstanceToTable(]]></xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> instance, TableBuilder tableBuilder) {
+    if (instance == null) {
+        throw new NullPointerException("Can't print null instance");
+    }
+
+    tableBuilder.addRow();
+    String instanceTitle = instance.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E colGERU3AQZS5VDBFCXAAUMFADAIA" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>;
+    if (instanceTitle == null || instanceTitle.isEmpty()) {
+        instanceTitle = "&lt;no title>";
+    }
+    tableBuilder.setColumn(0, org.apache.commons.lang.StringEscapeUtils.escapeHtml(instance.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E col3VINP666G5VDBFSUAAUMFADAIA" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> + ") " + instanceTitle));
+    tableBuilder.setRowBackground(INSTANCE_COLOR);
+
+    Collection&lt;</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>> instanceConflicts = </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y mthB5BLAHE7HFBF3JR5VXCX5A4EMQ" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>(instance);
+    Collection&lt;</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>> instanceAddresses = instance.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mthRSM4WBYDU5E3RMPP4X3CZBPCPI" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>();
+
+    if (instanceAddresses != null) {
+        for (</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> instanceAddress : instanceAddresses) {
+            tableBuilder.addRow();
+            tableBuilder.setColumn(2, getPortStr(instanceConflicts, instanceAddress));
+            tableBuilder.setColumn(3, instanceAddress.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdZTBDEJAERVFW5BQ4H54RYWEZ3M" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>);
+            printSapInfo(tableBuilder, instanceAddress, 4, 5);
+            tableBuilder.setRowBackground(PORT_COLOR);
+        }
+    }
+
+    </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="acc56FGPO4ODNDRBM7C6VMLS5PBVY"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> units = null;
+    try {
+        units = </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="acc56FGPO4ODNDRBM7C6VMLS5PBVY"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="acc56FGPO4ODNDRBM7C6VMLS5PBVY mth_stmt_execute_____________" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>(instance.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E col3VINP666G5VDBFSUAAUMFADAIA" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>);
+        while (units.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>()) {
+            try {
+                </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> unit = </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E mth_loadByPK_________________" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>(units.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="acc56FGPO4ODNDRBM7C6VMLS5PBVY prfQGCAIUJ7K5BADLI4YJPGQTWRLQ" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>, true);
+                Collection&lt;</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>> unitUsedAddresses = unit.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E mthQIF7CPRFE5GUTIY26PT5SYUD6E" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>();
+                if (unitUsedAddresses != null &amp;&amp; !unitUsedAddresses.isEmpty()) {
+                    Collection&lt;</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>> unitConflicts = </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y mthVBKJSSSMRZCEFICNDRJQBZEIU4" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>(units.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="acc56FGPO4ODNDRBM7C6VMLS5PBVY prfQGCAIUJ7K5BADLI4YJPGQTWRLQ" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>);
+                    tableBuilder.addRow();
+                    //            System.out.println("Unit : " + units.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="acc56FGPO4ODNDRBM7C6VMLS5PBVY prfNYR6KYHKIFDRXHR4SZWSVA5MYY" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>);
+                    String unitTitle = units.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="acc56FGPO4ODNDRBM7C6VMLS5PBVY prfNYR6KYHKIFDRXHR4SZWSVA5MYY" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>;
+                    if (unitTitle == null || unitTitle.isEmpty()) {
+                        unitTitle = "&lt;no title>";
+                    }
+                    tableBuilder.setColumn(1, org.apache.commons.lang.StringEscapeUtils.escapeHtml(units.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="acc56FGPO4ODNDRBM7C6VMLS5PBVY prfQGCAIUJ7K5BADLI4YJPGQTWRLQ" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> + ") " + unitTitle));
+                    tableBuilder.setRowBackground(UNIT_COLOR);
+                    for (</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> usedAddress : unitUsedAddresses) {
+                        tableBuilder.addRow();
+                        tableBuilder.setColumn(2, getPortStr(unitConflicts, usedAddress));
+                        tableBuilder.setColumn(3, usedAddress.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdZTBDEJAERVFW5BQ4H54RYWEZ3M" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>);
+                        printSapInfo(tableBuilder, usedAddress, 4, 5);
+                        tableBuilder.setRowBackground(PORT_COLOR);
+                    }
+                }
+            } catch (</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="axcUKJZUDCC3NGXJMLCNT7H2KELIY"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> ex) {
+                //ignore units from higher layers
+            }
+        }
+    } finally {
+        if (units != null) {
+            units.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="pdcCursor____________________ mth_stmt_close_______________" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>();
+        }
+    }
+}
+
+private static void printSapInfo(final TableBuilder tableBuilder, final </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> addressInfo, int uriColIdx, int scpColIdx) {
+    if (addressInfo.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd6VGJUXFPNVHQXONTNQ7ZLGY75A" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> != null) {
+        tableBuilder.setColumn(uriColIdx, addressInfo.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd6VGJUXFPNVHQXONTNQ7ZLGY75A" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>);
+    }
+    if (addressInfo.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdME4UNVMWQZHRXIGGJMQX4CU7NY" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> != null &amp;&amp; !addressInfo.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdME4UNVMWQZHRXIGGJMQX4CU7NY" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.isEmpty()) {
+        final StringBuilder scpBuilder = new StringBuilder();
+        for (String scp : addressInfo.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdME4UNVMWQZHRXIGGJMQX4CU7NY" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>) {
+            if (scpBuilder.length() > 0) {
+                scpBuilder.append("&lt;br/>");
+            }
+            scpBuilder.append(scp);
+        }
+        tableBuilder.setColumn(scpColIdx, scpBuilder.toString());
+    }
+}
+
+private static </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> getPortStr(Collection&lt;</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>> conflicts, </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> address) {
+    try {
+        int numberOfEqualPairs = 0;
+        for (</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> conflict : conflicts) {
+            if (address.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.equals(conflict.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y prdN5M5MT2NKZC23IQNC5H5PVOSLM" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>) &amp;&amp; conflict.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y prdN5M5MT2NKZC23IQNC5H5PVOSLM" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.equals(conflict.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y prdP7GEPUTUG5HWVD5P2HF43YDLIE" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>)) {
+                numberOfEqualPairs++;
+            }
+        }
+
+        StringBuilder conflictsBuilder = new StringBuilder();
+        int idx = 0;
+        for (</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> conflict : conflicts) {
+            if (address.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.equals(conflict.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y prdN5M5MT2NKZC23IQNC5H5PVOSLM" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>)) {
+                if (conflict.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y prdN5M5MT2NKZC23IQNC5H5PVOSLM" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.equals(conflict.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y prdP7GEPUTUG5HWVD5P2HF43YDLIE" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>)) {
+                    if (numberOfEqualPairs == 0) {
+                        continue;
+                    }
+                    numberOfEqualPairs -= 2;
+                }
+                if (idx > 0) {
+                    conflictsBuilder.append("&lt;br/>");
+                }
+                ++idx;
+                conflictsBuilder.append(idx + ") ");
+                conflictsBuilder.append(org.apache.commons.lang.StringEscapeUtils.escapeHtml(conflict.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y prdP7GEPUTUG5HWVD5P2HF43YDLIE" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 mthMKQDBF2O5FHDTF6XLAA5OIOKQQ" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>()));
+            }
+        }
+        if (conflictsBuilder.length() > 0) {
+            StringBuilder unitAddressBuilder = new StringBuilder();
+            unitAddressBuilder.append("&lt;b>&lt;font color=\"red\">");
+            unitAddressBuilder.append(org.apache.commons.lang.StringEscapeUtils.escapeHtml(address.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>));
+            unitAddressBuilder.append("&lt;/font>&lt;/b>");
+            unitAddressBuilder.append("&lt;br>");
+            unitAddressBuilder.append(conflictsBuilder.toString());
+            return unitAddressBuilder.toString();
+        } else if (!</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y mthANGSTLJ2BZE7DHYN5UR5GJ6D4Q" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>(address)) {
+            return "&lt;b>&lt;font color=\"#FF6600\">" + org.apache.commons.lang.StringEscapeUtils.escapeHtml(address.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>) + "&lt;/font>&lt;/b>";
+        } else {
+            return org.apache.commons.lang.StringEscapeUtils.escapeHtml(address.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>);
+        }
+    } catch (</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="axcXJP5J6GEPZCERMRA74CCVXC3HI"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> ex) {
+        return "&lt;error>";
+    }
+}
+
+private static void printSystemSapsToTable(</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="2"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> systemId, TableBuilder table) {
+    </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="accOJ7DF7GWEFG4RI72JTCPRTGRPM"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> systemSapsCursor = null;
+    try {
+        List&lt;</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>> systemSapAddresses = new ArrayList&lt;</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>>();
+        systemSapsCursor = </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="accOJ7DF7GWEFG4RI72JTCPRTGRPM"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="accOJ7DF7GWEFG4RI72JTCPRTGRPM mth_stmt_execute_____________" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>(systemId);
+        while (systemSapsCursor.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>()) {
+            </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> info = new </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 mthCDGIIXUBDREMFH7FCSFWNWMADQ" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>(null, null, systemSapsCursor.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="accOJ7DF7GWEFG4RI72JTCPRTGRPM prfM4NEAKQMQJENDBBXSPGFTSODWI" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>);
+            info.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd3FILHMDXMVHOZJD76U6R4HZXJ4" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> = systemSapsCursor.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="accOJ7DF7GWEFG4RI72JTCPRTGRPM prfM4NEAKQMQJENDBBXSPGFTSODWI" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>;
+            systemSapAddresses.add(info);
+        }
+        Collection&lt;</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>> conflicts = </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y mthM2PMAHJ6MRGFJMQ5JHOBEVOV54" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>(systemSapAddresses, null, null, systemId, false);
+
+        for (</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> systemSapAddress : systemSapAddresses) {
+            table.addRow();
+            final String title;
+            if (systemSapAddress.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdJQXRJ7TCABDFXO5I4ITJMS42RI" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> == null || systemSapAddress.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdJQXRJ7TCABDFXO5I4ITJMS42RI" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.isEmpty()) {
+                title = String.valueOf(systemSapAddress.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd3FILHMDXMVHOZJD76U6R4HZXJ4" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>);
+            } else {
+                title = systemSapAddress.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdJQXRJ7TCABDFXO5I4ITJMS42RI" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>;
+            }
+            table.setColumn(0, org.apache.commons.lang.StringEscapeUtils.escapeHtml(title));
+            table.setColumn(1, getPortStr(conflicts, systemSapAddress));
+            table.setColumn(2, systemSapAddress.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdZTBDEJAERVFW5BQ4H54RYWEZ3M" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>);
+            printSapInfo(table, systemSapAddress, 3, 4);
+        }
+
+    } finally {
+        if (systemSapsCursor != null) {
+            systemSapsCursor.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="pdcCursor____________________ mth_stmt_close_______________" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>();
+        }
+    }
+}
+
+private static TableBuilder createInstanceUnitPortTable() {
+    TableBuilder tb = new TableBuilder(6);
+    tb.setColumnHeader(0, </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:LocalizedString StringId="mlsTGJKEA53KJF3XGM7AXN6O6PUX4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>);
+    tb.setColumnHeader(1, </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:LocalizedString StringId="mlsKWVQ4336CJBBRGWWULF2HBOUXU"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>);
+    tb.setColumnHeader(2, </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:LocalizedString StringId="mlsOIAFRAA2ZVCQNJUVTKC2NOW3EU"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>);
+    tb.setColumnHeader(3, </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:LocalizedString StringId="mls3G4KWF23BZFXNNQWE2UQYOZHEU"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>);
+    tb.setColumnHeader(4, </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:LocalizedString StringId="mlsPHW5C77WOBD3RBZO5VB4IHTJEA"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>);
+    tb.setColumnHeader(5, </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:LocalizedString StringId="mls4FZPCVOL6VDWVDQTVDJDVVGM3I"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>);
+    tb.setHeaderColor(HEADER_COLOR);
+    return tb;
+}
+
+private static TableBuilder createSapPortTabe() {
+    TableBuilder tb = new TableBuilder(5);
+    tb.setColumnHeader(0, </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:LocalizedString StringId="mlsSVQTIOGYWJDD3G737TE5CKF7JQ"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>);
+    tb.setColumnHeader(1, </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:LocalizedString StringId="mlsBU5KPE3YX5CYJENZY7RWVEBFFE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>);
+    tb.setColumnHeader(2, </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:LocalizedString StringId="mlsPMLBINC4TFCLXNQ3CV2OIYHY34"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>);
+    tb.setColumnHeader(3, </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:LocalizedString StringId="mls3RDGEHTVAJGDTHSPBT6EY5E5FE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>);
+    tb.setColumnHeader(4, </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:LocalizedString StringId="mlsOGCZN2WERJG2NAIW7IT2D7BTQA"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>);
+    tb.setHeaderColor(INSTANCE_COLOR);
+    return tb;
+}</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmgOWBXSI3BEJBWDAW5XIYUMSQSS4" Name="Root"/>
+    <PropertyGroup Id="cpgHR6UP5CSXNDM7IM5UJ4DJ3TIXQ" Name="Root"/>
+    <Properties>
+      <Property Id="prdN5M5MT2NKZC23IQNC5H5PVOSLM" Name="thisAddress" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="4" IsPublished="false"/>
+        <Type TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+      </Property>
+      <Property Id="prdP7GEPUTUG5HWVD5P2HF43YDLIE" Name="conflictedAddress" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="4" IsPublished="false"/>
+        <Type TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthSPINRX5D2BBG7E3T7UW3M5ZV4A" Name="AddressConflict" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="thisAddress" Id="mprHDHHCO5FUZBXBBYYGQMBT7HHQQ">
+            <Type TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+          </Parameter>
+          <Parameter Name="conflictedAddress" Id="mprUUJ5Q46UFBDLBJUPJM3IESAMN4">
+            <Type TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y prdN5M5MT2NKZC23IQNC5H5PVOSLM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = thisAddress;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y prdP7GEPUTUG5HWVD5P2HF43YDLIE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = conflictedAddress;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYCIGEZUJYNEDPDMWXRSCPDUSIU" Name="discoverUnitConflicts" Nature="0" IsOverride="false">
+        <AccessRules Access="4" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="unit" Id="mprACI75DSGMZCOZCHLYM7FQWQZLU">
+            <Type TypeId="411" Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.Collection">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y mthM2PMAHJ6MRGFJMQ5JHOBEVOV54" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(unit.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E mthQIF7CPRFE5GUTIY26PT5SYUD6E" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), unit.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E colEVLUYADHR5VDBNSIAAUMFADAIA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, unit.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E colK3AUOLEHR5VDBNSIAAUMFADAIA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, unit.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E colY5NZZOJBXTNRDB6QAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E colNPEGS5CTHRHRDF7ZU3IPI7GELU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, false);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthVBKJSSSMRZCEFICNDRJQBZEIU4" Name="discoverUnitConflicts" Nature="0" IsOverride="false">
+        <AccessRules Access="4" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="unitId" Id="mprK6EO6FPST5BSXBTH52I5BEBNJE">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.Collection">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> unit = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E mth_loadByPK_________________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(unitId, true);
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y mthYCIGEZUJYNEDPDMWXRSCPDUSIU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(unit);
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcUKJZUDCC3NGXJMLCNT7H2KELIY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+    //ignore units from higer layers
+    return java.util.Collections.emptyList();
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthB5BLAHE7HFBF3JR5VXCX5A4EMQ" Name="discoverInstanceConflicts" Nature="0" IsOverride="false">
+        <AccessRules Access="4" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="instance" Id="mprVECBSH3CVZFGLNFSGNXRWX7JVY">
+            <Type TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.Collection">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y mthM2PMAHJ6MRGFJMQ5JHOBEVOV54" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mthRSM4WBYDU5E3RMPP4X3CZBPCPI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), null, instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E col3VINP666G5VDBFSUAAUMFADAIA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E colNPEGS5CTHRHRDF7ZU3IPI7GELU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, true);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthKVDDQHD3MBAPLDNTKRWMZMDTYM" Name="discoverInstanceConflicts" Nature="0" IsOverride="false">
+        <AccessRules Access="4" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="instanceId" Id="mprW4BYO5NC7ZE6LFEM6O2XF3LJAM">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.Collection">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> instance = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mth_loadByPK_________________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(instanceId, true);
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y mthB5BLAHE7HFBF3JR5VXCX5A4EMQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(instance);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthM2PMAHJ6MRGFJMQ5JHOBEVOV54" Name="discover" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="thisAddressInfos" Id="mprQ3DF4EIENBEH5I6GAYPLBY3ANU">
+            <Type TypeId="400" extStr="java.util.Collection">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="thisUnitId" Id="mprN6ECYXJ4IVGHJB4DLWGEAECJOA">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="thisInstanceId" Id="mprMYU5XEKDENB3RDVCXH64INJE7I">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="thisSystemId" Id="mprKYTYYXWDCBF2JHRUZ72G73PWWY">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="isInstance" Id="mprBGCXTHVJUFBDFFG2B4TAG77IGM">
+            <Type TypeId="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.Collection">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>List&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> conflicts = new ArrayList&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();
+
+if (thisAddressInfos == null || thisAddressInfos.isEmpty()) {
+    return conflicts;
+}
+
+List&lt;AddressObject> addressObjects = new ArrayList&lt;AddressObject>();
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="accZ547FRS2RNA45ANBNWPH7RCVKU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> instances = null;
+try {
+    instances = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="accZ547FRS2RNA45ANBNWPH7RCVKU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accZ547FRS2RNA45ANBNWPH7RCVKU mth_stmt_execute_____________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    while (instances.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+        if (!((</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="1"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.TRUE == isInstance) &amp;&amp; thisInstanceId == instances.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accZ547FRS2RNA45ANBNWPH7RCVKU prfIIMQ7SBOLZH7NKJBHNIYXCN66A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)) {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> instance = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mth_loadByPK_________________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(instances.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accZ547FRS2RNA45ANBNWPH7RCVKU prfIIMQ7SBOLZH7NKJBHNIYXCN66A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, true);
+            Collection&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> instanceUsedAddresses = instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mthRSM4WBYDU5E3RMPP4X3CZBPCPI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+            if (instanceUsedAddresses != null) {
+                for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> instanceAddress : instanceUsedAddresses) {
+                    addressObjects.add(new AddressObject(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 mthBI2RXC45QVAYPC7DWWJJUDIF5I" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(instanceAddress.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, instanceAddress.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdZTBDEJAERVFW5BQ4H54RYWEZ3M" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, null, instances.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accZ547FRS2RNA45ANBNWPH7RCVKU prfIIMQ7SBOLZH7NKJBHNIYXCN66A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, null, null, instanceAddress.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdJQXRJ7TCABDFXO5I4ITJMS42RI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>), instances.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accZ547FRS2RNA45ANBNWPH7RCVKU prfIIMQ7SBOLZH7NKJBHNIYXCN66A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == thisInstanceId));
+                }
+            }
+        }
+    }
+} finally {
+    if (instances != null) {
+        instances.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mth_stmt_close_______________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    }
+}
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="accVVDQV2J6RBDEFI4CPVH3KUBLE4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> units = null;
+try {
+    units = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="accVVDQV2J6RBDEFI4CPVH3KUBLE4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accVVDQV2J6RBDEFI4CPVH3KUBLE4 mth_stmt_execute_____________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    while (units.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+        if (units.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accVVDQV2J6RBDEFI4CPVH3KUBLE4 prf3OOBEHLQNVGMLBHTQF7CQQE624" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != thisUnitId) {
+            try {
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> unit = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E mth_loadByPK_________________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(units.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accVVDQV2J6RBDEFI4CPVH3KUBLE4 prf3OOBEHLQNVGMLBHTQF7CQQE624" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, true);
+
+                Collection&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> unitUsedAddresses = unit.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E mthQIF7CPRFE5GUTIY26PT5SYUD6E" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+                if (unitUsedAddresses != null) {
+                    for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> usedAddress : unitUsedAddresses) {
+                        addressObjects.add(new AddressObject(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 mthCHBPF2N2NBGBTNFNVPYBEV7HMM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(usedAddress.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, usedAddress.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdZTBDEJAERVFW5BQ4H54RYWEZ3M" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, usedAddress.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdK52I54XABZF5DL2CSCTBA4CKWM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, unit.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E colK3AUOLEHR5VDBNSIAAUMFADAIA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, unit.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E colEVLUYADHR5VDBNSIAAUMFADAIA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, null, usedAddress.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdJQXRJ7TCABDFXO5I4ITJMS42RI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>), unit.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E colK3AUOLEHR5VDBNSIAAUMFADAIA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == thisInstanceId));
+                    }
+                }
+            } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcUKJZUDCC3NGXJMLCNT7H2KELIY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+                //unit defined in higher level, skip
+            }
+        }
+    }
+} finally {
+    if (units != null) {
+        units.close();
+    }
+}
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="acc23QPN5V5IJHYTCUKHAEDP22AVY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> otherSystemSapsCursor = null;
+
+try {
+    otherSystemSapsCursor = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="acc23QPN5V5IJHYTCUKHAEDP22AVY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acc23QPN5V5IJHYTCUKHAEDP22AVY mth_stmt_execute_____________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(thisSystemId);
+    while (otherSystemSapsCursor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> info = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 mthCHBPF2N2NBGBTNFNVPYBEV7HMM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(otherSystemSapsCursor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acc23QPN5V5IJHYTCUKHAEDP22AVY prfUUBPXL2VQ5GBJAIZZAX3WX26NQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, otherSystemSapsCursor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acc23QPN5V5IJHYTCUKHAEDP22AVY prfVRNUKH53YVEJRLU622LLLTDJGQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, null, null, null, "'" + otherSystemSapsCursor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acc23QPN5V5IJHYTCUKHAEDP22AVY prfZ3KJADW6I5GCPFNG4MIAGXB7RE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + "' system SAP '" + otherSystemSapsCursor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acc23QPN5V5IJHYTCUKHAEDP22AVY prfPSUGCA63FFEZXEQXDNRNZFW4HM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + "'");
+        info.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd3FILHMDXMVHOZJD76U6R4HZXJ4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = otherSystemSapsCursor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acc23QPN5V5IJHYTCUKHAEDP22AVY prfRNQ4MKLBEBDAHBA4KPJC4TT3BQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+        addressObjects.add(new AddressObject(info, false));
+    }
+} finally {
+    if (otherSystemSapsCursor != null) {
+        otherSystemSapsCursor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mth_stmt_close_______________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    }
+}
+
+for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> thisAddressInfo : thisAddressInfos) {
+    for (AddressObject addressObject : addressObjects) {
+        if (isConflicted(thisAddressInfo, addressObject.addressInfo, addressObject.theSameInstance)) {
+//            System.out.println("Comapring " + thisAddressInfo.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 mthMKQDBF2O5FHDTF6XLAA5OIOKQQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() + " vs " + addressObject.addressInfo.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 mthMKQDBF2O5FHDTF6XLAA5OIOKQQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() + ". Conflict discovered");
+            conflicts.add(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y mthSPINRX5D2BBG7E3T7UW3M5ZV4A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 mthCHBPF2N2NBGBTNFNVPYBEV7HMM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(thisAddressInfo.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, thisAddressInfo.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdZTBDEJAERVFW5BQ4H54RYWEZ3M" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, null, null, null, null, "this"), addressObject.addressInfo));
+        } else {
+//            System.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthTJ2UWH3GAFA6BJYN3XTKXTKFOY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Error", "Error while read()", ex);out.println("Comapring " + thisAddressInfo.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 mthMKQDBF2O5FHDTF6XLAA5OIOKQQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() + " vs " + addressObject.addressInfo.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 mthMKQDBF2O5FHDTF6XLAA5OIOKQQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() + ". No conflicts");
+        }
+    }
+    for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> otherThisAddress : thisAddressInfos) {
+        if (otherThisAddress != thisAddressInfo) {
+            if (isConflicted(otherThisAddress, thisAddressInfo, true)) {
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> conflictInfo;
+                if (otherThisAddress.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd3FILHMDXMVHOZJD76U6R4HZXJ4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+                    conflictInfo = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 mthCDGIIXUBDREMFH7FCSFWNWMADQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(null, null, otherThisAddress.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd3FILHMDXMVHOZJD76U6R4HZXJ4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+                } else {
+                    conflictInfo = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 mthCHBPF2N2NBGBTNFNVPYBEV7HMM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(otherThisAddress.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, otherThisAddress.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdZTBDEJAERVFW5BQ4H54RYWEZ3M" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, null, null, null, null, "this");
+                }
+//                System.out.println("Comapring " + thisAddressInfo.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 mthMKQDBF2O5FHDTF6XLAA5OIOKQQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() + " vs " + conflictInfo.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 mthMKQDBF2O5FHDTF6XLAA5OIOKQQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() + ". Conflict discovered");
+                conflicts.add(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIUPJG6VNU5G77LFCNGH3TNJJ6Y mthSPINRX5D2BBG7E3T7UW3M5ZV4A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(thisAddressInfo, conflictInfo));
+            }
+        }
+    }
+}
+
+return conflicts;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthDPU2W2WXYRGIRL6YRICFDGMPKQ" Name="getSystemPortTable" Nature="0" IsOverride="false">
+        <AccessRules Access="4" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="systemId" Id="mprBECC6BXGYBHY7EZWHNOKXEIKE4">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>TableBuilder tableBuilder = createInstanceUnitPortTable();
+
+if (systemId != null &amp;&amp; systemId.longValue() == 1) {
+
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="accZ547FRS2RNA45ANBNWPH7RCVKU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> instances = null;
+    try {
+        instances = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="accZ547FRS2RNA45ANBNWPH7RCVKU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accZ547FRS2RNA45ANBNWPH7RCVKU mth_stmt_execute_____________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+        while (instances.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+            printInstanceToTable(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mth_loadByPK_________________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(instances.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accZ547FRS2RNA45ANBNWPH7RCVKU prfIIMQ7SBOLZH7NKJBHNIYXCN66A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, true), tableBuilder);
+        }
+    } finally {
+        if (instances != null) {
+            instances.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mth_stmt_close_______________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+        }
+    }
+
+    return tableBuilder.getHtml();
+}
+
+
+tableBuilder = createSapPortTabe();
+printSystemSapsToTable(systemId, tableBuilder);
+
+return tableBuilder.getHtml();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthVNAIATOOGFCVJCW4UMOIDYEYAU" Name="getInstancePortTable" Nature="0" IsOverride="false">
+        <AccessRules Access="4" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="instanceId" Id="mprTEYAUJWGOZCBTFUNSB3PD2W5S4">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> instance = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mth_loadByPK_________________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(instanceId, true);
+
+TableBuilder tableBuilder = createInstanceUnitPortTable();
+
+printInstanceToTable(instance, tableBuilder);
+
+return tableBuilder.getHtml();
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthANGSTLJ2BZE7DHYN5UR5GJ6D4Q" Name="isValidAddress" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="addressInfo" Id="mpr7HMOSPJVUJBVZG3QRH36SQYR5I">
+            <Type TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (addressInfo == null) {
+    return false;
+}
+if (addressInfo.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdZTBDEJAERVFW5BQ4H54RYWEZ3M" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsYDEB2YYGTJDEFDQWYPIDMD256I aciHCK7YAZFSFBZ7OEZJQA5NGQD5U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value) {
+    try {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcBHRY2PEXXZCSVAHMRH7O7OXJXY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBHRY2PEXXZCSVAHMRH7O7OXJXY mth36LNF46VDJCZDEAAJ6FOEZUV6I" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(addressInfo.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        return true;
+    } catch (Exception ex) {
+        return false;
+    }
+
+}
+//InternalPipe address is always valid, and about JMS address and other addresses it is hard to tell
+return true;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

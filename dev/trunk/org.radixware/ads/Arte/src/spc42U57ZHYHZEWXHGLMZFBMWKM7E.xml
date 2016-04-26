@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="spc42U57ZHYHZEWXHGLMZFBMWKM7E" Name="RequestSessionLockProc" Type="10">
+    <AccessRules>
+      <Transparence Extendable="true" PublishedName="org.radixware.kernel.server.types.SqlClass"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headerspc42U57ZHYHZEWXHGLMZFBMWKM7E"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyspc42U57ZHYHZEWXHGLMZFBMWKM7E"/>
+    </Bodies>
+    <MethodGroup Id="cmgVJ4ILQN6LVBEVJN3NTGKWE6UIY" Name="Root"/>
+    <PropertyGroup Id="cpgDKZGVH73TFFUXFD7DY45KXDNS4" Name="Root"/>
+    <Properties>
+      <Property Id="prmUSUIRY5JHJCIVGPVKHQUMRWWKE" Name="pTableId" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmGRBKA35OJFFYPJVVKUEX75766U" Name="pPid" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmWAGR3CMPPFFBXNJCNXQ74ESVXE" Name="pTimeoutSec" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prmMJFRMXYZ3JBAND6AZTVAWTSYTE" Name="oResult" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="execute" Nature="15" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="pTableId" Id="mprUSUIRY5JHJCIVGPVKHQUMRWWKE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="pPid" Id="mprGRBKA35OJFFYPJVVKUEX75766U">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="pTimeoutSec" Id="mprWAGR3CMPPFFBXNJCNXQ74ESVXE">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="spc42U57ZHYHZEWXHGLMZFBMWKM7E"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>declare
+    lockHandle integer;
+begin
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmMJFRMXYZ3JBAND6AZTVAWTSYTE" Direction="1"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> := </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:DbFuncCall FuncId="dfnHPI2JWHGDZATROKB6RMHEDFF4U"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>(</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmUSUIRY5JHJCIVGPVKHQUMRWWKE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmGRBKA35OJFFYPJVVKUEX75766U"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmWAGR3CMPPFFBXNJCNXQ74ESVXE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, lockHandle);
+end;</xsc:Sql>
+        </xsc:Item>
+      </Source>
+    </Sql>
+    <Extends TypeId="400" extStr="org.radixware.kernel.server.types.SqlClass"/>
+  </AdsClassDefinition>
+</AdsDefinition>

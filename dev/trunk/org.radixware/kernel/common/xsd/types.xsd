@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 sp2 U (http://www.altova.com) by pc (pc) -->
+<xs:schema xmlns:this="http://schemas.radixware.org/types.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://schemas.radixware.org/types.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:simpleType name="Bool">
+		<xs:restriction base="xs:boolean"/>
+	</xs:simpleType>
+	<xs:element name="Bool" type="this:Bool"/>
+	<xs:simpleType name="Char">
+		<xs:annotation>
+			<xs:documentation>maxLen=8 для того, чтобы можно было использовать ENTITY, например &#x0009;</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="8"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="Char" type="this:Char"/>
+	<xs:simpleType name="Num">
+		<xs:restriction base="xs:decimal"/>
+	</xs:simpleType>
+	<xs:element name="Num" type="this:Num"/>
+	<xs:simpleType name="Int">
+		<xs:restriction base="xs:long"/>
+	</xs:simpleType>
+	<xs:element name="Int" type="this:Int"/>
+	<xs:simpleType name="Str">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:element name="Str" type="this:Str"/>
+	<xs:simpleType name="SafeStr">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:element name="SafeStr" type="this:SafeStr"/>
+	<xs:simpleType name="Id">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:element name="Id" type="this:Id"/>
+	<xs:simpleType name="DateTime">
+		<xs:restriction base="xs:dateTime"/>
+	</xs:simpleType>
+	<xs:element name="DateTime" type="this:DateTime"/>
+	<xs:simpleType name="BinBase64">
+		<xs:restriction base="xs:base64Binary"/>
+	</xs:simpleType>
+	<xs:element name="BinBase64" type="this:BinBase64"/>
+	<xs:simpleType name="BinHex">
+		<xs:restriction base="xs:hexBinary"/>
+	</xs:simpleType>
+	<xs:element name="BinHex" type="this:BinHex"/>
+	<xs:simpleType name="IntEnum">
+		<xs:annotation>
+			<xs:documentation>Enum "Const. set name"</xs:documentation>
+			<xs:appinfo source="http://schemas.radixware.org/types.xsd">
+				<this:class>Enum class</this:class>
+				<this:enumItems>
+					<this:enumItem val="val" name="name">
+						<Title language="RU"> TitleRu</Title>
+						<Title language="EN"> TitleEN</Title>
+					</this:enumItem>
+				</this:enumItems>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="this:Int"/>
+	</xs:simpleType>
+	<xs:simpleType name="StrEnum">
+		<xs:annotation>
+			<xs:documentation>Enum "Const. set name"</xs:documentation>
+			<xs:appinfo source="http://schemas.radixware.org/types.xsd">
+				<this:class>Enum class</this:class>
+				<this:enumItems>
+					<this:enumItem val="val" name="name">
+						<Title language="RU"> TitleRu</Title>
+						<Title language="EN"> TitleEN</Title>
+					</this:enumItem>
+				</this:enumItems>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="this:Str"/>
+	</xs:simpleType>
+	<xs:simpleType name="SafeStrEnum">
+		<xs:annotation>
+			<xs:documentation>Enum "Const. set name"</xs:documentation>
+			<xs:appinfo source="http://schemas.radixware.org/types.xsd">
+				<this:class>Enum class</this:class>
+				<this:enumItems>
+					<this:enumItem val="val" name="name">
+						<Title language="RU"> TitleRu</Title>
+						<Title language="EN"> TitleEN</Title>
+					</this:enumItem>
+				</this:enumItems>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="this:SafeStr"/>
+	</xs:simpleType>
+	<xs:simpleType name="CharEnum">
+		<xs:annotation>
+			<xs:documentation>Enum "Const. set name"</xs:documentation>
+			<xs:appinfo source="http://schemas.radixware.org/types.xsd">
+				<this:class>Enum class</this:class>
+				<this:enumItems>
+					<this:enumItem val="val" name="name">
+						<Title language="RU"> TitleRu</Title>
+						<Title language="EN"> TitleEN</Title>
+					</this:enumItem>
+				</this:enumItems>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="this:Char"/>
+	</xs:simpleType>
+	<xs:complexType name="MapStrStr">
+		<xs:sequence>
+			<xs:element name="Entry" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="Key" type="this:Str"/>
+						<xs:element name="Value" type="this:Str" minOccurs="0"/>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Void"/>
+	<xs:element name="MapStrStr" type="this:MapStrStr"/>
+	<xs:element name="Void" type="this:Void"/>
+</xs:schema>

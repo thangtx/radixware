@@ -1,0 +1,658 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:edit="http://schemas.radixware.org/editmask.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsCustomDialogDefinition Id="cdlQTADAHRAGBEU7BKQRGVRUY54FU" Name="DashTableExplorerColumnEditor">
+    <AccessRules IsPublished="false"/>
+    <ui:ui>
+      <ui:widget name="Dialog" id="wdgOT62Q6ZBU5AHZAQFXDVNFYJ2KU" class="cdlQTADAHRAGBEU7BKQRGVRUY54FU" weight="0.0">
+        <ui:property name="windowTitle">
+          <ui:mlstringid>mls4T3RKZ27L5BUPELNPVKX3P7SQA</ui:mlstringid>
+        </ui:property>
+        <ui:layout class="QGridLayout" name="gridLayout">
+          <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+            <ui:widget name="titlePropTitle" id="wdg65Y43SJN3ZHUZBVWTBMFVJ7SQI" class="org.radixware.kernel.explorer.widgets.PropLabel" weight="0.0">
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>108</ui:x>
+                  <ui:y>76</ui:y>
+                  <ui:width>120</ui:width>
+                  <ui:height>20</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="property">
+                <ui:propertyRef>prdZFDHDLQJWJEVHCWMLY7L5OJWYI</ui:propertyRef>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>titlePropTitle</ui:string>
+              </ui:property>
+            </ui:widget>
+          </ui:item>
+          <ui:item column="1" row="0" colSpan="1" rowSpan="1">
+            <ui:widget name="titlePropEditor" id="wdgQVPIY3LP7REXTNCDH7FLSHTSLA" class="org.radixware.kernel.explorer.widgets.propeditors.PropEditor" weight="0.0">
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>348</ui:x>
+                  <ui:y>103</ui:y>
+                  <ui:width>100</ui:width>
+                  <ui:height>25</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="property">
+                <ui:propertyRef>prdZFDHDLQJWJEVHCWMLY7L5OJWYI</ui:propertyRef>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>titlePropEditor</ui:string>
+              </ui:property>
+            </ui:widget>
+          </ui:item>
+          <ui:item column="1" row="5" colSpan="1" rowSpan="1">
+            <ui:spacer name="spacer">
+              <ui:property name="orientation">
+                <ui:enum>com.trolltech.qt.core.Qt.Orientation.Vertical</ui:enum>
+              </ui:property>
+              <ui:property name="sizeHint">
+                <ui:size>
+                  <ui:width>20</ui:width>
+                  <ui:height>40</ui:height>
+                </ui:size>
+              </ui:property>
+            </ui:spacer>
+          </ui:item>
+          <ui:item column="0" row="1" colSpan="1" rowSpan="1">
+            <ui:widget name="typePropTitle" id="wdgXK3Q5UUDMNGMPNABLNDHGR6TLQ" class="org.radixware.kernel.explorer.widgets.PropLabel" weight="0.0">
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>35</ui:x>
+                  <ui:y>19</ui:y>
+                  <ui:width>120</ui:width>
+                  <ui:height>20</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="windowTitle">
+                <ui:mlstringid xsi:nil="true"/>
+              </ui:property>
+              <ui:property name="property">
+                <ui:propertyRef>prdOCB2QBA2X5HLZALVZ3YGKUOU2M</ui:propertyRef>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>typePropTitle</ui:string>
+              </ui:property>
+            </ui:widget>
+          </ui:item>
+          <ui:item column="1" row="1" colSpan="1" rowSpan="1">
+            <ui:widget name="typePropEditor" id="wdg26UOZS7G5JFVNBNPZDKNYBKRDI" class="org.radixware.kernel.explorer.widgets.propeditors.PropEditor" weight="0.0">
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>192</ui:x>
+                  <ui:y>38</ui:y>
+                  <ui:width>100</ui:width>
+                  <ui:height>25</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="property">
+                <ui:propertyRef>prdOCB2QBA2X5HLZALVZ3YGKUOU2M</ui:propertyRef>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>typePropEditor</ui:string>
+              </ui:property>
+            </ui:widget>
+          </ui:item>
+          <ui:item column="1" row="6" colSpan="1" rowSpan="1">
+            <ui:widget name="buttonBox" id="wdg2XMJR5WNRVFJBBS2CDXAEMLELY" class="QDialogButtonBox" weight="0.0">
+              <ui:property name="standardButtons">
+                <ui:set>org.radixware.kernel.common.enums.EDialogButtonType.OK | org.radixware.kernel.common.enums.EDialogButtonType.CANCEL</ui:set>
+              </ui:property>
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>210</ui:x>
+                  <ui:y>280</ui:y>
+                  <ui:width>156</ui:width>
+                  <ui:height>23</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="autoConnectAcceptSignal">
+                <ui:bool>true</ui:bool>
+              </ui:property>
+              <ui:property name="autoConnectRejectSignal">
+                <ui:bool>true</ui:bool>
+              </ui:property>
+            </ui:widget>
+          </ui:item>
+          <ui:item column="1" row="2" colSpan="1" rowSpan="1">
+            <ui:widget name="isHiddenPropEditor" id="wdg6OY3MO4M7JHQ7G2Y4DPPXRACTM" class="org.radixware.kernel.explorer.widgets.propeditors.PropEditor" weight="0.0">
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>159</ui:x>
+                  <ui:y>77</ui:y>
+                  <ui:width>100</ui:width>
+                  <ui:height>25</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="property">
+                <ui:propertyRef>prdY4BPXRAGXBD5VKIJGKWDAHHZM4</ui:propertyRef>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>isHiddenPropEditor</ui:string>
+              </ui:property>
+              <ui:property name="layoutDirection">
+                <ui:enum>com.trolltech.qt.core.Qt.LayoutDirection.RightToLeft</ui:enum>
+              </ui:property>
+            </ui:widget>
+          </ui:item>
+          <ui:item column="0" row="2" colSpan="1" rowSpan="1">
+            <ui:widget name="isHiddenPropTitle" id="wdg733HJ5UYXRHOVG3SSYZED6KQFE" class="org.radixware.kernel.explorer.widgets.PropLabel" weight="0.0">
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>15</ui:x>
+                  <ui:y>65</ui:y>
+                  <ui:width>120</ui:width>
+                  <ui:height>20</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="property">
+                <ui:propertyRef>prdY4BPXRAGXBD5VKIJGKWDAHHZM4</ui:propertyRef>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>isHiddenPropTitle</ui:string>
+              </ui:property>
+            </ui:widget>
+          </ui:item>
+          <ui:item column="0" row="3" colSpan="1" rowSpan="1">
+            <ui:widget name="precisionPropTitle" id="wdg3QTGCZUAHBGHPDBKUE2MHLN6CU" class="org.radixware.kernel.explorer.widgets.PropLabel" weight="0.0">
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>4</ui:x>
+                  <ui:y>85</ui:y>
+                  <ui:width>120</ui:width>
+                  <ui:height>20</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="property">
+                <ui:propertyRef>prdZFLMK6XNNZDGRKFNHRJSGSK6HQ</ui:propertyRef>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>precisionPropTitle</ui:string>
+              </ui:property>
+            </ui:widget>
+          </ui:item>
+          <ui:item column="1" row="3" colSpan="1" rowSpan="1">
+            <ui:widget name="precisionPropEditor" id="wdg5TGI2JYQS5BZDJNC2CWENUVQXY" class="org.radixware.kernel.explorer.widgets.propeditors.PropEditor" weight="0.0">
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>179</ui:x>
+                  <ui:y>93</ui:y>
+                  <ui:width>100</ui:width>
+                  <ui:height>25</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="property">
+                <ui:propertyRef>prdZFLMK6XNNZDGRKFNHRJSGSK6HQ</ui:propertyRef>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>precisionPropEditor</ui:string>
+              </ui:property>
+            </ui:widget>
+          </ui:item>
+          <ui:item column="0" row="4" colSpan="2" rowSpan="1">
+            <ui:widget name="diagramBarSettingsBox" id="wdgMGXKOX3MGZB4PH3JJEXI2O6IQQ" class="QGroupBox" weight="0.0">
+              <ui:property name="title">
+                <ui:mlstringid>mlsJE5JHCJBZBCNBC6PZVU2PSP5FI</ui:mlstringid>
+              </ui:property>
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>-3</ui:x>
+                  <ui:y>79</ui:y>
+                  <ui:width>120</ui:width>
+                  <ui:height>99</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="checkable">
+                <ui:bool>true</ui:bool>
+              </ui:property>
+              <ui:property name="checked">
+                <ui:bool>true</ui:bool>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>diagramBarSettingsBox</ui:string>
+              </ui:property>
+              <ui:layout class="QGridLayout" name="gridLayout">
+                <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                  <ui:widget name="minValPropTitle" id="wdgACY5Q7P6JFACTA4SHN7CABNENM" class="org.radixware.kernel.explorer.widgets.PropLabel" weight="0.0">
+                    <ui:property name="geometry">
+                      <ui:rect>
+                        <ui:x>-14</ui:x>
+                        <ui:y>13</ui:y>
+                        <ui:width>120</ui:width>
+                        <ui:height>20</ui:height>
+                      </ui:rect>
+                    </ui:property>
+                    <ui:property name="property">
+                      <ui:propertyRef>prdNAZTUALBQZFHTMTLKBQLQMWR74</ui:propertyRef>
+                    </ui:property>
+                    <ui:property name="objectName">
+                      <ui:string>minValPropTitle</ui:string>
+                    </ui:property>
+                  </ui:widget>
+                </ui:item>
+                <ui:item column="1" row="0" colSpan="1" rowSpan="1">
+                  <ui:widget name="minValPropEditor" id="wdgS7FFJBS6WZFHLJ76CJZV3LEXEQ" class="org.radixware.kernel.explorer.widgets.propeditors.PropEditor" weight="0.0">
+                    <ui:property name="geometry">
+                      <ui:rect>
+                        <ui:x>326</ui:x>
+                        <ui:y>28</ui:y>
+                        <ui:width>100</ui:width>
+                        <ui:height>25</ui:height>
+                      </ui:rect>
+                    </ui:property>
+                    <ui:property name="property">
+                      <ui:propertyRef>prdNAZTUALBQZFHTMTLKBQLQMWR74</ui:propertyRef>
+                    </ui:property>
+                    <ui:property name="objectName">
+                      <ui:string>minValPropEditor</ui:string>
+                    </ui:property>
+                  </ui:widget>
+                </ui:item>
+                <ui:item column="0" row="1" colSpan="1" rowSpan="1">
+                  <ui:widget name="maxValPropTitle" id="wdgVYIR2VKJGNDQTNMTX7S5CCQXX4" class="org.radixware.kernel.explorer.widgets.PropLabel" weight="0.0">
+                    <ui:property name="geometry">
+                      <ui:rect>
+                        <ui:x>18</ui:x>
+                        <ui:y>44</ui:y>
+                        <ui:width>120</ui:width>
+                        <ui:height>20</ui:height>
+                      </ui:rect>
+                    </ui:property>
+                    <ui:property name="property">
+                      <ui:propertyRef>prdZKOE3L5MWVGUDPJGDPSGZCNIEU</ui:propertyRef>
+                    </ui:property>
+                    <ui:property name="objectName">
+                      <ui:string>maxValPropTitle</ui:string>
+                    </ui:property>
+                  </ui:widget>
+                </ui:item>
+                <ui:item column="1" row="1" colSpan="1" rowSpan="1">
+                  <ui:widget name="maxValPropEditor" id="wdg35NAFPI4SZGKHA73VEJG27DIDM" class="org.radixware.kernel.explorer.widgets.propeditors.PropEditor" weight="0.0">
+                    <ui:property name="geometry">
+                      <ui:rect>
+                        <ui:x>201</ui:x>
+                        <ui:y>59</ui:y>
+                        <ui:width>100</ui:width>
+                        <ui:height>25</ui:height>
+                      </ui:rect>
+                    </ui:property>
+                    <ui:property name="property">
+                      <ui:propertyRef>prdZKOE3L5MWVGUDPJGDPSGZCNIEU</ui:propertyRef>
+                    </ui:property>
+                    <ui:property name="objectName">
+                      <ui:string>maxValPropEditor</ui:string>
+                    </ui:property>
+                  </ui:widget>
+                </ui:item>
+              </ui:layout>
+            </ui:widget>
+          </ui:item>
+        </ui:layout>
+      </ui:widget>
+      <ui:connections>
+        <ui:connection>
+          <ui:sender>wdg26UOZS7G5JFVNBNPZDKNYBKRDI</ui:sender>
+          <ui:signal>edited(java.lang.Object value)</ui:signal>
+          <ui:slot>mth46SAMP6X4ZC5LLI5OPFOINKAQ4</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgOT62Q6ZBU5AHZAQFXDVNFYJ2KU</ui:sender>
+          <ui:signal>opened(com.trolltech.qt.gui.QWidget widget)</ui:signal>
+          <ui:slot>mthKGIWNIXCQJFUBPMME5OFMHBK3I</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgOT62Q6ZBU5AHZAQFXDVNFYJ2KU</ui:sender>
+          <ui:signal>closed()</ui:signal>
+          <ui:slot>mth6N5RC7D6K5D4LPBTYMUUD2VFGY</ui:slot>
+        </ui:connection>
+      </ui:connections>
+    </ui:ui>
+    <EmbeddedModel Id="admQTADAHRAGBEU7BKQRGVRUY54FU" Name="DashTableExplorerColumnEditor:Model" Type="16">
+      <AccessRules IsPublished="false"/>
+      <Headers>
+        <Src Name="HeaderadmQTADAHRAGBEU7BKQRGVRUY54FU"/>
+      </Headers>
+      <Bodies>
+        <Src Name="BodyadmQTADAHRAGBEU7BKQRGVRUY54FU"/>
+      </Bodies>
+      <MethodGroup Id="cmgMBU6LZ5TVRCHZKVR2SVHKVBXO4" Name="Root"/>
+      <PropertyGroup Id="cpgRRA2VRJ6YVGOBMEQJ53ZFIBB5Y" Name="Root"/>
+      <Properties>
+        <Property Id="prdZFDHDLQJWJEVHCWMLY7L5OJWYI" Name="title" Nature="8" IsConst="false" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="21"/>
+          <DependentItems/>
+          <EmbeddedProperty Id="prdZFDHDLQJWJEVHCWMLY7L5OJWYI" Name="title" Nature="2" IsConst="false">
+            <AccessRules IsPublished="false"/>
+            <Type TypeId="21"/>
+            <Presentation TitleId="mls7JZMSTDFKZDWLJZTKVLNUHHMEI" InheritanceMask="4">
+              <Editing IsDuplicatesEnabled="true"/>
+            </Presentation>
+          </EmbeddedProperty>
+        </Property>
+        <Property Id="prdOCB2QBA2X5HLZALVZ3YGKUOU2M" Name="type" Nature="8" IsConst="false" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="2" Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4"/>
+          <DependentItems/>
+          <EmbeddedProperty Id="prdOCB2QBA2X5HLZALVZ3YGKUOU2M" Name="type" Nature="2" IsConst="false">
+            <AccessRules IsPublished="false"/>
+            <Type TypeId="2" Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4"/>
+            <Presentation TitleId="mlsKV3ANS3QDNC6JEJGBAW7PMM554" InheritanceMask="4">
+              <Editing NotNull="true" IsDuplicatesEnabled="true">
+                <EditMask>
+                  <edit:Enum CorrectionItems="aciTB7UJTYZVPORDJHCAANE2UAFXA aciTR7UJTYZVPORDJHCAANE2UAFXA" OrderBy="Order" Correction="Include"/>
+                </EditMask>
+              </Editing>
+            </Presentation>
+          </EmbeddedProperty>
+        </Property>
+        <Property Id="prdY4BPXRAGXBD5VKIJGKWDAHHZM4" Name="isHidden" Nature="8" IsConst="false" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="1"/>
+          <InitialValue>
+            <ValAsStr>0</ValAsStr>
+          </InitialValue>
+          <DependentItems/>
+          <EmbeddedProperty Id="prdY4BPXRAGXBD5VKIJGKWDAHHZM4" Name="isHidden" Nature="2" IsConst="false">
+            <AccessRules IsPublished="false"/>
+            <Type TypeId="1"/>
+            <Presentation TitleId="mlsBZIAVS2DFJHTRBZUBUNVFSXUXA" InheritanceMask="4">
+              <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+            </Presentation>
+          </EmbeddedProperty>
+        </Property>
+        <Property Id="prd2UFFHNUBLRESZAYG4VGYAKW36E" Name="showAsDiagramBar" Nature="2" IsConst="false" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="1"/>
+        </Property>
+        <Property Id="prdNAZTUALBQZFHTMTLKBQLQMWR74" Name="minVal" Nature="8" IsConst="false" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="2"/>
+          <DependentItems/>
+          <EmbeddedProperty Id="prdNAZTUALBQZFHTMTLKBQLQMWR74" Name="minVal" Nature="2" IsConst="false">
+            <AccessRules IsPublished="false"/>
+            <Type TypeId="2"/>
+            <Presentation TitleId="mlsD6D7BILNWVDE7E5CH4YJ7VQFEA" InheritanceMask="4">
+              <Editing NotNull="true" IsDuplicatesEnabled="true">
+                <EditMask>
+                  <edit:Int NumberBase="10" StepSize="1"/>
+                </EditMask>
+              </Editing>
+            </Presentation>
+          </EmbeddedProperty>
+        </Property>
+        <Property Id="prdZKOE3L5MWVGUDPJGDPSGZCNIEU" Name="maxVal" Nature="8" IsConst="false" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="2"/>
+          <DependentItems/>
+          <EmbeddedProperty Id="prdZKOE3L5MWVGUDPJGDPSGZCNIEU" Name="maxVal" Nature="2" IsConst="false">
+            <AccessRules IsPublished="false"/>
+            <Type TypeId="2"/>
+            <Presentation TitleId="mlsTTJWYEVX5JEGJEZYYIGYVE6ZKM" InheritanceMask="4">
+              <Editing NotNull="true" IsDuplicatesEnabled="true">
+                <EditMask>
+                  <edit:Int NumberBase="10" StepSize="1"/>
+                </EditMask>
+              </Editing>
+            </Presentation>
+          </EmbeddedProperty>
+        </Property>
+        <Property Id="prdZFLMK6XNNZDGRKFNHRJSGSK6HQ" Name="precision" Nature="8" IsConst="false" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="2"/>
+          <DependentItems/>
+          <EmbeddedProperty Id="prdZFLMK6XNNZDGRKFNHRJSGSK6HQ" Name="precision" Nature="2" IsConst="false">
+            <AccessRules IsPublished="false"/>
+            <Type TypeId="2"/>
+            <Presentation TitleId="mlsCBX2WVVNQVHPFCFZQXKNEE2J2M" InheritanceMask="4">
+              <Editing NotNull="true" IsDuplicatesEnabled="true">
+                <EditMask>
+                  <edit:Int MaxValue="6" MinValue="0" NumberBase="10" StepSize="1"/>
+                </EditMask>
+              </Editing>
+            </Presentation>
+          </EmbeddedProperty>
+        </Property>
+      </Properties>
+      <Methods>
+        <Method Id="mth46SAMP6X4ZC5LLI5OPFOINKAQ4" Name="onTypeEdit" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="value" Id="mprCX4QFVQJTRAQTONX6RZTRKHW6Y">
+              <Type TypeId="400" extStr="java.lang.Object"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQTADAHRAGBEU7BKQRGVRUY54FU admQTADAHRAGBEU7BKQRGVRUY54FU prdOCB2QBA2X5HLZALVZ3YGKUOU2M" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciTR7UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQTADAHRAGBEU7BKQRGVRUY54FU admQTADAHRAGBEU7BKQRGVRUY54FU mthEMDUHEPF3NEPTBHLRWKMFD2INI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(true);
+} else {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQTADAHRAGBEU7BKQRGVRUY54FU admQTADAHRAGBEU7BKQRGVRUY54FU mthEMDUHEPF3NEPTBHLRWKMFD2INI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(false);
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthKGIWNIXCQJFUBPMME5OFMHBK3I" Name="Dialog_opened" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="widget" Id="mpr4CDMJDS2U5F3FJHVZSO2V2PTCY">
+              <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQTADAHRAGBEU7BKQRGVRUY54FU admQTADAHRAGBEU7BKQRGVRUY54FU prdOCB2QBA2X5HLZALVZ3YGKUOU2M" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciTR7UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQTADAHRAGBEU7BKQRGVRUY54FU admQTADAHRAGBEU7BKQRGVRUY54FU mthEMDUHEPF3NEPTBHLRWKMFD2INI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(true);
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQTADAHRAGBEU7BKQRGVRUY54FU wdgMGXKOX3MGZB4PH3JJEXI2O6IQQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setChecked(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQTADAHRAGBEU7BKQRGVRUY54FU admQTADAHRAGBEU7BKQRGVRUY54FU prd2UFFHNUBLRESZAYG4VGYAKW36E" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.booleanValue());
+} else {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQTADAHRAGBEU7BKQRGVRUY54FU admQTADAHRAGBEU7BKQRGVRUY54FU mthEMDUHEPF3NEPTBHLRWKMFD2INI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(false);
+    if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQTADAHRAGBEU7BKQRGVRUY54FU admQTADAHRAGBEU7BKQRGVRUY54FU prdOCB2QBA2X5HLZALVZ3YGKUOU2M" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value != </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciTB7UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcBF2H6FHOOZHX5BC6PL7UJZ2FQE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> csMask = (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcBF2H6FHOOZHX5BC6PL7UJZ2FQE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQTADAHRAGBEU7BKQRGVRUY54FU admQTADAHRAGBEU7BKQRGVRUY54FU prdOCB2QBA2X5HLZALVZ3YGKUOU2M" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.EditMask;
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcUTMGTTLFTFBHJMCICCD6GSYFZ4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Items items = csMask.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcBF2H6FHOOZHX5BC6PL7UJZ2FQE mthH6RNR5PCEBCHPND3NX77O7EYFU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthY43VYOUOR5H2ZF2A2FAXYK5HQ4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>());
+        items.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcJ2IOAFJPMJBKLJYWAHHMZMQXVI mthSOTHK2NRBBHINMBRK4MSSPXCGA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQTADAHRAGBEU7BKQRGVRUY54FU admQTADAHRAGBEU7BKQRGVRUY54FU prdOCB2QBA2X5HLZALVZ3YGKUOU2M" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value);
+        csMask.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcBF2H6FHOOZHX5BC6PL7UJZ2FQE mthDTD4YU7UDFF4JMSR64VUCK6LDY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(items);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQTADAHRAGBEU7BKQRGVRUY54FU admQTADAHRAGBEU7BKQRGVRUY54FU prdOCB2QBA2X5HLZALVZ3YGKUOU2M" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(false);
+    }
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthEMDUHEPF3NEPTBHLRWKMFD2INI" Name="showNumWidget" Nature="0" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="isVisible" Id="mpr5BZWDNAPW5GYZGGLWIPOKZHM5E">
+              <Type TypeId="1"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQTADAHRAGBEU7BKQRGVRUY54FU admQTADAHRAGBEU7BKQRGVRUY54FU prdZFLMK6XNNZDGRKFNHRJSGSK6HQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setVisible(isVisible.booleanValue());
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQTADAHRAGBEU7BKQRGVRUY54FU wdgMGXKOX3MGZB4PH3JJEXI2O6IQQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthDZAAN73V6ZB6PK65BYUFXICFLM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(isVisible.booleanValue());</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth6N5RC7D6K5D4LPBTYMUUD2VFGY" Name="Dialog_closed" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQTADAHRAGBEU7BKQRGVRUY54FU admQTADAHRAGBEU7BKQRGVRUY54FU prd2UFFHNUBLRESZAYG4VGYAKW36E" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlQTADAHRAGBEU7BKQRGVRUY54FU wdgMGXKOX3MGZB4PH3JJEXI2O6IQQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.isChecked();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+      </Methods>
+    </EmbeddedModel>
+  </AdsCustomDialogDefinition>
+</AdsDefinition>

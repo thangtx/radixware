@@ -1,0 +1,46 @@
+<definitions 
+    xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+    xmlns:mess="http://schemas.radixware.org/snmpagent.xsd" 
+    xmlns:wsdl="http://schemas.radixware.org/snmpagent.wsdl" 
+    targetNamespace="http://schemas.radixware.org/snmpagent.wsdl">
+    <types>
+        <xs:schema targetNamespace="http://schemas.radixware.org/snmpagent.wsdl">
+            <xs:import namespace="http://schemas.radixware.org/snmpagent.xsd" schemaLocation="snmpagent.xsd"/>
+            <xs:element name="Notify" type="mess:NotifyMess"/>
+        </xs:schema>
+    </types>
+    
+    <message name="NotfyRq">
+        <part name="NotifyRq" element="wsdl:Notify"/>
+    </message>
+    <message name="NotifyRs">
+        <part name="NotifyRs" element="wsdl:Notify"/>
+    </message>
+    
+    <portType name="SnmpAgentPortType">
+        <operation name="Notify">
+            <input message="wsdl:NotifyRq"/>
+            <output message="wsdl:NotifyRs"/>
+        </operation>
+    </portType>
+    
+    <binding name="SnmpAgentBinding" type="wsdl:SnmpAgentPortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        
+        <operation name="Invoke">
+            <soap:operation soapAction="http://schemas.radixware.org/snmpagent.wsdl#Notify" style="document"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+    
+    <service name="SnmpAgentService">
+        <port name="SnmpAgentPort" binding="wsdl:SnmpAgentBinding">
+            <soap:address location="http://"/>
+        </port>
+    </service>
+</definitions>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc6VPXEYW6RBHF3I23Q3TGB5JCEM" Name="DashTimeRangeProp" Type="3" Environment="common-client">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.dashboard.DashTimeRangeProp"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc6VPXEYW6RBHF3I23Q3TGB5JCEM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc6VPXEYW6RBHF3I23Q3TGB5JCEM"/>
+    </Bodies>
+    <MethodGroup Id="cmgHUCTLMGBBNGE7GLLTT5J3UWIVI" Name="Root"/>
+    <PropertyGroup Id="cpgRX7HFIMYWRCVRFMXHPHJ745TKY" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthOSFRCQTTSNAKLHMTXUFW2QXO5U" Name="getPeriod" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getPeriod()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mth5WO6DOBG3ZGV7GFIUZYMJGS4IU" Name="getPeriodUnit" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getPeriodUnit()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthLHIQIJDAIRAV3F4HDAG5BQ6UXA" Name="getTimeFrom" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getTimeFrom()Ljava.sql.Timestamp;"/>
+        </AccessRules>
+        <ReturnType TypeId="12"/>
+      </Method>
+      <Method Id="mthVRGC46RAR5BHNBQMOEPUEBE2OI" Name="getTimeRange" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getTimeRange()Lorg.radixware.kernel.common.client.dashboard.HistoricalDiagramSettings.TimeRange;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.dashboard.HistoricalDiagramSettings.TimeRange"/>
+      </Method>
+      <Method Id="mthCWWMBDMGVFBRFD42ASUNGBQUJ4" Name="getTimeTo" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getTimeTo()Ljava.sql.Timestamp;"/>
+        </AccessRules>
+        <ReturnType TypeId="12"/>
+      </Method>
+      <Method Id="mthPGATCXXXJNCEJDX32VHFBI64BY" Name="getPropSource" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getPropSource()Lorg.radixware.kernel.common.client.dashboard.EDashPropSource;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.dashboard.EDashPropSource"/>
+      </Method>
+      <Method Id="mthSVT4BTLNGBCLJPGS3GMCLWWXJE" Name="getLastSeconds" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getLastSeconds()J"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="long"/>
+      </Method>
+      <Method Id="mthB2W3KZOTFRAMZCIKWGZDYROJEA" Name="DashTimeRangeProp" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.dashboard.EDashPropSource;Lorg.radixware.kernel.common.client.dashboard.HistoricalDiagramSettings.TimeRange;Ljava.sql.Timestamp;Ljava.sql.Timestamp;DI)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="propSource" Id="mprPFOJ6Y67ONDAHF5XYEXP53GMQQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.dashboard.EDashPropSource"/>
+          </Parameter>
+          <Parameter Name="timeRange" Id="mpr3HBIGIZPK5E5HHOUSGOR72FP4U">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.dashboard.HistoricalDiagramSettings.TimeRange"/>
+          </Parameter>
+          <Parameter Name="timeFrom" Id="mprJ6TKMGBUDJHOLGVELHGH7ZHOUY">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="timeTo" Id="mprILIVHQV5XVFBPDXDSRPYKK5TCA">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="period" Id="mprUDYD5QJGRVCNVDCOHHFOVNVN3I">
+            <Type TypeId="401" extStr="double"/>
+          </Parameter>
+          <Parameter Name="periodUnit" Id="mprMDJRIQUGJBEWBAZGNCK6C554SU">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthGBQNLERESVG57I3GPSX6TDYEEY" Name="DashTimeRangeProp" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.dashboard.DashTimeRangeProp;Lorg.radixware.kernel.common.client.dashboard.EDashPropSource;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="prop" Id="mprBKCZ6DZU7ZFFPEJ74XAIYPUAIY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.dashboard.DashTimeRangeProp"/>
+          </Parameter>
+          <Parameter Name="src" Id="mprLDAKGQ7TNJG7FAWSSAHIWWTECE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.dashboard.EDashPropSource"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

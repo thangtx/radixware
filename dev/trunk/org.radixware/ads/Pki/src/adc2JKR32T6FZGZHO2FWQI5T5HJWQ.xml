@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:com="http://schemas.radixware.org/commondef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc2JKR32T6FZGZHO2FWQI5T5HJWQ" Name="KeystoreController" DescriptionId="mlsHNN6JTRJKVFFBEZIBYJWUJ3CPA" Type="3" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.ssl.KeystoreController"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcYALHZ5AVFVFHHO5NQU5R5PISTQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcXRM6VVYYAFHRJEFV5VWOAIQQHY"/>
+    </Bodies>
+    <MethodGroup Id="cmgZXLAW2XMVFEKDCKU4TCPZSVNZQ" Name="Root"/>
+    <PropertyGroup Id="cpgQFKJFSA3VBBK3IARJWK7UELTCM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthYZ3UQW5YVNBK5FZQCHOZX2PTPY" Name="KeystoreController" Nature="0" IsConstructor="true" IsOverride="false">
+        <com:Description>Default constructor, creates an empty file-based keystore</com:Description>
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>()V"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthOOTHQVYQIRDWBLO2NOCRKI5UAQ" Name="KeystoreController" Nature="0" IsConstructor="true" IsOverride="false">
+        <com:Description>Constructor for working with a PKCS#11 keystore</com:Description>
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.String;Ljavax.security.auth.callback.CallbackHandler;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="configurationFilePath" Id="mprII2D7DGFLFDCJESTHNKVW7J7GE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="callbackHandler" Id="mpr7JINXOYFTFFXXK2PZ6DD3XT2SA">
+            <Type TypeId="400" extStr="javax.security.auth.callback.CallbackHandler"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthYFWH3NM7GRAFBIXGCJAS2BB5GY" Name="KeystoreController" Nature="0" IsConstructor="true" IsOverride="false">
+        <com:Description>Constructor for working with a file-based keystore</com:Description>
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.String;[C)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="keystoreFilePath" Id="mprSTXVWW73UJD5BDO5HOJ6IRGFNA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="keyStorePassword" Id="mprESRZDFPKYFBFHAM62LMJQPLGTY">
+            <Type TypeId="401" extStr="char" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthYQPFOGQNARDBJEJRCNIZNFGHCM" Name="deleteEntry" Nature="0" IsOverride="false">
+        <com:Description>Removes an entry with the specified alias</com:Description>
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="deleteEntry(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="alias" Id="mpr7DCHXGWQHZCAPFOHBKPJXPTJHA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthUKDTHPKIZBF6RFCPPMV4NGCYDY" Name="getAliases" Nature="0" IsOverride="false">
+        <com:Description>Returns a list of all aliases in keystore</com:Description>
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getAliases()[Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthSIG6YMHR5NE5NGIOP76EENJMYY" Name="getCertificate" Nature="0" IsOverride="false">
+        <com:Description>Returns a certificate with the specified alias</com:Description>
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getCertificate(Ljava.lang.String;)Ljava.security.cert.X509Certificate;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="alias" Id="mprGB5DS5Q3VZHI3B72OMM4SOHTO4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.security.cert.X509Certificate"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthZP34F6NRUJEHBHGQVIKPTLSQPE" Name="getKeyStoreEntries" Nature="0" IsOverride="false">
+        <com:Description>Returns an iterable list of keystore's entries</com:Description>
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getKeyStoreEntries()Ljava.lang.Iterable&lt;Lorg.radixware.kernel.common.ssl.KeystoreEntry;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.lang.Iterable">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.ssl.KeystoreEntry"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth4HWCA6752FBMTE7YX6HXKEVZ2M" Name="getKeyStoreName" Nature="0" IsOverride="false">
+        <com:Description>Returns keystore's file path for a file-based keystore or keystore security provider's name for a PKCS#11 keystore</com:Description>
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getKeyStoreName()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthNGV3UBA4JNDPRK2LG22FABZ2RI" Name="getServerKeystoreKeyAliases" Nature="0" IsOverride="false">
+        <com:Description>Returns aliases of keys in server's keystore</com:Description>
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getServerKeystoreKeyAliases()[Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth6VKSTRAHGFFPVIOAUU5UM6C65E" Name="getServerKeystoreTrustedCertAliases" Nature="0" IsOverride="false">
+        <com:Description>Returns aliases of trusted certificates in server's keystore</com:Description>
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getServerKeystoreTrustedCertAliases()[Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthQM4ZVRUDYZFIDMTYEROKUMMZ7I" Name="getTrustedCertificateAliases" Nature="0" IsOverride="false">
+        <com:Description>Returns an array of trusted certificate aliases in keystore</com:Description>
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getTrustedCertificateAliases()[Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthH7MXDLSSPBDWVLEXQUXL2CCLKQ" Name="getType" Nature="0" IsOverride="false">
+        <com:Description>Returns keystore tyoe</com:Description>
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getType()Lorg.radixware.kernel.common.enums.EKeyStoreType;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.enums.EKeyStoreType"/>
+      </Method>
+      <Method Id="mthQN6JJBDKIZEG7DU5WJT5KJ4LJ4" Name="initKeyManagerFactory" Nature="0" IsOverride="false">
+        <com:Description>Initializes a KeyManagerFactory with the underlying keystore</com:Description>
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="initKeyManagerFactory(Ljavax.net.ssl.KeyManagerFactory;[C)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="factory" Id="mprJVMGXQFBL5F5HJNPRD7PTSKZ4E">
+            <Type TypeId="400" extStr="javax.net.ssl.KeyManagerFactory"/>
+            <Description>KeyManagerFactory to be initialized</Description>
+          </Parameter>
+          <Parameter Name="keyPassword" Id="mprLTVW4FOF4NGXDB5IEXRALV2XUY">
+            <Type TypeId="401" extStr="char" Dimension="1"/>
+            <Description>password for accessing a (single) private key in the keystore</Description>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth33JACETK5RBEPESTJNYKXV4OUY" Name="initServerKeyManagerFactory" Nature="0" IsOverride="false">
+        <com:Description>Initializes a KeyManagerFactory with the Server's keystore</com:Description>
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="initServerKeyManagerFactory(Ljavax.net.ssl.KeyManagerFactory;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="factory" Id="mprM4ACMC6EMFGZ5AMQTOHOTYCC2Q">
+            <Type TypeId="400" extStr="javax.net.ssl.KeyManagerFactory"/>
+            <Description>KeyManagerFactory to be initialized</Description>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthRALR2EZVHBDXTDSLMD4ADXW4GE" Name="initServerTrustManagerFactory" Nature="0" IsOverride="false">
+        <com:Description>Initializes a TrustManagerFactory with the Server's keystore</com:Description>
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="initServerTrustManagerFactory(Ljavax.net.ssl.TrustManagerFactory;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="factory" Id="mprGSKS5AGFRZCQXKCVEYVGHHU4XQ">
+            <Type TypeId="400" extStr="javax.net.ssl.TrustManagerFactory"/>
+            <Description>TrustManagerFactory to be initialized</Description>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthVN7K4WW4I5CAVMKJN772O3C23M" Name="initTrustManagerFactory" Nature="0" IsOverride="false">
+        <com:Description>Initializes a TrustManagerFactory with the underlying keystore</com:Description>
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="initTrustManagerFactory(Ljavax.net.ssl.TrustManagerFactory;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="factory" Id="mprKV3T7RQVD5BO3OY5Y653NQPAJU">
+            <Type TypeId="400" extStr="javax.net.ssl.TrustManagerFactory"/>
+            <Description>TrustManagerFactory to be initialized</Description>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthOSHLYRR5MNH4BGSMSUB2DQZ75U" Name="saveKeyStoreToFile" Nature="0" IsOverride="false">
+        <com:Description>Saves a file-based keystore</com:Description>
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="saveKeyStoreToFile(Ljava.lang.String;[C)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="keystoreFilePath" Id="mpr26XH5QFGGVHILMCD5OE5XWKUZM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="keyStorePassword" Id="mprDIEKR7W5QJGKLJTO2TD3TVCMPY">
+            <Type TypeId="401" extStr="char" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth6JOSLPWJYNFQBOHMEQW5QQ7ONE" Name="savePkcs11KeyStore" Nature="0" IsOverride="false">
+        <com:Description>Saves a PKCS#11 keystore</com:Description>
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="savePkcs11KeyStore([C)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="password" Id="mpr7AQQ6SXXZ5GXVNAW7QJXHQXSIY">
+            <Type TypeId="401" extStr="char" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth42LAKHLZCBARBI75KAJRPSTD5E" Name="storeCertificateChain" Nature="0" IsOverride="false">
+        <com:Description>Stores a certificate chain for the specified alias</com:Description>
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="storeCertificateChain([Ljava.security.cert.X509Certificate;Ljava.lang.String;[C)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="chain" Id="mprNWFULUJ3XBGMPOXWD43ASAFCJA">
+            <Type TypeId="400" extStr="java.security.cert.X509Certificate" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="alias" Id="mprTWOO2GJLXND5XAMD3JCAZYLKXM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="keyPassword" Id="mprEED3QYLI6RCO7IWUY7NXPV6PQM">
+            <Type TypeId="401" extStr="char" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthFDPXVS6URVDQ5DDMRBQRDAUIXY" Name="storeTrustedCertificate" Nature="0" IsOverride="false">
+        <com:Description>Stores a trusted certificate in the specified alias</com:Description>
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="storeTrustedCertificate(Ljava.lang.String;Ljava.security.cert.X509Certificate;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="alias" Id="mprAQ4OWM5XIJD2XMPJVSEFQ4F5HY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="certificate" Id="mprTGLVEJ3W6FHLTLYSHEXPLEOPQM">
+            <Type TypeId="400" extStr="java.security.cert.X509Certificate"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthWPXXRM2OBZCONAQR3UFWIUFMMY" Name="getSecurityProviderName" Nature="0" IsOverride="false">
+        <com:Description>Returns the name of the provider used for keystore instantiation.
+If keystore type is other than PKCS#11, returns null.</com:Description>
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getSecurityProviderName()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthJ345L7D2ZJBQ3N3ZAVNPXUHEL4" Name="containsRsaKey" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="containsRsaKey(Ljava.lang.String;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="alias" Id="mprJF6AXQ4TTBEPBGB3UZN4ZDAX7E">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthLKJCWJRKKZAVXJV35SAH57WN4M" Name="exportRsaKeyToPkcs12" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="exportRsaKeyToPkcs12(Ljava.lang.String;[CLjava.lang.String;[C)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="keyAlias" Id="mprD4PKHM2JKJHABF2SHT5DOCWSCM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="keyPassword" Id="mprTNIUJPBDQRC6VOMJUMQ3QRDRCA">
+            <Type TypeId="401" extStr="char" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="outerKeyStoreFilePath" Id="mprAMDQO5WZXJDSJELR7NLBZJYP2M">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="outerKeyStorePassword" Id="mprFWQKUPNGAZAIBEBTHFO6FBB6AU">
+            <Type TypeId="401" extStr="char" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthVXJ7EZJEQ5AWXPNFEKHHRN6JWQ" Name="getKeystoreRsaKeyEntry" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getKeystoreRsaKeyEntry(Ljava.lang.String;[C)Lorg.radixware.kernel.common.ssl.KeystoreRsaKeyEntry;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="alias" Id="mprYG3WA2MDMFBZHJB6PT322LTPVU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="keyPassword" Id="mpr5WEZJIITD5E43ESTTYTC6RVERE">
+            <Type TypeId="401" extStr="char" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.ssl.KeystoreRsaKeyEntry"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthH4RRDVEQIFBPHJJ776TLUAHVN4" Name="getRsaKeyAliases" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getRsaKeyAliases()[Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthUXTN4UHNUNHF5PQUM4ZLSHUACM" Name="getServerKeyStoreKey" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getServerKeyStoreKey(Ljava.lang.String;)Ljava.security.Key;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="alias" Id="mprKDHBA2OW5BELPBMG5ZOJIIKWLI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.security.Key"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthNSDZEVGRLJE5LNWBQRKTOCHCIA" Name="readRsaKeyFromPkcs12" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="readRsaKeyFromPkcs12(Ljava.lang.String;[C)Lorg.radixware.kernel.common.ssl.KeystoreRsaKeyEntry;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="outerKeyStoreFilePath" Id="mprMHCM67WHSNC6RG2ZOJSOXDCM3M">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="outerKeyStorePassword" Id="mpr66OFXHA6WBAGVL5PMXMLR3UWG4">
+            <Type TypeId="401" extStr="char" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.ssl.KeystoreRsaKeyEntry"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth77A6ILLOZVGULKQEUXLB2IDSYY" Name="storeRsaKey" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="storeRsaKey(Lorg.radixware.kernel.common.ssl.KeystoreRsaKeyEntry;Ljava.lang.String;[C)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="entry" Id="mpr7UKG4V5X4RFDRLDOK2ALT42UZQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.ssl.KeystoreRsaKeyEntry"/>
+          </Parameter>
+          <Parameter Name="alias" Id="mprR4CYTXTY6ZA6BMT4DGNPWL4LI4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="keyPassword" Id="mprURNCRFTDDZBWRLYQYBAVUOZOKA">
+            <Type TypeId="401" extStr="char" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth3DL6FCAHEVCHJH5MR2V76WV2VI" Name="writeRsaKeyToPkcs12" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="writeRsaKeyToPkcs12(Lorg.radixware.kernel.common.ssl.KeystoreRsaKeyEntry;Ljava.lang.String;[C)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="keyEntry" Id="mprPL7P4Z33QZHCLK65E7EZO7ELL4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.ssl.KeystoreRsaKeyEntry"/>
+          </Parameter>
+          <Parameter Name="outerKeyStoreFilePath" Id="mprIA7VDVVJSVFI3GAOWDGFPXAG2Q">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="outerKeyStorePassword" Id="mprN3E46JF7XVEVXJ3XKPFMXPOEFM">
+            <Type TypeId="401" extStr="char" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthAY2ZRCPA4BEPFFD53XBNBKILQM" Name="getKeystore" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getKeystore()Ljava.security.KeyStore;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.security.KeyStore"/>
+      </Method>
+      <Method Id="mthASZOBA46FRAVZGMGI2KMZYEU3U" Name="getDesKeyAliases" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getDesKeyAliases()[Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthWAGLSSGVYZBAVF4S7XH22JF5AQ" Name="getServerKeystoreController" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getServerKeystoreController()Lorg.radixware.kernel.common.ssl.KeystoreController;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.ssl.KeystoreController"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthL7R6LWNHXVGBLONFR6R4RXE35A" Name="getServerKeyStoreCertificate" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getServerKeyStoreCertificate(Ljava.lang.String;)Ljava.security.cert.X509Certificate;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="alias" Id="mprQVKQI65ERNCODEOBKZUNXLQCGY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.security.cert.X509Certificate"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.KeystoreControllerException"/>
+        </ThrownExceptions>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicM6RYQNJBUNEDPL6FNFV63ITFTE" Name="IFont" DescriptionId="mlsZ5CJLF7ZSVEFNC66SO4XOPOPHM" Type="5" Environment="common-client">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.text.IFont"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderaicM6RYQNJBUNEDPL6FNFV63ITFTE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaicM6RYQNJBUNEDPL6FNFV63ITFTE"/>
+    </Bodies>
+    <MethodGroup Id="cmgN4XKRZQM6NH5ZPKWNQRANEYXPI" Name="Root"/>
+    <PropertyGroup Id="cpgT3HY45XZKNEHXMTFHP3TPB2PHY" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthFZ45KFYZ6FCITFMNBZF273XURE" Name="asStr" DescriptionId="mlsVISIRTOWLNBENM3H6HX5ITQSKE" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="asStr()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21" DescriptionId="mlsQU2CALKT2FF6HBEMFCXNDNBUAY"/>
+      </Method>
+      <Method Id="mth2JDULX7IPJAXXIMFZ5PPTYZDAM" Name="changeDecoration" DescriptionId="mlsBG56MLIN4RAITODPWWM7NFRMBI" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="changeDecoration(Ljava.util.EnumSet&lt;Lorg.radixware.kernel.common.client.enums.ETextDecoration;>;)Lorg.radixware.kernel.common.client.text.IFont;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="decorations" DescriptionId="mls5NYF7VIMBRHHPEONDCARVAM75U" Id="mprZQNDTET45NABHFILHHGACNS2VI">
+            <Type TypeId="400" extStr="java.util.EnumSet">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.ETextDecoration"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.text.IFont" DescriptionId="mls6Z57MVMXNZGXVKZE65LIVWJCFU"/>
+      </Method>
+      <Method Id="mthEXTGQHREOZHLROBPMHGXKQ4MH4" Name="changeFamily" DescriptionId="mlsST3GFRRSRNAZJH36TK7AMWOEXQ" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="changeFamily(Ljava.lang.String;)Lorg.radixware.kernel.common.client.text.IFont;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="family" DescriptionId="mlsTEOKLGYIHBBOTO77RQUYHHE3CM" Id="mprIYTZM3JGQBGEDLJB2F4AEI7B6E">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.text.IFont" DescriptionId="mlsVKU2UJL5IZE5JKU3PBRQ32XPQM"/>
+      </Method>
+      <Method Id="mthVWSFR3JHIVEZFKTUJK7X25HXVY" Name="changeStyle" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="changeStyle(Lorg.radixware.kernel.common.client.enums.EFontStyle;)Lorg.radixware.kernel.common.client.text.IFont;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="size" Id="mpr7I35FSZ5PRDZBC74FN4RLHZIGE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.EFontStyle"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.text.IFont" DescriptionId="mlsN4RF4LRCBRDMRDNBTBX6ZUJAHA"/>
+      </Method>
+      <Method Id="mthAQMJASRT3ZFFBFZSTNYO42ZJNE" Name="changeWeight" DescriptionId="mls35RLG7NKIVEWBGJM7LNN5F546U" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="changeWeight(Lorg.radixware.kernel.common.client.enums.EFontWeight;)Lorg.radixware.kernel.common.client.text.IFont;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="weight" DescriptionId="mlsYNRLFJNIIFEBJNITC35WJGUDDA" Id="mpr2BNDHGQVOFBLDMBXUN7PSM2JOY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.EFontWeight"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.text.IFont" DescriptionId="mlsUXNKMO7GQFHDTCX4XFOYOWJQF4"/>
+      </Method>
+      <Method Id="mthR4NG2DBCWZCZLGDYJX7UJU43QE" Name="decreaseSize" DescriptionId="mls2RTTWGD7PBGS5FS2GI5A6YAWVE" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="decreaseSize(I)Lorg.radixware.kernel.common.client.text.IFont;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="delta" DescriptionId="mlsD35YGHNENNC7DLIZXNCEEBZGPM" Id="mpr6TP6G7LQHZCQHNC6C6KEQTQ5QM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.text.IFont" DescriptionId="mlsCYZLECS4QVHMTOB5I7BOWEFS4E"/>
+      </Method>
+      <Method Id="mthFBUGEBN7MFE6BHQV4PMREWFKKU" Name="getBold" DescriptionId="mlsIZ3XPPUNWJFBDGNWBOE3C2JCUI" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getBold()Lorg.radixware.kernel.common.client.text.IFont;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.text.IFont" DescriptionId="mlsFFC2NEIMSBHH3HFAV7BLQRTX6U"/>
+      </Method>
+      <Method Id="mth5XTDLX3VQZH45IGNB6SKULUMWM" Name="getDecoration" DescriptionId="mlsJI7AEW2A2ZDBBKUGQA7CW3EOD4" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getDecoration()Ljava.util.EnumSet&lt;Lorg.radixware.kernel.common.client.enums.ETextDecoration;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.EnumSet" DescriptionId="mlsBVEZNRBFINAPZOVNGKFDEMJDYE">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.ETextDecoration"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthSGOWUEOM7RBXXHWXNVIQHCNKGE" Name="getFamily" DescriptionId="mlsBMMMTMZ34FGMZNE7PJWHW3563E" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getFamily()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21" DescriptionId="mls6DNJZCLYRFCJBHMJEDQCMGVQZI"/>
+      </Method>
+      <Method Id="mthWFUFZGUOTRGMJFKO3E4CXLCKCU" Name="getItalic" DescriptionId="mlsSNHG265IHBGA7FFMYR6W4EUIJ4" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getItalic()Lorg.radixware.kernel.common.client.text.IFont;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.text.IFont" DescriptionId="mlsIO3O6DAE6VBUVHACWMCKYU7ADI"/>
+      </Method>
+      <Method Id="mthQL4AXRICBVHELOHGXWJZ5H3DG4" Name="getSize" DescriptionId="mls46P766ICGRG7XLYLS4J7SST6Z4" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getSize()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int" DescriptionId="mls2NXMH5UC45BLHD3JMH7NDNG2J4"/>
+      </Method>
+      <Method Id="mthXHXE7TKTMVAK5ALO3L3TLBOJPM" Name="getStyle" DescriptionId="mls26M7IWMAPRBVFCYI324JHFCQCE" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getStyle()Lorg.radixware.kernel.common.client.enums.EFontStyle;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.enums.EFontStyle" DescriptionId="mlsXYOFKT5PWRCLLCE4XNT7NUZ5A4"/>
+      </Method>
+      <Method Id="mthHA4J5QWATZGWBEEYZLH7CORIMQ" Name="getWeight" DescriptionId="mls3W6SAXOGTRGLBLI6GQDN26EAMU" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getWeight()Lorg.radixware.kernel.common.client.enums.EFontWeight;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.enums.EFontWeight" DescriptionId="mlsVJ6DKPIJEFD7RDPLELWWJXXSG4"/>
+      </Method>
+      <Method Id="mthVDVNITOTRNDMDDP2IIF4D3FTYM" Name="increaseSize" DescriptionId="mlsF5PBUL4DEFAITDOTRSANAKRUD4" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="increaseSize(I)Lorg.radixware.kernel.common.client.text.IFont;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="delta" DescriptionId="mlsKE4BNSYSUNGX7CNAJL7ZZ2XBOI" Id="mprLO65PKETYRHUHO7BQBACFE5FXU">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.text.IFont" DescriptionId="mlsTN275MCQWJF75PGPRAENVYWOZU"/>
+      </Method>
+      <Method Id="mthLKQO2TQE7NDPRK5FBY3VY7YWJI" Name="isBold" DescriptionId="mlsCG7ITKUQPFF3RB2I37R2XM6KXA" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="isBold()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mls5SFE6S2HBNER3NROKOEMVQH524"/>
+      </Method>
+      <Method Id="mthT2BBWNJX75FPVJXNCFUNCLOIKA" Name="isItalic" DescriptionId="mlsI5YWFWB7FFGMJHY7NGZ3ZF5EYY" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="isItalic()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsD3YTBVN5UNBU5P2LCKQSOJGARU"/>
+      </Method>
+      <Method Id="mth3SPH43JHR5DMRN6D5DIFOLBRXM" Name="changeSize" DescriptionId="mlsV32GQHFHHRAQZOPDWYGEDHDIJY" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="changeSize(I)Lorg.radixware.kernel.common.client.text.IFont;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="size" DescriptionId="mlsLBHBLMNI5NDJNAFTWPOQKNQFV4" Id="mprLB3YKMVVYVD3VOCGEKJ3BUV64A">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.text.IFont" DescriptionId="mlsTR26W5IDOJFC3PV2R6OUNFKSZU"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

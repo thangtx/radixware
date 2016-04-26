@@ -1,0 +1,856 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcKHAQBRKV2DNRDISQAAAAAAAAAA" Name="JobQueue" Type="3" Environment="server">
+    <AccessRules IsFinal="true">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcTJAHBATW3ZHHDNBCC65VCVU4VQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcHOPFX4EEDFEHHO2AZMUPYEU62I"/>
+    </Bodies>
+    <MethodGroup Id="cmgZDNO6D24INAMZGMTQ3H6QACFLM" Name="Root"/>
+    <PropertyGroup Id="cpgEUD36XAK6ZGNDKQHO35VWAHJAU" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth3JUWKB7455HI3DSWPLLPEEL4S4" Name="scheduleRelative" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="title" Id="mprBGNACFLOLBDHHMWIEQCT7VMCEI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="creator" Id="mprNARLGOLCTNCCDGBHB7IADWH6MQ">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="delayMillis" Id="mprJPRDVXCANFCXRJGAM7V36TWOS4">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="className" Id="mprVYMPICQDDBBAXKIPXI2BCJL7NI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="methodId" Id="mpr5UKEMCMMFFGWRNIJOH43BZGVRQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="params" Id="mprUOSMYP34QZBM3ESQ3MUOTGLGUI">
+            <Type TypeId="411" Path="adcB7JWIHVOCBC6LGWV2I6HBKBWIA" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="scpName" Id="mprKLN7KGW6TNB2BE4CC5M2JMCFRU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="priority" Id="mprY6BRW4M275AWXNES47BPEQICKQ">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="boosting" Id="mprPC7B7CPA7ZEKVIJPM6SZV2LV74">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="taskId" Id="mprXV35RB4Q7ZCPVNNJHH6ZQAZA4A">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="allowRerun" Id="mpr25VHA6QVBVAEPCKW7PQLJQYPF4">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().JobQueue.scheduleRelative(
+        title,
+        creator == null ? null : creator.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthJ66JVZJF57NRDIMQAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(),
+        delayMillis == null || delayMillis.longValue() &lt; 0 ? 0 : delayMillis.longValue(),
+        className,
+        methodId,
+        params,
+        scpName,
+        priority,
+        boosting, 
+        taskId,
+        allowRerun);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthXLL22T2ZTJC5FF2QPNEDIICKIM" Name="scheduleRelative" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="title" Id="mprMCI6ANHJGZCNRL2JRYNQOW5KRI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="creator" Id="mprRDBP5N3WT5AODDP5KS46FVJLJM">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="delayMillis" Id="mprB5RZL5DNFZFXLBRH3KASXADX4U">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="className" Id="mprFBFTACE5WJDBDFQAHJDW7WJQII">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="methodId" Id="mpr374F5X72CRE5VHCOPK4BVUJVYI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="params" Id="mprUIJT34C3SBFJRDC7MDCG7QMWNU">
+            <Type TypeId="411" Path="adcB7JWIHVOCBC6LGWV2I6HBKBWIA" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="scpName" Id="mprBDGSUWIFZNCRBOEQNHGPJ64WCQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="priority" Id="mpr4FXJ54QYA5DEBHFZKNJ3S6RC7M">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="boosting" Id="mprC6HEKKGMPBBNBFGILBM7UXQXR4">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="allowRerun" Id="mprYGJGMMX26NEPNEGE5FSY33XNAQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA mth3JUWKB7455HI3DSWPLLPEEL4S4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(
+        title,
+        creator,
+        delayMillis,
+        className,
+        methodId,
+        params,
+        scpName,
+        priority,
+        boosting,
+        null,
+        allowRerun);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthAHH2D735R3OBDCWOAAMPGXSZKU" Name="schedule" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="title" Id="mprB2BU24SINZC2VL2SZICNNI4V5E">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="creator" Id="mprROTB2D33HFHZVHLXRAKC2SZBMI">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="delay" Id="mprW5GPUGTTDVC6NAUFC2HLMJTMYI">
+            <Type TypeId="11"/>
+          </Parameter>
+          <Parameter Name="className" Id="mprH37GV5GPDJEX5ATJIE4QKQJJP4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="methodId" Id="mpr5IRW43PYSRBETHCA42TZ2E3KQE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="params" Id="mprOM33X6S2PVBUVKZGOKI6RTZVEA">
+            <Type TypeId="411" Path="adcB7JWIHVOCBC6LGWV2I6HBKBWIA" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="priority" Id="mpr2RSGGF2OHBGFZMPB6O72LQXGB4">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="boosting" Id="mprRQBZ3DGBAFC7RCSHTE5P7DSUU4">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="allowRerun" Id="mprZFM3XSS3SBEYVGLDVUAG4DETNU">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) org.radixware.kernel.server.arte.JobQueue.schedule(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), title, creator==null?null:creator.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthJ66JVZJF57NRDIMQAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), delay.doubleValue(), className, methodId, params, priority, boosting, allowRerun);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthLPLRELMT25CL7KZWI2HNUFIYN4" Name="schedule" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="title" Id="mprLHGGT5RJAVAR3BUZSSAXODZTSU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="creator" Id="mprPZCCCAS25ZH37DZO5ZADELFTJI">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="time" Id="mprWNYJDPODYFD2HJ3UOU553G76JM">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="className" Id="mprML6QUYLDHNHOPJ66RD7G3EIOOI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="methodId" Id="mprWEG3HTZGDFDXBKP2VWE2LPVNOQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="params" Id="mprOQVEARZMQ5EFBFUZTBQ65EHGSI">
+            <Type TypeId="411" Path="adcB7JWIHVOCBC6LGWV2I6HBKBWIA" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="scpName" Id="mprI56GA2GFV5EJLKYE3SVM37BD24">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="priority" Id="mprM4VVW5ELCVFEZIE5GUKQUTPMY4">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="boosting" Id="mprB3BZRY6HRBEXVLKNWZ4AVPDKAM">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="taskId" Id="mprICGRZIPCOJE2VLIZSZFE3IEPTQ">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="allowRerun" Id="mprQP27HWLE5ND4NBOG6FERD3ORUQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().JobQueue.schedule(title, creator == null ? null : creator.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthJ66JVZJF57NRDIMQAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), time, className, methodId, params, scpName, priority, boosting, taskId, allowRerun);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthDMG5E6RRWNHFPEQFQ2PSVI7UWA" Name="schedule" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="title" Id="mprLHGGT5RJAVAR3BUZSSAXODZTSU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="creator" Id="mprPZCCCAS25ZH37DZO5ZADELFTJI">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="time" Id="mprWNYJDPODYFD2HJ3UOU553G76JM">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="className" Id="mprML6QUYLDHNHOPJ66RD7G3EIOOI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="methodId" Id="mprWEG3HTZGDFDXBKP2VWE2LPVNOQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="params" Id="mprOQVEARZMQ5EFBFUZTBQ65EHGSI">
+            <Type TypeId="411" Path="adcB7JWIHVOCBC6LGWV2I6HBKBWIA" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="priority" Id="mprM4VVW5ELCVFEZIE5GUKQUTPMY4">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="boosting" Id="mprB3BZRY6HRBEXVLKNWZ4AVPDKAM">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="taskId" Id="mprICGRZIPCOJE2VLIZSZFE3IEPTQ">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="allowRerun" Id="mprQP27HWLE5ND4NBOG6FERD3ORUQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().JobQueue.schedule(title, creator==null?null:creator.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthJ66JVZJF57NRDIMQAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), time, className, methodId, params, priority, boosting, taskId, allowRerun);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthB3JTV3D5R3OBDCWOAAMPGXSZKU" Name="schedule" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="title" Id="mprMLPX2PHURBBVDOHNJE4SE5B4VE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="creator" Id="mprQ4L7QVT4O5GEFJ5QXV3YGIDCIM">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="time" Id="mprIP6AXJB3NVAYHDVNMPUEP7YZJ4">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="className" Id="mprTWQBZYIOJFAKRDSLS2KK7CLKPU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="methodId" Id="mprY7U32G6FNBEQ5KMWM6UDUAXQUM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="params" Id="mprW3XKCMV7EFH75AYCOPC3TIIBAY">
+            <Type TypeId="411" Path="adcB7JWIHVOCBC6LGWV2I6HBKBWIA" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="priority" Id="mprTVCD6NYR6BBKBB4QLTXRDR3IVY">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="boosting" Id="mprOVP7OFFHDFGHHAXY4PC3AKF57A">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="allowRerun" Id="mprXY7E7BJD35CZRJUX3LU3QEEI34">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA mthDMG5E6RRWNHFPEQFQ2PSVI7UWA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(
+    title,
+    creator,
+    time,
+    className,
+    methodId,
+    params,
+    priority,
+    boosting,
+    null,
+    allowRerun
+);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthOWIQPTL5R3OBDCWOAAMPGXSZKU" Name="post" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="title" Id="mprKQ77OXRCLZH5NGWUDHEVY6FADY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="creator" Id="mprQRCDXBNWD5HSZK5I5MXMVKL2M4">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="className" Id="mprLVBTPIRVMFGNLNIP53B4Y5LZPA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="methodId" Id="mprMKNHIJEUUREUBA2CDLVK27KAPM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="params" Id="mprYG2FKQVFIZA7RAWMCZZWHIX36U">
+            <Type TypeId="411" Path="adcB7JWIHVOCBC6LGWV2I6HBKBWIA" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="priority" Id="mprYS52QBGULFFAVMERGHZZTCY5KM">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="boosting" Id="mpr4RHGENZSZ5C4RPQ4OE2JSZLHUQ">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="allowRerun" Id="mprC3ZULAHUSZDMJG3SCL7NR64MYU">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA mth5B5JGMPWXRAXPPR6WUEB7KOV4I" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(
+        title,
+        creator,
+        className,
+        methodId,
+        params,
+        null,
+        priority,
+        boosting,
+        allowRerun);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthPFBLT5TQKZBMNAOTLCEGOM6HXI" Name="schedule" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="title" Id="mprSUGTSJRCFNFRPLYN7KB5Z343DU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="creator" Id="mprEFYXKAVEUZAUHCKCYWM5NMIMDI">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="className" Id="mprAOXKXKYB6BGXPEIA4LBNKF3FOI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="methodId" Id="mprA2ILXSC2LZGDZL3G2IDZ7TBKSY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="params" Id="mpr7HIZKDV4M5DMHNM3CFE3HYGUVM">
+            <Type TypeId="411" Path="adcB7JWIHVOCBC6LGWV2I6HBKBWIA" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="priority" Id="mprHDTQY76I5NH3TMOPFNHUISLFRA">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="boosting" Id="mpr5I6MZZT225DNJOMX4J6TK3F3WE">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="taskId" Id="mprWHRC7AETG5G4VDA2Z25SHXUYYQ">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="allowRerun" Id="mpr26EMU4MO5ZDMHGTEVFLPHXQGPQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().JobQueue.schedule(title, creator==null?null:creator.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthJ66JVZJF57NRDIMQAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), null, className, methodId, params, priority, boosting, taskId, allowRerun);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthVHZAGDT6R3OBDCWOAAMPGXSZKU" Name="schedule" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="title" Id="mprQD5WCEU3FNDENAWG4PDUUOAMDA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="creator" Id="mpr7GUJ3TPGW5HO3L3RF3L4UW6AOI">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="className" Id="mprBV3EDKJVWFF7TOWATGADUOL3J4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="methodId" Id="mprPP337BO2SFEVPEJVCPQFVWBVYQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="params" Id="mprG3KVWUQS2NCXVOBNDRVUZS7TO4">
+            <Type TypeId="411" Path="adcB7JWIHVOCBC6LGWV2I6HBKBWIA" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="priority" Id="mprQPR2GMYQJZEI7HOG5AUPXXFZVE">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="boosting" Id="mprNQHVHHLOZ5E3PE3JPC4LA7DQH4">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="allowRerun" Id="mprFHHD3VEZW5AO5PWMKPMMYHSX64">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA mthPFBLT5TQKZBMNAOTLCEGOM6HXI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(
+    title,
+    creator, 
+    className, 
+    methodId,
+    params,
+    priority,
+    boosting,
+    null,
+    allowRerun
+);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthRSICXRN3UFHRLDFWXXXN4CB7XY" Name="unsheduleJob" Nature="12" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="jobId" Id="mprNNHOMIQK6RBIDC2A3CMXJGQOC4">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().JobQueue.unsheduleJob(jobId);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthEGRZNJ2YXNESHIUMDAGIGWEJYU" Name="schedule" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="title" Id="mpr6OWYHNSUKJDWJGGRCSQL56SZ74">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="creator" Id="mprA2TTUCKLJVFPVMF5NOZDZ7OVFE">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="delay" Id="mprU7SGRDOAIVGCHPWOKNPJJCNQS4">
+            <Type TypeId="11"/>
+          </Parameter>
+          <Parameter Name="className" Id="mprKNMNSDEKMZH7VPARXCBTUKKYHE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="methodId" Id="mprI5XYECF5VJBL3O5SKHXHJDCU4I">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="params" Id="mprLDNW7XWYTBGCBD5I7P4EMCXTAA">
+            <Type TypeId="411" Path="adcB7JWIHVOCBC6LGWV2I6HBKBWIA" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="priority" Id="mprWQYKIH4CUFCVZILFYZ2GA3MMJ4">
+            <Type TypeId="2" Path="acsYING7OYUJ3NRDAQSABIFNQAAAE"/>
+          </Parameter>
+          <Parameter Name="boosting" Id="mprS6FVDSGLNFA7PNUWHWGOSQFMMY">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="allowRerun" Id="mprTKDBB35VDREZFBKT7RFYR7F3VI">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA mthAHH2D735R3OBDCWOAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(title, creator, delay, className, methodId, params, priority.getValue(), boosting, allowRerun);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthGV24MJ2JPNCJRH4GESVXHKPZVM" Name="schedule" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="title" Id="mprEJGOC55NLRFCHM4KU2OBSNGKXQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="creator" Id="mpr2YCGE7DI6RBVPBK4GGQVCLDG6I">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="time" Id="mprPEAMDSDIFRD6FE6LQYXSDD32BE">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="className" Id="mprN65KFG2DMZESJOWWWKZSNBAJVA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="methodId" Id="mpr72QKOZAUQRDW7AEUWZWBMFDMPE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="params" Id="mprQ4NFJBEWAFD55EX5DMHNWZNJUM">
+            <Type TypeId="411" Path="adcB7JWIHVOCBC6LGWV2I6HBKBWIA" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="priority" Id="mprZ4SFIB6ZUNF2PCI2QZMLW2MZPI">
+            <Type TypeId="2" Path="acsYING7OYUJ3NRDAQSABIFNQAAAE"/>
+          </Parameter>
+          <Parameter Name="boosting" Id="mprRWIJT33HUFANNNCUKAEYPV33JQ">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="allowRerun" Id="mprIFCZ4PG5TNFTLCOLFLWJ5IXDTY">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA mthB3JTV3D5R3OBDCWOAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(title, creator, time, className, methodId, params, priority.getValue(), boosting, allowRerun);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthTSDWAFWY7RGDFIIHCUCNEEK3MQ" Name="schedule" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="title" Id="mprA4C37ODIBRCIPEVJP2G4ICW7SQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="creator" Id="mprPW3NQTZMZ5GFHAQFQUYILF6T2U">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="className" Id="mprSWNJ5XWUMVGYZH6SJMTSW2YZLM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="methodId" Id="mprQKXE7ITUURC5NBDUFP2IORXG4E">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="params" Id="mprQZEYBEJQWNCGZHPQRI5NMCYI3U">
+            <Type TypeId="411" Path="adcB7JWIHVOCBC6LGWV2I6HBKBWIA" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="priority" Id="mpr4LHSS2UCVVD7RF3OENKRPZ4HIU">
+            <Type TypeId="2" Path="acsYING7OYUJ3NRDAQSABIFNQAAAE"/>
+          </Parameter>
+          <Parameter Name="boosting" Id="mprJWMDGO6BJRCIHONSUDRKEPFCGM">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="allowRerun" Id="mprRZDZEBZABBB7PALAIUDEZ6PBEA">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA mthVHZAGDT6R3OBDCWOAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(title, creator, className, methodId, params, priority.getValue(), boosting, allowRerun);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth5B5JGMPWXRAXPPR6WUEB7KOV4I" Name="post" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="title" Id="mprZHLQ7HJYYZGLFOJDCUK2CPW32E">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="creator" Id="mprKCDMGCOGCFAK3CNTQ6L5W3JKU4">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="className" Id="mprJUJ43YPL7JFQRHGNITFA4G4HVM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="methodId" Id="mprIWSKTNSQMVAHZP4Q2TFFJZGVEQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="params" Id="mprOOAEURTSSVFCVBDSXABOAWRPRQ">
+            <Type TypeId="411" Path="adcB7JWIHVOCBC6LGWV2I6HBKBWIA" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="scpName" Id="mprEUKCWXXRA5FPRLPETFDC4UKS2E">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="priority" Id="mprUOTTBKHEEVHGRG2252Q5US5F2E">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="boosting" Id="mprXF6CLMSXANBYXOYED7NYQLAS7M">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="allowRerun" Id="mprTWL7UWXQINHYVM7MUGXZCI5SSQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA mthLPLRELMT25CL7KZWI2HNUFIYN4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(
+    title,
+    creator,
+    null,
+    className,
+    methodId,
+    params,
+    scpName,
+    priority,
+    boosting,
+    null,
+    allowRerun
+);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth5SWGWN667ZBPPIHSVRKYK3MGSU" Name="post" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="title" Id="mprZHLQ7HJYYZGLFOJDCUK2CPW32E">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="creator" Id="mprKCDMGCOGCFAK3CNTQ6L5W3JKU4">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="className" Id="mprJUJ43YPL7JFQRHGNITFA4G4HVM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="methodId" Id="mprIWSKTNSQMVAHZP4Q2TFFJZGVEQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="params" Id="mprOOAEURTSSVFCVBDSXABOAWRPRQ">
+            <Type TypeId="411" Path="adcB7JWIHVOCBC6LGWV2I6HBKBWIA" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="priority" Id="mprUOTTBKHEEVHGRG2252Q5US5F2E">
+            <Type TypeId="2" Path="acsYING7OYUJ3NRDAQSABIFNQAAAE"/>
+          </Parameter>
+          <Parameter Name="boosting" Id="mprXF6CLMSXANBYXOYED7NYQLAS7M">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="allowRerun" Id="mprTWL7UWXQINHYVM7MUGXZCI5SSQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA mthOWIQPTL5R3OBDCWOAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(
+        title,
+        creator,
+        className,
+        methodId,
+        params,
+        priority.getValue(),
+        boosting,
+        allowRerun);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

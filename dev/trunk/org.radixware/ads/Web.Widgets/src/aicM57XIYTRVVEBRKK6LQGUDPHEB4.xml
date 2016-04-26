@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicM57XIYTRVVEBRKK6LQGUDPHEB4" Name="ValueEditor" Type="5" Environment="web">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.wps.rwt.ValueEditor"/>
+    </AccessRules>
+    <TypeArguments>
+      <xsc:Argument DerivationRule="extends" Alias="T">
+        <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+      </xsc:Argument>
+    </TypeArguments>
+    <Headers>
+      <Src Name="HeaderaicM57XIYTRVVEBRKK6LQGUDPHEB4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaicM57XIYTRVVEBRKK6LQGUDPHEB4"/>
+    </Bodies>
+    <MethodGroup Id="cmg4RECJ4EPFBA7XNT34CID6X5RME" Name="Root"/>
+    <PropertyGroup Id="cpgI4CALRZEABHDXBYY7KKVNUDFMQ" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthQSEBPVN6ABGBRE4PLGKCBICUKM" Name="addFinishChangeValueListener" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="addFinishChangeValueListener(Lorg.radixware.wps.rwt.ValueEditor.FinishChangeValueListener;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="listener" Id="mprSH7K7IYYQFC37LFIZX2XH253WA">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.ValueEditor.FinishChangeValueListener"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthWZHBHEEFU5G7NEHUB6HHKFJJ64" Name="addStartChangeValueListener" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="addStartChangeValueListener(Lorg.radixware.wps.rwt.ValueEditor.StartChangeValueListener;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="listener" Id="mprWOBX267GIJB3NJQVOYP4QGBRUQ">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.ValueEditor.StartChangeValueListener"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth7MG7M6I2NRBYLITMUV4T3XSX3U" Name="addUnacceptableInputListener" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="addUnacceptableInputListener(Lorg.radixware.wps.rwt.ValueEditor.UnacceptableInputListener;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="listener" Id="mprQ34NZRZKQBDLHNV5RRDYGA5MZM">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.ValueEditor.UnacceptableInputListener"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthVBK3JWA4LNBR3CHTM7QDSXBTZQ" Name="addValueChangeListener" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="addValueChangeListener(Lorg.radixware.wps.rwt.ValueEditor.ValueChangeListener&lt;TT;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="listener" Id="mprFG7JD4JJ2RG5JIMXGSCUPJYYOQ">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.ValueEditor.ValueChangeListener">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="T" IsArgumentType="true"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthKSJ5JGZUCVHP3JDDDZF6WL36HM" Name="checkInput" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="checkInput()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth64IFJJPFDJADVDHPQ34RSOIMFU" Name="checkInput" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="checkInput(Ljava.lang.String;Ljava.lang.String;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="messageTitle" Id="mprDHJ7K36635C2FGUXGBUPE3O7VY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="firstMessageLine" Id="mpr7QKI57T4V5BJRDY67BXC2TV2LU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthMRKSD3V7VZELVHCSAAEELHBKF4" Name="getUnacceptableInput" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getUnacceptableInput()Lorg.radixware.kernel.common.client.types.UnacceptableInput;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.types.UnacceptableInput"/>
+      </Method>
+      <Method Id="mthEIECPISPXJEDXEMLY2N6W3W72Y" Name="hasAcceptableInput" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="hasAcceptableInput()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthCQGI4X7CB5CCBCMAVSMJRS7NEA" Name="removeFinishChangeValueListener" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="removeFinishChangeValueListener(Lorg.radixware.wps.rwt.ValueEditor.FinishChangeValueListener;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="listener" Id="mprJYP4S7ZX2NA5LFLQ7ZVWPGRKYQ">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.ValueEditor.FinishChangeValueListener"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthYXPKZJ72LJD7NHEHEOBLB5XWM4" Name="removeStartChangeValueListener" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="removeStartChangeValueListener(Lorg.radixware.wps.rwt.ValueEditor.StartChangeValueListener;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="listener" Id="mpr7SHWRUVSVFGCZGTOFAPEIND524">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.ValueEditor.StartChangeValueListener"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthL77245HFAFBJPESSEAUJC3WTBM" Name="removeUnacceptableInputListener" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="removeUnacceptableInputListener(Lorg.radixware.wps.rwt.ValueEditor.UnacceptableInputListener;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="listener" Id="mprIL4MANFBLBCL7IT2NNUQFFM3EQ">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.ValueEditor.UnacceptableInputListener"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthLJK5T4XYPVCA5BYKE4KRXRVFW4" Name="removeValueChangeListener" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="removeValueChangeListener(Lorg.radixware.wps.rwt.ValueEditor.ValueChangeListener&lt;TT;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="listener" Id="mprZWDDYMXJOJBMZIAHHUQT7T4NIY">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.ValueEditor.ValueChangeListener">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="T" IsArgumentType="true"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth4FTFI7RD4FCYJGTP6YZFYD56AY" Name="setInputText" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setInputText(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="inputText" Id="mprB57KRRT7KZDSHEQXOGP5KAIHXE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

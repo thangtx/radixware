@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdRBK6FQVUEZG7NDZEERZZ34YGQI" Name="TaskExportXsd" TargetNamespace="http://schemas.radixware.org/task-impExp.xsd" Environment="common"><xs:schema targetNamespace="http://schemas.radixware.org/task-impExp.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xscml="http://schemas.radixware.org/xscml.xsd" xmlns:rcmn="http://schemas.radixware.org/common.xsd" xmlns:this="http://schemas.radixware.org/task-impExp.xsd" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:schd="http://schemas.tranzaxis.com/scheduling-impExp.xsd">
+	<xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+	<xs:import namespace="http://schemas.radixware.org/common.xsd" schemaLocation="common.xsd"/>
+	<xs:import namespace="http://schemas.radixware.org/xscml.xsd" schemaLocation="xscml.xsd"/>
+	<xs:import namespace="http://schemas.tranzaxis.com/scheduling-impExp.xsd" schemaLocation="scheduling-impExp.xsd"/>
+	<xs:complexType name="Task">
+		<xs:complexContent>
+			<xs:extension base="rcmn:ImpExpEntity">
+				<xs:sequence>
+					<xs:element name="ExpiredPolicy" type="xs:integer"/>
+					<xs:element name="Priority" type="xs:integer"/>
+					<xs:element name="PriorityBoostingSpeed" type="xs:integer"/>
+					<xs:element name="Title" type="types:Str" minOccurs="0"/>
+					<xs:element name="IsActive" type="types:Bool" minOccurs="0"/>
+					<xs:element name="ExecRoleGuids" type="types:Str" minOccurs="0"/>
+					<xs:element name="SchedulerUnitId" type="types:Int" minOccurs="0"/>
+					<xs:element name="ScheduleGuid" type="types:Str" minOccurs="0"/>
+					<xs:element name="ScheduleId" type="types:Int" minOccurs="0"/>
+					<xs:element name="Seq" type="types:Int" minOccurs="0"/>
+					<xs:element name="TaskToJumpIndex" type="types:Int" minOccurs="0"/>
+					<xs:element name="ChildTasks" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="ChildTask" type="this:Task" minOccurs="0" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ExportRequest">
+		<xs:sequence>
+			<xs:element name="ExportItem" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:attribute name="TaskId" type="types:Int" use="required"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TaskSet">
+		<xs:sequence>
+			<xs:element name="Task" type="this:Task" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="Task" type="this:Task"/>
+	<xs:element name="TaskSet" type="this:TaskSet"/>
+	<xs:element name="ExportRequest" type="this:ExportRequest"/>
+</xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcFFMRZLRJFRDNHIDYGFCTMWRJ4Y" Name="Utils" Type="3" Environment="common-client" IsDual="true">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcC4NQ7CV2UBFBBAQCNX2SEGI46M"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcCBZ24I2QQBC2ZIW6LSHPLJGP2Q"/>
+    </Bodies>
+    <MethodGroup Id="cmgNGSOFYE6CZHLBCSQMJZLB3U2DM" Name="Root"/>
+    <PropertyGroup Id="cpgQPQFEGCDOVG2BHQ72A6OUODAN4" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthZUYR3TSD6VDRRLLSWHLLJY2UYA" Name="getConstTitle" Nature="0" Environment="explorer" IsOverride="false">
+        <AccessRules IsStatic="true" IsDeprecated="true"/>
+        <Parameters>
+          <Parameter Name="id" Id="mprC2CFR5A37FGWNIODX6MANVV3CA">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="c" Id="mprQLDJYKO4SVCGVDDU24ULZZMC4M">
+            <Type TypeId="411" Path="adcXKWJQYIXZVBQJCMTKOIPL5MNCU">
+              <xsc:GenericArguments>
+                <xsc:Argument DerivationRule="extends" Alias="?">
+                  <xsc:Type TypeId="400" extStr="java.lang.Comparable">
+                    <xsc:GenericArguments>
+                      <xsc:Argument Alias="?"/>
+                    </xsc:GenericArguments>
+                  </xsc:Type>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthFK3EWBJGWBA3JCFUCZGO3QUYZM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getEnumPresentationDef(id).getItem(c).getTitle();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthERUIWFQNMZGJJCPMBRCBR6TM54" Name="getConstIcon" Nature="0" Environment="explorer" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="id" Id="mprRJEBNVN2OFFOHHF5367RPMHM7A">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="c" Id="mprSV4HFMEEOVCCVJLD4EYICNHCWU">
+            <Type TypeId="411" Path="adcXKWJQYIXZVBQJCMTKOIPL5MNCU">
+              <xsc:GenericArguments>
+                <xsc:Argument DerivationRule="extends" Alias="?">
+                  <xsc:Type TypeId="400" extStr="java.lang.Comparable">
+                    <xsc:GenericArguments>
+                      <xsc:Argument Alias="?"/>
+                    </xsc:GenericArguments>
+                  </xsc:Type>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QIcon"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcCUZTMTWLPFABNGEX6P6X2PHQVA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getQIcon( </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthFK3EWBJGWBA3JCFUCZGO3QUYZM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getEnumPresentationDef(id).getItem(c).getIcon());</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthOTX6PXSYVBBKTIR4XAFQJWHEKI" Name="isClassExtends" Nature="0" Environment="explorer" IsOverride="false">
+        <AccessRules IsStatic="true" IsDeprecated="true"/>
+        <Parameters>
+          <Parameter Name="ancestorClassId" Id="mprBOOHTKRK6JBBZEVNWVLCIBZV5U">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="baseClassId" Id="mprCDSQ7HKGCVD3DDBH6RVX3WXAYE">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthFK3EWBJGWBA3JCFUCZGO3QUYZM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getRepository().isClassExtends(ancestorClassId, baseClassId);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYODM3DWTHFHD5EVZHO4XHOCZ6E" Name="getConstTitle" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="env" Id="mprIQDSKXPWCBCKLHAKBL4FPFUAQY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="id" Id="mprWDGDSKKWSRDOXNQ76LGKACXOYU">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="c" Id="mprSEPDVXE2BNFPRCRTT4LINZLKCE">
+            <Type TypeId="411" Path="adcXKWJQYIXZVBQJCMTKOIPL5MNCU">
+              <xsc:GenericArguments>
+                <xsc:Argument DerivationRule="extends" Alias="?">
+                  <xsc:Type TypeId="400" extStr="java.lang.Comparable">
+                    <xsc:GenericArguments>
+                      <xsc:Argument Alias="?"/>
+                    </xsc:GenericArguments>
+                  </xsc:Type>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return env.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthRFQCEXJDNJDINHW32QFZAVEBV4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getEnumPresentationDef(id).getItem(c).getTitle();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthTCPIBFN5C5EF3KBJ2BBLUCCMLA" Name="isClassExtends" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="env" Id="mprG4J42OBO6FG7TGPLTA7ALC2KOE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="ancestorClassId" Id="mpr35SILMNMNZFTJK2NULYYGU5EWI">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="baseClassId" Id="mprXZ5B6YBBTRAOJGE7UZRZB274RQ">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return env.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthRFQCEXJDNJDINHW32QFZAVEBV4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getRepository().isClassExtends(ancestorClassId, baseClassId);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 sp2 U (http://www.altova.com) by nvayner (Compass Plus) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:this="http://schemas.radixware.org/connections.xsd" xmlns:eas="http://schemas.radixware.org/eas.xsd" xmlns:types="http://schemas.radixware.org/types.xsd" targetNamespace="http://schemas.radixware.org/connections.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:import namespace="http://schemas.radixware.org/eas.xsd" schemaLocation="eas.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:complexType name="Users2ConnectionsMap">
+        <xs:sequence>
+            <xs:element name="Link" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:all>
+                        <xs:element name="Users" minOccurs="0" maxOccurs="1">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="User" type="types:Str" nillable="false" minOccurs="1" maxOccurs="unbounded"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>                        
+                    </xs:all>
+                    <xs:attribute name="User" type="xs:string" use="optional"/>
+                    <xs:attribute name="ConnectionName" type="xs:string" use="required"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="DefaultConnection" type="xs:string"/>
+    </xs:complexType>
+    
+    <xs:element name="Connections">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Users2Connection" type ="this:Users2ConnectionsMap" minOccurs="0" maxOccurs="1"/>
+                <xs:element name="Connection" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:all>
+                            <xs:element name="Comment" type="xs:string" minOccurs="0"/>
+                            <xs:element name="InitialAddress" type="xs:string"/>
+                            <xs:element name="UserName" type="xs:string" minOccurs="0"/>
+                            <xs:element name="StationName" type="xs:string" minOccurs="0"/>
+                            <xs:element name="ExplorerRootId" type="xs:string" minOccurs="0"/>
+                            <xs:element name="Language" minOccurs="0">
+                                <xs:simpleType>
+                                    <xs:annotation>
+                                        <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                            <types:class>org.radixware.kernel.common.enums.EIsoLanguage</types:class>
+                                        </xs:appinfo>
+                                    </xs:annotation>
+                                    <xs:restriction base="types:StrEnum"/>
+                                </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="Country" minOccurs="0">
+                                <xs:simpleType>
+                                    <xs:annotation>
+                                        <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                            <types:class>org.radixware.kernel.common.enums.EIsoCountry</types:class>
+                                        </xs:appinfo>
+                                    </xs:annotation>
+                                    <xs:restriction base="types:StrEnum"/>
+                                </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="TraceLevel" minOccurs="0">
+                                <xs:simpleType>
+                                    <xs:annotation>
+                                        <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                            <types:class>org.radixware.kernel.common.enums.EEventSeverity</types:class>
+                                        </xs:appinfo>
+                                    </xs:annotation>
+                                    <xs:restriction base="types:IntEnum"/>
+                                </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="KerberosOptions" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:attribute name="Spn" type="xs:string" use="required"/>
+                                    <xs:attribute name="AllowPwdAuth" type="xs:boolean" use="optional" default="false"/>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="SSLOptions" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:attribute name="UseSslAuth" type="xs:boolean" use="required"/>
+                                    <xs:attribute name="KeyStoreType" use="required">
+                                        <xs:simpleType>
+                                            <xs:annotation>
+                                                <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                    <types:class>org.radixware.kernel.common.enums.EKeyStoreType</types:class>
+                                                </xs:appinfo>
+                                            </xs:annotation>
+                                            <xs:restriction base="types:IntEnum"/>
+                                        </xs:simpleType>
+                                    </xs:attribute>
+                                    <xs:attribute name="SlotIndex" type="xs:int" use="optional"/>
+                                    <xs:attribute name="AutoDetectSlotIndex" type="xs:boolean" use="optional" default="true"/>
+                                    <xs:attribute name="Pkcs11Lib" type="xs:string" use="optional"/>
+                                    <xs:attribute name="CertAlias" type="xs:string" use="required"/>
+                                    <xs:attribute name="TrustStoreFilePath" type="xs:string" use="optional"/>
+                                    <xs:attribute name="TrustStorePathIsRelative" type="xs:boolean" use="optional" default="true"/>
+                                    <xs:attribute name="TrustStorePassword" type="xs:string" use="optional"/>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="FileReadAccessMask" type="xs:string" default="." minOccurs="0"/>
+                            <xs:element name="FileWriteAccessMask" type="xs:string" default="." minOccurs="0"/>
+                            <xs:element name="FileReadDenyMask" type="xs:string" minOccurs="0"/>
+                            <xs:element name="FileWriteDenyMask" type="xs:string" minOccurs="0"/>
+                        </xs:all>
+                        <xs:attribute name="Name" type="xs:string" use="required"/>
+                        <xs:attribute name="Id" type="types:Id" use="required"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+        
+</xs:schema>

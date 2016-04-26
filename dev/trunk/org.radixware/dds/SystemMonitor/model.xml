@@ -1,0 +1,1403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Model xmlns="http://schemas.radixware.org/ddsdef.xsd" xmlns:com="http://schemas.radixware.org/commondef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" Id="prj5H2HQUJP6VFMPDK7TYSVR7D6GA" DbNamePrefix="RDX_SM">
+  <AccessPartitionFamilies>
+    <AccessPartitionFamily Id="apf4PQ4U65VK5HFVJ32XCUORBKRJM" HeadId="tblVGSKITRX4FHZJAGAQ7V7VGZUJY"/>
+  </AccessPartitionFamilies>
+  <Tables>
+    <Table Id="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" Name="MetricType" DbName="RDX_SM_METRICTYPE" UserExtMask="65568">
+      <Columns>
+        <Column Id="colNS4TO66OSNH3DCZS64EDNL7VDU" Name="id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID" SequenceId="sqnQUVA5W5R2JHF3H3RJPRWEXEUUU"/>
+        <Column Id="colQKG6VKSKMBFG7G2WMCOW2DCD2A" Name="enabled" ValType="1" Length="1" DbType="NUMBER(1,0)" NotNull="true" DbName="ENABLED">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>1</com:Value>
+          </DefaultVal>
+        </Column>
+        <Column Id="colBI36OSBML5D73KDJOQKMSMISQI" Name="classGuid" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="true" DbName="CLASSGUID"/>
+        <Column Id="col2JJNBDFWIVG47OCFOCMCXVBFXI" Name="kind" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="KIND"/>
+        <Column Id="colKK3G7VOVNBESRPNV7SEYWFKLDQ" Name="title" ValType="21" Length="200" DbType="VARCHAR2(200 char)" NotNull="true" DbName="TITLE"/>
+        <Column Id="col773ODXVAM5DIZIORVOBGIBYK7Y" Name="period" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="PERIOD">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>60</com:Value>
+          </DefaultVal>
+        </Column>
+        <Column Id="colOSR5Z6WKAZB4ZEAJQTDWKJA6J4" Name="instanceId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="INSTANCEID"/>
+        <Column Id="colFYLCZQEXTJG5JGNSHCWLJTQUSU" Name="unitId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="UNITID"/>
+        <Column Id="colAFYZPWLHIZGWPG44UVQ43ZX4ZA" Name="systemId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="SYSTEMID" Hidden="true">
+          <Expression>
+            <xsc:Item>
+              <xsc:Sql>1</xsc:Sql>
+            </xsc:Item>
+          </Expression>
+        </Column>
+        <Column Id="colP2GTEKTBT5A7RLD32JUJ7AZ52E" Name="serviceUri" ValType="21" Length="300" DbType="VARCHAR2(300 char)" NotNull="false" DbName="SERVICEURI"/>
+        <Column Id="colMVLLX5SQNVDBRMQ2ZYOQ6WDVH4" Name="netChannelId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="NETCHANNELID"/>
+        <Column Id="col3MKU34INANH5XP7OKUZ64JQNF4" Name="timingSection" ValType="21" Length="200" DbType="VARCHAR2(200 char)" NotNull="false" DbName="TIMINGSECTION"/>
+        <Column Id="col3MOMAPD33ZDATALTAP45PLIN5Y" Name="userQuery" ValType="27" Length="0" DbType="CLOB" NotNull="false" DbName="USERQUERY"/>
+        <Column Id="colSYQ72HEL2RD3VFYFLWVG6GFZEA" Name="lowErrorVal" ValType="11" Length="0" DbType="NUMBER" NotNull="false" DbName="LOWERRORVAL"/>
+        <Column Id="colP5GRYC4WIRFDVCOV3AYNBAPYY4" Name="lowWarnVal" ValType="11" Length="0" DbType="NUMBER" NotNull="false" DbName="LOWWARNVAL"/>
+        <Column Id="colXHO3TMONUZFWVLGCBFATASRCZ4" Name="highWarnVal" ValType="11" Length="0" DbType="NUMBER" NotNull="false" DbName="HIGHWARNVAL"/>
+        <Column Id="col2RJUTHZLBFGDPHT5NR6S6APSYM" Name="highErrorVal" ValType="11" Length="0" DbType="NUMBER" NotNull="false" DbName="HIGHERRORVAL"/>
+        <Column Id="colI5HMBXQKAZBVTJSJ5YVNSGCR5Y" Name="warnDelay" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="WARNDELAY">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>0</com:Value>
+          </DefaultVal>
+        </Column>
+        <Column Id="colNWD3JCD37ZDAVKKCLTUEPMO3TQ" Name="errorDelay" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ERRORDELAY">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>0</com:Value>
+          </DefaultVal>
+        </Column>
+        <Column Id="col4YKCVXTHZVETTGSLJZFJB6PPEY" Name="escalationDelay" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="ESCALATIONDELAY">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>0</com:Value>
+          </DefaultVal>
+        </Column>
+        <Column Id="colPSRIBABNSJD45B3FB3UDKHACIM" Name="controlledValue" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="false" DbName="CONTROLLEDVALUE"/>
+        <Column Id="colUH6LIE6A55C5BEX56Y7GPPZMHQ" Name="notes" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="NOTES"/>
+        <Column Id="colJERRR2BH2ZD2XGDYMYUS67KOKY" Name="minSeverityForSnmpNtfy" ValType="2" Length="1" DbType="NUMBER(1,0)" NotNull="false" DbName="MINSEVERITYFORSNMPNTFY">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>1</com:Value>
+          </DefaultVal>
+        </Column>
+        <Column Id="colFAATRVDUDJBSLA2GVBLSKLS3EA" Name="lastUpdateTime" ValType="12" Length="0" DbType="DATE" NotNull="true" DbName="LASTUPDATETIME"/>
+        <Column Id="colYUWJY5SQSZEHZM7TT2SNIIB54Y" Name="lastUpdateUser" ValType="21" Length="200" DbType="VARCHAR2(200 char)" NotNull="true" DbName="LASTUPDATEUSER"/>
+      </Columns>
+      <PrimaryKey Id="idxOTMJZSHDVJCZ3CUWJZTNF6MCAI" Name="PrimaryKey" DbName="PK_RDX_SM_METRICTYPE" Unique="true">
+        <Columns>
+          <Column ColumnId="colNS4TO66OSNH3DCZS64EDNL7VDU" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqYZXJPC3P4JABPJPLOQZMDOSLJE" DbName="PK_RDX_SM_METRICTYPE" Rely="true"/>
+      </PrimaryKey>
+      <Indices>
+        <Index Id="idxZPY7G2XXHRCYZM7HU6OMYQIKXU" Name="NetChannel" DbName="IDX_RDX_SM_METRICTYPE_NETCHANN">
+          <Columns>
+            <Column ColumnId="colMVLLX5SQNVDBRMQ2ZYOQ6WDVH4" Order="Asc"/>
+          </Columns>
+        </Index>
+        <Index Id="idxR7YGCT2A2JFFFB3KWCVXG3TC5Q" Name="Service" DbName="IDX_RDX_SM_METRICTYPE_SERVICE">
+          <Columns>
+            <Column ColumnId="colP2GTEKTBT5A7RLD32JUJ7AZ52E" Order="Asc"/>
+            <Column ColumnId="colAFYZPWLHIZGWPG44UVQ43ZX4ZA" Order="Asc"/>
+          </Columns>
+        </Index>
+        <Index Id="idxQ7BEIPSL6RCOXKSPURQZ7MGRCQ" Name="Instance" DbName="IDX_RDX_SM_METRICTYPE_INSTANCE">
+          <Columns>
+            <Column ColumnId="colOSR5Z6WKAZB4ZEAJQTDWKJA6J4" Order="Asc"/>
+          </Columns>
+        </Index>
+        <Index Id="idxYGVAL527VZHYPPUME7VJKMPB5I" Name="Unit" DbName="IDX_RDX_SM_METRICTYPE_UNIT">
+          <Columns>
+            <Column ColumnId="colFYLCZQEXTJG5JGNSHCWLJTQUSU" Order="Asc"/>
+          </Columns>
+        </Index>
+      </Indices>
+      <Triggers>
+        <Trigger Id="trgCZDRV45CANHPZDB2WMTOPNMNBI" Name="UserPropOwn" DbName="UPO_2H6SULJHXJGFVIS6UVHRWQS4AM" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+   RDX_ENTITY.UserPropOnDelOwner('tbl2H6SULJHXJGFVIS6UVHRWQS4AM', :old.ID);
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+      </Triggers>
+      <Placement PosX="80" PosY="154"/>
+    </Table>
+    <Table Id="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" Name="MetricState" DbName="RDX_SM_METRICSTATE">
+      <Columns>
+        <Column Id="colAJKGMNFACVDP3NKSFE74FBBJWI" Name="id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID" SequenceId="sqnC5ODCOIZTVFXDOVDAMMAOMI2J4"/>
+        <Column Id="col5BUNKNNFDJBKVPBACEGLW3XMOU" Name="lastHistId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="LASTHISTID"/>
+        <Column Id="colFEAY3AHK6NBWFIEFHY5HMNRCSI" Name="typeId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="TYPEID"/>
+        <Column Id="colEEXFHX3OG5DRXHVGXLXN54ML5Q" Name="instanceId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="INSTANCEID"/>
+        <Column Id="col4NS2RGMIDNGC5GK5TWJ5XRLZDE" Name="unitId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="UNITID"/>
+        <Column Id="col3PTURINEYBCNJIBM7VB4ER5HNU" Name="systemId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="SYSTEMID" Hidden="true">
+          <Expression>
+            <xsc:Item>
+              <xsc:Sql>1</xsc:Sql>
+            </xsc:Item>
+          </Expression>
+        </Column>
+        <Column Id="colQIQHM6FF7RAGBCSDMPA3UKA5WQ" Name="serviceUri" ValType="21" Length="300" DbType="VARCHAR2(300 char)" NotNull="false" DbName="SERVICEURI"/>
+        <Column Id="colJLPTXSSK4VG4ZPZKPLWUCMSSQE" Name="netChannelId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="NETCHANNELID"/>
+        <Column Id="col74ZDIJTPCRBI7KJOX377SQ6KVE" Name="begTime" ValType="12" Length="0" Precision="6" DbType="TIMESTAMP(6)" NotNull="true" DbName="BEGTIME"/>
+        <Column Id="colZN2B3DUPUBFXVP2Y6YPM4RPSV4" Name="endTime" ValType="12" Length="0" Precision="6" DbType="TIMESTAMP(6)" NotNull="true" DbName="ENDTIME"/>
+        <Column Id="colVEBTRZIJMJF4TOWNB5PIPDYA5M" Name="begVal" ValType="11" Length="0" DbType="NUMBER" NotNull="false" DbName="BEGVAL"/>
+        <Column Id="colS6PS354Y5BHPHPHGOKRSUOZV5Q" Name="endVal" ValType="11" Length="0" DbType="NUMBER" NotNull="false" DbName="ENDVAL"/>
+        <Column Id="col3BIXCHNDMFGR7JUU7XALKBE56U" Name="minVal" ValType="11" Length="0" DbType="NUMBER" NotNull="false" DbName="MINVAL"/>
+        <Column Id="colZC74COQVIBDVVEPBBQW5ABKCXU" Name="maxVal" ValType="11" Length="0" DbType="NUMBER" NotNull="false" DbName="MAXVAL"/>
+        <Column Id="colOGEYLUNXKFEAVNBPXV2DLLDEUM" Name="avgVal" ValType="11" Length="0" DbType="NUMBER" NotNull="false" DbName="AVGVAL"/>
+      </Columns>
+      <PrimaryKey Id="idxQXJQX3VGHBB3NIQT5TKW34HTLA" Name="PrimaryKey" DbName="PK_RDX_SM_METRICSTATE" Unique="true">
+        <Columns>
+          <Column ColumnId="colAJKGMNFACVDP3NKSFE74FBBJWI" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unq242SYUMMGNHR7MJK2Z2GDDNTA4" DbName="PK_RDX_SM_METRICSTATE" Rely="true"/>
+      </PrimaryKey>
+      <Indices>
+        <Index Id="idxW4VGCV6UKZD2JGOMCA2KGKZ65M" Name="Type" DbName="IDX_RDX_SM_METRICSTATE_TYPE">
+          <Columns>
+            <Column ColumnId="colFEAY3AHK6NBWFIEFHY5HMNRCSI" Order="Asc"/>
+          </Columns>
+        </Index>
+        <Index Id="idxKOMVSEIHOBDMDLMVIORY57C6UI" Name="Instance" DbName="IDX_RDX_SM_METRICSTATE_INSTANC">
+          <Columns>
+            <Column ColumnId="colEEXFHX3OG5DRXHVGXLXN54ML5Q" Order="Asc"/>
+          </Columns>
+        </Index>
+        <Index Id="idxDCKWM6USJFGTHG7R2UAYKGZZ5A" Name="Unit" DbName="IDX_RDX_SM_METRICSTATE_UNIT">
+          <Columns>
+            <Column ColumnId="col4NS2RGMIDNGC5GK5TWJ5XRLZDE" Order="Asc"/>
+          </Columns>
+        </Index>
+        <Index Id="idxAY2A5MZITFF3JGH76C4I46QK3A" Name="NetChannel" DbName="IDX_RDX_SM_METRICSTATE_NETCHAN">
+          <Columns>
+            <Column ColumnId="colJLPTXSSK4VG4ZPZKPLWUCMSSQE" Order="Asc"/>
+          </Columns>
+        </Index>
+        <Index Id="idxVTUQMT5Q3ZCLPIRVSS5X7BX55I" Name="Service" DbName="IDX_RDX_SM_METRICSTATE_SERVICE">
+          <Columns>
+            <Column ColumnId="col3PTURINEYBCNJIBM7VB4ER5HNU" Order="Asc"/>
+            <Column ColumnId="colQIQHM6FF7RAGBCSDMPA3UKA5WQ" Order="Asc"/>
+          </Columns>
+        </Index>
+      </Indices>
+      <Triggers>
+        <Trigger Id="trgEJ5MTNXGRZCKTA45PCUURPGL7E" Name="AddHist" DbName="TAIUR_RDX_SM_METRICSTATE" ActuationTime="AFTER" TriggeringEventMask="6" ColumnIds="colZN2B3DUPUBFXVP2Y6YPM4RPSV4">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+    Insert into </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TableSqlName TableId="tblMCNK4E6FFNA5DHESZPKNLKJ3FQ">
+                <xsc:Sql>RDX_SM_METRICHIST</xsc:Sql>
+              </xsc:TableSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tblMCNK4E6FFNA5DHESZPKNLKJ3FQ" PropId="colGUQOPXPQIFE63KK5JQWPP36JIY" Owner="NONE">
+                <xsc:Sql>METRICID</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>, </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tblMCNK4E6FFNA5DHESZPKNLKJ3FQ" PropId="col5HEQNQF275CG7PZHGA75LNZQPM" Owner="NONE">
+                <xsc:Sql>ENDTIME</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>, </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="colAJKGMNFACVDP3NKSFE74FBBJWI" Owner="NONE">
+                <xsc:Sql>ID</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>, </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tblMCNK4E6FFNA5DHESZPKNLKJ3FQ" PropId="colGSIRTHVQ7ZAGBMWHJPA5PNOGTU" Owner="NONE">
+                <xsc:Sql>BEGTIME</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>, </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tblMCNK4E6FFNA5DHESZPKNLKJ3FQ" PropId="colRLSYWQAJHFG7RIX5YSNCD7CEMM" Owner="NONE">
+                <xsc:Sql>BEGVAL</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>, </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tblMCNK4E6FFNA5DHESZPKNLKJ3FQ" PropId="colMGT6QJTQPJCHZFO442VOT5EAPE" Owner="NONE">
+                <xsc:Sql>ENDVAL</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>, </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tblMCNK4E6FFNA5DHESZPKNLKJ3FQ" PropId="colZ5NP4RP6IBBAFMSIGDA6JBU5TI" Owner="NONE">
+                <xsc:Sql>MINVAL</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>, </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tblMCNK4E6FFNA5DHESZPKNLKJ3FQ" PropId="col4UAQSFEFFVAE3ACSXME7AQQVPM" Owner="NONE">
+                <xsc:Sql>MAXVAL</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>, </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tblMCNK4E6FFNA5DHESZPKNLKJ3FQ" PropId="colQLTULHD7JZAR5HRVNFO2ICDSZQ" Owner="NONE">
+                <xsc:Sql>AVGVAL</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>)
+    values (:NEW.</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="colAJKGMNFACVDP3NKSFE74FBBJWI" Owner="THIS">
+                <xsc:Sql>ID</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>, :NEW.</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="colZN2B3DUPUBFXVP2Y6YPM4RPSV4" Owner="THIS">
+                <xsc:Sql>ENDTIME</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>, :NEW.</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="col5BUNKNNFDJBKVPBACEGLW3XMOU" Owner="THIS">
+                <xsc:Sql>LASTHISTID</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>, :NEW.</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="col74ZDIJTPCRBI7KJOX377SQ6KVE" Owner="THIS">
+                <xsc:Sql>BEGTIME</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>, 
+        :NEW.</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="colVEBTRZIJMJF4TOWNB5PIPDYA5M" Owner="THIS">
+                <xsc:Sql>BEGVAL</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>, :NEW.</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="colS6PS354Y5BHPHPHGOKRSUOZV5Q" Owner="THIS">
+                <xsc:Sql>ENDVAL</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>, 
+        :NEW.</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="col3BIXCHNDMFGR7JUU7XALKBE56U" Owner="THIS">
+                <xsc:Sql>MINVAL</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>, :NEW.</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="colZC74COQVIBDVVEPBBQW5ABKCXU" Owner="THIS">
+                <xsc:Sql>MAXVAL</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,
+        :NEW.</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="colOGEYLUNXKFEAVNBPXV2DLLDEUM" Owner="THIS">
+                <xsc:Sql>AVGVAL</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>);
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+        <Trigger Id="trgHDOQF5DEQJHPRACN7QCF4YXO54" Name="PrepareHistId" DbName="TBIUR_RDX_SM_METRICSTATE" ActuationTime="BEFORE" TriggeringEventMask="6" ColumnIds="colZN2B3DUPUBFXVP2Y6YPM4RPSV4">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+    select </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:SequenceDbName SequenceId="sqnJ6FGT7UYTJGGBP7XOYWOAZ4NEQ" Postfix="NEXT_VAL">
+                <xsc:Sql>SQN_RDX_SM_METRICHISTID.NextVal</xsc:Sql>
+              </xsc:SequenceDbName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> into :NEW.</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="col5BUNKNNFDJBKVPBACEGLW3XMOU" Owner="THIS">
+                <xsc:Sql>LASTHISTID</xsc:Sql>
+              </xsc:PropSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> from dual;
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+      </Triggers>
+      <Placement PosX="516" PosY="160"/>
+    </Table>
+    <Table Id="tblMCNK4E6FFNA5DHESZPKNLKJ3FQ" Name="MetricHist" DbName="RDX_SM_METRICHIST">
+      <Columns>
+        <Column Id="colGUQOPXPQIFE63KK5JQWPP36JIY" Name="metricId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="METRICID"/>
+        <Column Id="col5HEQNQF275CG7PZHGA75LNZQPM" Name="endTime" ValType="12" Length="0" Precision="6" DbType="TIMESTAMP(6)" NotNull="true" DbName="ENDTIME"/>
+        <Column Id="colTIMOHINPBBHPHBF7IQRMHPYWVY" Name="id" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="true" DbName="ID" SequenceId="sqnJ6FGT7UYTJGGBP7XOYWOAZ4NEQ"/>
+        <Column Id="colGSIRTHVQ7ZAGBMWHJPA5PNOGTU" Name="begTime" ValType="12" Length="0" Precision="6" DbType="TIMESTAMP(6)" NotNull="true" DbName="BEGTIME"/>
+        <Column Id="colRLSYWQAJHFG7RIX5YSNCD7CEMM" Name="begVal" ValType="11" Length="0" DbType="NUMBER" NotNull="false" DbName="BEGVAL"/>
+        <Column Id="colMGT6QJTQPJCHZFO442VOT5EAPE" Name="endVal" ValType="11" Length="0" DbType="NUMBER" NotNull="false" DbName="ENDVAL"/>
+        <Column Id="colZ5NP4RP6IBBAFMSIGDA6JBU5TI" Name="minVal" ValType="11" Length="0" DbType="NUMBER" NotNull="false" DbName="MINVAL"/>
+        <Column Id="col4UAQSFEFFVAE3ACSXME7AQQVPM" Name="maxVal" ValType="11" Length="0" DbType="NUMBER" NotNull="false" DbName="MAXVAL"/>
+        <Column Id="colQLTULHD7JZAR5HRVNFO2ICDSZQ" Name="avgVal" ValType="11" Length="0" DbType="NUMBER" NotNull="false" DbName="AVGVAL"/>
+      </Columns>
+      <PrimaryKey Id="idxI4BBBWE5CFEKZLRTNZLOAVQR2Q" Name="PrimaryKey" DbName="PK_RDX_SM_METRICHIST" Unique="true">
+        <Columns>
+          <Column ColumnId="colGUQOPXPQIFE63KK5JQWPP36JIY" Order="Asc"/>
+          <Column ColumnId="col5HEQNQF275CG7PZHGA75LNZQPM" Order="Asc"/>
+          <Column ColumnId="colTIMOHINPBBHPHBF7IQRMHPYWVY" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqPWF4PHHU4ZG3RAUJQFDHMXAGZQ" DbName="PK_RDX_SM_METRICHIST" Rely="true"/>
+      </PrimaryKey>
+      <Indices>
+        <Index Id="idx2EPGTQVJ7JAQRABPNW3IBGKUBA" Name="EndTime" DbName="IDX_RDX_SM_METRICHIST_ENDTIME">
+          <Columns>
+            <Column ColumnId="col5HEQNQF275CG7PZHGA75LNZQPM" Order="Asc"/>
+          </Columns>
+        </Index>
+      </Indices>
+      <Placement PosX="768" PosY="159"/>
+    </Table>
+    <Table Id="tblQZWAUN4CFZF53OBH7NVJCP535Q" Name="MetricControlData" DbName="RDX_SM_METRICCONTROLDATA">
+      <Columns>
+        <Column Id="colRBTZ4GAAEFAKBIQKK7WLVPVIOE" Name="stateId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="STATEID"/>
+        <Column Id="colLUG2MUPCGBBXTKKKB62IET7HZM" Name="lastProcessedHistId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="LASTPROCESSEDHISTID"/>
+        <Column Id="colEJXXN7LBPBGEBKUQPK2FAT7ZXI" Name="lastWarnVal" ValType="11" Length="12" Precision="3" DbType="NUMBER(12,3)" NotNull="false" DbName="LASTWARNVAL"/>
+        <Column Id="colJW2LSIY7RNGCRMEP5WZZFS3P4Q" Name="lastErrorVal" ValType="11" Length="12" Precision="3" DbType="NUMBER(12,3)" NotNull="false" DbName="LASTERRORVAL"/>
+        <Column Id="colNOKDH37F3RH6TGGXRHIQ5PVLEE" Name="lastControlSeverity" ValType="2" Length="1" DbType="NUMBER(1,0)" NotNull="false" DbName="LASTCONTROLSEVERITY"/>
+        <Column Id="colAXL3DKGODVC3DKU3BVFGAEZKTQ" Name="lastControlActionMask" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="LASTCONTROLACTIONMASK"/>
+        <Column Id="colML3Z2LRIGNCURCSPA42Z5MK5QE" Name="lastWarnTime" ValType="12" Length="0" Precision="6" DbType="TIMESTAMP(6)" NotNull="false" DbName="LASTWARNTIME"/>
+        <Column Id="colCHMIHLA6NVFNLFSIDPSO4RLS74" Name="lastErrorTime" ValType="12" Length="0" Precision="6" DbType="TIMESTAMP(6)" NotNull="false" DbName="LASTERRORTIME"/>
+        <Column Id="colSFIUZXGFHRCZLDHOABMOO7UCGE" Name="lastControlTime" ValType="12" Length="0" Precision="6" DbType="TIMESTAMP(6)" NotNull="false" DbName="LASTCONTROLTIME"/>
+      </Columns>
+      <PrimaryKey Id="idxKSN4JTDYLBFQRBB22YEV7PLFLE" Name="PrimaryKey" DbName="PK_RDX_SM_METRICCONTROLDATA" Unique="true">
+        <Columns>
+          <Column ColumnId="colRBTZ4GAAEFAKBIQKK7WLVPVIOE" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unq2GBLEL3SYBEFHDXGXIX4C676AQ" DbName="PK_RDX_SM_METRICCONTROLDATA" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="748" PosY="397"/>
+    </Table>
+    <Table Id="tblO2BKTEHY6NA5TA52H2RCK4B2VY" Name="SnmpAgentUnit" DbName="RDX_SM_SNMPAGENTUNIT">
+      <Columns>
+        <Column Id="colLL6KPRLRZNHULO5AA2COHWC2ZI" Name="id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID"/>
+        <Column Id="colG332KYF4D5DZ7NEMNJBFIVWLMA" Name="agentAddress" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="AGENTADDRESS"/>
+        <Column Id="col7KS2KZBBONDTRL7NHIKM6J2UTA" Name="sapId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="SAPID"/>
+        <Column Id="colVOFEDFFZ7FHCDGIJRWRPJAKJ6A" Name="useNotificationService" ValType="1" Length="1" DbType="NUMBER(1,0)" NotNull="true" DbName="USENOTIFICATIONSERVICE"/>
+        <Column Id="colZJYJV7BLRFFTZJ3M6JZ2FAMK7I" Name="managerId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="MANAGERID"/>
+        <Column Id="colFQVJZDKOYBENXED6NGM6QPXP7A" Name="communityString" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="COMMUNITYSTRING"/>
+      </Columns>
+      <PrimaryKey Id="idxSCESA4WSE5C63IBJU3TUTRAM7Y" Name="PrimaryKey" DbName="PK_RDX_SM_SNMPAGENTUNIT" Unique="true">
+        <Columns>
+          <Column ColumnId="colLL6KPRLRZNHULO5AA2COHWC2ZI" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqGSHCB4LSN5EF7NQ5R3VVE3XDJA" DbName="PK_RDX_SM_SNMPAGENTUNIT" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="633" PosY="731"/>
+    </Table>
+    <Table Id="tblZ3AVBWYAONAXNDCS3W4GTU5K44" Name="SnmpManager" DbName="RDX_SM_SNMPMANAGER">
+      <Columns>
+        <Column Id="colGIPH2WMI55GCTLGZQ62QI7ZGKY" Name="id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID" SequenceId="sqnNQ5XEH25TVEHXBLHFGIFMZSY2U"/>
+        <Column Id="colFBAYGRC2V5HIZG36WYM3FUABAE" Name="title" ValType="21" Length="300" DbType="VARCHAR2(300 char)" NotNull="false" DbName="TITLE"/>
+        <Column Id="col6UTARJF4QJCSZHRRVIXMLKIX3E" Name="address" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="ADDRESS"/>
+        <Column Id="colAVS3EYY7BBBJJGO3H6MXEUPNHQ" Name="active" ValType="1" Length="1" DbType="NUMBER(1,0)" NotNull="true" DbName="ACTIVE"/>
+      </Columns>
+      <PrimaryKey Id="idxWATMQCGLENFSJK5ZR6JHCX63II" Name="PrimaryKey" DbName="PK_RDX_SM_SNMPMANAGER" Unique="true">
+        <Columns>
+          <Column ColumnId="colGIPH2WMI55GCTLGZQ62QI7ZGKY" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqWFBF4REGZBCRFOOIREWMD7HBG4" DbName="PK_RDX_SM_SNMPMANAGER" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="866" PosY="740"/>
+    </Table>
+    <Table Id="tblVGSKITRX4FHZJAGAQ7V7VGZUJY" Name="DashConfig" DbName="RDX_SM_DASHCONFIG">
+      <Columns>
+        <Column Id="colQU77X4CEHNCMPMBTEGPP2OQ3IY" Name="guid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="GUID"/>
+        <Column Id="colQVV4T5O6B5COJMBD3EZL53BF3A" Name="title" ValType="21" Length="300" DbType="VARCHAR2(300 char)" NotNull="true" DbName="TITLE"/>
+        <Column Id="colXTE7QVLZ3FGCFDGLAXN7EWNN54" Name="xmlContent" ValType="27" Length="0" DbType="CLOB" NotNull="true" DbName="XMLCONTENT"/>
+        <Column Id="colBD47EI456VGBLLZ5AUVGEZFKOU" Name="lastUpdateTime" ValType="12" Length="0" DbType="DATE" NotNull="true" DbName="LASTUPDATETIME"/>
+        <Column Id="col2JC6467ZUBDORDSTW5SLDQMFVI" Name="lastUpdateUser" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="LASTUPDATEUSER"/>
+      </Columns>
+      <PrimaryKey Id="idxAG3QC27EG5BWRMYZLNX5IQ2S3A" Name="PrimaryKey" DbName="PK_RDX_SM_DASHCONFIG" Unique="true">
+        <Columns>
+          <Column ColumnId="colQU77X4CEHNCMPMBTEGPP2OQ3IY" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqE2LRBUDIQZFMXMS2TEZ25JTGZM" DbName="PK_RDX_SM_DASHCONFIG" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="80" PosY="684"/>
+    </Table>
+  </Tables>
+  <Views>
+    <View Id="tblWQK6FDKV4BHXVHI62W7MV3AGMI" Name="MetricStateView" DbName="RDX_SM_METRICSTATEVIEW" Distinct="false" WithOption="None">
+      <Columns>
+        <Column Id="col4DFFLKJPZZCNFFJHK4WO7LFJQA" Name="typeInstanceId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="TYPEINSTANCEID"/>
+        <Column Id="col5RHY3KHFPBGRDK6LUWXXCNSE4A" Name="typeId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="TYPEID"/>
+        <Column Id="colT65HMSDOUVFJXJXUDBCKNZL6QE" Name="typeTitle" ValType="21" Length="200" DbType="VARCHAR2(200 char)" NotNull="true" DbName="TYPETITLE"/>
+        <Column Id="colBL3ITU6IUZCYPJ2VXPFBQDGATQ" Name="typeServiceUri" ValType="21" Length="300" DbType="VARCHAR2(300 char)" NotNull="false" DbName="TYPESERVICEURI"/>
+        <Column Id="col7T66XXRR2BE7PHILZ2OEPBZDS4" Name="typeTimingSection" ValType="21" Length="200" DbType="VARCHAR2(200 char)" NotNull="false" DbName="TYPETIMINGSECTION"/>
+        <Column Id="colE6T7IPRVTFFVDKYLOSFZCLMCTI" Name="stateId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="STATEID"/>
+        <Column Id="colDVZEATMUZJDRTHRHWF6HXQ276Q" Name="kind" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="KIND"/>
+        <Column Id="col32O6NQZTM5E3JG7YJ4PM3QDAOA" Name="stateInstanceId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="STATEINSTANCEID"/>
+        <Column Id="colB7BZ6PAH5BE3HN3AHL6WYHHBFY" Name="typeUnitId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="TYPEUNITID"/>
+        <Column Id="colNGQ357ZOJ5A6TKL2HVQPH7OBXE" Name="stateUnitId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="STATEUNITID"/>
+        <Column Id="colEMF6GO7HKFE6NMNJLU4GVNPJ4A" Name="stateNetChannelId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="STATENETCHANNELID"/>
+        <Column Id="col2G4MXOVTKVB2JBOM75ZFSRGJ5Q" Name="typeNetChannelId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="TYPENETCHANNELID"/>
+        <Column Id="colNSMQQXSIDZHYTFTUV5AHIXECHQ" Name="lowErrorVal" ValType="11" Length="0" DbType="NUMBER" NotNull="false" DbName="LOWERRORVAL"/>
+        <Column Id="colIW36ISYLQ5GFDNAWFQJ5NJFKIQ" Name="lowWarnVal" ValType="11" Length="0" DbType="NUMBER" NotNull="false" DbName="LOWWARNVAL"/>
+        <Column Id="colNBNTUV24WFCOLJYJCQ7BLUCS3I" Name="highErrorVal" ValType="11" Length="0" DbType="NUMBER" NotNull="false" DbName="HIGHERRORVAL"/>
+        <Column Id="colEGVMKECYG5DNLIYAW7SFJJD77E" Name="highWarnVal" ValType="11" Length="0" DbType="NUMBER" NotNull="false" DbName="HIGHWARNVAL"/>
+        <Column Id="colWTL4DBZ3XVEDJP4F3GIGMW3DQE" Name="endVal" ValType="11" Length="0" DbType="NUMBER" NotNull="false" DbName="ENDVAL"/>
+        <Column Id="colFVN7CMMGPNGNZASBP5POKFTONE" Name="avgVal" ValType="11" Length="0" DbType="NUMBER" NotNull="false" DbName="AVGVAL"/>
+        <Column Id="col2N5YAJIRMJAR5BI75G5T2OBS5I" Name="maxVal" ValType="11" Length="0" DbType="NUMBER" NotNull="false" DbName="MAXVAL"/>
+      </Columns>
+      <PrimaryKey Id="idxUDLOZLYZHBFVRJBZ5APNTZ4TIM" Name="PrimaryKey" DbName="PK_RDX_SM_METRICSTATEVIEW" GenerateInDb="false" Unique="true">
+        <Columns>
+          <Column ColumnId="colE6T7IPRVTFFVDKYLOSFZCLMCTI" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqAMY4LFRNHFBI7INK6NN6FOBVFY" DbName="PK_RDX_SM_METRICSTATEVIEW" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="331" PosY="576"/>
+      <Query>
+        <xsc:Item>
+          <xsc:Sql>Select </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="colNS4TO66OSNH3DCZS64EDNL7VDU" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.ID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWQK6FDKV4BHXVHI62W7MV3AGMI" PropId="col5RHY3KHFPBGRDK6LUWXXCNSE4A" Owner="THIS">
+            <xsc:Sql>TYPEID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="colKK3G7VOVNBESRPNV7SEYWFKLDQ" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.TITLE</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWQK6FDKV4BHXVHI62W7MV3AGMI" PropId="colT65HMSDOUVFJXJXUDBCKNZL6QE" Owner="THIS">
+            <xsc:Sql>TYPETITLE</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+       </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="colOSR5Z6WKAZB4ZEAJQTDWKJA6J4" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.INSTANCEID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWQK6FDKV4BHXVHI62W7MV3AGMI" PropId="col4DFFLKJPZZCNFFJHK4WO7LFJQA" Owner="THIS">
+            <xsc:Sql>TYPEINSTANCEID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="colFYLCZQEXTJG5JGNSHCWLJTQUSU" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.UNITID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWQK6FDKV4BHXVHI62W7MV3AGMI" PropId="colB7BZ6PAH5BE3HN3AHL6WYHHBFY" Owner="THIS">
+            <xsc:Sql>TYPEUNITID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+       </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="colMVLLX5SQNVDBRMQ2ZYOQ6WDVH4" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.NETCHANNELID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWQK6FDKV4BHXVHI62W7MV3AGMI" PropId="col2G4MXOVTKVB2JBOM75ZFSRGJ5Q" Owner="THIS">
+            <xsc:Sql>TYPENETCHANNELID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="colP2GTEKTBT5A7RLD32JUJ7AZ52E" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.SERVICEURI</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWQK6FDKV4BHXVHI62W7MV3AGMI" PropId="colBL3ITU6IUZCYPJ2VXPFBQDGATQ" Owner="THIS">
+            <xsc:Sql>TYPESERVICEURI</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+       </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="col3MKU34INANH5XP7OKUZ64JQNF4" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.TIMINGSECTION</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWQK6FDKV4BHXVHI62W7MV3AGMI" PropId="col7T66XXRR2BE7PHILZ2OEPBZDS4" Owner="THIS">
+            <xsc:Sql>TYPETIMINGSECTION</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+       </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="colSYQ72HEL2RD3VFYFLWVG6GFZEA" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.LOWERRORVAL</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWQK6FDKV4BHXVHI62W7MV3AGMI" PropId="colNSMQQXSIDZHYTFTUV5AHIXECHQ" Owner="THIS">
+            <xsc:Sql>LOWERRORVAL</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="colP5GRYC4WIRFDVCOV3AYNBAPYY4" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.LOWWARNVAL</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWQK6FDKV4BHXVHI62W7MV3AGMI" PropId="colIW36ISYLQ5GFDNAWFQJ5NJFKIQ" Owner="THIS">
+            <xsc:Sql>LOWWARNVAL</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+       </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="col2RJUTHZLBFGDPHT5NR6S6APSYM" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.HIGHERRORVAL</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWQK6FDKV4BHXVHI62W7MV3AGMI" PropId="colNBNTUV24WFCOLJYJCQ7BLUCS3I" Owner="THIS">
+            <xsc:Sql>HIGHERRORVAL</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="colXHO3TMONUZFWVLGCBFATASRCZ4" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.HIGHWARNVAL</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWQK6FDKV4BHXVHI62W7MV3AGMI" PropId="colEGVMKECYG5DNLIYAW7SFJJD77E" Owner="THIS">
+            <xsc:Sql>HIGHWARNVAL</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+       </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="col2JJNBDFWIVG47OCFOCMCXVBFXI" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.KIND</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWQK6FDKV4BHXVHI62W7MV3AGMI" PropId="colDVZEATMUZJDRTHRHWF6HXQ276Q" Owner="THIS">
+            <xsc:Sql>KIND</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+       
+       </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="colAJKGMNFACVDP3NKSFE74FBBJWI" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICSTATE.ID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWQK6FDKV4BHXVHI62W7MV3AGMI" PropId="colE6T7IPRVTFFVDKYLOSFZCLMCTI" Owner="THIS">
+            <xsc:Sql>STATEID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, 
+       </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="colEEXFHX3OG5DRXHVGXLXN54ML5Q" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICSTATE.INSTANCEID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWQK6FDKV4BHXVHI62W7MV3AGMI" PropId="col32O6NQZTM5E3JG7YJ4PM3QDAOA" Owner="THIS">
+            <xsc:Sql>STATEINSTANCEID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="col4NS2RGMIDNGC5GK5TWJ5XRLZDE" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICSTATE.UNITID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWQK6FDKV4BHXVHI62W7MV3AGMI" PropId="colNGQ357ZOJ5A6TKL2HVQPH7OBXE" Owner="THIS">
+            <xsc:Sql>STATEUNITID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+       </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="colJLPTXSSK4VG4ZPZKPLWUCMSSQE" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICSTATE.NETCHANNELID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWQK6FDKV4BHXVHI62W7MV3AGMI" PropId="colEMF6GO7HKFE6NMNJLU4GVNPJ4A" Owner="THIS">
+            <xsc:Sql>STATENETCHANNELID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+       </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="colOGEYLUNXKFEAVNBPXV2DLLDEUM" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICSTATE.AVGVAL</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWQK6FDKV4BHXVHI62W7MV3AGMI" PropId="colFVN7CMMGPNGNZASBP5POKFTONE" Owner="THIS">
+            <xsc:Sql>AVGVAL</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="colZC74COQVIBDVVEPBBQW5ABKCXU" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICSTATE.MAXVAL</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWQK6FDKV4BHXVHI62W7MV3AGMI" PropId="col2N5YAJIRMJAR5BI75G5T2OBS5I" Owner="THIS">
+            <xsc:Sql>MAXVAL</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="colS6PS354Y5BHPHPHGOKRSUOZV5Q" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICSTATE.ENDVAL</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWQK6FDKV4BHXVHI62W7MV3AGMI" PropId="colWTL4DBZ3XVEDJP4F3GIGMW3DQE" Owner="THIS">
+            <xsc:Sql>ENDVAL</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> 
+from   </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM">
+            <xsc:Sql>RDX_SM_METRICTYPE</xsc:Sql>
+          </xsc:TableSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> , </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y">
+            <xsc:Sql>RDX_SM_METRICSTATE</xsc:Sql>
+          </xsc:TableSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>       
+Where  </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="colNS4TO66OSNH3DCZS64EDNL7VDU" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.ID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="colFEAY3AHK6NBWFIEFHY5HMNRCSI" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICSTATE.TYPEID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> 
+       --and 
+       --((</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="colOSR5Z6WKAZB4ZEAJQTDWKJA6J4" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.INSTANCEID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>=</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="colEEXFHX3OG5DRXHVGXLXN54ML5Q" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICSTATE.INSTANCEID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> or </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="colFYLCZQEXTJG5JGNSHCWLJTQUSU" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.UNITID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>= </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="col4NS2RGMIDNGC5GK5TWJ5XRLZDE" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICSTATE.UNITID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> or
+       --</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="colMVLLX5SQNVDBRMQ2ZYOQ6WDVH4" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.NETCHANNELID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>= </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="colJLPTXSSK4VG4ZPZKPLWUCMSSQE" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICSTATE.NETCHANNELID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>) or
+       --(</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="colOSR5Z6WKAZB4ZEAJQTDWKJA6J4" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.INSTANCEID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> is null and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="colFYLCZQEXTJG5JGNSHCWLJTQUSU" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.UNITID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> is null and
+       --</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="colMVLLX5SQNVDBRMQ2ZYOQ6WDVH4" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.NETCHANNELID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> is null)) 
+       --and        
+       --(</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="col2JJNBDFWIVG47OCFOCMCXVBFXI" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.KIND</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> &lt;> </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:ConstValue EnumId="acsF47GG6XUPJH5ZKZFOWDK7GI7LE" ItemId="aciX3RE5M3ZLZAATCYWXJW7V56YIY">
+            <xsc:Sql>'Profiling.Cnt'</xsc:Sql>
+          </xsc:ConstValue>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="col2JJNBDFWIVG47OCFOCMCXVBFXI" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.KIND</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> &lt;> </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:ConstValue EnumId="acsF47GG6XUPJH5ZKZFOWDK7GI7LE" ItemId="aci5HECYLQ66NGOHBQQR4VFKKFEKE">
+            <xsc:Sql>'Profiling.Duration'</xsc:Sql>
+          </xsc:ConstValue>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> and 
+       --</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="col2JJNBDFWIVG47OCFOCMCXVBFXI" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.KIND</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> &lt;> </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:ConstValue EnumId="acsF47GG6XUPJH5ZKZFOWDK7GI7LE" ItemId="aciHXHTEBM26RHGFEDNCTEGL5P35Y">
+            <xsc:Sql>'Profiling.Freq'</xsc:Sql>
+          </xsc:ConstValue>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="col2JJNBDFWIVG47OCFOCMCXVBFXI" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.KIND</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> &lt;> </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:ConstValue EnumId="acsF47GG6XUPJH5ZKZFOWDK7GI7LE" ItemId="aciO44MH2VJT5F3TDOFUKSYN6BBTQ">
+            <xsc:Sql>'Profiling.Percent.Cpu'</xsc:Sql>
+          </xsc:ConstValue>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> and
+       --</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="col2JJNBDFWIVG47OCFOCMCXVBFXI" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.KIND</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> &lt;> </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:ConstValue EnumId="acsF47GG6XUPJH5ZKZFOWDK7GI7LE" ItemId="aciDXENZ5YPXZEFPL5YQW4UGFSIHA">
+            <xsc:Sql>'Profiling.Percent.Db'</xsc:Sql>
+          </xsc:ConstValue>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="col2JJNBDFWIVG47OCFOCMCXVBFXI" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.KIND</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> &lt;> </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:ConstValue EnumId="acsF47GG6XUPJH5ZKZFOWDK7GI7LE" ItemId="aciKMGNUYE6GZHAZLXCBLL3HQEPOQ">
+            <xsc:Sql>'Profiling.Percent.Ext'</xsc:Sql>
+          </xsc:ConstValue>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> and 
+       --</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="col2JJNBDFWIVG47OCFOCMCXVBFXI" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.KIND</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> &lt;> </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:ConstValue EnumId="acsF47GG6XUPJH5ZKZFOWDK7GI7LE" ItemId="aciEWVK3RUVD5HMHF55X5SYYPJB6U">
+            <xsc:Sql>'Inst.Arte.InstCnt'</xsc:Sql>
+          </xsc:ConstValue>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="col2JJNBDFWIVG47OCFOCMCXVBFXI" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.KIND</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> &lt;> </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:ConstValue EnumId="acsF47GG6XUPJH5ZKZFOWDK7GI7LE" ItemId="aciC7LLOZUMDFBNFE3RO7FJANSDBE">
+            <xsc:Sql>'Inst.Service.SessCnt'</xsc:Sql>
+          </xsc:ConstValue>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> and 
+       --</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="col2JJNBDFWIVG47OCFOCMCXVBFXI" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.KIND</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> &lt;> </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:ConstValue EnumId="acsF47GG6XUPJH5ZKZFOWDK7GI7LE" ItemId="aciFLVEQPULPFHFHNACTF45DZQFS4">
+            <xsc:Sql>'Inst.Stop'</xsc:Sql>
+          </xsc:ConstValue>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="col2JJNBDFWIVG47OCFOCMCXVBFXI" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.KIND</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> &lt;> </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:ConstValue EnumId="acsF47GG6XUPJH5ZKZFOWDK7GI7LE" ItemId="aciJG57PBLAWRCQVG2HZLZWKTSJME">
+            <xsc:Sql>'User'</xsc:Sql>
+          </xsc:ConstValue>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> and
+       --</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="col2JJNBDFWIVG47OCFOCMCXVBFXI" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.KIND</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> &lt;> </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:ConstValue EnumId="acsF47GG6XUPJH5ZKZFOWDK7GI7LE" ItemId="aci5SPXCUTOJ5GBDDZSB32G2QBAJQ">
+            <xsc:Sql>'Unit.Hang'</xsc:Sql>
+          </xsc:ConstValue>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="col2JJNBDFWIVG47OCFOCMCXVBFXI" Owner="TABLE">
+            <xsc:Sql>RDX_SM_METRICTYPE.KIND</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> &lt;> </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:ConstValue EnumId="acsF47GG6XUPJH5ZKZFOWDK7GI7LE" ItemId="aciFRK5PJXX7ZD3FM2H3BEG4N2PAA">
+            <xsc:Sql>'Unit.Stop'</xsc:Sql>
+          </xsc:ConstValue>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> )
+</xsc:Sql>
+        </xsc:Item>
+      </Query>
+      <UsedTables>
+        <Table>tbl2H6SULJHXJGFVIS6UVHRWQS4AM</Table>
+        <Table>tbl4QTN5SWVEFB55HPL32XOX6KZ7Y</Table>
+      </UsedTables>
+    </View>
+  </Views>
+  <ExtTables>
+    <ExtTable Id="tbeWZZDRY5KPFDD7GWTFA5OADS3HQ" TableId="tbl52CHFNO3EGWDBRCRAAIT4AGD7E">
+      <Placement PosX="313" PosY="175"/>
+    </ExtTable>
+    <ExtTable Id="tbeOOWBJYAE5NAKLMNO4EQUWINBGI" TableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E">
+      <Placement PosX="325" PosY="236"/>
+    </ExtTable>
+    <ExtTable Id="tbe7TL7DI6RJFDPTD4XYGHCRGVPMQ" TableId="tblC2OWQGDVVHWDBROXAAIT4AGD7E">
+      <Placement PosX="316" PosY="300"/>
+    </ExtTable>
+    <ExtTable Id="tbeFQHYXCA4LZBRZJG75MLXUTSMZY" TableId="tblHBE24OUE2DNRDB7AAALOMT5GDM">
+      <Placement PosX="303" PosY="379"/>
+    </ExtTable>
+    <ExtTable Id="tbeAFWVCCF2XBDNFCQKBGNZYDXKW4" TableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4">
+      <Placement PosX="316" PosY="494"/>
+    </ExtTable>
+    <ExtTable Id="tbeA7CPDJ3AJNDF3AFOZFR4QV5EN4" TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM">
+      <Placement PosX="352" PosY="95"/>
+    </ExtTable>
+    <ExtTable Id="tbeIYX5PZYZIBGPVKCY7OHHFBPLIA" TableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E">
+      <Placement PosX="742" PosY="663"/>
+    </ExtTable>
+    <ExtTable Id="tbeNQRZ2YG7EJH3VPB66EAZRN7W7Y" TableId="tblR7FXMYDVVHWDBROXAAIT4AGD7E">
+      <Placement PosX="636" PosY="663"/>
+    </ExtTable>
+  </ExtTables>
+  <References>
+    <Reference Id="refBCXO4FN5ABD6ZDZIQIGY67G6ME" DbName="FK_RDX_SM_METRICTYPE_INSTANCE" Type="LINK" ChildTableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" ParentTableId="tbl52CHFNO3EGWDBRCRAAIT4AGD7E" ExtParentTableId="tbeWZZDRY5KPFDD7GWTFA5OADS3HQ" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unq52CHFNO3EGWDBRCRAAIT4AGD7E">
+      <Columns>
+        <Item ChildColumnId="colOSR5Z6WKAZB4ZEAJQTDWKJA6J4" ParentColumnId="col3VINP666G5VDBFSUAAUMFADAIA"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refBRBSH532FRC3BOQAMSVBUJQA74" DbName="FK_RDX_SM_METRICTYPE_UNIT" Type="LINK" ChildTableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" ParentTableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E" ExtParentTableId="tbeOOWBJYAE5NAKLMNO4EQUWINBGI" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unq5HP4XTP3EGWDBRCRAAIT4AGD7E">
+      <Columns>
+        <Item ChildColumnId="colFYLCZQEXTJG5JGNSHCWLJTQUSU" ParentColumnId="colEVLUYADHR5VDBNSIAAUMFADAIA"/>
+      </Columns>
+    </Reference>
+    <Reference Id="ref2RXWMT2TDVERPBYVVIWPKUQGHY" AutoDbName="false" DbName="FK_RDX_SM_METRICTYPE_NETCHNL" Type="LINK" ChildTableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" ParentTableId="tblHBE24OUE2DNRDB7AAALOMT5GDM" ExtParentTableId="tbeFQHYXCA4LZBRZJG75MLXUTSMZY" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqHBE24OUE2DNRDB7AAALOMT5GDM">
+      <Columns>
+        <Item ChildColumnId="colMVLLX5SQNVDBRMQ2ZYOQ6WDVH4" ParentColumnId="colKA3TGQME2DNRDB7AAALOMT5GDM"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refIXSOX75UENE4FFXOIBRBWLS5RQ" DbName="FK_RDX_SM_METRICTYPE_SERVICE" Type="LINK" ChildTableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" ParentTableId="tblC2OWQGDVVHWDBROXAAIT4AGD7E" ExtParentTableId="tbe7TL7DI6RJFDPTD4XYGHCRGVPMQ" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqC2OWQGDVVHWDBROXAAIT4AGD7E">
+      <Columns>
+        <Item ChildColumnId="colAFYZPWLHIZGWPG44UVQ43ZX4ZA" ParentColumnId="colBYT75RIQLDNBDJA6ACQMTAIZT4"/>
+        <Item ChildColumnId="colP2GTEKTBT5A7RLD32JUJ7AZ52E" ParentColumnId="colGPLF7QQ2J3NRDJIRACQMTAIZT4"/>
+      </Columns>
+    </Reference>
+    <Reference Id="ref2L6D7LCZH5HOLESXXT4PBROHSE" DbName="FK_RDX_SM_METRICTYPE_USER" Type="LINK" GenerateInDb="false" ChildTableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" ParentTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ExtParentTableId="tbeAFWVCCF2XBDNFCQKBGNZYDXKW4" ConfirmDelete="true" DeleteMode="NONE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqSY4KIOLTGLNRDHRZABQAQH3XQ4">
+      <Columns>
+        <Item ChildColumnId="colYUWJY5SQSZEHZM7TT2SNIIB54Y" ParentColumnId="colEF6ODCYWY3NBDGMCABQAQH3XQ4"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refPKWMUTUDJZBOTDIDPVBV5O4NFA" AutoDbName="false" DbName="FK_RDX_SM_METRICST_METRICTYPE" Type="LINK" ChildTableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" ParentTableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" ExtParentTableId="tbeA7CPDJ3AJNDF3AFOZFR4QV5EN4" ConfirmDelete="false" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqYZXJPC3P4JABPJPLOQZMDOSLJE">
+      <Columns>
+        <Item ChildColumnId="colFEAY3AHK6NBWFIEFHY5HMNRCSI" ParentColumnId="colNS4TO66OSNH3DCZS64EDNL7VDU"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refIQBBVSRJXRDM3PXIITJPTW3FDA" DbName="FK_RDX_SM_METRICSTATE_INSTANCE" Type="LINK" ChildTableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" ParentTableId="tbl52CHFNO3EGWDBRCRAAIT4AGD7E" ExtParentTableId="tbeWZZDRY5KPFDD7GWTFA5OADS3HQ" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unq52CHFNO3EGWDBRCRAAIT4AGD7E">
+      <Columns>
+        <Item ChildColumnId="colEEXFHX3OG5DRXHVGXLXN54ML5Q" ParentColumnId="col3VINP666G5VDBFSUAAUMFADAIA"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refUADVQEC5XFBGLES4RIJP3JRRGE" DbName="FK_RDX_SM_METRICSTATE_UNIT" Type="LINK" ChildTableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" ParentTableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E" ExtParentTableId="tbeOOWBJYAE5NAKLMNO4EQUWINBGI" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unq5HP4XTP3EGWDBRCRAAIT4AGD7E">
+      <Columns>
+        <Item ChildColumnId="col4NS2RGMIDNGC5GK5TWJ5XRLZDE" ParentColumnId="colEVLUYADHR5VDBNSIAAUMFADAIA"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refQ2SO47M7JJB6PNNK7LBJM4X5DY" DbName="FK_RDX_SM_METRICSTATE_SERVICE" Type="LINK" ChildTableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" ParentTableId="tblC2OWQGDVVHWDBROXAAIT4AGD7E" ExtParentTableId="tbe7TL7DI6RJFDPTD4XYGHCRGVPMQ" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqC2OWQGDVVHWDBROXAAIT4AGD7E">
+      <Columns>
+        <Item ChildColumnId="col3PTURINEYBCNJIBM7VB4ER5HNU" ParentColumnId="colBYT75RIQLDNBDJA6ACQMTAIZT4"/>
+        <Item ChildColumnId="colQIQHM6FF7RAGBCSDMPA3UKA5WQ" ParentColumnId="colGPLF7QQ2J3NRDJIRACQMTAIZT4"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refUGC5XGY2U5AFDCM3LOYVUVQFLA" AutoDbName="false" DbName="FK_RDX_SM_METRICSTATE_NETCHNL" Type="LINK" ChildTableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" ParentTableId="tblHBE24OUE2DNRDB7AAALOMT5GDM" ExtParentTableId="tbeFQHYXCA4LZBRZJG75MLXUTSMZY" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqHBE24OUE2DNRDB7AAALOMT5GDM">
+      <Columns>
+        <Item ChildColumnId="colJLPTXSSK4VG4ZPZKPLWUCMSSQE" ParentColumnId="colKA3TGQME2DNRDB7AAALOMT5GDM"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refZUPIBS4ZZVHFHKXOY3B6ASGPRY" AutoDbName="false" DbName="FK_RDX_SM_METRICHIST_METRICSTT" Type="LINK" ChildTableId="tblMCNK4E6FFNA5DHESZPKNLKJ3FQ" ParentTableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" ConfirmDelete="false" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unq242SYUMMGNHR7MJK2Z2GDDNTA4">
+      <Columns>
+        <Item ChildColumnId="colGUQOPXPQIFE63KK5JQWPP36JIY" ParentColumnId="colAJKGMNFACVDP3NKSFE74FBBJWI"/>
+      </Columns>
+    </Reference>
+    <Reference Id="ref5SKI5LHV65EJNAINHJDTKRXS4I" AutoDbName="false" DbName="FK_RDX_SM_METRCTRLDT_METRSTT" Type="LINK" ChildTableId="tblQZWAUN4CFZF53OBH7NVJCP535Q" ParentTableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" ConfirmDelete="false" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unq242SYUMMGNHR7MJK2Z2GDDNTA4">
+      <Columns>
+        <Item ChildColumnId="colRBTZ4GAAEFAKBIQKK7WLVPVIOE" ParentColumnId="colAJKGMNFACVDP3NKSFE74FBBJWI"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refLT6UL56WTBF5PIHVOGITUPZMOI" DbName="FK_RDX_SM_SNMPAGENTUNIT_SNMPMA" Type="LINK" ChildTableId="tblO2BKTEHY6NA5TA52H2RCK4B2VY" ParentTableId="tblZ3AVBWYAONAXNDCS3W4GTU5K44" ConfirmDelete="true" DeleteMode="RESTRICT" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqWFBF4REGZBCRFOOIREWMD7HBG4">
+      <Columns>
+        <Item ChildColumnId="colZJYJV7BLRFFTZJ3M6JZ2FAMK7I" ParentColumnId="colGIPH2WMI55GCTLGZQ62QI7ZGKY"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refPIO6QSHCVZDVXIN7FEEAUQPSVY" DbName="FK_RDX_SM_SNMPAGENTUNIT_UNIT" Type="MASTER_DETAIL" ChildTableId="tblO2BKTEHY6NA5TA52H2RCK4B2VY" ParentTableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E" ExtParentTableId="tbeIYX5PZYZIBGPVKCY7OHHFBPLIA" ConfirmDelete="false" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unq5HP4XTP3EGWDBRCRAAIT4AGD7E">
+      <Columns>
+        <Item ChildColumnId="colLL6KPRLRZNHULO5AA2COHWC2ZI" ParentColumnId="colEVLUYADHR5VDBNSIAAUMFADAIA"/>
+      </Columns>
+    </Reference>
+    <Reference Id="ref5FL4DDOPDFAVXMA4FST5AC45NQ" DbName="FK_RDX_SM_SNMPAGENTUNIT_SAP" Type="LINK" ChildTableId="tblO2BKTEHY6NA5TA52H2RCK4B2VY" ParentTableId="tblR7FXMYDVVHWDBROXAAIT4AGD7E" ExtParentTableId="tbeNQRZ2YG7EJH3VPB66EAZRN7W7Y" ConfirmDelete="true" DeleteMode="RESTRICT" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqR7FXMYDVVHWDBROXAAIT4AGD7E">
+      <Columns>
+        <Item ChildColumnId="col7KS2KZBBONDTRL7NHIKM6J2UTA" ParentColumnId="col2ZDYU3V3RHWDBRCXAAIT4AGD7E"/>
+      </Columns>
+    </Reference>
+  </References>
+  <Sequences>
+    <Sequence Id="sqnQUVA5W5R2JHF3H3RJPRWEXEUUU" Name="MetricTypeId" DbName="SQN_RDX_SM_METRICTYPEID" Cycle="false" Order="true" Cache="20">
+      <Placement PosX="89" PosY="77"/>
+    </Sequence>
+    <Sequence Id="sqnC5ODCOIZTVFXDOVDAMMAOMI2J4" Name="MetricStateId" DbName="SQN_RDX_SM_METRICSTATEID" Cycle="false" Order="true" Cache="20">
+      <Placement PosX="518" PosY="77"/>
+    </Sequence>
+    <Sequence Id="sqnJ6FGT7UYTJGGBP7XOYWOAZ4NEQ" Name="MetricHistId" DbName="SQN_RDX_SM_METRICHISTID" Cycle="false" Order="true" Cache="20">
+      <Placement PosX="768" PosY="86"/>
+    </Sequence>
+    <Sequence Id="sqnNQ5XEH25TVEHXBLHFGIFMZSY2U" Name="SnmpManagerId" DbName="SQN_RDX_SM_SNMPMANAGERID" Cycle="false" Order="true" Cache="20">
+      <Placement PosX="859" PosY="691"/>
+    </Sequence>
+  </Sequences>
+  <Packages>
+    <Package Id="pkgPXQJOH6ETJCTNIUT65DYEKLTSM" Name="RDX_SM_METRIC" PurityLevelMask="0">
+      <Header>
+        <Item>
+          <Prototype Id="dprP3PBW4GGMBC3BCDSAHMAXPAATQ" FunctionId="dfn6FPZAXH5BNB6TGDIIV3FGLEEFI"/>
+        </Item>
+      </Header>
+      <Body>
+        <Item>
+          <Function Id="dfn6FPZAXH5BNB6TGDIIV3FGLEEFI" Name="dailyMaintenance" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+    TYPE metricStateRec is RECORD (
+        metricId    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="colAJKGMNFACVDP3NKSFE74FBBJWI" Owner="TABLE">
+                  <xsc:Sql>RDX_SM_METRICSTATE.ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>%TYPE,
+        lastHistId    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="col5BUNKNNFDJBKVPBACEGLW3XMOU" Owner="TABLE">
+                  <xsc:Sql>RDX_SM_METRICSTATE.LASTHISTID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>%TYPE
+    );
+    TYPE metricStateRecs is table of metricStateRec;
+    
+    storeDays integer;
+    metricStates metricStateRecs;    
+begin
+    select </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblX5TD7JDVVHWDBROXAAIT4AGD7E" PropId="colE2XLLDK4RVAMFAL7O6XQGRTVNY" Owner="TABLE">
+                  <xsc:Sql>RDX_SYSTEM.METRICHISTORYSTOREDAYS</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> into storeDays from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblX5TD7JDVVHWDBROXAAIT4AGD7E">
+                  <xsc:Sql>RDX_SYSTEM</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblX5TD7JDVVHWDBROXAAIT4AGD7E" PropId="col27EXNSNZRHWDBRCXAAIT4AGD7E" Owner="TABLE">
+                  <xsc:Sql>RDX_SYSTEM.ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = 1;
+    
+    select </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="colAJKGMNFACVDP3NKSFE74FBBJWI" Owner="TABLE">
+                  <xsc:Sql>RDX_SM_METRICSTATE.ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="col5BUNKNNFDJBKVPBACEGLW3XMOU" Owner="TABLE">
+                  <xsc:Sql>RDX_SM_METRICSTATE.LASTHISTID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+    BULK COLLECT INTO metricStates
+    from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y">
+                  <xsc:Sql>RDX_SM_METRICSTATE</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+    
+    FORALL indx in 1 .. metricStates.COUNT
+        delete /*+ index(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblMCNK4E6FFNA5DHESZPKNLKJ3FQ">
+                  <xsc:Sql>RDX_SM_METRICHIST</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="tblMCNK4E6FFNA5DHESZPKNLKJ3FQ idxI4BBBWE5CFEKZLRTNZLOAVQR2Q">
+                  <xsc:Sql>PK_RDX_SM_METRICHIST</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>) */ from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblMCNK4E6FFNA5DHESZPKNLKJ3FQ">
+                  <xsc:Sql>RDX_SM_METRICHIST</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+        where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblMCNK4E6FFNA5DHESZPKNLKJ3FQ" PropId="col5HEQNQF275CG7PZHGA75LNZQPM" Owner="TABLE">
+                  <xsc:Sql>RDX_SM_METRICHIST.ENDTIME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> &lt; (sysdate - storedays)
+        and </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblMCNK4E6FFNA5DHESZPKNLKJ3FQ" PropId="colGUQOPXPQIFE63KK5JQWPP36JIY" Owner="TABLE">
+                  <xsc:Sql>RDX_SM_METRICHIST.METRICID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = metricStates(indx).metricId
+        and </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblMCNK4E6FFNA5DHESZPKNLKJ3FQ" PropId="colTIMOHINPBBHPHBF7IQRMHPYWVY" Owner="TABLE">
+                  <xsc:Sql>RDX_SM_METRICHIST.ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> != metricStates(indx).lastHistId;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+          </Function>
+        </Item>
+      </Body>
+    </Package>
+  </Packages>
+  <Labels>
+    <Label Id="lblDTJKQGTTHJFGBNPRC2J7TBVRNA">
+      <Placement PosX="732" PosY="615"/>
+      <Font Bold="true" Italic="false" Size="18"/>
+      <Text>SNMP Management</Text>
+    </Label>
+  </Labels>
+</Model>

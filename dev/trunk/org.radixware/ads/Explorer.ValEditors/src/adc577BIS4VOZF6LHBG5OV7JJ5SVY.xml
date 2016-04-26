@@ -1,0 +1,659 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc577BIS4VOZF6LHBG5OV7JJ5SVY" Name="ValEditor" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.explorer.editors.valeditors.ValEditor"/>
+    </AccessRules>
+    <TypeArguments>
+      <xsc:Argument DerivationRule="extends" Alias="T">
+        <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+      </xsc:Argument>
+    </TypeArguments>
+    <Headers>
+      <Src Name="Headeradc4F5CKXJOK5E5XAAVNGETFBDTEI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcRDYMXONR6JHEHEYARSR7YU2S6Q"/>
+    </Bodies>
+    <MethodGroup Id="cmgU6NQPENETZBUVNTPZDOQF4N6SI" Name="Root"/>
+    <PropertyGroup Id="cpgZYXLZ5DG6FBH5MQ2QL5QNHDI7A" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthK4EPRRMH75HELI4TSLE5M5UVKM" Name="addButton" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="addButton(Lcom.trolltech.qt.gui.QToolButton;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="button" Id="mprUMGFI7QSHZHNHKSKEL4NTYUWMA">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QToolButton"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthTO6ONFI5HZGLHLKMX2S74HCJ5U" Name="changeStateForGrid" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="changeStateForGrid()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthPC3AYF2P2NANJD3DZIX3QWUFHE" Name="ValEditor" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Lcom.trolltech.qt.gui.QWidget;Lorg.radixware.kernel.common.client.meta.mask.EditMask;ZZ)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprHBOKX6LCKJEM5LJ7HXVO4SSVQU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="editMask" Id="mprBXQXEXLQG5BHRA2E76A7Q4PKOI">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+          <Parameter Name="arg1" Id="mprLKQCRJYNNNCVFJZZU7FGKGAPZQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
+          </Parameter>
+          <Parameter Name="readOnly" Id="mprCGHMMSYUXBHOTGPVQQAAQNAJ6M">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="arg2" Id="mpr65OISZUZWNCGHDR5IXUCIPJUWM">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthCWYOIVKRAZE6XP7OWOYMSQLWOY" Name="createAction" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsStatic="true">
+          <Transparence Extendable="false" PublishedName="createAction(Ljava.lang.Object;Ljava.lang.String;)Lcom.trolltech.qt.gui.QAction;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parent" Id="mprE47WMCLLYRGDDHPNAISW7ZUEBA">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+          <Parameter Name="methodName" Id="mprSKLNF7JGENC6TJLG3ZJMTDRZIY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QAction"/>
+      </Method>
+      <Method Id="mthVNQ3AAH72JFWHJSLRWLOOOF364" Name="eq" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="eq(TT;TT;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="value1" Id="mprYJLALZNIKRF7FKSYWGI4QWSFW4">
+            <Type TypeId="400" extStr="T" IsArgumentType="true"/>
+          </Parameter>
+          <Parameter Name="value2" Id="mprDSWV3Z5KUVDDNGBZ72HDSA7WCY">
+            <Type TypeId="400" extStr="T" IsArgumentType="true"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth6M6X7SY6WVBFXLYHALGIINGEVI" Name="getContentMargin" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getContentMargin()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthNDM5T343YFCDFBILQM2Z7RRRLY" Name="getEditMask" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getEditMask()Lorg.radixware.kernel.common.client.meta.mask.EditMask;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
+      </Method>
+      <Method Id="mth7DWRK3RXGNEXXC55QEGWCFAXLQ" Name="getLayout" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getLayout()Lcom.trolltech.qt.gui.QHBoxLayout;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QHBoxLayout"/>
+      </Method>
+      <Method Id="mthEKITQ2D6RNEI3NUXW2NHB67K2U" Name="getLineEdit" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getLineEdit()Lcom.trolltech.qt.gui.QLineEdit;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QLineEdit"/>
+      </Method>
+      <Method Id="mthRNAYTFF475AW7MW75TSAZ3IUDQ" Name="getNoValueStr" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getNoValueStr()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthZ3UXERYP5NFS3NM2TSGYFW43R4" Name="getValue" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getValue()TT;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="T" IsArgumentType="true"/>
+      </Method>
+      <Method Id="mthPNRMOFUMNVCCHM7COBBE4JTPHI" Name="insertButton" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="insertButton(Ljava.lang.String;)Lcom.trolltech.qt.gui.QPushButton;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="buttonText" Id="mprM3L6L2J4IFCHPNVR2ENEZWNGZA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QPushButton"/>
+      </Method>
+      <Method Id="mth3HQGNUAH2ZC5XART622J62S76I" Name="isMandatory" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isMandatory()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthGNJJL2Z2DZBXBJ3NPBYYUIAARU" Name="isReadOnly" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isReadOnly()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthMMC2TXTLCFESVHXIQ44M6IQAVQ" Name="onTextEdited" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="onTextEdited(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="newText" Id="mprNZFK7JBQDNCEZPOYYRSN3BSNCQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthP3GNPHS2WVBZ7FJ4WG5DLWDPAM" Name="setEditMask" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setEditMask(Lorg.radixware.kernel.common.client.meta.mask.EditMask;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprHCKIGYY6JBC2XNKWN2DUQNBIMQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthXOWSI6K25ZCLLEN64IEIZALC74" Name="setFrame" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setFrame(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="frame" Id="mpr6WAN574VMRD33FTIEYLDTB7YRM">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth6VN6K4GXE5HMJJ6YNTFQUI35FM" Name="setMandatory" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setMandatory(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="mandatory" Id="mprTI42RNHXEJEYJG5ZGZCBNXV7UE">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthDCTUZSFOR5DJ7MSLRO7I4JM5ZU" Name="setOnlyValue" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="setOnlyValue(TT;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="value" Id="mprPSLCQDULK5GK5MKZN26XONCDGU">
+            <Type TypeId="400" extStr="T" IsArgumentType="true"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthKG22PYUP5FCCNHMIGNJPEBDR7M" Name="setReadOnly" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setReadOnly(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="readOnly" Id="mpr5ZCE2LW5SREJFLHYGLAGK4444A">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthCKIIJQS3LBB6ZNOGGM25KC5HOY" Name="setValue" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setValue(TT;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="value" Id="mprIDV6W3VQYRDYBA56LQYMS6UPNY">
+            <Type TypeId="400" extStr="T" IsArgumentType="true"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthDQTD2Z4NK5CO5ESCKIDDA4CQL4" Name="addButton" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="addButton(Ljava.lang.String;Lcom.trolltech.qt.gui.QAction;)Lcom.trolltech.qt.gui.QToolButton;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" Id="mprODLO3FCSDFCVRHJTRV7RDCH7YQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="action" Id="mprHSAJRXMURVHJ5HEKPADPA6XZRI">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QAction"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QToolButton"/>
+      </Method>
+      <Method Id="mthXXHRCS7YEVCCFMAZUMZDSWFQ6E" Name="createForValType" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="createForValType(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.enums.EValType;Lorg.radixware.kernel.common.client.meta.mask.EditMask;ZZLcom.trolltech.qt.gui.QWidget;)Lorg.radixware.kernel.explorer.editors.valeditors.ValEditor;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="env" Id="mprHR4RNWNPUZF57AXOFVNQRNTCGM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="valType" Id="mprQJZGX3VZTBEYBI5PJQWII6G6RU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+          </Parameter>
+          <Parameter Name="editMask" Id="mprG5AMSRV6ZRH3JB6QNOBVPXRMDY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
+          </Parameter>
+          <Parameter Name="isMandatory" Id="mprFH4U2IDZCJFJJL2TMHSSWGI6X4">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="isReadOnly" Id="mprSO3X2AYZ3JC3XECHXGELPZPOEY">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="parent" Id="mprYIWNSMVLLZDETFRVRKEBSDL4DM">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.editors.valeditors.ValEditor"/>
+      </Method>
+      <Method Id="mthZIHYTJ2BPJGDPCZIQRC3ZME4L4" Name="getValidationResult" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getValidationResult()Lorg.radixware.kernel.common.client.meta.mask.validators.ValidationResult;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.validators.ValidationResult"/>
+      </Method>
+      <Method Id="mthOA2CEKZZTJE3LOXIGCICCNFV6Q" Name="setValidationResult" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setValidationResult(Lorg.radixware.kernel.common.client.meta.mask.validators.ValidationResult;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="result" Id="mprW2QIPTMVYVELXLVFMY6NSXDRFI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.validators.ValidationResult"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthHSBMOV4V2FF43NWEZ4XS7QP6ZU" Name="calcValidationResult" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="calcValidationResult(TT;)Lorg.radixware.kernel.common.client.meta.mask.validators.ValidationResult;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprHDPZKO5NGBEJZME2SZ73GH6CME">
+            <Type TypeId="400" extStr="T" IsArgumentType="true"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.validators.ValidationResult"/>
+      </Method>
+      <Method Id="mthGNEAM74SYNGQNGP7WRV4JCZE7Y" Name="getReactionToIntermediateInput" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getReactionToIntermediateInput()Lorg.radixware.kernel.explorer.editors.valeditors.ValEditor.EReactionToIntermediateInput;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.editors.valeditors.ValEditor.EReactionToIntermediateInput"/>
+      </Method>
+      <Method Id="mthFVGBKEN5MJC2JM3COTIK3HZCSQ" Name="isAutoValidationEnabled" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isAutoValidationEnabled()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthPELVOIHALBD3NFO457X65UM7IQ" Name="setAutoValidationEnabled" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setAutoValidationEnabled(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isEnabled" Id="mpr6CDVSVNRWBGQZITLYK6ZKRJTL4">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthCZWJG5LVZFFSXJRHHLZEU23Q2A" Name="setReactionToIntermediateInput" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setReactionToIntermediateInput(Lorg.radixware.kernel.explorer.editors.valeditors.ValEditor.EReactionToIntermediateInput;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="reaction" Id="mpr6MIP3UZ76BFE7IRPXRO3BRG6OI">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.editors.valeditors.ValEditor.EReactionToIntermediateInput"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthEMGAKZ3VW5BCJKYMRRJOSSXW7E" Name="getEditingHistory" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getEditingHistory()Lorg.radixware.kernel.common.client.types.IEditingHistory;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.types.IEditingHistory"/>
+      </Method>
+      <Method Id="mthTN5YHDQPGBBQBJQAGQ6F5ECY3I" Name="setEditingHistory" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setEditingHistory(Lorg.radixware.kernel.common.client.types.IEditingHistory;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="editingHistory" Id="mprN42EFGSAXBFUVP4TL6LJF2NVZU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.types.IEditingHistory"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth63KVTSZDEZAVBF2YFYXKF7HBXM" Name="stringAsValue" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="stringAsValue(Ljava.lang.String;)TT;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="strToConvert" Id="mprML3J3RJLOBCH3NQJA3GKD7NOZ4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="T" IsArgumentType="true"/>
+      </Method>
+      <Method Id="mthLFYLBIJWKVASVJEJ2D6ATYTED4" Name="valueAsStr" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="valueAsStr(TT;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="valueToConvert" Id="mprXVY76LHJCVGUXAWF7K5DAAKL4Y">
+            <Type TypeId="400" extStr="T" IsArgumentType="true"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthOV3LOALMLNCDDIDUNQWYITO3EQ" Name="getPredefinedValues" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getPredefinedValues()Ljava.util.List&lt;TT;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="T" IsArgumentType="true"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mth7R66F37LRNCK3C4WFBUKCX2MTI" Name="setPredefinedValues" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setPredefinedValues(Ljava.util.List&lt;TT;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="values" Id="mprCEH36QBYEBEY3FGYKKZD7WJBMM">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="T" IsArgumentType="true"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthNHDPQXJCOFCVNIU2HXMV5LXWTA" Name="getDisplayStringProvider" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getDisplayStringProvider()Lorg.radixware.kernel.explorer.widgets.propeditors.IDisplayStringProvider;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.widgets.propeditors.IDisplayStringProvider"/>
+      </Method>
+      <Method Id="mthSWLSRASHCVBSZG2B7DFCDHDMIY" Name="setDisplayStringProvider" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setDisplayStringProvider(Lorg.radixware.kernel.explorer.widgets.propeditors.IDisplayStringProvider;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="displayStringProvider" Id="mpr2DLHD7NEGBBU5EWUPTMU6PSUMY">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.widgets.propeditors.IDisplayStringProvider"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth5C2OY4O7KFH47LWBHA43JRK5VM" Name="onFocusIn" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="onFocusIn()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthIH7VTSKRMFD25M32YYL5H2SBMQ" Name="onFocusOut" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="onFocusOut()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthXCH7E4KMGNFW5P2IFI2EEQFVZM" Name="calculateTextOptions" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="calculateTextOptions(Ljava.util.EnumSet&lt;Lorg.radixware.kernel.common.client.enums.ETextOptionsMarker;>;)Lorg.radixware.kernel.explorer.text.ExplorerTextOptions;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="markers" Id="mprOVTXN7MAZFEMZB3SNI36PUKSU4">
+            <Type TypeId="400" extStr="java.util.EnumSet">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.ETextOptionsMarker"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.text.ExplorerTextOptions"/>
+      </Method>
+      <Method Id="mthS5PXT3BDPNDMRPLXLHRMEZHXTU" Name="isButtonCanChangeValue" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="isButtonCanChangeValue(Lcom.trolltech.qt.gui.QAbstractButton;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="button" Id="mprKCCP7JUP2RBGJMSWAK4ZFFBSKM">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QAbstractButton"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthBNRN4HQXPVBDRF6VVNNBAMMU3Y" Name="applyFont" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="applyFont(Lorg.radixware.kernel.explorer.text.ExplorerFont;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="font" Id="mprBQPS64OUHFG2ZPFZKTEDF36V64">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.text.ExplorerFont"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthOCRSC6N22VGSXMTGKQHHJIZ7MI" Name="applyTextOptions" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="applyTextOptions(Lorg.radixware.kernel.explorer.text.ExplorerTextOptions;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="options" Id="mprHWWRJ7GOARAYTA4Z34THD2LNCM">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.text.ExplorerTextOptions"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthCZUN6ZBB25ATPDSNAKU3SI7I2U" Name="getTextOptionsMarkers" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getTextOptionsMarkers()Ljava.util.EnumSet&lt;Lorg.radixware.kernel.common.client.enums.ETextOptionsMarker;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.EnumSet">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.ETextOptionsMarker"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthZS5WVAKPAVGNTNYXX55TKNORPU" Name="getTextOptions" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getTextOptions()Lorg.radixware.kernel.explorer.text.ExplorerTextOptions;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.text.ExplorerTextOptions"/>
+      </Method>
+      <Method Id="mthRZDT6MK7BRD3REYJFOWV75CDIU" Name="addTextOptionsMarkers" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="addTextOptionsMarkers([Lorg.radixware.kernel.common.client.enums.ETextOptionsMarker;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="markers" Id="mprGNZQ62EQZNFX3DHGLTDS5I4BUY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.ETextOptionsMarker" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth4EYRJR7Z55HXXAQ5HWLMDTSL3Q" Name="removeTextOptionsMarkers" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="removeTextOptionsMarkers([Lorg.radixware.kernel.common.client.enums.ETextOptionsMarker;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="markers" Id="mprN23E66JGYVGPRFSE72YXHBZW74">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.ETextOptionsMarker" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthWMRXX73XM5E3PCED52ZYSURAGY" Name="setTextOptionsMarkers" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setTextOptionsMarkers([Lorg.radixware.kernel.common.client.enums.ETextOptionsMarker;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="markers" Id="mprW4YAFDYPL5BZ3P4WZ3WE3LXBFE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.ETextOptionsMarker" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthMBMYFEBEOJABRAOC6CTZ527AJI" Name="refreshTextOptions" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="refreshTextOptions()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthKNF4AMKAFRFVDJVXDW6W3LIDY4" Name="setDefaultTextOptions" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setDefaultTextOptions(Lorg.radixware.kernel.explorer.text.ExplorerTextOptions;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="options" Id="mpr76E3JUZSJRERFHNTHM3WWC6YAQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.text.ExplorerTextOptions"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth7E6FPY3CABH3BH7LYIO7SFHYSE" Name="setTextOptionsForMarker" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setTextOptionsForMarker(Lorg.radixware.kernel.common.client.enums.ETextOptionsMarker;Lorg.radixware.kernel.explorer.text.ExplorerTextOptions;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="marker" Id="mprMEF6YZMKD5CNXCY7CPID4HMHJE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.ETextOptionsMarker"/>
+          </Parameter>
+          <Parameter Name="options" Id="mprX2L6HWL6CJH63PPBMMGTQ2YQZA">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.text.ExplorerTextOptions"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthYPLFCTLLZNACRJCYLOYNWNLZ74" Name="setTextOptionsProvider" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setTextOptionsProvider(Lorg.radixware.kernel.common.client.text.ITextOptionsProvider;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="provider" Id="mprKSNPDP437JBKXCMT47VVYAYAC4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.text.ITextOptionsProvider"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthOHDTMZ72MJHYBPVHRE6WRLG2II" Name="clear" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="clear()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthKGYIGR4EIRCJXFPTMKO6TA2TEE" Name="getStringToShow" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getStringToShow(Ljava.lang.Object;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="value" Id="mprWSTENDQXCZEN3JEU2J7GYZXQJU">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mth5YH2LEYIXRBBBDR5TWIB5CXLJI" Name="validateInputText" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="validateInputText(Ljava.lang.String;)Lorg.radixware.kernel.common.client.meta.mask.validators.ValidationResult;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="text" Id="mprFEIXGX3G35B4JM46DLCEQBJAHI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.validators.ValidationResult"/>
+      </Method>
+      <Method Id="mthIW5YIELXRFHQFKLTYY24XQCKKY" Name="inModificationState" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="inModificationState()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth3D7ZOX2DUZFTXO2F42MGDZYVBA" Name="wasClosed" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="wasClosed()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthLPIVUQQFJZBFDDWEP32V4SPZWU" Name="addWidget" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="addWidget(Lcom.trolltech.qt.gui.QWidget;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="child" Id="mprQBK7QZCAF5DNRFDSAMNLOWGIYQ">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth3AIPLANRMBFGTAJJBEP47XRC2I" Name="doValidation" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="doValidation()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth6ACQOJFUCRCSBBP4C23WZSNKIE" Name="setInputValidator" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="setInputValidator(Lorg.radixware.kernel.common.client.meta.mask.validators.IInputValidator;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprBLGHQ3AOBRE5HENOYRM4IL7NX4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.validators.IInputValidator"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthJHIOZOGDRRA7VMHRXPNJ4FJZ3E" Name="getUnacceptableInput" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getUnacceptableInput()Lorg.radixware.kernel.common.client.types.UnacceptableInput;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.types.UnacceptableInput"/>
+      </Method>
+      <Method Id="mthGXWAZLPSJFGJHJOPVA7GXMDXVE" Name="checkInput" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="checkInput()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthCA7QTAG44NAHZLV7L5CIRPKL6Y" Name="checkInput" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="checkInput(Ljava.lang.String;Ljava.lang.String;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="messageTitle" Id="mprQAUEWTV6JVD5RLN25RPMID4F6A">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="firstMessageLine" Id="mprTGFD2D32BNFGPNWHDPPVPO5DUE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthGIZ2QCTEOFHBVFANT4CKFFV3EQ" Name="hasAcceptableInput" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="hasAcceptableInput()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth3HLCXKVSGNGVPHATNCNNDNVNNI" Name="isValidationOnInputEnabled" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isValidationOnInputEnabled()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthX5U7MHFHSZHPLIDTFYT4NSSPIE" Name="setInputText" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setInputText(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="inputText" Id="mprP7PY2OVKOFFTFAFDDO4BGXIIQM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

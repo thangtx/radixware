@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="acc4RPHRNP7O5CCXFEY7WMSDJRNF4" Name="FailedChildsCountCursor" Type="4">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="Headeracc4RPHRNP7O5CCXFEY7WMSDJRNF4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyacc4RPHRNP7O5CCXFEY7WMSDJRNF4"/>
+    </Bodies>
+    <MethodGroup Id="cmg6T7FHLOQ3RFGDOXMVQFGR4PCYY" Name="Root"/>
+    <PropertyGroup Id="cpg2S3VMB34JFAJHEYG6KGTVD7ZLI" Name="Root"/>
+    <Properties>
+      <Property Id="prmTHT2EIM2I5BLNADA6G7EM64Y74" Name="pParentId" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prfY2OUYLX4YNCRRMPXGIKMKMBCMY" Name="count" Nature="3" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prmNXX3HIAXWFG43IE6R55UYR3RAY" Name="pExecToken" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="open" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="pParentId" Id="mprTHT2EIM2I5BLNADA6G7EM64Y74">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="pExecToken" Id="mprNXX3HIAXWFG43IE6R55UYR3RAY">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="acc4RPHRNP7O5CCXFEY7WMSDJRNF4"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="true">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>select count(*) as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="acc4RPHRNP7O5CCXFEY7WMSDJRNF4" PropId="prfY2OUYLX4YNCRRMPXGIKMKMBCMY" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+where 
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" PropId="colBHMUC3KGIJE3PA6RVXKLXFHP3U" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmTHT2EIM2I5BLNADA6G7EM64Y74"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+    and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" PropId="colPT5IWXJ4O5AIPIYP3NSPZTDK54" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:ConstValue EnumId="acsEIXEKC5YG5CVBEOCLYU33L3WGI" ItemId="aciJCCIEXZNGBEAZGSBORYHGTY25Q"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+    and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" PropId="colSPQ7GFBANJFXBJRZTRXETWZFG4" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmNXX3HIAXWFG43IE6R55UYR3RAY"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+</xsc:Sql>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="411" Path="pdcCursor____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

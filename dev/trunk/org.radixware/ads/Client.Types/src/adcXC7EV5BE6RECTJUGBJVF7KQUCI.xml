@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcXC7EV5BE6RECTJUGBJVF7KQUCI" Name="BatchCopyResult" Type="3" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.views.BatchCopyResult"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcXC7EV5BE6RECTJUGBJVF7KQUCI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcXC7EV5BE6RECTJUGBJVF7KQUCI"/>
+    </Bodies>
+    <MethodGroup Id="cmgYJX7AP2OXZDVXAHCX7DODKH2YU" Name="Root"/>
+    <PropertyGroup Id="cpgNHEORGXXXRAHTMS4BIPBSSW5MI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthPXLV6X2T2BEJHNZPC7CPTODJE4" Name="getNewObjects" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getNewObjects()Ljava.util.List&lt;Lorg.radixware.kernel.common.client.models.EntityModel;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthDZT3QO4ZKVAZXEHLOLAPKBTVIU" Name="getNumberOfCopies" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getNumberOfCopies()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

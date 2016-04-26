@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclEFJCPK2QWFGDXIMBN5LAGXP4JY" Name="MetricType.Profiling.Cnt" Type="2" ClientEnvironment="explorer">
+    <AccessRules IsFinal="true" IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderadcQXX5SRT6CBCQXDUDDPY3FRT3FY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcIWUR5A43MZBHLABJOJ65VWZV3Q"/>
+    </Bodies>
+    <MethodGroup Id="cmgQF7MSUV33VFNJAM6ZSSIC4SMAA" Name="Root"/>
+    <PropertyGroup Id="cpgVBAPBYHOPBEWDN2TOHR5E4ACXM" Name="Root"/>
+    <Properties>
+      <Property Id="colPSRIBABNSJD45B3FB3UDKHACIM" Name="controlledValue" Nature="0" IsConst="false" IsOverride="true">
+        <AccessRules/>
+        <Type TypeId="21" Path="acs3JQBPC2NCJD37LVXZ6FUAXVNZ4"/>
+        <InitialValue>
+          <ValAsStr>AVG</ValAsStr>
+        </InitialValue>
+        <Presentation InheritanceMask="63"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthSK64PGWTZNFZFAJVJ5NHXBAC6M" Name="getKind" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="21" Path="acsF47GG6XUPJH5ZKZFOWDK7GI7LE"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsF47GG6XUPJH5ZKZFOWDK7GI7LE aciX3RE5M3ZLZAATCYWXJW7V56YIY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthWWMO5AMVONHYFPXVGHKONUKSPY" Name="isControlledValueEditable" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return false;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM"/>
+    <Presentations ObjectTitleId="mls2ANNER7OZ5DZPONT3GZ5QXIHMU">
+      <ClassCatalogs>
+        <ClassCatalog Id="eccXISAEUV6HRA7JNQ453IS2OBSFI" Name="creationClassCatalog">
+          <AccessRules IsPublished="false"/>
+          <ClassRef Order="95.0"/>
+        </ClassCatalog>
+      </ClassCatalogs>
+    </Presentations>
+    <Extends TypeId="411" Path="aclA4SR72ELAVEWTMRWOYXOK6EANU"/>
+  </AdsClassDefinition>
+</AdsDefinition>

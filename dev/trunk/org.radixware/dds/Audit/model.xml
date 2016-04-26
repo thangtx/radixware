@@ -1,0 +1,2467 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Model xmlns="http://schemas.radixware.org/ddsdef.xsd" xmlns:com="http://schemas.radixware.org/commondef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" Id="prjP7W6B3UO3BD4FNK2JFEP3IUQIU" DbNamePrefix="RDX_AU">
+  <Tables>
+    <Table Id="tblXXXFKJLLMLNBDKV7ABINU7DB2Q" Name="AuditLog" DescriptionId="mlsFDWDBJWL5FDKJGY4S637DZL54A" DbName="RDX_AU_AUDITLOG">
+      <Columns>
+        <Column Id="col5GIY6YTLMLNBDKV7ABINU7DB2Q" Name="id" ValType="2" Length="12" DbType="NUMBER(12,0)" NotNull="true" DbName="ID" SequenceId="sqn2FY3TI3TMXNBDKV7ABINU7DB2Q"/>
+        <Column Id="col5KIY6YTLMLNBDKV7ABINU7DB2Q" Name="eventTime" DescriptionId="mls7BYXJPP7OFFTPPFNKGW252I75M" ValType="12" Length="0" Precision="6" DbType="TIMESTAMP(6)" NotNull="true" DbName="EVENTTIME"/>
+        <Column Id="col5UFKW7TLMLNBDKV7ABINU7DB2Q" Name="storeDuration" ValType="2" Length="1" DbType="NUMBER(1,0)" NotNull="true" DbName="STOREDURATION">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>1</com:Value>
+          </DefaultVal>
+        </Column>
+        <Column Id="colE6QAXC3LMLNBDKV7ABINU7DB2Q" Name="userName" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="false" DbName="USERNAME" TemplateId="cdmBHOWDKCA6FDZVJ35M73O6CZJ6A"/>
+        <Column Id="col3EONLF3LMLNBDKV7ABINU7DB2Q" Name="stationName" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="STATIONNAME"/>
+        <Column Id="colDCVRSSAY4BAC5CFU7PVGD4SFMQ" Name="tableId" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="true" DbName="TABLEID"/>
+        <Column Id="colCUJB6QBJ35EF7LTIDU5M3ZCDTY" Name="classId" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="false" DbName="CLASSID"/>
+        <Column Id="colFKOCBVAOMPNBDKV7ABINU7DB2Q" Name="pid" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="true" DbName="PID"/>
+        <Column Id="colX5YHTXQOMPNBDKV7ABINU7DB2Q" Name="eventType" ValType="21" Length="1" DbType="VARCHAR2(1 char)" NotNull="true" DbName="EVENTTYPE"/>
+        <Column Id="colWGY7XZYOMPNBDKV7ABINU7DB2Q" Name="eventData" ValType="27" Length="0" DbType="CLOB" NotNull="false" DbName="EVENTDATA"/>
+      </Columns>
+      <PrimaryKey Id="idxXXXFKJLLMLNBDKV7ABINU7DB2Q" Name="PrimaryKey" DbName="PK_RDX_AU_AUDITLOG" Unique="true" Local="true">
+        <Columns>
+          <Column ColumnId="col5KIY6YTLMLNBDKV7ABINU7DB2Q" Order="Asc"/>
+          <Column ColumnId="col5GIY6YTLMLNBDKV7ABINU7DB2Q" Order="Asc"/>
+          <Column ColumnId="col5UFKW7TLMLNBDKV7ABINU7DB2Q" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqXXXFKJLLMLNBDKV7ABINU7DB2Q" DbName="PK_RDX_AU_AUDITLOG" Rely="true"/>
+      </PrimaryKey>
+      <Indices>
+        <Index Id="idxLAH6JEQIRDNBDKWNABINU7DB2Q" Name="Entity" DbName="IDX_RDX_AU_AUDITLOG_ENTITY" Local="true">
+          <Columns>
+            <Column ColumnId="colDCVRSSAY4BAC5CFU7PVGD4SFMQ" Order="Asc"/>
+            <Column ColumnId="colFKOCBVAOMPNBDKV7ABINU7DB2Q" Order="Asc"/>
+            <Column ColumnId="col5KIY6YTLMLNBDKV7ABINU7DB2Q" Order="Asc"/>
+            <Column ColumnId="col5GIY6YTLMLNBDKV7ABINU7DB2Q" Order="Asc"/>
+          </Columns>
+        </Index>
+      </Indices>
+      <Placement PosX="261" PosY="137"/>
+      <Partition>
+        <xsc:Item>
+          <xsc:Sql>by range (EVENTTIME) INTERVAL(NUMTODSINTERVAL(1,'DAY'))
+    subpartition by list (STOREDURATION)
+    subpartition template (
+      SUBPARTITION T1 values(1),
+      SUBPARTITION T2 values(2),
+      SUBPARTITION T3 values(3),
+      SUBPARTITION T4 values(4),
+      SUBPARTITION T5 values(5)
+    )
+    (
+      PARTITION </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:ThisTableSqlName/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>_0 VALUES LESS THAN (to_date('&amp;sysdate:yyyy_MM_dd&amp;','YYYY_MM_DD'))
+    )</xsc:Sql>
+        </xsc:Item>
+      </Partition>
+    </Table>
+    <Table Id="tblJBWGL34ATTNBDPK5ABQJO5ADDQ" Name="Scheme" DbName="RDX_AU_SCHEME">
+      <Columns>
+        <Column Id="colAB22MAMBTTNBDPK5ABQJO5ADDQ" Name="guid" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="true" DbName="GUID"/>
+        <Column Id="col7ZEWKKYLT3NBDPK7ABQJO5ADDQ" Name="title" ValType="21" Length="200" DbType="VARCHAR2(200 char)" NotNull="true" DbName="TITLE" AuditMask="6"/>
+        <Column Id="colJRJ3R3ABQBAGHPX43MTLJIKYQQ" Name="notes" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="NOTES"/>
+      </Columns>
+      <PrimaryKey Id="idxJBWGL34ATTNBDPK5ABQJO5ADDQ" Name="PrimaryKey" DbName="PK_RDX_AU_SCHEME" Unique="true">
+        <Columns>
+          <Column ColumnId="colAB22MAMBTTNBDPK5ABQJO5ADDQ" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqJBWGL34ATTNBDPK5ABQJO5ADDQ" DbName="PK_RDX_AU_SCHEME" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="33" PosY="22"/>
+    </Table>
+    <Table Id="tblFEIALUQDMPNBDKV7ABINU7DB2Q" Name="SchemeItem" DbName="RDX_AU_SCHEMEITEM">
+      <Columns>
+        <Column Id="colHOZ6HWIDMPNBDKV7ABINU7DB2Q" Name="schemeGuid" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="true" DbName="SCHEMEGUID"/>
+        <Column Id="colZMHWLZADMPNBDKV7ABINU7DB2Q" Name="tableId" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="true" DbName="TABLEID"/>
+        <Column Id="colL7E3H7ADMPNBDKV7ABINU7DB2Q" Name="eventType" ValType="21" Length="1" DbType="VARCHAR2(1 char)" NotNull="true" DbName="EVENTTYPE"/>
+        <Column Id="colWNMPOZQEMPNBDKV7ABINU7DB2Q" Name="saveData" ValType="1" Length="1" Precision="1" DbType="NUMBER(1,0)" NotNull="true" DbName="SAVEDATA" AuditMask="7">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>1</com:Value>
+          </DefaultVal>
+        </Column>
+        <Column Id="colAUV5IYAEMPNBDKV7ABINU7DB2Q" Name="storeDuration" ValType="2" Length="1" DbType="NUMBER(1,0)" NotNull="true" DbName="STOREDURATION" AuditMask="3">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>1</com:Value>
+          </DefaultVal>
+        </Column>
+      </Columns>
+      <PrimaryKey Id="idxFEIALUQDMPNBDKV7ABINU7DB2Q" Name="PrimaryKey" DbName="PK_RDX_AU_SCHEMEITEM" Unique="true">
+        <Columns>
+          <Column ColumnId="colHOZ6HWIDMPNBDKV7ABINU7DB2Q" Order="Asc"/>
+          <Column ColumnId="colZMHWLZADMPNBDKV7ABINU7DB2Q" Order="Asc"/>
+          <Column ColumnId="colL7E3H7ADMPNBDKV7ABINU7DB2Q" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqFEIALUQDMPNBDKV7ABINU7DB2Q" DbName="PK_RDX_AU_SCHEMEITEM" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="115" PosY="174"/>
+    </Table>
+  </Tables>
+  <References>
+    <Reference Id="ref2BK6GSWQF5GT5GN2JH4XOI3ZFA" DbName="FK_RDX_AU_SCHEMEITEM_SCHEME" Type="LINK" ChildTableId="tblFEIALUQDMPNBDKV7ABINU7DB2Q" ParentTableId="tblJBWGL34ATTNBDPK5ABQJO5ADDQ" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqJBWGL34ATTNBDPK5ABQJO5ADDQ">
+      <Columns>
+        <Item ChildColumnId="colHOZ6HWIDMPNBDKV7ABINU7DB2Q" ParentColumnId="colAB22MAMBTTNBDPK5ABQJO5ADDQ"/>
+      </Columns>
+    </Reference>
+  </References>
+  <Sequences>
+    <Sequence Id="sqn2FY3TI3TMXNBDKV7ABINU7DB2Q" Name="AuditLogId" DbName="SQN_RDX_AU_AUDITLOGID" StartWith="1" IncrementBy="1" Cycle="false" MinValue="1" Order="true" Cache="20">
+      <Placement PosX="254" PosY="52"/>
+    </Sequence>
+  </Sequences>
+  <Packages>
+    <Package Id="pkgEH5ZRMFFQHNBDKWJABINU7DB2Q" Name="RDX_AUDIT" PurityLevelMask="0">
+      <Header>
+        <Item>
+          <Prototype Id="dprPEJ3CD575JHRPNBM2Q5FS4PH4E" FunctionId="dfn3JMPT34LPVFVNFDLZM6PL3OYRU"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprNHA4KJN5JRDETKSHXOLOBC6QEI" FunctionId="dfn2GW5D2DIGBDWBOBGA2XCMRQYFQ"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprT4GOWEM5ANFVNJ74KRRDIJG5PE" FunctionId="dfn2SHTYL7XYNBVRDNOM5UXROVEB4"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprYQDTP6PLANC7BDQSOZHZMJ7EVQ" FunctionId="dfn5EEF7AQGKZFS7JCBH4BFF24PC4"/>
+        </Item>
+        <Item>
+          <Prototype Id="dpr32HNHTZNX3NBDPLKABQJO5ADDQ" FunctionId="dfn32HNHTZNX3NBDPLKABQJO5ADDQ"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprRAERWTZSX3NBDPLKABQJO5ADDQ" FunctionId="dfnRAERWTZSX3NBDPLKABQJO5ADDQ"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprPQ3VCQBSX3NBDPLKABQJO5ADDQ" FunctionId="dfnPQ3VCQBSX3NBDPLKABQJO5ADDQ"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprYH6DZCBSX3NBDPLKABQJO5ADDQ" FunctionId="dfnYH6DZCBSX3NBDPLKABQJO5ADDQ"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprPKS47MNHCZE3LEK33NOW7DQGHU" FunctionId="dfnSVTVVVYVCJHKJI5GKIOYWKYQCQ"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprMAOHR37FFREVLABORXIK73TT6U" FunctionId="dfnHSGPBPW5BNF5NCO2SCHOGHQMAU"/>
+        </Item>
+        <Item>
+          <Prototype Id="dpr2WFECKGVNZGATAUZTVDMADCC3U" FunctionId="dfn5J3XXHOFE5F7XJQJ372H2EXPHM"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprPAPVHS77VRGCXFHGCCX2RY26JU" FunctionId="dfnOTYDVWMTOZF7PN4327HMLY7WJM"/>
+        </Item>
+        <Item>
+          <Prototype Id="dpr4TK5DPVZVJBWFOAJG7CHDIWQUI" FunctionId="dfnPWZL6CVFIJGWRFV4UMHBUAFTBY"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprZQTBGVTCRBD3HD7YPXIB4SDTA4" FunctionId="dfnIFDY2D66YJFDJD755VNAYV7HQU"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprRECB4RGZZRCONO3EZFN7ZMFXXU" FunctionId="dfn4VEAWVF45JE2HIK4UI6E2YXHDE"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprZLJQIPRWUFAQZAN7S5XWWDR2ZU" FunctionId="dfnCG7WOFIAF5HFZB2NLAVCXU77F4"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprRMADHVB6NJBJJHBVFSD3PD2HLM" FunctionId="dfnLRRREOFYJRBR5PIELHOKPQ42XM"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprTQV4RNO2LFFHBMVUYTZTUHEZCE" FunctionId="dfnIPL6KBI26RCE3PIBZJK2EBHGBU"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprIYWC3IEJ7BH7JPO7IOIJVG5LJQ" FunctionId="dfnTGD6QCQLZNCORMEEO6BUPWA7BM"/>
+        </Item>
+        <Item>
+          <Prototype Id="dpr4BW4KDKKP5FTZKYWZXUA2WWB2I" FunctionId="dfn443YVYYXUVFWZPSRK3XDQY4MGM"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprUZGXFCELEBGLNNB7W4TXJBWFCM" FunctionId="dfnKRZVDTDHI5E7ZA3SKNQTJVAUBM"/>
+        </Item>
+        <Item>
+          <Prototype Id="dpr3C75DVWLPRELPFGGBYPQLDGDW4" FunctionId="dfnW2HAJL53XJH2LLH253HS53UNPU"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprMXS3HKEYPNCPPFDHGQ5A3ZA5U4" FunctionId="dfnSFHXBHK2AJEZDLTRYWBJOCVH6I"/>
+        </Item>
+        <Item>
+          <Prototype Id="dpr3WS64VFCPVFS5HOXBRXT5JEPSA" FunctionId="dfn7VGENQES3VD6HDKCQLKUOPTVEA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprYMHW3FDIEBHZ3AULTTQAL4RVF4" FunctionId="dfnYBDP6LUCEFGDHD3NAKJRZQEZGY"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprRQPU4W6NUJEB5PMENAX4GA3AKI" FunctionId="dfnUIXWSLKYOJACZLUT7R7T6P2KRU"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprOIQEV262CJDT5ELL452Q3V2EGU" FunctionId="dfnHOK4ALPJCZHZHDB3N7RETGZCSU"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprHHEXX25B6RHYLICI3XGPDP26C4" FunctionId="dfnW73MYQ7YPZATLIN65XFFWXZ2VM"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprTVIZLQKKMZG7JALUANVXNO7DXA" FunctionId="dfnJN7PODYPUFBSXKQK4IFL6I4CUI"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprZBRES3W7DRG23BOPV2PSE5OB2M" FunctionId="dfnQMGCORSJPVAZ7DFGMHEFSDL2EU"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprAEMIS2DFFBFMVG5NFVCJANPABI" FunctionId="dfnKTBFDHZKYNHKPLNUWQGRQXK7KI"/>
+        </Item>
+        <Item>
+          <Prototype Id="dpr6FEJH7VZKRHM3I4KS4LGGRT4YU" FunctionId="dfn7RNXA4VYD5HE3M7A3INLHMZHQA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprLHEPJILLYZEZTGZ5OQ6OFHM25M" FunctionId="dfnO4ACAAM3FZCQXASY5ZT47OGRZM"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprQHIM66XFLZBLBDHODHMTDG33HQ" FunctionId="dfnLHY7E5X7DRELRORGHFKLP7SXIQ"/>
+        </Item>
+        <Item>
+          <Prototype Id="dpr73YQDBBJZJAONKNHOOEIE2EN4E" FunctionId="dfnVP5MM4B63NFQXHWJCFZ6IXKCP4"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprYGF7T3RHG5CSLIB34WO3HU6F2Q" FunctionId="dfnCGPLI4LGKNGAFD3MTQDZY7ULPU"/>
+        </Item>
+        <Item>
+          <Prototype Id="dpr5XL62GKYQ5AQFH632ZYXCEMUMU" FunctionId="dfn5WOW6KKZRBAC3MFHWD3KNPIZVU"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprZWON5NIU7BEFZOLEGDHLY4PVHI" FunctionId="dfnMECGK3G2QRHZ7AIE2B6FNZ3SEE"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprCZWEDMK2YVDVLKGIOLPWL3IHHA" FunctionId="dfnJONV5RBXWZC4BC2VEYK4OQJBDA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dpr7C5DNVTV6RHLJKU25HAP7H5RTI" FunctionId="dfnMTT5CAY2LBE4LP7GHG3E6RBO3M"/>
+        </Item>
+        <Item>
+          <Prototype Id="dpr7PKZCSNJ5JG3FMZEYSUI5EKBMA" FunctionId="dfnGCKTYCNAVJHDXKG7F7L3UGQXBU"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprKNN4SZDZM5GNBAMRARNDAGHGXU" FunctionId="dfnVCIU2LTOBZCS3K4H324KCMG6WA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprCYKF5SQAFVC4HNOHNGLY53HU34" FunctionId="dfn35IR2YZLPVFMRGV4RJG46NG5JI"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprRINCE3HNABE2JCD5TUHBZ74ANE" FunctionId="dfnXOLIGZFXLRDSVOEWXDULS4F574"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprHOV3AQP7PVEZBIXLLW6VCX7NYI" FunctionId="dfnUAPXVXUF6NFLXJCDEBCEEFMX2A"/>
+        </Item>
+        <Item>
+          <CustomText Id="dtxGJ7P544SMFDBZE25PAJENKVOYE" Name="DefaultAuditScheme">
+            <Text>
+              <xsc:Item>
+                <xsc:Sql>DEFAULTAUDITSCHEME varchar2(50);</xsc:Sql>
+              </xsc:Item>
+            </Text>
+          </CustomText>
+        </Item>
+      </Header>
+      <Body>
+        <Item>
+          <Function Id="dfnQIVY3ISJQ7NBDKWNABINU7DB2Q" Name="dropSubPartition" ResultDbType="boolean" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="1">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+  dayName   varchar2(100);
+  NOT_EXIST exception;   PRAGMA EXCEPTION_INIT(NOT_EXIST, -2149);
+  THE_ONLY exception;    PRAGMA EXCEPTION_INIT(THE_ONLY, -14758);
+  THE_ONLY_SUB exception;    PRAGMA EXCEPTION_INIT(THE_ONLY_SUB, -14629);
+  INVALID_SUB exception;    PRAGMA EXCEPTION_INIT(INVALID_SUB, -14702);
+begin
+   select to_char(d,'YYYY_MM_DD') into dayName from dual;
+   begin
+      EXECUTE IMMEDIATE 'alter table RDX_AU_AUDITLOG drop subpartition for (to_date(''' || dayName || ''', ''YYYY_MM_DD''), '|| TO_CHAR(type) ||')';
+   exception 
+     when NOT_EXIST or INVALID_SUB then
+          return false;
+     when THE_ONLY_SUB then
+      begin    
+         EXECUTE IMMEDIATE 'alter table RDX_AU_AUDITLOG drop partition for (to_date(''' || dayName || ''', ''YYYY_MM_DD''))';
+      exception 
+        when THE_ONLY or NOT_EXIST then 
+          return false;
+      end;
+   end;
+   return true;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpXKGPXWY6SRFMPMPOKLJAKTGHE4" Name="d" DbType="date" Direction="0" ValType="12"/>
+              <Param Id="dfpVQ2PAEPBMBBVVC6YBZILBMC2NE" Name="type" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnRYIQOYXNQ7NBDKWNABINU7DB2Q" Name="dropOldSubPartitions" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+   d date;
+begin
+   d:=sysdate-duration;
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TargetDbPreprocessor DbTypeName="ORACLE" DbVersion="11.1" CheckOptions="true" CheckVersion="false" VersionOperator="&lt;">
+                  <xsc:Option Name="org.radixware\Partitioning" Value="ENABLED"/>
+                </xsc:TargetDbPreprocessor>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+   loop
+      d:=d-1;  
+      exit when </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnQIVY3ISJQ7NBDKWNABINU7DB2Q">
+                  <xsc:Sql>RDX_AUDIT.dropSubPartition</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(d, Type)!=TRUE;
+   end loop;
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:ElseIf/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+   delete from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q">
+                  <xsc:Sql>RDX_AU_AUDITLOG</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q" PropId="col5KIY6YTLMLNBDKV7ABINU7DB2Q" Owner="TABLE">
+                  <xsc:Sql>RDX_AU_AUDITLOG.EVENTTIME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> &lt; d and </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q" PropId="col5UFKW7TLMLNBDKV7ABINU7DB2Q" Owner="TABLE">
+                  <xsc:Sql>RDX_AU_AUDITLOG.STOREDURATION</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = type;
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:EndIf/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpCRUYRIHCNFFIXHT6DYILXDGATI" Name="duration" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfpCECLEONKCJAQHM4FEW7WT7YU5Q" Name="type" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfn43F3FQCHQ7NBDKWNABINU7DB2Q" Name="cleanPartitions" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is  
+  v1 integer; v2 integer; v3 integer; v4 integer;v5 integer;
+   
+begin
+   select </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblX5TD7JDVVHWDBROXAAIT4AGD7E" PropId="colRJ6YTFHGWPNBDPLGABQJO5ADDQ" Owner="NONE">
+                  <xsc:Sql>AUDITSTOREPERIOD1</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblX5TD7JDVVHWDBROXAAIT4AGD7E" PropId="col3J6FBUPGWPNBDPLGABQJO5ADDQ" Owner="NONE">
+                  <xsc:Sql>AUDITSTOREPERIOD2</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblX5TD7JDVVHWDBROXAAIT4AGD7E" PropId="col3N6FBUPGWPNBDPLGABQJO5ADDQ" Owner="NONE">
+                  <xsc:Sql>AUDITSTOREPERIOD3</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblX5TD7JDVVHWDBROXAAIT4AGD7E" PropId="colTJMVJWXGWPNBDPLGABQJO5ADDQ" Owner="NONE">
+                  <xsc:Sql>AUDITSTOREPERIOD4</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblX5TD7JDVVHWDBROXAAIT4AGD7E" PropId="colTNMVJWXGWPNBDPLGABQJO5ADDQ" Owner="NONE">
+                  <xsc:Sql>AUDITSTOREPERIOD5</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+      into v1,v2,v3,v4,v5 
+      from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblX5TD7JDVVHWDBROXAAIT4AGD7E">
+                  <xsc:Sql>RDX_SYSTEM</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblX5TD7JDVVHWDBROXAAIT4AGD7E" PropId="col27EXNSNZRHWDBRCXAAIT4AGD7E" Owner="NONE">
+                  <xsc:Sql>ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>=1;
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnRYIQOYXNQ7NBDKWNABINU7DB2Q">
+                  <xsc:Sql>RDX_AUDIT.dropOldSubPartitions</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(v1,1);
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnRYIQOYXNQ7NBDKWNABINU7DB2Q">
+                  <xsc:Sql>RDX_AUDIT.dropOldSubPartitions</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(v2,2);
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnRYIQOYXNQ7NBDKWNABINU7DB2Q">
+                  <xsc:Sql>RDX_AUDIT.dropOldSubPartitions</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(v3,3);
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnRYIQOYXNQ7NBDKWNABINU7DB2Q">
+                  <xsc:Sql>RDX_AUDIT.dropOldSubPartitions</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(v4,4);
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnRYIQOYXNQ7NBDKWNABINU7DB2Q">
+                  <xsc:Sql>RDX_AUDIT.dropOldSubPartitions</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(v5,5);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfn3JMPT34LPVFVNFDLZM6PL3OYRU" Name="dailyMaintenance" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is 
+begin
+
+  --удаление разделов
+  </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn43F3FQCHQ7NBDKWNABINU7DB2Q">
+                  <xsc:Sql>RDX_AUDIT.cleanPartitions</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+  
+  --создание раздела на завтра
+  commit;
+  insert into </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q">
+                  <xsc:Sql>RDX_AU_AUDITLOG</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> (</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q" PropId="col5KIY6YTLMLNBDKV7ABINU7DB2Q" Owner="NONE">
+                  <xsc:Sql>EVENTTIME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q" PropId="col5GIY6YTLMLNBDKV7ABINU7DB2Q" Owner="NONE">
+                  <xsc:Sql>ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q" PropId="colX5YHTXQOMPNBDKV7ABINU7DB2Q" Owner="NONE">
+                  <xsc:Sql>EVENTTYPE</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>,  </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q" PropId="col5UFKW7TLMLNBDKV7ABINU7DB2Q" Owner="NONE">
+                  <xsc:Sql>STOREDURATION</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q" PropId="colDCVRSSAY4BAC5CFU7PVGD4SFMQ" Owner="NONE">
+                  <xsc:Sql>TABLEID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q" PropId="colFKOCBVAOMPNBDKV7ABINU7DB2Q" Owner="NONE">
+                  <xsc:Sql>PID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>) values (sysdate+1, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:SequenceDbName SequenceId="sqn2FY3TI3TMXNBDKV7ABINU7DB2Q" Postfix="NONE">
+                  <xsc:Sql>SQN_RDX_AU_AUDITLOGID</xsc:Sql>
+                </xsc:SequenceDbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.NextVal, 'I', 1, 'x', 'x');
+  rollback;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfn2SHTYL7XYNBVRDNOM5UXROVEB4" Name="enableTrigger" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+    vQuery varchar2(250);
+begin
+    vQuery := 'ALTER TRIGGER at' || Lower(pType) || substr(pId,4) || ' ENABLE';
+    begin
+        EXECUTE IMMEDIATE vQuery;
+        exception when OTHERS then return;       
+    end;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpI3RSPACMF5AVTMQ3DQJZUMJGXU" Name="pId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpINJ5TPK3SVF7LKZELV5BNCUBAM" Name="pType" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfn5EEF7AQGKZFS7JCBH4BFF24PC4" Name="disableTrigger" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is 
+    vQuery varchar2(250);
+    vCnt integer;
+begin
+--    select count(*) into vCnt from RDX_AU_SCHEMEITEM where tableid = pParentTableid and eventType = Upper(pType);
+--    if vCnt &lt;= 1 then 
+--        begin
+    vQuery := 'ALTER TRIGGER at' || Lower(pType) || substr(pTableId,4) || ' DISABLE';
+    begin
+        EXECUTE IMMEDIATE vQuery;
+        exception when OTHERS then return;       
+    end;
+--        end;    
+--    end if;    
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpVBB4IAL2JVA3HLRRF3SJYGXMSU" Name="pTableid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpZGPFER245NCMNIFTYYW667XXT4" Name="pType" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpT3I2W6USHNGPDEGEUNVFS3MND4" Name="pParentTableid" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnUAPXVXUF6NFLXJCDEBCEEFMX2A" Name="updateTableAuditStateEventType" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+    vSchemeId varchar2(50);
+    vCount integer;
+begin
+    select </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblX5TD7JDVVHWDBROXAAIT4AGD7E" PropId="colEKZMW4XGWPNBDPLGABQJO5ADDQ" Owner="NONE">
+                  <xsc:Sql>DEFAULTAUDITSCHEMEID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> into vSchemeId from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblX5TD7JDVVHWDBROXAAIT4AGD7E">
+                  <xsc:Sql>RDX_SYSTEM</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblX5TD7JDVVHWDBROXAAIT4AGD7E" PropId="col27EXNSNZRHWDBRCXAAIT4AGD7E" Owner="NONE">
+                  <xsc:Sql>ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = 1;
+    if vSchemeId is not null then
+        select Count(*) into vCount from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblFEIALUQDMPNBDKV7ABINU7DB2Q">
+                  <xsc:Sql>RDX_AU_SCHEMEITEM</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> 
+            where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblFEIALUQDMPNBDKV7ABINU7DB2Q" PropId="colHOZ6HWIDMPNBDKV7ABINU7DB2Q" Owner="NONE">
+                  <xsc:Sql>SCHEMEGUID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = vSchemeId and </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblFEIALUQDMPNBDKV7ABINU7DB2Q" PropId="colZMHWLZADMPNBDKV7ABINU7DB2Q" Owner="NONE">
+                  <xsc:Sql>TABLEID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = pParentTableGuid and </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblFEIALUQDMPNBDKV7ABINU7DB2Q" PropId="colL7E3H7ADMPNBDKV7ABINU7DB2Q" Owner="NONE">
+                  <xsc:Sql>EVENTTYPE</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = pEventType and Rownum &lt; 2;
+        if vCount > 0 then 
+            </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn2SHTYL7XYNBVRDNOM5UXROVEB4">
+                  <xsc:Sql>RDX_AUDIT.enableTrigger</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(pTableGuid, pEventType);
+        else    
+            </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn5EEF7AQGKZFS7JCBH4BFF24PC4">
+                  <xsc:Sql>RDX_AUDIT.disableTrigger</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(pTableGuid, pEventType, pParentTableGuid);
+        end if;
+    else
+        </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn5EEF7AQGKZFS7JCBH4BFF24PC4">
+                  <xsc:Sql>RDX_AUDIT.disableTrigger</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(pTableGuid, pEventType, pParentTableGuid);
+    end if;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfp76CIP3PEKJDCDF3FODBNQOKJ4E" Name="pTableGuid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpPMWN5N5TJVAB3FAMC376XCGSHE" Name="pEventType" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpB7GUAKHB6NDPLILUVJFV2ICJK4" Name="pParentTableGuid" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfn2GW5D2DIGBDWBOBGA2XCMRQYFQ" Name="updateTableAuditState" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+    vSaveData integer;
+begin
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnUAPXVXUF6NFLXJCDEBCEEFMX2A">
+                  <xsc:Sql>RDX_AUDIT.updateTableAuditStateEventType</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(tableGuid, 'U', tableParentGuid);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnUAPXVXUF6NFLXJCDEBCEEFMX2A">
+                  <xsc:Sql>RDX_AUDIT.updateTableAuditStateEventType</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(tableGuid, 'I', tableParentGuid);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnUAPXVXUF6NFLXJCDEBCEEFMX2A">
+                  <xsc:Sql>RDX_AUDIT.updateTableAuditStateEventType</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(tableGuid, 'D', tableParentGuid);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpRTPCH3SGTFDJPIBSRDWZATRDZQ" Name="tableGuid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpOY2IDTDEGFGIJJJBFRPI64QCB4" Name="tableParentGuid" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnFJGX3HP5G5H2DP3CEPZOSVWUP4" Name="getStoreDuration" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is vStoreDuration integer;
+begin
+    begin
+        select STOREDURATION into vStoreDuration
+        from RDX_AU_SCHEMEITEM
+        where SCHEMEGUID = pSchemeId and
+        TABLEID = pTableId and 
+        EVENTTYPE = pType and
+        SAVEDATA = 1;
+    exception when no_data_found then vStoreDuration := -1;
+    end;   
+    return vStoreDuration; 
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpLQ674LHKZRBUNHR5UCUFJASJU4" Name="pSchemeId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpE7B6M2NGAVDLNKWRK5Q2LU4RDU" Name="pTableId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpEJ4KRYON2VCWRFEQDKTZWM75JE" Name="pType" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnPQ3VCQBSX3NBDPLKABQJO5ADDQ" Name="addValueStr" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+  vTemp CLOB; 
+begin                          
+  if Length(pData) != 0 then
+     pData:=pData||CHR(10);
+  end if; 
+  if pValue IS NULL then
+     vTemp := pName||'=[0]NULL';
+  else
+     vTemp := pName||'=['||TO_CHAR(Length(pValue))||']'||pValue;
+  end if;
+  pData := pData||vTemp;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfp7HFRABZHN5BUXFAZONE6IWR6ZA" Name="pData" DbType="clob" Direction="2" ValType="27"/>
+              <Param Id="dfpMLZ3FY4VIZFJNPE5SKLT25GQQQ" Name="pName" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpTEAW3EX3IZGJZG5DF4YVDTIF4M" Name="pValue" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnIPL6KBI26RCE3PIBZJK2EBHGBU" Name="addValueBlob" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+  vTemp CLOB; val varchar2(32767); 
+begin                          
+  if Length(pData) != 0 then
+     pData:=pData||CHR(10);
+  end if; 
+  if pValue IS NULL then
+     vTemp := pName||'=[0]NULL';
+  else
+     val := UTL_RAW.CAST_TO_VARCHAR2(UTL_ENCODE.base64_encode(DBMS_LOB.SUBSTR(pValue)));
+     vTemp := pName||'=['||TO_CHAR(length(val))||']'||val;
+  end if;
+  pData := pData||vTemp;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpRFKE5ENJ2RAZTG4MQP53QHXLIE" Name="pData" DbType="clob" Direction="2" ValType="27"/>
+              <Param Id="dfpZKGQ7JM7IJEEBNG6OMINEN3WRU" Name="pName" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpUDBTWURIHNCTLKDV2W6MOWCMCA" Name="pValue" DbType="BLOB" Direction="0" ValType="50"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnTGD6QCQLZNCORMEEO6BUPWA7BM" Name="addValueRaw" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+  vTemp CLOB; val varchar2(32767);
+begin                          
+  if Length(pData) != 0 then
+     pData:=pData||CHR(10);
+  end if; 
+  if pValue IS NULL then
+     vTemp := pName||'=[0]NULL';
+  else 
+     val := UTL_RAW.CAST_TO_VARCHAR2(UTL_ENCODE.base64_encode(pValue));
+     vTemp := pName||'=['||TO_CHAR(Length(val))||']'||val;
+  end if;
+  pData := pData||vTemp;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpR4BSFKJWDREVLHJ7QEIEDBDYXE" Name="pData" DbType="clob" Direction="2" ValType="27"/>
+              <Param Id="dfpCLF5JW4BLZDGXBD3E6PCPZAJ3I" Name="pName" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpLWHMK5EN5JFAZOUL7WVPSHQJSQ" Name="pValue" DbType="RAW" Direction="0" ValType="50"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnLRRREOFYJRBR5PIELHOKPQ42XM" Name="addValueClob" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+  vTemp CLOB; 
+begin                          
+  if Length(pData) != 0 then
+     pData:=pData||CHR(10);
+  end if; 
+  if pValue IS NULL then
+     vTemp := pName||'=[0]NULL';
+  else
+     vTemp := pName||'=['||TO_CHAR(dbms_lob.getlength(pValue))||']';
+     dbms_lob.append(vTemp,pValue);
+  end if;
+  pData := pData||vTemp;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpP2JAKYO66RDU3IZ467AVQEL7LQ" Name="pData" DbType="clob" Direction="2" ValType="27"/>
+              <Param Id="dfpZBY55RCZNBFJDMUGZ6FPF4TDQI" Name="pName" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp57NH5H5YVRGXBNKV4USJSITAGM" Name="pValue" DbType="CLOB" Direction="0" ValType="50"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfn443YVYYXUVFWZPSRK3XDQY4MGM" Name="addValueBool" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+  vTemp CLOB; 
+begin
+  if Length(pData) != 0 then
+     pData:=pData||CHR(10);
+  end if;              
+  if pValue IS NULL then
+     vTemp := pName||'=[0]NULL';
+  else
+    if pValue then
+        vTemp := pName||'=[0]true';
+    else
+        vTemp := pName||'=[0]false';
+    end if;    
+  end if;     
+  pData:=pData||vTemp;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpR5JFLQEWZVEYRI5UAM7JV4KD5Y" Name="pData" DbType="clob" Direction="2" ValType="27"/>
+              <Param Id="dfpEC2YRXMXDFGNXDH6PC6UJTZKE4" Name="pName" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpFHMWC3JAFBB47EBCKGI42KHOV4" Name="pValue" DbType="boolean" Direction="0" ValType="1"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnRAERWTZSX3NBDPLKABQJO5ADDQ" Name="addValueInt" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+  vTemp CLOB; 
+begin
+  if Length(pData) != 0 then
+     pData:=pData||CHR(10);
+  end if;              
+  if pValue IS NULL then
+     vTemp := pName||'=[0]NULL';
+  else
+     vTemp := pName||'=['||TO_CHAR(Length(TO_CHAR(pValue)))||']'||TO_CHAR(pValue);
+  end if;     
+  pData:=pData||vTemp;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfp2V5NNCOO3FAKZMFC7L5SDDL7QM" Name="pData" DbType="clob" Direction="2" ValType="27"/>
+              <Param Id="dfpJQAANMUVMBGGVCDRO7LWOWV5BU" Name="pName" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpQFAEBR4VMNAEHMHTRIQZNHPWKM" Name="pValue" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfn32HNHTZNX3NBDPLKABQJO5ADDQ" Name="addValueNum" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+  vTemp CLOB; 
+begin
+  if Length(pData) != 0 then
+     pData:=pData||CHR(10);
+  end if;
+  if pValue IS NULL then
+     vTemp := pName||'=[0]NULL';
+  else
+     vTemp := pName||'=['||TO_CHAR(Length(TO_CHAR(pValue)))||']'||TO_CHAR(pValue,'FM9999999999999999999999999999999.9999999999999999999999999999999');
+  end if; 
+  pData:=pData||vTemp;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpSBBPKJI6O5EPXLFYMKE43NI4LU" Name="pData" DbType="clob" Direction="2" ValType="27"/>
+              <Param Id="dfpSYJK3HNBJFGERAZWEEMKZQ45QA" Name="pName" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpSBF2GSDYKBBGTIZR3RCQIFHWMM" Name="pValue" DbType="number" Direction="0" ValType="11"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnYH6DZCBSX3NBDPLKABQJO5ADDQ" Name="addValueDate" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+  vTemp CLOB;        
+  vDate varchar2(100);
+begin
+  if Length(pData) != 0 then
+     pData:=pData||CHR(10);
+  end if;             
+  if pValue IS NULL then
+     vTemp := pName||'=[0]NULL';
+  else
+     vDate := TO_CHAR(pValue,'DD.MM.YYYY HH24:MI:SS'); 
+     vTemp := pName||'=['||TO_CHAR(Length(vDate))||']'||vDate;
+  end if;
+  pData:=pData||vTemp;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpAVCMMIZK5NCDLKK4RB4NKOOJFE" Name="pData" DbType="clob" Direction="2" ValType="27"/>
+              <Param Id="dfpXWGQO6SKQ5HZHFTBGPTPUOHCZA" Name="pName" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp7C55YORHJVBIJFIMWRQVYMVKTE" Name="pValue" DbType="date" Direction="0" ValType="12"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfn3GEFGSVCK5FPDD2CLK737TDHBI" Name="regPropUpdate" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is 
+   vStoreDuration integer; 
+   vSchemeId varchar2(50);
+begin
+    vSchemeId:=schemeId;
+    if (schemeId is null) then
+        begin
+             select </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblX5TD7JDVVHWDBROXAAIT4AGD7E" PropId="colEKZMW4XGWPNBDPLGABQJO5ADDQ" Owner="TABLE">
+                  <xsc:Sql>RDX_SYSTEM.DEFAULTAUDITSCHEMEID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> into vSchemeId from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblX5TD7JDVVHWDBROXAAIT4AGD7E">
+                  <xsc:Sql>RDX_SYSTEM</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblJBWGL34ATTNBDPK5ABQJO5ADDQ">
+                  <xsc:Sql>RDX_AU_SCHEME</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblX5TD7JDVVHWDBROXAAIT4AGD7E" PropId="col27EXNSNZRHWDBRCXAAIT4AGD7E" Owner="TABLE">
+                  <xsc:Sql>RDX_SYSTEM.ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> =1 and </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblJBWGL34ATTNBDPK5ABQJO5ADDQ" PropId="colAB22MAMBTTNBDPK5ABQJO5ADDQ" Owner="TABLE">
+                  <xsc:Sql>RDX_AU_SCHEME.GUID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblX5TD7JDVVHWDBROXAAIT4AGD7E" PropId="colEKZMW4XGWPNBDPLGABQJO5ADDQ" Owner="TABLE">
+                  <xsc:Sql>RDX_SYSTEM.DEFAULTAUDITSCHEMEID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+        exception 
+            when no_data_found then return;
+        end;
+    end if;
+    vStoreDuration := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnFJGX3HP5G5H2DP3CEPZOSVWUP4">
+                  <xsc:Sql>RDX_AUDIT.getStoreDuration</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vSchemeId,tableId,'U');
+    if vStoreDuration != -1 then
+        insert into </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q">
+                  <xsc:Sql>RDX_AU_AUDITLOG</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> 
+                (</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q" PropId="col5GIY6YTLMLNBDKV7ABINU7DB2Q" Owner="TABLE">
+                  <xsc:Sql>RDX_AU_AUDITLOG.ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>,</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q" PropId="col5KIY6YTLMLNBDKV7ABINU7DB2Q" Owner="TABLE">
+                  <xsc:Sql>RDX_AU_AUDITLOG.EVENTTIME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>,</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q" PropId="colDCVRSSAY4BAC5CFU7PVGD4SFMQ" Owner="TABLE">
+                  <xsc:Sql>RDX_AU_AUDITLOG.TABLEID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>,</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q" PropId="colCUJB6QBJ35EF7LTIDU5M3ZCDTY" Owner="TABLE">
+                  <xsc:Sql>RDX_AU_AUDITLOG.CLASSID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>,
+                 </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q" PropId="colX5YHTXQOMPNBDKV7ABINU7DB2Q" Owner="TABLE">
+                  <xsc:Sql>RDX_AU_AUDITLOG.EVENTTYPE</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>,</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q" PropId="col5UFKW7TLMLNBDKV7ABINU7DB2Q" Owner="TABLE">
+                  <xsc:Sql>RDX_AU_AUDITLOG.STOREDURATION</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>,</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q" PropId="colE6QAXC3LMLNBDKV7ABINU7DB2Q" Owner="TABLE">
+                  <xsc:Sql>RDX_AU_AUDITLOG.USERNAME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>,
+                 </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q" PropId="col3EONLF3LMLNBDKV7ABINU7DB2Q" Owner="TABLE">
+                  <xsc:Sql>RDX_AU_AUDITLOG.STATIONNAME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>,</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q" PropId="colFKOCBVAOMPNBDKV7ABINU7DB2Q" Owner="TABLE">
+                  <xsc:Sql>RDX_AU_AUDITLOG.PID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>,</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q" PropId="colWGY7XZYOMPNBDKV7ABINU7DB2Q" Owner="TABLE">
+                  <xsc:Sql>RDX_AU_AUDITLOG.EVENTDATA</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>)
+             values 
+                (</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:SequenceDbName SequenceId="sqn2FY3TI3TMXNBDKV7ABINU7DB2Q" Postfix="NONE">
+                  <xsc:Sql>SQN_RDX_AU_AUDITLOGID</xsc:Sql>
+                </xsc:SequenceDbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.NextVal,SysDate,tableId,pClassId,
+                 'U',vStoreDuration,</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
+                  <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, 
+                 </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnI4SB4XOXCTOBDCKFAAMPGXSZKU">
+                  <xsc:Sql>RDX_Arte.getStationName</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, pidKey, updateData);
+    end if;        
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpZ3TS5JUPUBES7NOGHNX4YEJBA4" Name="schemeId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpFF3MHP67URDPFNPHF45E5GOMUE" Name="tableId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpKGSAVOZMTJDGLKBOXDZBO3OZPA" Name="pClassId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpVJWWIIGEBVBETCTUKZVWBZIKZ4" Name="propId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpLGM5KORVTFDEPBFF3RBANAC54Q" Name="updateData" DbType="CLOB" Direction="0" ValType="50"/>
+              <Param Id="dfpYIVBPKBHGVGYXBF53JGJS4R7DM" Name="pidKey" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnCG7WOFIAF5HFZB2NLAVCXU77F4" Name="regPropIntUpdate" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is vData CLOB; vId varchar2(250);
+begin
+    select NULL into vData from DUAL;
+    vId := TO_CHAR(propId);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnRAERWTZSX3NBDPLKABQJO5ADDQ">
+                  <xsc:Sql>RDX_AUDIT.addValueInt</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'old.'||vId,oldVal);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnRAERWTZSX3NBDPLKABQJO5ADDQ">
+                  <xsc:Sql>RDX_AUDIT.addValueInt</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'new.'||vId,newVal);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn3GEFGSVCK5FPDD2CLK737TDHBI">
+                  <xsc:Sql>RDX_AUDIT.regPropUpdate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(schemeId, tableId, pClassId, propId, vData,pid);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfp4WH4AT752BHAFPUFGIJPZY7FZE" Name="schemeId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp3ZWTJT2JN5ECNGRBXJ3S7AJ7RQ" Name="tableId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpDZS3JR5SWNBRPDPCJ3FILZ663E" Name="pClassId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpB736BK5GSNHJ7EUZSW56XKHI6A" Name="propId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpYMMA2LESERF77GDWKK5GC42SOQ" Name="pid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp2EXFMNVXYZBBHHQA5B7NFDDUJM" Name="oldVal" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfp3VIV54E5LVHINLLJ23EDKCC5PU" Name="newVal" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfn4VEAWVF45JE2HIK4UI6E2YXHDE" Name="regPropRawUpdate" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is vData CLOB; vId varchar2(250);
+begin
+    select NULL into vData from DUAL;
+    vId := TO_CHAR(propId);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnTGD6QCQLZNCORMEEO6BUPWA7BM">
+                  <xsc:Sql>RDX_AUDIT.addValueRaw</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'old.'||vId,oldVal);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnTGD6QCQLZNCORMEEO6BUPWA7BM">
+                  <xsc:Sql>RDX_AUDIT.addValueRaw</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'new.'||vId,newVal);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn3GEFGSVCK5FPDD2CLK737TDHBI">
+                  <xsc:Sql>RDX_AUDIT.regPropUpdate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(schemeId, tableId, pClassId, propId, vData, pid);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpRU5CNZ4ZCZBL7HX7QPHCHH74LY" Name="schemeId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpNHZBQMK65ND4FFJ6GXGVOVWUNQ" Name="tableId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpMVAQC23L2JEEBBG7DLYLQZSPJ4" Name="pClassId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpAC33HX6OKZGIBPPH24XVQH5EAI" Name="propId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpO4ZGRHYEIBEAHJCXZ5TIDNIM24" Name="pid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpNVBAEDY5FRDMTC3GHG5ZT5OAIQ" Name="oldVal" DbType="RAW" Direction="0" ValType="50"/>
+              <Param Id="dfpWEERCB5GPVCJPPDFVNLT6ZQVLE" Name="newVal" DbType="RAW" Direction="0" ValType="50"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnIFDY2D66YJFDJD755VNAYV7HQU" Name="regPropBlobUpdate" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is vData CLOB; vId varchar2(250);
+begin
+    select NULL into vData from DUAL;
+    vId := TO_CHAR(propId);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnIPL6KBI26RCE3PIBZJK2EBHGBU">
+                  <xsc:Sql>RDX_AUDIT.addValueBlob</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'old.'||vId,oldVal);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnIPL6KBI26RCE3PIBZJK2EBHGBU">
+                  <xsc:Sql>RDX_AUDIT.addValueBlob</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'new.'||vId,newVal);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn3GEFGSVCK5FPDD2CLK737TDHBI">
+                  <xsc:Sql>RDX_AUDIT.regPropUpdate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(schemeId, tableId, pClassId, propId, vData, pid);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpF7VKDR22K5ALZGGI6PLDZ3XBKI" Name="schemeId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpCHXKY5BFFNCHBG7OXO5H6KSUMI" Name="tableId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpZQJB4GCHYBDVXM4DGNUPQ7LTDI" Name="pClassId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp2MFRHHDRX5FRNHFGFNW6ZHTENQ" Name="propId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpTNHL66XRX5A47CN2KK5QPPYSRY" Name="pid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpA6RDL5FEHNDD3GPQGB2FTLXLHQ" Name="oldVal" DbType="BLOB" Direction="0" ValType="50"/>
+              <Param Id="dfpSRGFBKB5ERDN3BW4VWSB4EN2LY" Name="newVal" DbType="BLOB" Direction="0" ValType="50"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnPWZL6CVFIJGWRFV4UMHBUAFTBY" Name="regPropClobUpdate" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is vData CLOB; vId varchar2(250);
+begin
+    select NULL into vData from DUAL;
+    vId := TO_CHAR(propId);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnLRRREOFYJRBR5PIELHOKPQ42XM">
+                  <xsc:Sql>RDX_AUDIT.addValueClob</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'old.'||vId,oldVal);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnLRRREOFYJRBR5PIELHOKPQ42XM">
+                  <xsc:Sql>RDX_AUDIT.addValueClob</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'new.'||vId,newVal);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn3GEFGSVCK5FPDD2CLK737TDHBI">
+                  <xsc:Sql>RDX_AUDIT.regPropUpdate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(schemeId,tableId, pClassId, propId,vData,pid);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfp3SOP73UYQNDB3M5ARAMQJC6LFY" Name="schemeId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpSI2DZUC5WJDMLAJKWR23PTQLGU" Name="tableId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpSYCQ3MEQDZBMHBIGLEBZFUOBO4" Name="pClassId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpYGNSAN24BNA6FG7A7D7JFG4XCE" Name="propId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpI37XHA4QJNE5LKBTV4J6SBUKIA" Name="pid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpWRJXKN5R6NFRTANXC7D5LZ3POI" Name="oldVal" DbType="CLOB" Direction="0" ValType="50"/>
+              <Param Id="dfpG56CF23YINEAJDQI35E5GBY2VI" Name="newVal" DbType="CLOB" Direction="0" ValType="50"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnOTYDVWMTOZF7PN4327HMLY7WJM" Name="regPropDateTimeUpdate" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is vData CLOB; vId varchar2(250);
+begin
+    select NULL into vData from DUAL;
+    vId := TO_CHAR(propId);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnYH6DZCBSX3NBDPLKABQJO5ADDQ">
+                  <xsc:Sql>RDX_AUDIT.addValueDate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'old.'||vId,oldVal);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnYH6DZCBSX3NBDPLKABQJO5ADDQ">
+                  <xsc:Sql>RDX_AUDIT.addValueDate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'new.'||vId,newVal);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn3GEFGSVCK5FPDD2CLK737TDHBI">
+                  <xsc:Sql>RDX_AUDIT.regPropUpdate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(schemeId,tableId,pClassId,propId,vData,pid);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpVLQWTGT7E5DRPBEQLXNYAKUQ4Q" Name="schemeId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpUR44SWOYMFFNHJQPKRZM4X4GZY" Name="tableId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpY5OWUHMQ5VFWTMFZ34BUFP7IKM" Name="pClassId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp5Y6SVUK5H5FDVLFDPAOYSXB57Y" Name="propId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp2E4TWJ7GEJBNZFD3DFIZMYDS4M" Name="pid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpETRJ2W4G25GKPCLS5G4KANTYBY" Name="oldVal" DbType="date" Direction="0" ValType="12"/>
+              <Param Id="dfpQWAPW7G5E5FI7MVYUQV3ITE7MQ" Name="newVal" DbType="date" Direction="0" ValType="12"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnKRZVDTDHI5E7ZA3SKNQTJVAUBM" Name="regPropNumCreated" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is vData CLOB; vId varchar2(250);
+begin
+    select NULL into vData from DUAL;
+    vId := TO_CHAR(propId);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn32HNHTZNX3NBDPLKABQJO5ADDQ">
+                  <xsc:Sql>RDX_AUDIT.addValueNum</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'new.'||vId,val);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn3GEFGSVCK5FPDD2CLK737TDHBI">
+                  <xsc:Sql>RDX_AUDIT.regPropUpdate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(schemeId,tableId, pClassId, propId,vData,pid);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpI2JBICAZ2RFVRBQDZUMYDVG4QI" Name="schemeId" DbType="number" Direction="0" ValType="11"/>
+              <Param Id="dfpOQPPNLEQN5D65BM5AKM54N365Q" Name="tableId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpUSSIM2WRS5HGBDH2LJSTJPTXUY" Name="pClassId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpQUB7WXQWDJFF3GHDBRL5KPNQI4" Name="propId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpKGT7QSLY4RDZ7CIQ3WH25QUC6U" Name="pid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpG5QZS2SVBFEY5CH5BYJM47OOYQ" Name="val" DbType="number" Direction="0" ValType="11"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnW2HAJL53XJH2LLH253HS53UNPU" Name="regPropStrCreated" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is vData CLOB; vId varchar2(250);
+begin
+    select NULL into vData from DUAL;
+    vId := TO_CHAR(propId);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnPQ3VCQBSX3NBDPLKABQJO5ADDQ">
+                  <xsc:Sql>RDX_AUDIT.addValueStr</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'new.'||vId,val);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn3GEFGSVCK5FPDD2CLK737TDHBI">
+                  <xsc:Sql>RDX_AUDIT.regPropUpdate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(schemeId,tableId,pClassId, propId,vData,pid);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpO7YRSZEXDBDEFASH67C4BJS5CQ" Name="schemeId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpPYELJJQGMVCHPNVU2DMGGU3FPA" Name="tableId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpPZGLHHPZQZHA3JZJ4ZNQAI7RYI" Name="pClassId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp6VJXYTNBUBGCLDYA7QONN7V7TY" Name="propId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpMEX5JVZRNRALDKEZEG3IBPZ2TE" Name="pid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpEF7JDMXAGNEA3F4ZDEIDYKHRIY" Name="val" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnSFHXBHK2AJEZDLTRYWBJOCVH6I" Name="regPropBoolCreated" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is vData CLOB; vId varchar2(250);
+begin
+    select NULL into vData from DUAL;
+    vId := TO_CHAR(propId);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn443YVYYXUVFWZPSRK3XDQY4MGM">
+                  <xsc:Sql>RDX_AUDIT.addValueBool</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'new.'||vId,val);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn3GEFGSVCK5FPDD2CLK737TDHBI">
+                  <xsc:Sql>RDX_AUDIT.regPropUpdate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(schemeId,tableId,pClassId, propId,vData,pid);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpOXVGJPMPTRAUNENPRJSFOHDRVY" Name="schemeId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpIHOXWRMSMBAWPAMEHQCMBTNKRQ" Name="tableId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpB7ZGAM3QBRHGFPZ2JCTUYSILJY" Name="pClassId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpTCHKOHDBKVBK7J3GAAVYV3CR7Y" Name="propId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpUURX4SBEHZAERBK3X56GRLDCWQ" Name="pid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpY33AV234CNF4HLG46ORQXRDN6E" Name="val" DbType="boolean" Direction="0" ValType="1"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfn7VGENQES3VD6HDKCQLKUOPTVEA" Name="regPropDateTimeCreated" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is vData CLOB; vId varchar2(250);
+begin
+    select NULL into vData from DUAL;
+    vId := TO_CHAR(propId);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnYH6DZCBSX3NBDPLKABQJO5ADDQ">
+                  <xsc:Sql>RDX_AUDIT.addValueDate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'new.'||vId,val);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn3GEFGSVCK5FPDD2CLK737TDHBI">
+                  <xsc:Sql>RDX_AUDIT.regPropUpdate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(schemeId,tableId, pClassId, propId,vData,pid);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpJQ6XGQ2EGJE3LJ2HMAZAABKUOA" Name="schemeId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpC6G52VGBSBCNHPET6BWUFKZQIQ" Name="tableId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp5K64LSCXG5EZXMKAMMHKDNB5TA" Name="pClassId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpF6AC4RONANDFJNZDZMWIMQRK7I" Name="propId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpTQNH5UAG2REQDLOXXDOSWI33EE" Name="pid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpGMSHPUJIAFAXTIND2DAAANAEYE" Name="val" DbType="date" Direction="0" ValType="12"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnYBDP6LUCEFGDHD3NAKJRZQEZGY" Name="regPropClobCreated" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is vData CLOB; vId varchar2(250);
+begin
+    select NULL into vData from DUAL;
+    vId := TO_CHAR(propId);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnLRRREOFYJRBR5PIELHOKPQ42XM">
+                  <xsc:Sql>RDX_AUDIT.addValueClob</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'new.'||vId,val);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn3GEFGSVCK5FPDD2CLK737TDHBI">
+                  <xsc:Sql>RDX_AUDIT.regPropUpdate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(schemeId,tableId,pClassId,propId,vData,pid);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfp6W3RD2KFQNHH3ATMTG4WXZMZQY" Name="schemeId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpMUKJQIIRLRB33K3BTROZBJPSDA" Name="tableId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpR4ZVHAV3JVBTRMEJ4HSQNM2FEU" Name="pClassId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpOEC4BJFXBVDSTJOEU7SMVPQGE4" Name="propId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp24U2YXLXLVFERF5IOR5OAWX6TA" Name="pid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpHC4HPZ3WYRE4ZDKIXW5PNHOMJM" Name="val" DbType="CLOB" Direction="0" ValType="50"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnUIXWSLKYOJACZLUT7R7T6P2KRU" Name="regPropBlobCreated" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is vData CLOB; vId varchar2(250);
+begin
+    select NULL into vData from DUAL;
+    vId := TO_CHAR(propId);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnIPL6KBI26RCE3PIBZJK2EBHGBU">
+                  <xsc:Sql>RDX_AUDIT.addValueBlob</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'new.'||vId,val);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn3GEFGSVCK5FPDD2CLK737TDHBI">
+                  <xsc:Sql>RDX_AUDIT.regPropUpdate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(schemeId,tableId,pClassId,propId,vData,pid);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfp45DP7ZP5JFCJDNDAUF6ASUUQRU" Name="schemeId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpOWHAFRCLO5FMREZCWBSGXZNVJY" Name="tableId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpPJZTL7QNTZBRRPXFL7NJQYF7YQ" Name="pClassId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpPKVYH7IWBBEA7PSZG2ERWCHMM4" Name="propId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpVZAZABBSH5FVVOTPRPLFC5MBIY" Name="pid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpMMB5CZV23BHMDJVJS7YI546VDM" Name="val" DbType="BLOB" Direction="0" ValType="50"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnHOK4ALPJCZHZHDB3N7RETGZCSU" Name="regPropRawCreated" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is vData CLOB; vId varchar2(250);
+begin
+    select NULL into vData from DUAL;
+    vId := TO_CHAR(propId);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnTGD6QCQLZNCORMEEO6BUPWA7BM">
+                  <xsc:Sql>RDX_AUDIT.addValueRaw</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'new.'||vId,val);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn3GEFGSVCK5FPDD2CLK737TDHBI">
+                  <xsc:Sql>RDX_AUDIT.regPropUpdate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(schemeId,tableId,pClassId, propId,vData,pid);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfp4YTT43VKZZFTTMARZL3ZIRBYVM" Name="schemeId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpOZBIHR3IGRHTHA5FEBIK55MPN4" Name="tableId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpXPL757ZJSRE73J7NBO3NFJC3R4" Name="pClassId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp7A4O3ACPL5H77KSO3WTFI23APM" Name="propId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp35SVMNDUZZE5LDIKGO5KDB7INI" Name="pid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpD56LEKKFJFFW5N552KGS2O5YVY" Name="val" DbType="RAW" Direction="0" ValType="50"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnJN7PODYPUFBSXKQK4IFL6I4CUI" Name="regPropNumDeleted" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is vData CLOB; vId varchar2(250);
+begin
+    select NULL into vData from DUAL;
+    vId := TO_CHAR(propId);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn32HNHTZNX3NBDPLKABQJO5ADDQ">
+                  <xsc:Sql>RDX_AUDIT.addValueNum</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'old.'||vId,val);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn3GEFGSVCK5FPDD2CLK737TDHBI">
+                  <xsc:Sql>RDX_AUDIT.regPropUpdate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(schemeId,tableId,pClassId,propId,vData,pid);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpY2JRYEE27ZFLXBIYO2Z42S77YA" Name="schemeId" DbType="number" Direction="0" ValType="11"/>
+              <Param Id="dfpZD33ZQX7LVEP3D3ABYJU6LPY2Y" Name="tableId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpJXXLYDAVXREAHB62EXKX5UDSLA" Name="pClassId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpMURHNJYLJVAC5K37KMIRYURUE4" Name="propId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpA4ZBZPNT75GSPAEEH3475SA2NY" Name="pid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpWCO6WSN455DVPPFSRWCRCR4RCM" Name="val" DbType="number" Direction="0" ValType="11"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnQMGCORSJPVAZ7DFGMHEFSDL2EU" Name="regPropStrDeleted" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is vData CLOB; vId varchar2(250);
+begin
+    select NULL into vData from DUAL;
+    vId := TO_CHAR(propId);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnPQ3VCQBSX3NBDPLKABQJO5ADDQ">
+                  <xsc:Sql>RDX_AUDIT.addValueStr</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'old.'||vId,val);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn3GEFGSVCK5FPDD2CLK737TDHBI">
+                  <xsc:Sql>RDX_AUDIT.regPropUpdate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(schemeId,tableId,pClassId,propId,vData,pid);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpLE5S7ILJ3VFU3HFZK65KWQ456A" Name="schemeId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpOQNP2UR34BBPXM72Q4DZKKQPCY" Name="tableId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpD4QKEQO44FFFRMHFWDXQOA7MRQ" Name="pClassId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpOJUDLEQ5NVEDVNJ4GHU43U5U5U" Name="propId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpK5N7DXBTFJA7ZHKLYNQ4CR7VE4" Name="pid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpLJ2YTMTVEVHJLLHCA7HWZGQ3NQ" Name="val" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnKTBFDHZKYNHKPLNUWQGRQXK7KI" Name="regPropBoolDeleted" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is vData CLOB; vId varchar2(250);
+begin
+    select NULL into vData from DUAL;
+    vId := TO_CHAR(propId);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn443YVYYXUVFWZPSRK3XDQY4MGM">
+                  <xsc:Sql>RDX_AUDIT.addValueBool</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'old.'||vId,val);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn3GEFGSVCK5FPDD2CLK737TDHBI">
+                  <xsc:Sql>RDX_AUDIT.regPropUpdate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(schemeId,tableId,pClassId,propId,vData,pid);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpDSA37AMVHZAAJD32H7RE4ELHIA" Name="schemeId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpSOWJANU3DJDB7FJ5XCMKWWUDQI" Name="tableId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp2TTHZOV4OZGWLDIOSQZ3R7Y7WA" Name="pClassId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp2NJD35ZIUZEODA2TKGJJ6ACRGQ" Name="propId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpSSMEOUWRXZHIVJPBWQBPFOAQVQ" Name="pid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpGMT3CPV7JVD7DBIFLC2EAC7YT4" Name="val" DbType="boolean" Direction="0" ValType="1"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfn7RNXA4VYD5HE3M7A3INLHMZHQA" Name="regPropDateTimeDeleted" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is vData CLOB; vId varchar2(250);
+begin
+    select NULL into vData from DUAL;
+    vId := TO_CHAR(propId);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnYH6DZCBSX3NBDPLKABQJO5ADDQ">
+                  <xsc:Sql>RDX_AUDIT.addValueDate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'old.'||vId,val);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn3GEFGSVCK5FPDD2CLK737TDHBI">
+                  <xsc:Sql>RDX_AUDIT.regPropUpdate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(schemeId,tableId,pClassId,propId,vData,pid);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfp6NWZRVEQBZDEZPONGVYXLCW7DU" Name="schemeId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpWMJLDUN3MBEOHP2C2GQYFCZC5U" Name="tableId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp7PGZ5VUY4RBQXDU5GUJ2P3MPME" Name="pClassId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpZFQ3HNPB3NH5ZCBDCM7KBTNS2Q" Name="propId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpLFV33JDUKBGHPOVTAGMHXRRYDU" Name="pid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpMXP5VMYIZVF2NPFQ6UT3PPMFG4" Name="val" DbType="date" Direction="0" ValType="12"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnO4ACAAM3FZCQXASY5ZT47OGRZM" Name="regPropClobDeleted" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is vData CLOB; vId varchar2(250);
+begin
+    select NULL into vData from DUAL;
+    vId := TO_CHAR(propId);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnLRRREOFYJRBR5PIELHOKPQ42XM">
+                  <xsc:Sql>RDX_AUDIT.addValueClob</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'old.'||vId,val);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn3GEFGSVCK5FPDD2CLK737TDHBI">
+                  <xsc:Sql>RDX_AUDIT.regPropUpdate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(schemeId,tableId,pClassId,propId,vData,pid);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpEY5QXJIXDBCJJE35UHUWQQASKI" Name="schemeId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpB7ARVIIO2VARRFP2KG7MMFYGSQ" Name="tableId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp4UHSS56DFFA5RHFEXBZPAL474A" Name="pClassId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpBFQREE4DB5AF3EQ5Z6YOLABGVM" Name="propId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpRMAQRSRHPNAIJMUWM6QRKM6E2Q" Name="pid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp4I2ZDFZ24RDLPKTOAYQAVHVHJA" Name="val" DbType="CLOB" Direction="0" ValType="50"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnLHY7E5X7DRELRORGHFKLP7SXIQ" Name="regPropBlobDeleted" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is vData CLOB; vId varchar2(250);
+begin
+    select NULL into vData from DUAL;
+    vId := TO_CHAR(propId);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnIPL6KBI26RCE3PIBZJK2EBHGBU">
+                  <xsc:Sql>RDX_AUDIT.addValueBlob</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'old.'||vId,val);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn3GEFGSVCK5FPDD2CLK737TDHBI">
+                  <xsc:Sql>RDX_AUDIT.regPropUpdate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(schemeId,tableId,pClassId,propId,vData,pid);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpBKTZWB2XJFEVHJBL55D6HOZ4FU" Name="schemeId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpZDARDUNC5JBRTHM4ZJG73UN7BI" Name="tableId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpBZ45LN63L5BOREF7Q2D6HW7CSA" Name="pClassId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpRFRJT37V6FGFXCRXDRR54NY4IU" Name="propId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpZJUSGCJP65G3BFWCGU5LGD5WTY" Name="pid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpQMKCOIVKYJFHDF2SMQKM27SKQY" Name="val" DbType="BLOB" Direction="0" ValType="50"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnVP5MM4B63NFQXHWJCFZ6IXKCP4" Name="regPropRawDeleted" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is vData CLOB; vId varchar2(250);
+begin
+    select NULL into vData from DUAL;
+    vId := TO_CHAR(propId);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnTGD6QCQLZNCORMEEO6BUPWA7BM">
+                  <xsc:Sql>RDX_AUDIT.addValueRaw</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'old.'||vId,val);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn3GEFGSVCK5FPDD2CLK737TDHBI">
+                  <xsc:Sql>RDX_AUDIT.regPropUpdate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(schemeId,tableId,pClassId,propId,vData,pid);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpU6HGE2QEPBEEJH5B64SS5DLWEM" Name="schemeId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp64EUS3KKPJDJ3LKCLRIEHZFDHM" Name="tableId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpPYJ6M6BVKFASTP7OJZ2USGM3VM" Name="pClassId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp7ITYCHFIINHZ3NPUVEAHESXX6E" Name="propId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp4GLE4EADGREOLJCXIBTOS2VUXE" Name="pid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp6MZQWUMLLBCMPFM7O3S3XUVHK4" Name="val" DbType="RAW" Direction="0" ValType="50"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnCGPLI4LGKNGAFD3MTQDZY7ULPU" Name="regPropIntDeleted" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is vData CLOB; vId varchar2(250);
+begin
+    select NULL into vData from DUAL;
+    vId := TO_CHAR(propId);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnRAERWTZSX3NBDPLKABQJO5ADDQ">
+                  <xsc:Sql>RDX_AUDIT.addValueInt</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'old.'||vId,val);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn3GEFGSVCK5FPDD2CLK737TDHBI">
+                  <xsc:Sql>RDX_AUDIT.regPropUpdate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(schemeId,tableId,pClassId,propId,vData,pid);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpM7VSZIGY5BB67N3IQWPBEOMDD4" Name="schemeId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpKE6IBMOPYVCDBI2RYBAPKBB7Z4" Name="tableId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpKFORASZR5JFXXFRUHHNKSPMYZE" Name="pClassId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpMAJ7O56RUVGJNIIEQGW4IG3OKU" Name="propId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpPJVTWLSVSVEODM4SBOAFPMEU7E" Name="pid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpG3GLNM6NA5FXZL6C2YSY3BV5MU" Name="val" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnW73MYQ7YPZATLIN65XFFWXZ2VM" Name="regPropIntCreated" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is vData CLOB; vId varchar2(250);
+begin
+    select NULL into vData from DUAL;
+    vId := TO_CHAR(propId);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnRAERWTZSX3NBDPLKABQJO5ADDQ">
+                  <xsc:Sql>RDX_AUDIT.addValueInt</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'new.'||vId,val);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn3GEFGSVCK5FPDD2CLK737TDHBI">
+                  <xsc:Sql>RDX_AUDIT.regPropUpdate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(schemeId,tableId,pClassId, propId,vData,pid);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpTPPFEOPF2VEL7EGNVXQ32ZXDSU" Name="schemeId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpHQ7M5HWEFZBTFF3MLLPE5YEU3Y" Name="tableId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp34UKTIJCQ5EZLJ4SKC3MNORVQA" Name="pClassId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpGIB6X66CL5EDJLKPSYVBA2S43Q" Name="propId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpSKGTRVPD4BGWNDU3FWIZ2P56RQ" Name="pid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpAZ3KEOHZ3JBXBLDE7GCW6HT6TU" Name="val" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfn5J3XXHOFE5F7XJQJ372H2EXPHM" Name="regPropBoolUpdate" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is vData CLOB; vId varchar2(250);
+begin
+    select NULL into vData from DUAL;
+    vId := TO_CHAR(propId);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn443YVYYXUVFWZPSRK3XDQY4MGM">
+                  <xsc:Sql>RDX_AUDIT.addValueBool</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'old.'||vId,oldVal);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn443YVYYXUVFWZPSRK3XDQY4MGM">
+                  <xsc:Sql>RDX_AUDIT.addValueBool</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'new.'||vId,newVal);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn3GEFGSVCK5FPDD2CLK737TDHBI">
+                  <xsc:Sql>RDX_AUDIT.regPropUpdate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(schemeId,tableId,pClassId, propId,vData,pid);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpRSCVZOU77NDAVJJFAPT3E7KVVQ" Name="schemeId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpKMOR2YFFXFFONHACICOL7YA3PM" Name="tableId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpPTSSOBJYDFBTRCALUK7ZFSYES4" Name="pClassId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpXBP6COO2HVCYDDJSCNIAT4D3R4" Name="propId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpCSIOJAURQNGD7E4CSWD5OWXHEY" Name="pid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpZNDHFENTKZDDVNOU7TILREZDTY" Name="oldVal" DbType="boolean" Direction="0" ValType="1"/>
+              <Param Id="dfpEJBVQIUH7ZDOZCEJBMKUPM6ZPM" Name="newVal" DbType="boolean" Direction="0" ValType="1"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnHSGPBPW5BNF5NCO2SCHOGHQMAU" Name="regPropStrUpdate" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is vData CLOB; vId varchar2(250);
+begin
+    select NULL into vData from DUAL;
+    vId := TO_CHAR(propId);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnPQ3VCQBSX3NBDPLKABQJO5ADDQ">
+                  <xsc:Sql>RDX_AUDIT.addValueStr</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'old.'||vId,oldVal);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnPQ3VCQBSX3NBDPLKABQJO5ADDQ">
+                  <xsc:Sql>RDX_AUDIT.addValueStr</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'new.'||vId,newVal);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn3GEFGSVCK5FPDD2CLK737TDHBI">
+                  <xsc:Sql>RDX_AUDIT.regPropUpdate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(schemeId,tableId,pClassId, propId,vData,pid);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfp5URS74BC2BBY3P2OPONQ5733IY" Name="schemeId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpRGCQ42Q5YBFWHFWH2UVUYIACRU" Name="tableId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpMKA7DPR3FJFTTMMS5OJNFVB77A" Name="pClassId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpSSMKSOS6WVAJHDYKRI3XFWCQMI" Name="propId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpYOLLEQMYZBFXVAQ7RSRVWQXSEE" Name="pid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpPICKHSOXTRBSJKPJ7DSLQJBM4M" Name="oldVal" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpDEQ3JM4FYJGFZECYXRLWVAYHDE" Name="newVal" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnSVTVVVYVCJHKJI5GKIOYWKYQCQ" Name="regPropNumUpdate" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is vData CLOB; vId varchar2(250);
+begin
+    select NULL into vData from DUAL;
+    vId := TO_CHAR(propId);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn32HNHTZNX3NBDPLKABQJO5ADDQ">
+                  <xsc:Sql>RDX_AUDIT.addValueNum</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'old.'||vId,oldVal);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn32HNHTZNX3NBDPLKABQJO5ADDQ">
+                  <xsc:Sql>RDX_AUDIT.addValueNum</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vData,'new.'||vId,newVal);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn3GEFGSVCK5FPDD2CLK737TDHBI">
+                  <xsc:Sql>RDX_AUDIT.regPropUpdate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(schemeId,tableId,pClassId,propId,vData,pid);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfp5DMXPLUPKFE7FN23SDJN2567DM" Name="schemeId" DbType="number" Direction="0" ValType="11"/>
+              <Param Id="dfpKHM6F65GF5HKNML7G2M2NJHCDQ" Name="tableId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpNXH4HS43RBF4DKOEIVN6AA7M3E" Name="pClassId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpTIXRNYDHZ5BVZFJY5M6JAZSH6E" Name="propId" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpR3D77HFRPBAAHJCOSO3NI6YTN4" Name="pid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp5DF7IGJA4ZGUXJ43YHFHQUFUU4" Name="oldVal" DbType="number" Direction="0" ValType="11"/>
+              <Param Id="dfp7RLBW6527VHIZGWSQ5WCXNV5WU" Name="newVal" DbType="number" Direction="0" ValType="11"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnVCIU2LTOBZCS3K4H324KCMG6WA" Name="addChangedValueDateTime" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+    if (pOldValue IS NULL and pNewValue IS NOT NULL)
+            OR(pOldValue IS NOT NULL and pNewValue IS NULL)
+            OR pOldValue != pNewValue then
+        begin
+            RDX_AUDIT.addValueDate(pChangeData,'old.'||pName,pOldValue);
+            RDX_AUDIT.addValueDate(pChangeData,'new.'||pName,pNewValue);
+        end;
+    end if;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfp2ET42RTT2ZFYNATU5QC3QFJB2U" Name="pChangeData" DbType="CLOB" Direction="2" ValType="50"/>
+              <Param Id="dfpXM3E73VYF5F75N7BGYGT4S3544" Name="pName" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp22EU7IA4ZZHJJPEJZILUQ35G2U" Name="pOldValue" DbType="date" Direction="0" ValType="12"/>
+              <Param Id="dfp7224XAYRPRDKJFG6SKAMWE2UHU" Name="pNewValue" DbType="date" Direction="0" ValType="12"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfn35IR2YZLPVFMRGV4RJG46NG5JI" Name="addChangedValueRaw" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+    if  dbms_lob.compare(pOldValue,pNewValue)!=0 then
+        begin
+            RDX_AUDIT.addValueRaw(pChangeData,'old.'||pName,pOldValue);
+            RDX_AUDIT.addValueRaw(pChangeData,'new.'||pName,pNewValue);
+        end;
+    end if;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpHGULSSAZVFHO5E5FIVEV3JTEDM" Name="pChangeData" DbType="CLOB" Direction="2" ValType="50"/>
+              <Param Id="dfpTD54AZ35BZHEZEUEGEEN2RHKOI" Name="pName" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpDWJFK7IAYBBFVDDMXZGTQ6M2EQ" Name="pOldValue" DbType="RAW" Direction="0" ValType="50"/>
+              <Param Id="dfpYXJ5XLXA5NB6HKDBTIDPERGU2U" Name="pNewValue" DbType="RAW" Direction="0" ValType="50"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnXOLIGZFXLRDSVOEWXDULS4F574" Name="addChangedValueBlob" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+    if  dbms_lob.compare(pOldValue,pNewValue)!=0 then
+        begin
+            </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnIPL6KBI26RCE3PIBZJK2EBHGBU">
+                  <xsc:Sql>RDX_AUDIT.addValueBlob</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(pChangeData,'old.'||pName,pOldValue);
+            </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnIPL6KBI26RCE3PIBZJK2EBHGBU">
+                  <xsc:Sql>RDX_AUDIT.addValueBlob</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(pChangeData,'new.'||pName,pNewValue);
+        end;
+    end if;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpTUPQHT752NCN5JFQLAEDWPO3RA" Name="pChangeData" DbType="CLOB" Direction="2" ValType="50"/>
+              <Param Id="dfpBEMSL4U5YNAZLIBQRHFPPGU7YI" Name="pName" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpN2MDL2AYLVDSVMJJ7L4R54VUM4" Name="pOldValue" DbType="BLOB" Direction="0" ValType="50"/>
+              <Param Id="dfpANY43NFWTVDGHPAWD7XLGBAXJY" Name="pNewValue" DbType="BLOB" Direction="0" ValType="50"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnGCKTYCNAVJHDXKG7F7L3UGQXBU" Name="addChangedValueClob" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+    if  dbms_lob.compare(pOldValue,pNewValue)!=0 then
+        begin
+            RDX_AUDIT.addValueClob(pChangeData,'old.'||pName,pOldValue);
+            RDX_AUDIT.addValueClob(pChangeData,'new.'||pName,pNewValue);
+        end;
+    end if;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfp23D6FVHTV5BYZMHRLJLC4ZRMD4" Name="pChangeData" DbType="CLOB" Direction="2" ValType="50"/>
+              <Param Id="dfpZYCNGPXDWZFORLPKAUQZMLUXL4" Name="pName" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpTTW5KJFN3ZBJPLUA2L4TAQLBM4" Name="pOldValue" DbType="CLOB" Direction="0" ValType="50"/>
+              <Param Id="dfpQVDT5MGU3RDCRC6DVN5RDH43XY" Name="pNewValue" DbType="CLOB" Direction="0" ValType="50"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnJONV5RBXWZC4BC2VEYK4OQJBDA" Name="addChangedValueBool" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+    if (pOldValue IS NULL and pNewValue IS NOT NULL)
+            OR(pOldValue IS NOT NULL and pNewValue IS NULL)
+            OR pOldValue != pNewValue then
+        begin
+            RDX_AUDIT.addValueBool(pChangeData,'old.'||pName,pOldValue);
+            RDX_AUDIT.addValueBool(pChangeData,'new.'||pName,pNewValue);
+        end;
+    end if;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpKRWMJ33F5FCQ5JK2N6B3MZNORY" Name="pChangeData" DbType="CLOB" Direction="2" ValType="50"/>
+              <Param Id="dfp4ZZEOHAHDRETTKVQSATJ6V5XJI" Name="pName" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp75KMN74CAFCRNOMSHVJESSVV7I" Name="pOldValue" DbType="boolean" Direction="0" ValType="1"/>
+              <Param Id="dfpS5BQJIQ4B5FPLF3GA5B64AA6YE" Name="pNewValue" DbType="boolean" Direction="0" ValType="1"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnMTT5CAY2LBE4LP7GHG3E6RBO3M" Name="addChangedValueStr" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+    if (pOldValue IS NULL and pNewValue IS NOT NULL)
+            OR(pOldValue IS NOT NULL and pNewValue IS NULL)
+            OR pOldValue != pNewValue then
+        begin
+            RDX_AUDIT.addValueStr(pChangeData,'old.'||pName,pOldValue);
+            RDX_AUDIT.addValueStr(pChangeData,'new.'||pName,pNewValue);
+        end;
+    end if;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpTENU7LDJSFBNHKC4ST56UXZQXI" Name="pChangeData" DbType="CLOB" Direction="2" ValType="50"/>
+              <Param Id="dfpPUM2ZCLNDZCQXDX4K4AWWX5OKM" Name="pName" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpWXSEYCNWJVFURO6CRH5YPYFE7A" Name="pOldValue" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpSGBYPBZOGBEE3MU3SFGD2LBMMM" Name="pNewValue" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnMECGK3G2QRHZ7AIE2B6FNZ3SEE" Name="addChangedValueNum" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+    if (pOldValue IS NULL and pNewValue IS NOT NULL)
+            OR(pOldValue IS NOT NULL and pNewValue IS NULL)
+            OR pOldValue != pNewValue then
+        begin
+            RDX_AUDIT.addValueNum(pChangeData,'old.'||pName,pOldValue);
+            RDX_AUDIT.addValueNum(pChangeData,'new.'||pName,pNewValue);
+        end;
+    end if;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfp7OKGVXYLJ5HRNNX3EH63BCWZPY" Name="pChangeData" DbType="CLOB" Direction="2" ValType="50"/>
+              <Param Id="dfpP33O2H4OTRAXXH3FXY4LE57RRY" Name="pName" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpXEYPS5DRCVCIXMSRLQW7AGXFW4" Name="pOldValue" DbType="number" Direction="0" ValType="11"/>
+              <Param Id="dfpEGJBMR7CBRBFFPDB23ZYCDTHUE" Name="pNewValue" DbType="number" Direction="0" ValType="11"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfn5WOW6KKZRBAC3MFHWD3KNPIZVU" Name="addChangedValueInt" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+    if (pOldValue IS NULL and pNewValue IS NOT NULL)
+            OR(pOldValue IS NOT NULL and pNewValue IS NULL)
+            OR pOldValue != pNewValue then
+        begin
+            RDX_AUDIT.addValueInt(pChangeData,'old.'||pName,pOldValue);
+            RDX_AUDIT.addValueInt(pChangeData,'new.'||pName,pNewValue);
+        end;
+    end if;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpM565GUFEONDYJKXVTK5DGLGPNY" Name="pChangeData" DbType="CLOB" Direction="2" ValType="50"/>
+              <Param Id="dfp4ACX4S3BIRCLBNWV5DMQC54UUY" Name="pName" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpIIUF4DAUBRHZDJJADMJEVVAINE" Name="pOldValue" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfpLMXQNFRPQRF27O2XRQ6NTI4EJQ" Name="pNewValue" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+      </Body>
+    </Package>
+  </Packages>
+</Model>

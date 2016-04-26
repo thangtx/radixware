@@ -1,0 +1,668 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcQBWYU44P3POBDID2AALOMT5GDM" Name="Caching" DescriptionId="mls7RZAJDB7ABEO7DLKEDXFL54AEY" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcZ4XE3GCSHBFQTKUKR2WRO5JHSA"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcFD2SMTPCKFH43K2MTEZ7HNTHSE"/>
+    </Bodies>
+    <MethodGroup Id="cmgMBJS6QN2MFGJLHRS4T3KSQNSUA" Name="Root"/>
+    <PropertyGroup Id="cpg3346KQ2QLFDCZDYIYWVJRNAGOE" Name="Root"/>
+    <Properties>
+      <Property Id="prdLEA2TJL63TOBDID4AALOMT5GDM" Name="keepPeriod" DescriptionId="mlsNFPDZ3EZKVGGHHDTXODO46KIPY" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="401" extStr="int"/>
+        <InitialValue>
+          <ValAsStr>600</ValAsStr>
+        </InitialValue>
+      </Property>
+      <Property Id="prdLMA2TJL63TOBDID4AALOMT5GDM" Name="recheckPeriod" DescriptionId="mlsN2B7FQXCZFEIZG5L4REM6IFKUA" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="401" extStr="int"/>
+        <InitialValue>
+          <ValAsStr>30</ValAsStr>
+        </InitialValue>
+      </Property>
+      <Property Id="prdLN3LBOT63TOBDID4AALOMT5GDM" Name="entity" DescriptionId="mls2PNUX5ERLVFOZMKXXUXTAMNXWU" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="411" Path="pdcEntity____________________"/>
+      </Property>
+      <Property Id="prdNFD27VT63TOBDID4AALOMT5GDM" Name="lastRefreshTime" DescriptionId="mlsM4E3UHCXC5ANZLOPUIJYQ2L5HA" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="401" extStr="long"/>
+        <InitialValue>
+          <ValAsStr>0</ValAsStr>
+        </InitialValue>
+      </Property>
+      <Property Id="prdH3GGR4I76ND67PC6H2ZJHDDPWY" Name="prevLastUpdateTimeValue" DescriptionId="mlsUTBHHDGKH5GDTEGGQJGN3KIVXM" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="12"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth4C452ZGZYVHL7EWZFYDH54UZFQ" Name="refresh" DescriptionId="mlsASPKEJM7U5DQBL5ARGZUG2VVCA" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="lastUpdateTimeGetter" DescriptionId="mlsBP26YWVS7JAD7PDHZOABJZZGJE" Id="mprCCBVTGNOUJFEBJODKNFNWUGKNM">
+            <Type TypeId="411" Path="aicXF4OWKLITBEUVFDLTGO3V6PP2Y"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mls7O3GAJ7URZFLHLWYD67FYIXALQ"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM mthT6GL2VNUU5D2VDVFVMS7RYAUHA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(lastUpdateTimeGetter, false);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthCCHUA64P3POBDID2AALOMT5GDM" Name="refresh" Nature="0" IsOverride="false">
+        <AccessRules IsDeprecated="true"/>
+        <Parameters>
+          <Parameter Name="qryLastUpdateTime" Id="mpr3BFZENL55JFYNL5QT73XNKXGXY">
+            <Type TypeId="411" Path="pdcSqlStatement______________"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM mthYLEZT3ZH75HOPCC6DAQI4HAWAQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(qryLastUpdateTime, false);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthT6GL2VNUU5D2VDVFVMS7RYAUHA" Name="refresh" DescriptionId="mlsZGMOOF2XCRDTNOLATE3K33A454" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="lastUpdateTimeGetter" DescriptionId="mlsWW2EO2V25JHLBEMIQZR7SNVRXM" Id="mpr7FGY3QGL3VG57LP3G6JRUP6LLU">
+            <Type TypeId="411" Path="aicXF4OWKLITBEUVFDLTGO3V6PP2Y"/>
+          </Parameter>
+          <Parameter Name="forced" DescriptionId="mlsYAL7N3PREBBJZKDF5PNFOIDJYQ" Id="mprGR7VAIUTLBCZ3NWLBB5RHBBJN4">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsYJBRZNAOGJBEHCFJMPKQIX3D3Q"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>/*
+ * Раз в recheckPeriod проверяет менялась ли запись в БД.
+ *
+ * При первом запуске возвращает true и запоминает текущее время -
+ * обычно объекты, которым нужно кэшироваться, еще хранят какие-нибудь
+ * списки дочерних объектов. Первый вызов refreshCache - подходящее
+ * время, чтобы их заполнить.
+ *
+ * Если пришло время снова проверить и если изменилось значение
+ * lastUpdateTime или если запись не найдена, объект перечитывается
+ * (если объект удален, исключение перехватывается) возвращает true
+ *
+ * Если объект был прочитан, а потом удален из базы, то возвращается
+ * true, но владелец должен проверить isInDatabase(false)
+ */
+
+boolean isChanged = false;
+
+//System.out.println(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM prdLN3LBOT63TOBDID4AALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthE23L423YALPBDA2PABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() + ") " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM prdNFD27VT63TOBDID4AALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + " - " + (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mth4G5FL3ND6PNRDA2JAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() - </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM prdNFD27VT63TOBDID4AALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) + " >= " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM prdLMA2TJL63TOBDID4AALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + " == " + (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mth4G5FL3ND6PNRDA2JAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() - </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM prdNFD27VT63TOBDID4AALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> >= </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM prdLMA2TJL63TOBDID4AALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>));
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM prdLN3LBOT63TOBDID4AALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthE23L423YALPBDA2PABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() == false
+        &amp;&amp; (forced || </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mth4G5FL3ND6PNRDA2JAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() - </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM prdNFD27VT63TOBDID4AALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> >= </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM prdLMA2TJL63TOBDID4AALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)) {
+
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> mess = "Cache of " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM prdLN3LBOT63TOBDID4AALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthNAAWAWQX6PNRDA2JAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() + " #" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM prdLN3LBOT63TOBDID4AALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthJ66JVZJF57NRDIMQAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().toString();
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthS7A5F7KSRPNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(mess + " - time to query last update time", </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci7KAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> dbLastUpdateTime = lastUpdateTimeGetter.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicXF4OWKLITBEUVFDLTGO3V6PP2Y mth3ZNTQ6O5QNDFXJZQ7WV3UWS6UA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    if (dbLastUpdateTime != null) {
+        if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM prdH3GGR4I76ND67PC6H2ZJHDDPWY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null || dbLastUpdateTime.Time != </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM prdH3GGR4I76ND67PC6H2ZJHDDPWY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Time || </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM prdNFD27VT63TOBDID4AALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == 0) {            
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM prdH3GGR4I76ND67PC6H2ZJHDDPWY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = dbLastUpdateTime;
+            isChanged = true;
+        }
+    } else {
+        isChanged = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM prdLN3LBOT63TOBDID4AALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthOPU3AAQWZPNRDB64AALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(false); //записи в БД нет, а объект думает что есть?
+    }    
+    if (isChanged) {
+        if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM prdNFD27VT63TOBDID4AALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == 0) { //первый запуск
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthS7A5F7KSRPNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(mess + " - should reread children", </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci7KAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        } else {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthS7A5F7KSRPNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(mess + " - reread", </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci7KAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+            try {
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM prdLN3LBOT63TOBDID4AALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthYXHXCUYRXTNRDCJ3ABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+            } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6Y6UT7DZNRET3ECFL7DJVPMK6U"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthS7A5F7KSRPNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(mess + " - DB record was deleted", </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci7KAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+            }
+        }
+    }
+
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM prdNFD27VT63TOBDID4AALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mth4G5FL3ND6PNRDA2JAAMPGXSZKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+}
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM prdLN3LBOT63TOBDID4AALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthZXGNZ6V2G5DYXN4ADVHZWN2C24" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM prdLEA2TJL63TOBDID4AALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> &lt;= 0 ? null : </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM prdLEA2TJL63TOBDID4AALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+return isChanged;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYLEZT3ZH75HOPCC6DAQI4HAWAQ" Name="refresh" Nature="0" IsOverride="false">
+        <AccessRules IsDeprecated="true"/>
+        <Parameters>
+          <Parameter Name="qryLastUpdateTime" Id="mprTRBQDYIJHRAADEZ7EKVY3JLZQ4">
+            <Type TypeId="411" Path="pdcSqlStatement______________"/>
+          </Parameter>
+          <Parameter Name="forced" Id="mprF4J5V7D7LFHLJMGZGEZMQWT2QM">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcSqlStatement______________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> finalQry = qryLastUpdateTime;//to pass reference to the anonymous class
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicXF4OWKLITBEUVFDLTGO3V6PP2Y"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> getter = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicXF4OWKLITBEUVFDLTGO3V6PP2Y"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() {
+
+    public </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicXF4OWKLITBEUVFDLTGO3V6PP2Y mth3ZNTQ6O5QNDFXJZQ7WV3UWS6UA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() {
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcResultSet_________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> rs = finalQry.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcSqlStatement______________ mthK5ULGFQYYDNRDCKAABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+        try {
+            if (rs.next()) {
+                return rs.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcResultSet_________________ mth2PFQ47S7YXNRDCKEABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(1);
+            } else {
+                return null;
+            }
+        } finally {
+            rs.close();
+        }
+
+    }
+};
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM mthT6GL2VNUU5D2VDVFVMS7RYAUHA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(getter, forced);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthQFLOSVXTPNGQJI75JVYOHFVHGM" Name="Caching" DescriptionId="mlsM3Q5ANI43NGWNMJFXC5IDJW47Q" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="entity" DescriptionId="mlsWGZ3GLDIRFH6DIURVBD5VZSCVI" Id="mprSYY4XHE6KZGL7LX5I3P7EB6HKE">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="recheckPeriod" DescriptionId="mls4RFXLVQ7YBGDPDLVL2TA7XE4FI" Id="mprK6UKP6Z47BFEPPMFYSNITJQ5JU">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="keepPeriod" DescriptionId="mlsLTPEWNSL4ZALLDMDQ5MEZUIVYQ" Id="mprEY3QKL76H5AZZDSYGUVNHNHC5Q">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>//recheckPeriod - раз во сколько секунд проверять
+//keepPeriod - на сколько секунд сохранить в кэше
+
+if(entity == null)
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Illegal usage. Entity is null");
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM prdLN3LBOT63TOBDID4AALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = entity;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM prdLMA2TJL63TOBDID4AALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = recheckPeriod*1000;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM prdLEA2TJL63TOBDID4AALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = keepPeriod;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM prdNFD27VT63TOBDID4AALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = 0;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQBWYU44P3POBDID2AALOMT5GDM prdH3GGR4I76ND67PC6H2ZJHDDPWY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth2JCRIH45UJE5JIVJO5JMR6CEBU" Name="Caching" DescriptionId="mlsNH7R4IRXBRA3LLGYK4ZIYPWHOE" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="entity" DescriptionId="mls3ROH6WRBVBFTPKUDJYK6C4QJ7Q" Id="mprAAZOEJVJXNB6VJBY5EM77P6EIQ">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this(entity, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsJW5J2L2UBHPBDHNEABIFNQAABA aciT25EPEMPK5BE5GSNHCQUAJBJTU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getValue().intValue(), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsJW5J2L2UBHPBDHNEABIFNQAABA aciJEUWRWMOCBHIDOZVX6JEL7MSQY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getValue().intValue());
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

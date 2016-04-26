@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcAWUE3P3QM5G6DABE6GEFC2CMOI" Name="SerialPortResource" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcAETGGWKV2BHXNJP4CQ74QXD5AE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcEYOQONLDDREK5ITGLR2SKV7C3M"/>
+    </Bodies>
+    <MethodGroup Id="cmgMJ33QPBOAVBMNAF7QWYTDVWC6I" Name="Root"/>
+    <PropertyGroup Id="cpgCAJKARJNR5DNBG2GHWER57UF5E" Name="Root"/>
+    <Properties>
+      <Property Id="prdB2K6XIPJPZFA5BFVM3DKHRKTNM" Name="portConnection" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="411" Path="apcUTHSC3DNSHPBDC7IABIFNQAABA"/>
+      </Property>
+      <Property Id="prdRRL5SUD5MBAONGIBDN6EPYOBBY" Name="environment" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthE2QUBETGWRCW7H3DXJHSQMM3UE" Name="close" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="pxcUEAXSPDOSHPBDC7IABIFNQAABA"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcAWUE3P3QM5G6DABE6GEFC2CMOI prdB2K6XIPJPZFA5BFVM3DKHRKTNM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>!=null){
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcAWUE3P3QM5G6DABE6GEFC2CMOI prdB2K6XIPJPZFA5BFVM3DKHRKTNM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcUTHSC3DNSHPBDC7IABIFNQAABA mthTAFPIH3SSHPBDC7IABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthG64GLVFYENEWZHUCLISLGJGGHU" Name="open" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="params" Id="mprEVMD2N4KPNDWLMPCEHSCC2WCOQ">
+            <Type TypeId="411" Path="apcN5HNPGLMSHPBDC7IABIFNQAABA"/>
+          </Parameter>
+          <Parameter Name="appName" Id="mprYFDU7SL77NFYHPFHPW2XCXQFCI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="openTimeout" Id="mprOITVBEKX6JDT7JSHPKO4XPHK3Y">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="rcvTimeout" Id="mprSERYZY2PSFFR5K4RNVKDC5L2VY">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="pxcUEAXSPDOSHPBDC7IABIFNQAABA"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcAWUE3P3QM5G6DABE6GEFC2CMOI prdB2K6XIPJPZFA5BFVM3DKHRKTNM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>!=null){
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcAWUE3P3QM5G6DABE6GEFC2CMOI prdB2K6XIPJPZFA5BFVM3DKHRKTNM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcUTHSC3DNSHPBDC7IABIFNQAABA mthTAFPIH3SSHPBDC7IABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+}
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcAWUE3P3QM5G6DABE6GEFC2CMOI prdRRL5SUD5MBAONGIBDN6EPYOBBY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthLUUYWKLT5FCADGRMSBQMZYWYGE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcACRZP2N7KJHLTPMFXSTA2VAWSA mthAN27VDVHWVGQ5HBYJ6CEGNHY3M" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsNDRR4NDCFBGCZPY5RRK2O6APT4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>+params.toString());
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcAWUE3P3QM5G6DABE6GEFC2CMOI prdB2K6XIPJPZFA5BFVM3DKHRKTNM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcUTHSC3DNSHPBDC7IABIFNQAABA mthTRBCOILPSHPBDC7IABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(params);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcAWUE3P3QM5G6DABE6GEFC2CMOI prdB2K6XIPJPZFA5BFVM3DKHRKTNM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcUTHSC3DNSHPBDC7IABIFNQAABA mthRDBCTQ3PSHPBDC7IABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(appName,openTimeout,rcvTimeout);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthC43M43AJUREUNAPMJMRK7IOYE4" Name="read" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="count" Id="mpr3VYZ6XVNQZBQDDPXTWYY6S7B4A">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="rcvTimeout" Id="mpr6SZQCVJUEVCSFHU5YGLSLRYKT4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="byte" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="pxcUEAXSPDOSHPBDC7IABIFNQAABA"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcAWUE3P3QM5G6DABE6GEFC2CMOI prdB2K6XIPJPZFA5BFVM3DKHRKTNM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>==null){
+    throw new IllegalStateException("Port was not opened");
+}
+final byte[] buffer = new byte[count];
+final int actualSize = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcAWUE3P3QM5G6DABE6GEFC2CMOI prdB2K6XIPJPZFA5BFVM3DKHRKTNM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcUTHSC3DNSHPBDC7IABIFNQAABA mthLVB5QBTTSHPBDC7IABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(buffer,count,rcvTimeout);
+return java.util.Arrays.copyOf(buffer,actualSize);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYSAYTCDLZREKZCER54FZM3AGII" Name="read" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="count" Id="mprMIFDIE5B7JBKFP6GFKWQJQQZYU">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="byte" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="pxcUEAXSPDOSHPBDC7IABIFNQAABA"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcAWUE3P3QM5G6DABE6GEFC2CMOI prdB2K6XIPJPZFA5BFVM3DKHRKTNM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>==null){
+    throw new IllegalStateException("Port was not opened");
+}
+final byte[] buffer = new byte[count];
+final int actualSize = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcAWUE3P3QM5G6DABE6GEFC2CMOI prdB2K6XIPJPZFA5BFVM3DKHRKTNM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcUTHSC3DNSHPBDC7IABIFNQAABA mthSUUPGJLVSHPBDC7IABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(buffer,count);
+return java.util.Arrays.copyOf(buffer,actualSize);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthUSFZI3LMSJGYBP2XLULGTXHGCA" Name="wait4Read" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="bytesInStream" Id="mprCB3NI3Q4LBF7XKVYCI4RAHS36I">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="count" Id="mprASRPQWI6FJEQ7CAICA7NCILX3M">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="pxcUEAXSPDOSHPBDC7IABIFNQAABA"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcAWUE3P3QM5G6DABE6GEFC2CMOI prdB2K6XIPJPZFA5BFVM3DKHRKTNM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>==null){
+    throw new IllegalStateException("Port was not opened");
+}
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcAWUE3P3QM5G6DABE6GEFC2CMOI prdB2K6XIPJPZFA5BFVM3DKHRKTNM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcUTHSC3DNSHPBDC7IABIFNQAABA mthSTVFPO3SSHPBDC7IABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(bytesInStream,count);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthOFJED23ZOJHV3HESHSP3UU6RJY" Name="write" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="data" Id="mprZCVRIJ7SUNATVJ4ZTFIBJ4YOMI">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="count" Id="mpr34Y6RL3ZEJFSNGAVPRSTLLRG3E">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="pxcUEAXSPDOSHPBDC7IABIFNQAABA"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcAWUE3P3QM5G6DABE6GEFC2CMOI prdB2K6XIPJPZFA5BFVM3DKHRKTNM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>==null){
+    throw new IllegalStateException("Port was not opened");
+}
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcAWUE3P3QM5G6DABE6GEFC2CMOI prdB2K6XIPJPZFA5BFVM3DKHRKTNM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcUTHSC3DNSHPBDC7IABIFNQAABA mthCWLAA6TSSHPBDC7IABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(data,count);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthAVRJ36LKVBDETAUCNVATQWJFRI" Name="SerialPortResource" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="environment" Id="mprT44JRMHEQZGVPP5D2MDWFNCLFU">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcAWUE3P3QM5G6DABE6GEFC2CMOI prdRRL5SUD5MBAONGIBDN6EPYOBBY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = environment;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Implements>
+      <Interface TypeId="411" Path="aicQHBXBPVLKJG3NLTXU5V5XHZP5Q"/>
+    </Implements>
+  </AdsClassDefinition>
+</AdsDefinition>

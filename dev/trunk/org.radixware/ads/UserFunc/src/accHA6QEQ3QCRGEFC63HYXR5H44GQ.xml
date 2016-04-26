@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="accHA6QEQ3QCRGEFC63HYXR5H44GQ" Name="UserRoleHeadersCursor" Type="4">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderaccHA6QEQ3QCRGEFC63HYXR5H44GQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaccHA6QEQ3QCRGEFC63HYXR5H44GQ"/>
+    </Bodies>
+    <MethodGroup Id="cmg6AOZ64ZLK5FYZJ335RIYKXIXHU" Name="Root"/>
+    <PropertyGroup Id="cpgGFWNLLH33BH4HOJGQUZYEGVXGA" Name="Root"/>
+    <Properties>
+      <Property Id="prfHQT7JHO2TJA7FBKL2E2IUPBKGY" Name="roleId" Nature="3" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prfVOX6ZGHXRJED7GPWRW6AGYK5QE" Name="roleName" Nature="3" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="open" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <ReturnType TypeId="411" Path="accHA6QEQ3QCRGEFC63HYXR5H44GQ"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="true">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>select </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblM7J46MP6F3PBDIJEABQAQH3XQ4" PropId="col6FMTUQ76F3PBDIJEABQAQH3XQ4" Owner="TABLE">
+            <xsc:TableAlias>AR</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accHA6QEQ3QCRGEFC63HYXR5H44GQ" PropId="prfHQT7JHO2TJA7FBKL2E2IUPBKGY" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblM7J46MP6F3PBDIJEABQAQH3XQ4" PropId="colMFRUYXP6F3PBDIJEABQAQH3XQ4" Owner="TABLE">
+            <xsc:TableAlias>AR</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accHA6QEQ3QCRGEFC63HYXR5H44GQ" PropId="prfVOX6ZGHXRJED7GPWRW6AGYK5QE" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblM7J46MP6F3PBDIJEABQAQH3XQ4">
+            <xsc:TableAlias>AR</xsc:TableAlias>
+          </xsc:TableSqlName>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblM7J46MP6F3PBDIJEABQAQH3XQ4" Alias="AR"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="411" Path="pdcCursor____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

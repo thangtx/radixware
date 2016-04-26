@@ -1,0 +1,996 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="pdcSqlBlock__________________" Name="SqlBlock" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcKCXVVMBZTFEC5CN3DT3MHABMP4">
+        <xsc:Item>
+          <xsc:Java>import java.sql.CallableStatement;
+import java.sql.SQLException;
+
+</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcJSG2C64QFBGOXIHC7S7ASVYVVU">
+        <xsc:Item>
+          <xsc:Java>private CallableStatement stmt = null;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmgZBJ3N65IBBFYHA34JLXHVLXHG4" Name="Root">
+      <Group Id="cmg44WN2GXBZJBBBCVA7I64J4QJRM" Name="Get" Members="mthRF7CDV5PCXOBDOMSABIFNQAABA mthIGFOXBFQCXOBDOMSABIFNQAABA mthB5E7KPVPCXOBDOMSABIFNQAABA mthMGIAKBFQCXOBDOMSABIFNQAABA mthUWJSXLVPCXOBDOMSABIFNQAABA mthUDDLVONNCXOBDOMSABIFNQAABA mthFNWMA55PCXOBDOMSABIFNQAABA mthUF3UEG5PCXOBDOMSABIFNQAABA mthQSV2KBGSD5DPDN6PPP2WPCTRWQ mthDTZ2U5YRRJCXTLSM5FGXH4NE2Y"/>
+      <Group Id="cmgJBTY2PKRRVFRZASHV74L5GEL5I" Name="Set" Members="mthL7EMJQQWYDNRDCKAABIFNQAABA mthUPVSS6PDX7NRDCKAABIFNQAABA mthT75UUGXEX7NRDCKAABIFNQAABA mth6CCVO7AUYDNRDCKAABIFNQAABA mthJC3P3L7DX7NRDCKAABIFNQAABA mth46JBRXHCX7NRDCKAABIFNQAABA mth6QO3SRXDX7NRDCKAABIFNQAABA mth5ELOHTPBX7NRDCKAABIFNQAABA mthPA6FB4HJGFFTPIIQX3YQDA64QA mthCG6EGBO2UFEGHCK6S6Q3CW4XOM"/>
+    </MethodGroup>
+    <PropertyGroup Id="cpgEKNFU4DFFJB3XF2MNSNCIZ2M3U" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth46JBRXHCX7NRDCKAABIFNQAABA" Name="setInt" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="paramIdx" Id="mpr5RIW6VA7FFDRBBARIM46QH54EM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="x" Id="mprY6MP2H7ZX5CDXJ7FUIFUSPYAKU">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+   if( x == null )
+      stmt.setNull( paramIdx, java.sql.Types.BIGINT );                    
+   else
+      stmt.setLong( paramIdx, x.longValue() );
+}
+catch( SQLException e ) {
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mth2XWD35QT2BASFBJ7LDVLOSC66U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( "Unable to set statement int parameter, index is " + String.valueOf( paramIdx ), e );
+}   
+
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth5ELOHTPBX7NRDCKAABIFNQAABA" Name="setStr" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="paramIdx" Id="mprK3KV6NYQMVEIJKVT25F4J5U254">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="x" Id="mpr4IFTUPQ4RRCZTHZ5DQBVBSJLI4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+   stmt.setString( paramIdx, x );
+}
+catch( SQLException e ) {
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mth2XWD35QT2BASFBJ7LDVLOSC66U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( "Unable to set statement str parameter, index is " + String.valueOf( paramIdx ), e );
+}   
+
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth6CCVO7AUYDNRDCKAABIFNQAABA" Name="setClob" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="paramIdx" Id="mpr2IIW5AWSCRC75B6F6IIANWFQZY">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="x" Id="mpr6C2WU6MZMFCL7NUGELL4UFAPME">
+            <Type TypeId="27"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+   stmt.setClob( paramIdx, x );
+}
+catch( SQLException e ) {
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mth2XWD35QT2BASFBJ7LDVLOSC66U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( "Unable to set statement clob parameter, index is " + String.valueOf( paramIdx ), e );
+}   
+
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth6QO3SRXDX7NRDCKAABIFNQAABA" Name="setNum" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="paramIdx" Id="mprU3BMGF3BYBCDNKODRQYUXI5ZWQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="x" Id="mprRHZJC7NDVZH7RH4MLTROLSKPMQ">
+            <Type TypeId="11"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+   stmt.setBigDecimal( paramIdx, x );
+}
+catch( SQLException e ) {
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mth2XWD35QT2BASFBJ7LDVLOSC66U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( "Unable to set statement num parameter, index is " + String.valueOf( paramIdx ), e );
+}   
+
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthAJJAIIN2CXOBDOMSABIFNQAABA" Name="registerOutParameter" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="paramIdx" Id="mprODWJQCE42ZASRHEIDUHLKCBIQI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="type" Id="mprYMMBKFF4RJBX7CVQQF2ESL4NTE">
+            <Type TypeId="2" Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {                                 
+   int sqlType;
+   switch(type) {
+      case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciT57UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>: sqlType=java.sql.Types.VARCHAR; break;
+      case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciTN7UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>: sqlType=java.sql.Types.BIGINT; break;
+      case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciTR7UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>: sqlType=java.sql.Types.NUMERIC; break;
+      case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciTF7UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>: sqlType=java.sql.Types.CHAR; break;
+      case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciTB7UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>: sqlType=java.sql.Types.BIT; break;
+      case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciUN7UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>: sqlType=java.sql.Types.CLOB; break;
+      case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciUR7UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>: sqlType=java.sql.Types.BLOB; break;
+      case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciTJ7UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>: sqlType=java.sql.Types.TIMESTAMP; break;
+      default: throw new SQLException("parameter not allowed");  
+      }
+                                   
+   stmt.registerOutParameter(paramIdx,sqlType);
+}
+catch( SQLException e ) {
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mth2XWD35QT2BASFBJ7LDVLOSC66U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( "Unable to register out parameter: "+type.getName() +", index is " + String.valueOf( paramIdx ), e );
+} </xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthB5E7KPVPCXOBDOMSABIFNQAABA" Name="getClob" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="paramIdx" Id="mprBADH6O4Z4RHSJJXB3APDADDAYM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="27"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+   return stmt.getClob( paramIdx);
+}
+catch( SQLException e ) {
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mth2XWD35QT2BASFBJ7LDVLOSC66U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( "Unable to get statement clob parameter, index is " + String.valueOf( paramIdx ), e );
+}   
+
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthFNWMA55PCXOBDOMSABIFNQAABA" Name="getNum" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="paramIdx" Id="mpr7U3OORNFSVHBVN74AB7IMWIPIU">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="11"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+   return stmt.getBigDecimal( paramIdx);
+}
+catch( SQLException e ) {
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mth2XWD35QT2BASFBJ7LDVLOSC66U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( "Unable to get statement num parameter, index is " + String.valueOf( paramIdx ), e );
+}   
+
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthHOELYZVWCXOBDOMSABIFNQAABA" Name="SqlBlock" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthIGFOXBFQCXOBDOMSABIFNQAABA" Name="getBool" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="paramIdx" Id="mprVJK2UKYODRHNVLWRTDZFZKAKL4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="1"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try { 
+   boolean res=stmt.getBoolean( paramIdx);    
+   return stmt.wasNull() ? null : res;
+}
+catch( SQLException e ) {
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mth2XWD35QT2BASFBJ7LDVLOSC66U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( "Unable to get statement bool parameter, index is " + String.valueOf( paramIdx ), e );
+}   
+
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthILNMEKNNCXOBDOMSABIFNQAABA" Name="prepare" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="sql" Id="mprJAPKWUWA35GG7DI4ELIX5F3AIQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="resultSetType" Id="mprLYDN44XNXFGOVPADDIS6CN23LI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="resultSetConcurrency" Id="mprSAGFO62LJJAA3DPBU4RKSOYOBA">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="closeOnSeanceEnd" Id="mprP4EASPOEYJCHNLCVSDCX67SC3M">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="pdcSqlBlock__________________"/>
+        <ProfileInfo timingSectionId="Radix.SqlClass.QryPrepare"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcSqlBlock__________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> dbpStmt = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcSqlBlock__________________ mthHOELYZVWCXOBDOMSABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+try {
+   dbpStmt.stmt = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthPDUPVLPYXTNRDISQAAAAAAAAAA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().prepareCall( sql, resultSetType, resultSetConcurrency );
+}
+catch( SQLException e ) {
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mth2XWD35QT2BASFBJ7LDVLOSC66U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( "Unable to create JDBC callable statement", e );
+}   
+
+if( closeOnSeanceEnd ) {
+   </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getDbConnection().registerTemporaryStatement( dbpStmt.stmt );   
+}
+
+return dbpStmt; </xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthJC3P3L7DX7NRDCKAABIFNQAABA" Name="setDateTime" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="paramIdx" Id="mprPWBAITTSTNF5BEU33R2VYUXQOM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="x" Id="mprORJ5HVQCONACPCWVGTD47A7IKE">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+   stmt.setTimestamp( paramIdx, x );
+}
+catch( SQLException e ) {
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mth2XWD35QT2BASFBJ7LDVLOSC66U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( "Unable to set statement DateTime parameter, index is " + String.valueOf( paramIdx ), e );
+}   
+
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthK5ULGFQYYDNRDCKAABIFNQAABA" Name="executeQuery" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <ReturnType TypeId="411" Path="pdcResultSet_________________"/>
+        <ProfileInfo timingSectionId="Radix.SqlClass.QryExec"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcResultSet_________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> result = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcResultSet_________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    result.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mthZIKY4SGQ7FECZDX4QGLRCYFGPA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(stmt.executeQuery());
+    return result;
+} catch( SQLException e ) {
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mth2XWD35QT2BASFBJ7LDVLOSC66U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( "Unable to execute query and create cursor", e );
+}   </xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthL7EMJQQWYDNRDCKAABIFNQAABA" Name="setBlob" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="paramIdx" Id="mprRHESTIHB6NAUNFYAUGFDCPC2LU">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="x" Id="mprC42RMLMAU5B2XNWA423GBTORRE">
+            <Type TypeId="28"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+   stmt.setBlob( paramIdx, x );
+}
+catch( SQLException e ) {
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mth2XWD35QT2BASFBJ7LDVLOSC66U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( "Unable to set statement blob parameter, index is " + String.valueOf( paramIdx ), e );
+}   
+
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthMGIAKBFQCXOBDOMSABIFNQAABA" Name="getChar" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="paramIdx" Id="mprVSZL4XSWRZD4RAX2QIYHOBZUBQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="3"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+   String res=stmt.getString( paramIdx);
+   return res!=null &amp;&amp; res.length()>=1 ? res.charAt(0) : null;
+}
+catch( SQLException e ) {
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mth2XWD35QT2BASFBJ7LDVLOSC66U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( "Unable to get statement char parameter, index is " + String.valueOf( paramIdx ), e );
+}   
+
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthMMCAURHAX7NRDCKAABIFNQAABA" Name="prepare" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="sql" Id="mprQTJOU36XNRDIXN2TI7NZKJ3SRI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="closeOnSeanceEnd" Id="mprOY3INAX7YVAY3KRAM33P2VFKYA">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="pdcSqlBlock__________________"/>
+        <ProfileInfo timingSectionId="Radix.SqlClass.QryPrepare"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcSqlBlock__________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> dbpStmt = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcSqlBlock__________________ mthHOELYZVWCXOBDOMSABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+try {
+   dbpStmt.stmt = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthPDUPVLPYXTNRDISQAAAAAAAAAA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().prepareCall( sql );
+}
+catch( SQLException e ) {
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mth2XWD35QT2BASFBJ7LDVLOSC66U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( "Unable to create JDBC callable statement", e );
+}   
+
+if( closeOnSeanceEnd )
+   </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getDbConnection().registerTemporaryStatement( dbpStmt.stmt );
+
+return dbpStmt; </xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthRF7CDV5PCXOBDOMSABIFNQAABA" Name="getBlob" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="paramIdx" Id="mprZIVYONNYEVACVEOFR4U3T42OBA">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="28"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+   return stmt.getBlob( paramIdx);
+}
+catch( SQLException e ) {
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mth2XWD35QT2BASFBJ7LDVLOSC66U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( "Unable to get statement blob parameter, index is " + String.valueOf( paramIdx ), e );
+}   
+
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthRN5BV6IWYDNRDCKAABIFNQAABA" Name="executeUpdate" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <ProfileInfo timingSectionId="Radix.SqlClass.QryExec"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+   stmt.executeUpdate();
+}
+catch( SQLException e ) {
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mth2XWD35QT2BASFBJ7LDVLOSC66U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( "Unable to execute update: "+e.getMessage(), e );
+}   
+
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthT75UUGXEX7NRDCKAABIFNQAABA" Name="setChar" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="paramIdx" Id="mpr6EO3FTS5IJD7PAIKC7KHVYKJ6U">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="x" Id="mprK4PV7DWKJJDZPDRP657WGJH76A">
+            <Type TypeId="3"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+   stmt.setString( paramIdx, x.toString() );
+}
+catch( SQLException e ) {
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mth2XWD35QT2BASFBJ7LDVLOSC66U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( "Unable to set statement char parameter, index is " + String.valueOf( paramIdx ), e );
+}   
+
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthUDDLVONNCXOBDOMSABIFNQAABA" Name="getInt" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="paramIdx" Id="mprDWAGSIMFL5ESZCQ3MLE7D7ZC2Y">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="2"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+   long res=stmt.getLong( paramIdx);
+   return stmt.wasNull() ? null : res;
+}
+catch( SQLException e ) {
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mth2XWD35QT2BASFBJ7LDVLOSC66U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( "Unable to get statement int parameter, index is " + String.valueOf( paramIdx ), e );
+}   
+
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthUF3UEG5PCXOBDOMSABIFNQAABA" Name="getStr" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="paramIdx" Id="mpr5HPPKMTEUVEVZJ3DPWW5UCJ64E">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+   return stmt.getString( paramIdx);
+}
+catch( SQLException e ) {
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mth2XWD35QT2BASFBJ7LDVLOSC66U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( "Unable to get statement str parameter, index is " + String.valueOf( paramIdx ), e );
+}   
+
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthUPVSS6PDX7NRDCKAABIFNQAABA" Name="setBool" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="paramIdx" Id="mprZUZP4TKBQVHRBIWEM7VWFYH7FA">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="x" Id="mprNWJ6ZPXIVFGM3C55GAM3N36UQU">
+            <Type TypeId="1"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+   if( x == null )
+      stmt.setNull( paramIdx, java.sql.Types.BOOLEAN );                    
+   else
+      stmt.setBoolean( paramIdx, x.booleanValue() );
+}
+catch( SQLException e ) {
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mth2XWD35QT2BASFBJ7LDVLOSC66U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( "Unable to set statement bool parameter, index is " + String.valueOf( paramIdx ), e );
+}   
+
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthUWJSXLVPCXOBDOMSABIFNQAABA" Name="getDateTime" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="paramIdx" Id="mprAT3NKWQ7BVCTZLTEDTYFXVH2XY">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+   return stmt.getTimestamp( paramIdx);
+}
+catch( SQLException e ) {
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mth2XWD35QT2BASFBJ7LDVLOSC66U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( "Unable to get statement DateTime parameter, index is " + String.valueOf( paramIdx ), e );
+}   
+
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthWSWMX4ECYXNRDCKEABIFNQAABA" Name="close" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+   stmt.close();
+}
+catch( SQLException e ) {
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mth2XWD35QT2BASFBJ7LDVLOSC66U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( "Unable to close statement", e );
+}   
+
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthQSV2KBGSD5DPDN6PPP2WPCTRWQ" Name="getObject" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="paramIdx" Id="mprQQVA4GL2VRG63FHIRR7S7NR5PU">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+   return stmt.getObject( paramIdx);
+}
+catch( SQLException e ) {
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mth2XWD35QT2BASFBJ7LDVLOSC66U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( "Unable to get statement object parameter, index is " + String.valueOf( paramIdx ), e );
+}   
+
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthPA6FB4HJGFFTPIIQX3YQDA64QA" Name="setObject" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="paramIdx" Id="mprIG5SE3I67NE3RPKGSOPZHFGMYA">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="x" Id="mprDCH4HRNBBVDXRBRFY6HY5A57VU">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+   stmt.setObject( paramIdx, x );
+}
+catch( SQLException e ) {
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mth2XWD35QT2BASFBJ7LDVLOSC66U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( "Unable to set statement object parameter, index is " + String.valueOf( paramIdx ), e );
+}   
+
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthDTZ2U5YRRJCXTLSM5FGXH4NE2Y" Name="getSqlXml" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="paramIdx" Id="mprVROGINBWPZG5RJY6FPZR3UW4HM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.sql.SQLXML"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+   return stmt.getSQLXML( paramIdx);
+}
+catch( SQLException e ) {
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mth2XWD35QT2BASFBJ7LDVLOSC66U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( "Unable to get statement SQLXML parameter, index is " + String.valueOf( paramIdx ), e );
+}   
+
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthCG6EGBO2UFEGHCK6S6Q3CW4XOM" Name="setSqlXml" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="paramIdx" Id="mpr65DUE7OGRZDF3MIB7GSZRUTGKY">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="x" Id="mprFAIORIUVRBCPLP3W2SQY2M6PDI">
+            <Type TypeId="400" extStr="java.sql.SQLXML"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+   stmt.setSQLXML( paramIdx, x );
+}
+catch( SQLException e ) {
+   throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mth2XWD35QT2BASFBJ7LDVLOSC66U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>( "Unable to set statement SQLXML parameter, index is " + String.valueOf( paramIdx ), e );
+}   
+
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

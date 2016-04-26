@@ -1,0 +1,165 @@
+/*
+ * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. This Source Code is distributed
+ * WITHOUT ANY WARRANTY; including any implied warranties but not limited to
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * Mozilla Public License, v. 2.0. for more details.
+ */
+
+/*
+ * EmbeddedExplorereItemPanel.java
+ *
+ * Created on 04.09.2009, 15:41:58
+ */
+package org.radixware.kernel.designer.ads.editors.pages;
+
+import java.util.Collection;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import org.openide.util.NbBundle;
+import org.radixware.kernel.common.defs.Definition;
+import org.radixware.kernel.common.defs.RadixObject;
+import org.radixware.kernel.common.defs.VisitorProvider;
+import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsEditorPageDef;
+import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsSelectorPresentationDef;
+import org.radixware.kernel.common.defs.ads.explorerItems.AdsExplorerItemDef;
+import org.radixware.kernel.common.defs.ads.explorerItems.AdsParentRefExplorerItemDef;
+import org.radixware.kernel.common.defs.ads.explorerItems.AdsSelectorExplorerItemDef;
+import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.designer.ads.common.lookup.AdsEditorPageLookupSupport;
+import org.radixware.kernel.designer.common.dialogs.chooseobject.ChooseDefinitionCfg;
+
+
+public class EmbeddedExplorereItemPanel extends javax.swing.JPanel {
+
+    /** Creates new form EmbeddedExplorereItemPanel */
+    public EmbeddedExplorereItemPanel() {
+        initComponents();
+        editor.setClearable(true);
+    }
+
+    public void open(final AdsEditorPageDef page) {
+        final AdsExplorerItemDef explorerItem = page.findEmbeddedExplorerItem();
+        if (explorerItem == null) {
+            editor.open(createCfg(page), null, null);
+        } else {
+            editor.open(createCfg(page), explorerItem, explorerItem.getId());
+        }
+        editor.setEnabled(!page.isReadOnly());
+        editor.addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                Id id = editor.getDefinitionId();
+                if (id != null) {
+                    if (!id.equals(page.getEmbeddedExplorerItemId())) {
+                        page.setEmbeddedExplorerItemId(id);
+                        AdsExplorerItemDef item = page.findEmbeddedExplorerItem();
+
+                        if (item instanceof AdsParentRefExplorerItemDef) {
+                            page.setIconId(null);
+                        } else {
+                            if (titleAndIcon.isIconInherited()) {
+                                if (item instanceof AdsSelectorExplorerItemDef) {
+                                    AdsSelectorExplorerItemDef newRefItem = (AdsSelectorExplorerItemDef) item;
+                                    if (newRefItem != null) {
+                                        AdsSelectorPresentationDef refPresentation = newRefItem.findReferencedSelectorPresentation().get();
+                                        if (refPresentation != null) {
+                                            page.setIconId(refPresentation.getIconId());
+                                        } else {
+                                            page.setIconId(null);
+                                        }
+                                    } else {
+                                        page.setIconId(null);
+                                    }
+                                }
+                            }
+                        }
+                        titleAndIcon.open(page);
+                    }
+                } else {
+                    page.setEmbeddedExplorerItemId(null);
+                    titleAndIcon.open(page);
+                }
+            }
+        });
+        titleAndIcon.open(page);
+    }
+
+    private ChooseDefinitionCfg createCfg(final AdsEditorPageDef page) {
+        return new ExplorerItemCfg(new AdsEditorPageLookupSupport().getAvailableEmbeddedxplorerItems(page));
+    }
+
+    private class ExplorerItemCfg extends ChooseDefinitionCfg {
+
+        protected ExplorerItemCfg(final Collection<? extends Definition> predefinedAllowedDefinitions) {
+            super(predefinedAllowedDefinitions);
+        }
+
+        @Override
+        public String getTypeTitle() {
+            return NbBundle.getMessage(EmbeddedExplorereItemPanel.class, "ExplorerItemTip");
+        }
+    }
+
+    /** This method is called from within the constructor to
+     * initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is
+     * always regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jLabel1 = new javax.swing.JLabel();
+        editor = new org.radixware.kernel.designer.common.dialogs.components.DefinitionLinkEditPanel();
+        titleAndIcon = new org.radixware.kernel.designer.ads.editors.pages.TitleAndIconPanel();
+
+        jLabel1.setText(org.openide.util.NbBundle.getMessage(EmbeddedExplorereItemPanel.class, "EmbeddedExplorerItemTip")); // NOI18N
+
+        javax.swing.GroupLayout titleAndIconLayout = new javax.swing.GroupLayout(titleAndIcon);
+        titleAndIcon.setLayout(titleAndIconLayout);
+        titleAndIconLayout.setHorizontalGroup(
+            titleAndIconLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 348, Short.MAX_VALUE)
+        );
+        titleAndIconLayout.setVerticalGroup(
+            titleAndIconLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(titleAndIcon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(18, 18, 18)
+                        .addComponent(editor, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(editor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(titleAndIcon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+    }// </editor-fold>//GEN-END:initComponents
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private org.radixware.kernel.designer.common.dialogs.components.DefinitionLinkEditPanel editor;
+    private javax.swing.JLabel jLabel1;
+    private org.radixware.kernel.designer.ads.editors.pages.TitleAndIconPanel titleAndIcon;
+    // End of variables declaration//GEN-END:variables
+}

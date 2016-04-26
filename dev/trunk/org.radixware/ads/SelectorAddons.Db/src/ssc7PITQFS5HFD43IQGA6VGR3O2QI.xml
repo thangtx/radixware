@@ -1,0 +1,671 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="ssc7PITQFS5HFD43IQGA6VGR3O2QI" Name="ImportFilterStmt" Type="9">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="true" PublishedName="org.radixware.kernel.server.types.Statement"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc6LJJ6AABAFDDVL5I2N6ASDMN6U"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcM5YUFYN6UZBKHDWJTYWAYGB5LY"/>
+    </Bodies>
+    <MethodGroup Id="cmg7PPFUT4RCRENPAFVXX6BRLYROA" Name="Root"/>
+    <PropertyGroup Id="cpgFBBGBSEIEVEADOKTU6EZJD7WX4" Name="Root"/>
+    <Properties>
+      <Property Id="prmVURSXRX6WVEITBRCSK3XNAXAUM" Name="guid" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmBLQII7BNZRGC5BMPS6EU5ZBE44" Name="tableGuid" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmEOYMYT2LKJA25IC4ZAFS3EYKCA" Name="title" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmHKWMBEAW6BFD3AXJ4LOSA56Y74" Name="isActive" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="1"/>
+      </Property>
+      <Property Id="prmOOFX4KVFINFJ5IMV65MFV5Y7ZQ" Name="selPresentations" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmJAZ3MDJOCZH7BL5CL2C6LQU6IQ" Name="baseFilterGuid" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prm7DFDRF4AF5GX3OBUWBXIRMCR3E" Name="condition" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="27"/>
+      </Property>
+      <Property Id="prmTMFN6UNH2RAFRMPW3L2RKZFZT4" Name="parameters" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="27"/>
+      </Property>
+      <Property Id="prmN3DPPSAR55ETFIQAPQLB6TMDPM" Name="userName" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmYSVTW43VNNCVPCOBTNJUSPOJOY" Name="currentTime" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="12"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="execute" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="guid" Id="mprVURSXRX6WVEITBRCSK3XNAXAUM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="tableGuid" Id="mprBLQII7BNZRGC5BMPS6EU5ZBE44">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="title" Id="mprEOYMYT2LKJA25IC4ZAFS3EYKCA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="isActive" Id="mprHKWMBEAW6BFD3AXJ4LOSA56Y74">
+            <Type TypeId="1"/>
+          </Parameter>
+          <Parameter Name="selPresentations" Id="mprOOFX4KVFINFJ5IMV65MFV5Y7ZQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="baseFilterGuid" Id="mprJAZ3MDJOCZH7BL5CL2C6LQU6IQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="condition" Id="mpr7DFDRF4AF5GX3OBUWBXIRMCR3E">
+            <Type TypeId="27"/>
+          </Parameter>
+          <Parameter Name="parameters" Id="mprTMFN6UNH2RAFRMPW3L2RKZFZT4">
+            <Type TypeId="27"/>
+          </Parameter>
+          <Parameter Name="userName" Id="mprN3DPPSAR55ETFIQAPQLB6TMDPM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="currentTime" Id="mprYSVTW43VNNCVPCOBTNJUSPOJOY">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth_stmt_sendBatch___________" Name="sendBatch" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+      </Method>
+      <Method Id="mth_stmt_setExecuteBatch_____" Name="setExecuteBatch" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="size" Id="mprSize______________________">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>merge into </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:TableSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> using
+(select </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmVURSXRX6WVEITBRCSK3XNAXAUM"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colTOTOEP36JFH35MA7BJYRU67GKU" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmBLQII7BNZRGC5BMPS6EU5ZBE44"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colDCQEQLHEC5F6VO633LHAE6BDMQ" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmEOYMYT2LKJA25IC4ZAFS3EYKCA"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="col6QH5TILJHRDDTC4CHYLQ6HLECA" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmHKWMBEAW6BFD3AXJ4LOSA56Y74"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colZ23Q7UUURBEAHGCRRSQEKZH76I" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, 
+        </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmOOFX4KVFINFJ5IMV65MFV5Y7ZQ"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colLR66PCM6LJGRNJMVM3ROBROYOY" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmJAZ3MDJOCZH7BL5CL2C6LQU6IQ"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colXT2U3TRV6VGAPEULXGUEZMPOAU" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, 
+        </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prm7DFDRF4AF5GX3OBUWBXIRMCR3E"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="col6LHR4RTUVNEYXKKGYXZZSB74PY" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmTMFN6UNH2RAFRMPW3L2RKZFZT4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colUZMKYBFP4VAWBHFP5NM7MIEZRU" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmN3DPPSAR55ETFIQAPQLB6TMDPM"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colVTTB5PHSCFG5TAUCLOI27MO5XM" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, 
+        </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmYSVTW43VNNCVPCOBTNJUSPOJOY"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colTZ42HZBXFFBPVL6P4MTIMOAHQE" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>  from dual) S
+on (</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colTOTOEP36JFH35MA7BJYRU67GKU" Owner="TABLE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>=S.</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colTOTOEP36JFH35MA7BJYRU67GKU" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>)
+when matched then update set
+       </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colDCQEQLHEC5F6VO633LHAE6BDMQ" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>=S.</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colDCQEQLHEC5F6VO633LHAE6BDMQ" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+       </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="col6QH5TILJHRDDTC4CHYLQ6HLECA" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>=S.</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="col6QH5TILJHRDDTC4CHYLQ6HLECA" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+       </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colZ23Q7UUURBEAHGCRRSQEKZH76I" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>=S.</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colZ23Q7UUURBEAHGCRRSQEKZH76I" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+       </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colLR66PCM6LJGRNJMVM3ROBROYOY" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>=S.</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colLR66PCM6LJGRNJMVM3ROBROYOY" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+       </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colXT2U3TRV6VGAPEULXGUEZMPOAU" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>=S.</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colXT2U3TRV6VGAPEULXGUEZMPOAU" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+       </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="col6LHR4RTUVNEYXKKGYXZZSB74PY" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>=S.</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="col6LHR4RTUVNEYXKKGYXZZSB74PY" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+       </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colUZMKYBFP4VAWBHFP5NM7MIEZRU" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>=S.</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colUZMKYBFP4VAWBHFP5NM7MIEZRU" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+       </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colVTTB5PHSCFG5TAUCLOI27MO5XM" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>=S.</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colVTTB5PHSCFG5TAUCLOI27MO5XM" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+       </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colTZ42HZBXFFBPVL6P4MTIMOAHQE" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>=S.</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colTZ42HZBXFFBPVL6P4MTIMOAHQE" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+when not matched then insert (</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colTOTOEP36JFH35MA7BJYRU67GKU" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="col36K2MUPKPRGPPAGLVPAUJ52PQE" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colDCQEQLHEC5F6VO633LHAE6BDMQ" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="col6QH5TILJHRDDTC4CHYLQ6HLECA" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colZ23Q7UUURBEAHGCRRSQEKZH76I" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colLR66PCM6LJGRNJMVM3ROBROYOY" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+        </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colXT2U3TRV6VGAPEULXGUEZMPOAU" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="col6LHR4RTUVNEYXKKGYXZZSB74PY" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colUZMKYBFP4VAWBHFP5NM7MIEZRU" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colVTTB5PHSCFG5TAUCLOI27MO5XM" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colTZ42HZBXFFBPVL6P4MTIMOAHQE" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colYNFESMLQLBCGDCKG7FGDPYNPR4" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>)
+    values (S.</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colTOTOEP36JFH35MA7BJYRU67GKU" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Id Path="aclLQBIKZWZABEIXKZOG4W3L6I5XI"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, S.</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colDCQEQLHEC5F6VO633LHAE6BDMQ" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, 
+            S.</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="col6QH5TILJHRDDTC4CHYLQ6HLECA" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, S.</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colZ23Q7UUURBEAHGCRRSQEKZH76I" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, S.</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colLR66PCM6LJGRNJMVM3ROBROYOY" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, S.</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colXT2U3TRV6VGAPEULXGUEZMPOAU" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, S.</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="col6LHR4RTUVNEYXKKGYXZZSB74PY" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, 
+            S.</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colUZMKYBFP4VAWBHFP5NM7MIEZRU" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, S.</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colVTTB5PHSCFG5TAUCLOI27MO5XM" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, S.</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colTZ42HZBXFFBPVL6P4MTIMOAHQE" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+            (Select count(</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colYNFESMLQLBCGDCKG7FGDPYNPR4" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>) from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> 
+                where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colDCQEQLHEC5F6VO633LHAE6BDMQ" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>=S.</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colDCQEQLHEC5F6VO633LHAE6BDMQ" Owner="NONE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> and 
+                </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="col36K2MUPKPRGPPAGLVPAUJ52PQE" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>=</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Id Path="aclLQBIKZWZABEIXKZOG4W3L6I5XI"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+             )+1
+           )</xsc:Sql>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" Alias="addons"/>
+        <UsedTable TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="400" extStr="org.radixware.kernel.server.types.SqlClass"/>
+  </AdsClassDefinition>
+</AdsDefinition>

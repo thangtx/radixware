@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcTYM633OEOVHT3JLBLLO635P56I" Name="DashConfigInfo" Type="3" Environment="common-client">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcTYM633OEOVHT3JLBLLO635P56I"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcTYM633OEOVHT3JLBLLO635P56I"/>
+    </Bodies>
+    <MethodGroup Id="cmgND2OW5PXMZF7ZDW3SJCU64NCJA" Name="Root"/>
+    <PropertyGroup Id="cpgNK7QV2TB2ZDETKL3375PDOZW6Y" Name="Root"/>
+    <Properties>
+      <Property Id="prdP6QZEPJQSZFYDJEY73N5BR6PTY" Name="guid" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prdMJWMVHGAQBBIJI2IXHQ5KWPWKU" Name="title" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prdELNYVUKDIVCTZP6Z252F5USMHM" Name="xmlContentDoc" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prdBVYXVE5R55F35K3AESHKJT6VMI" Name="type" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21" Path="acsMMIPCHGRXVDK3JCBPX6NRSCRIY"/>
+      </Property>
+      <Property Id="prd6ZMS5TVBN5BCFIQIX34SW25LRI" Name="lastUpdateTime" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="401" extStr="long"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthMOS6YSKEIRHYXMNLLUCJAIZAZY" Name="DashConfigInfo" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="guid" Id="mprU66C7HVKBZG7XBKJ6SZRA475EQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="title" Id="mprZUAATF6MPRFX7HI4UCDCEOL5FU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="xmlContent" Id="mprMCHOPL33NBFUBAFEF2ND2SRRQQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="lastUpdateTime" Id="mprWZX4GZDD5JECRMLSSV4ID3DDDI">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="type" Id="mprSHXEADCBTFFSNHS74Z7ADEHOD4">
+            <Type TypeId="21" Path="acsMMIPCHGRXVDK3JCBPX6NRSCRIY"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcTYM633OEOVHT3JLBLLO635P56I prdP6QZEPJQSZFYDJEY73N5BR6PTY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = guid;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcTYM633OEOVHT3JLBLLO635P56I prdMJWMVHGAQBBIJI2IXHQ5KWPWKU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = title;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcTYM633OEOVHT3JLBLLO635P56I prdELNYVUKDIVCTZP6Z252F5USMHM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = xmlContent;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcTYM633OEOVHT3JLBLLO635P56I prdBVYXVE5R55F35K3AESHKJT6VMI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = type;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcTYM633OEOVHT3JLBLLO635P56I prd6ZMS5TVBN5BCFIQIX34SW25LRI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = lastUpdateTime;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

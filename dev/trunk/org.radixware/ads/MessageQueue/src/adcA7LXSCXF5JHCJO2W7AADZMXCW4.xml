@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcA7LXSCXF5JHCJO2W7AADZMXCW4" Name="MqAMQPProducer" Type="3" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.server.units.mq.MqAMQPProducer"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcA7LXSCXF5JHCJO2W7AADZMXCW4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcA7LXSCXF5JHCJO2W7AADZMXCW4"/>
+    </Bodies>
+    <MethodGroup Id="cmgKJKQ5CY6FZAI7NTSFJVMKFV7RI" Name="Root"/>
+    <PropertyGroup Id="cpgAFW3JNE6MJEOTHES6DGHNIXFJA" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth2M4JJJ4W4ZEXZJ6Z7YN4CKD5BY" Name="close" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="close()V"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.Exception"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthPIQA62GTQ5F3ZGX7CBUTXGMTDY" Name="MqAMQPProducer" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="server" Id="mprPLZZSLZQXVHVTFD6TLXYMVPZ6E">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.io.IOException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth3NSXQR43SVFNJEYLGRHLE5I3HA" Name="MqAMQPProducer" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.String;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="server" Id="mprDUMJFTUNYJAWLHZCCKFH6W4ZZE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="queueName" Id="mprKSANZAQP4VB57JGMUXQJRHREBE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.io.IOException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthEH3XMQFQ6VBDDKB6VJVHC2VWOU" Name="MqAMQPProducer" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprDY3WMXCVCZBYHMTU7QJXDQUJ6A">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="arg1" Id="mpr6G5FYARZDJBODE7DLKY47JKLJA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="arg2" Id="mprDKQF6V44PBAAHE2BLQOQZGOFDI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="arg3" Id="mprUDXLCKLNBJDO7E4T4ZF46TV3ME">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.io.IOException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthDOFNHOMKMVDLXIQWNRKQCENZNI" Name="send" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="send(Lorg.radixware.schemas.messagequeue.MqMessageMeta;Lorg.radixware.schemas.messagequeue.MqMessageBody;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="meta" Id="mprMTOVEUZMKRFITLDA24DUCW5MEY">
+            <Type TypeId="400" extStr="org.radixware.schemas.messagequeue.MqMessageMeta"/>
+          </Parameter>
+          <Parameter Name="body" Id="mprMLOSY5PY4ZFKNCWN4JH7GHOXXU">
+            <Type TypeId="400" extStr="org.radixware.schemas.messagequeue.MqMessageBody"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.io.IOException"/>
+        </ThrownExceptions>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

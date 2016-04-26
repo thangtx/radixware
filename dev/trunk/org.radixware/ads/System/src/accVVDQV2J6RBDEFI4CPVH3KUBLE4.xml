@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="accVVDQV2J6RBDEFI4CPVH3KUBLE4" Name="UnitsCursor" Type="4">
+    <AccessRules/>
+    <Headers>
+      <Src Name="HeaderadcIG4SR2OIBJGILBAQFE3HAYYN5U"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcNIJTF5OQMJFVVIMV6KBMHYWEWA"/>
+    </Bodies>
+    <MethodGroup Id="cmgYHFDD6KR65F4VLD3IBDWTMP34Y" Name="Root"/>
+    <PropertyGroup Id="cpgTVNENAWEONGVJLZGIJ3FO7X2DI" Name="Root"/>
+    <Properties>
+      <Property Id="prf3OOBEHLQNVGMLBHTQF7CQQE624" Name="id" Nature="3" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4" IsPresentable="false">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prfAADQV2J6RBDEFI4CPVH3KUBLE4" Name="started" Nature="3" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="1"/>
+        <Presentation InheritanceMask="4" IsPresentable="false">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prfJRSIZDF7KZDARFQGQIFZ6VEQME" Name="unit" Nature="10" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="31" Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E"/>
+        <Presentation InheritanceMask="4" IsPresentable="false">
+          <Editing IsDuplicatesEnabled="true"/>
+          <ParentSelect ParentEditorRestrictions="0" ParentSelectorRestrictions="0"/>
+        </Presentation>
+        <FieldToColumnMap>
+          <Item ColumnId="colEVLUYADHR5VDBNSIAAUMFADAIA" FieldId="prf3OOBEHLQNVGMLBHTQF7CQQE624"/>
+        </FieldToColumnMap>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="open" Nature="15" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="411" Path="accVVDQV2J6RBDEFI4CPVH3KUBLE4"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="true">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>Select </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E" PropId="colEVLUYADHR5VDBNSIAAUMFADAIA" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accVVDQV2J6RBDEFI4CPVH3KUBLE4" PropId="prf3OOBEHLQNVGMLBHTQF7CQQE624" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E" PropId="colIREKNEWHBDWDRD25AAYQQMVFBB" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accVVDQV2J6RBDEFI4CPVH3KUBLE4" PropId="prfAADQV2J6RBDEFI4CPVH3KUBLE4" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+From </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> 
+</xsc:Sql>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="411" Path="pdcCursor____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

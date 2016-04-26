@@ -1,0 +1,1522 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" FormatVersion="0">
+  <AdsParagraphDefinition Id="parL73ENWOAJHORDBK3ABIFNQAABA" Name="MyActiveForms" TitleId="mlsMD3ENWOAJHORDBK3ABIFNQAABA" IconId="imgITFYQMAYBVA4XF3H2L7ELISE64" IsRoot="false">
+    <ChildExplorerItems>
+      <Item>
+        <Entity Id="xpiXCEBXZY6MLORDBLSABIFNQAABA" Name="FormActive" InheritanceMask="16560" IsVisibleInTree="false" ClassId="aecVP66JC4HXLNRDF5JABIFNQAABA" SelectorPresentationId="sprRGTUKQ6BXXNRDF5OABIFNQAABA" Restrictions="32" EnabledCommands="">
+          <Condition>
+            <ConditionWhere/>
+            <ConditionFrom/>
+          </Condition>
+        </Entity>
+      </Item>
+      <Item>
+        <Entity Id="xpiNKQCDSA7MLORDBLSABIFNQAABA" Name="FormWaiting" InheritanceMask="16560" IsVisibleInTree="false" ClassId="aecVP66JC4HXLNRDF5JABIFNQAABA" SelectorPresentationId="sprAG62WS55XXNRDF5OABIFNQAABA" Restrictions="0" EnabledCommands="">
+          <Condition>
+            <ConditionWhere/>
+            <ConditionFrom/>
+          </Condition>
+        </Entity>
+      </Item>
+    </ChildExplorerItems>
+    <Model Id="apmL73ENWOAJHORDBK3ABIFNQAABA" Name="MyActiveForms:Model" Type="13">
+      <AccessRules/>
+      <Headers>
+        <Src Name="Headeradc2MSGH5EI3BHXHGTAGHGPDENZSI" Environment="explorer">
+          <xsc:Item>
+            <xsc:Java>import org.radixware.kernel.common.exceptions.ServiceClientException;</xsc:Java>
+          </xsc:Item>
+        </Src>
+      </Headers>
+      <Bodies>
+        <Src Name="BodyadcTHGAXGVCQVHQ7OK7B45MTQG5AQ"/>
+      </Bodies>
+      <MethodGroup Id="cmg6AATVYPWVRBRPITVSAC5YLD72Y" Name="Root">
+        <Group Id="cmgLV4NQ2NMGZB5LFLFTMBJ3QY4HA" Name="customParagraph" Members="mthNC6CYLGBJHORDBK3ABIFNQAABA_opened mth6HHCGDHLPRC3JID4DVJ3356O2A"/>
+        <Group Id="cmgWDTL7ZNLG5GTPOP6RBKTSKIYO4" Name="Utils" Members="mthEWKLVQPFMLORDBLTABIFNQAABA mth5UD5QKPCEFEMVJSWHSVVG5QOAA mth4OT3UFBP2ZAHJJPSBIQNKMMO5I mthYFTO2LTUQVHH7CTEHWTVZEJ2TI"/>
+        <Group Id="cmgOGFSJOQI2JCKHHMHYK2G4IXXPA" Name="Pages" Members="mthEJIR7XPWNDORDBL2ABIFNQAABA mthMVHFX3XWNDORDBL2ABIFNQAABA mthMMW5WAHXNDORDBL2ABIFNQAABA mthQSMH6DPXNDORDBL2ABIFNQAABA mthYYZ72FPXNDORDBL2ABIFNQAABA"/>
+        <Group Id="cmg7E76MEBVDFGEXBIRWXOAGNGUU4" Name="pageList" Members="mthGX35YR6BJHORDBK3ABIFNQAABA_currentChanged mthO6IOX2LKGFAYXBNNKKEJZ7454A mthM2HG5RVF2NG4FNVXTNZZV4WEMQ"/>
+      </MethodGroup>
+      <PropertyGroup Id="cpgFBCVI6MLARCAJMGRSKGOG3QPHM" Name="Root">
+        <Group Id="cpgCIW4FDL4ZBGEDNKGK255FVECVI" Name="Flags" Members="prpDYOQ4RXWNDORDBL2ABIFNQAABA prpAZDRAT7WNDORDBL2ABIFNQAABA"/>
+      </PropertyGroup>
+      <Properties>
+        <Property Id="prpAZDRAT7WNDORDBL2ABIFNQAABA" Name="opened" Nature="2" IsConst="false" Environment="common-client" IsOverride="false">
+          <AccessRules/>
+          <Type TypeId="201"/>
+        </Property>
+        <Property Id="prpDYOQ4RXWNDORDBL2ABIFNQAABA" Name="modified" Nature="2" IsConst="false" Environment="common-client" IsOverride="false">
+          <AccessRules/>
+          <Type TypeId="201"/>
+        </Property>
+      </Properties>
+      <Methods>
+        <Method Id="mthEJIR7XPWNDORDBL2ABIFNQAABA" Name="isModified" Nature="0" Environment="common-client" IsOverride="false">
+          <AccessRules/>
+          <Parameters>
+            <Parameter Name="index" Id="mprXIGRSGYBMFCI7K3XRK4VDFVTRA">
+              <Type TypeId="2"/>
+            </Parameter>
+          </Parameters>
+          <ReturnType TypeId="401" extStr="boolean"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>int i = index.intValue();
+return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.get(i).booleanValue();
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthEWKLVQPFMLORDBLTABIFNQAABA" Name="afterFormCommand" Nature="0" Environment="common-client" IsOverride="false">
+          <AccessRules/>
+          <Parameters>
+            <Parameter Name="formId" Id="mpr2QFTY6YIDZE7FOKK2NA5TI2Q7A">
+              <Type TypeId="2"/>
+            </Parameter>
+            <Parameter Name="commandId" Id="mprLMCZXJGP2RFDFM6DPLT3WRSFIU">
+              <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </Parameter>
+            <Parameter Name="nextFormId" Id="mprWY752ZTVFVERLMP7YSKJVEQ5C4">
+              <Type TypeId="2"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src Environment="explorer">
+              <xsc:Item>
+                <xsc:Java>if (formId == null || commandId == null)
+    return;
+
+if (getView() == null)
+    return;
+
+try {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> pid =  new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc6MUJT675HNGATDJ477ZWLDUOHM mthZERC4XWYWRFPFB3J5OEFQQ4CKM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="tblVP66JC4HXLNRDF5JABIFNQAABA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, formId);
+    
+    if(commandId == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecVP66JC4HXLNRDF5JABIFNQAABA cmdFCMCR55SXXNRDF5OABIFNQAABA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) //Capture
+    {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA cceL73ENWOAJHORDBK3ABIFNQAABA wdgGX35YR6BJHORDBK3ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setCurrentIndex(0); //activate MyWork page        
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.set(1, true);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA cceL73ENWOAJHORDBK3ABIFNQAABA wdgTEHD5COBJHORDBK3ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.getView().reread(pid);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.set(0, false);
+    } else if(commandId == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecVP66JC4HXLNRDF5JABIFNQAABA cmdHAVWMBFTXXNRDF5OABIFNQAABA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) //Release
+    {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA cceL73ENWOAJHORDBK3ABIFNQAABA wdgGX35YR6BJHORDBK3ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setCurrentIndex(1); //activate WaitingList page
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.set(0, true);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA cceL73ENWOAJHORDBK3ABIFNQAABA wdgRIVXHG6BJHORDBK3ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.getView().reread(pid);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.set(1, false);
+    } else if(commandId == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecVP66JC4HXLNRDF5JABIFNQAABA cmd2B5PWFFTXXNRDF5OABIFNQAABA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) //Forward
+    {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.set(1, true);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA cceL73ENWOAJHORDBK3ABIFNQAABA wdgTEHD5COBJHORDBK3ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.getView().reread();
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.set(0, false);
+    } else if(commandId == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecVP66JC4HXLNRDF5JABIFNQAABA cmdLCR5CJ5TXXNRDF5OABIFNQAABA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) //Comment
+    {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.set(1, true);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA cceL73ENWOAJHORDBK3ABIFNQAABA wdgTEHD5COBJHORDBK3ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.getView().reread(pid);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.set(0, false);
+    } else //SubmitXXX
+    {
+        if(nextFormId!=null) {
+            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> nextPid = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc6MUJT675HNGATDJ477ZWLDUOHM mthZERC4XWYWRFPFB3J5OEFQQ4CKM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="tblVP66JC4HXLNRDF5JABIFNQAABA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, nextFormId);
+            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA cceL73ENWOAJHORDBK3ABIFNQAABA wdgTEHD5COBJHORDBK3ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.getView().reread(nextPid);
+        } else
+            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA cceL73ENWOAJHORDBK3ABIFNQAABA wdgTEHD5COBJHORDBK3ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.getView().reread();
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.set(0, false);
+    }
+} catch(ServiceClientException e) {
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+            <Src Environment="web">
+              <xsc:Item>
+                <xsc:Java>if (formId == null || commandId == null)
+    return;
+
+if (getView() == null)
+    return;
+
+try {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> pid =  new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc6MUJT675HNGATDJ477ZWLDUOHM mthZERC4XWYWRFPFB3J5OEFQQ4CKM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="tblVP66JC4HXLNRDF5JABIFNQAABA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, formId);
+    
+    if(commandId == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecVP66JC4HXLNRDF5JABIFNQAABA cmdFCMCR55SXXNRDF5OABIFNQAABA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) //Capture
+    {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA cceLHBDGRNY7ZEUZIDFNV7BQFVVNE wdgZFBTPEOAYVAGLL737K7BJ6VE7U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.CurrentIndex = 0; //activate MyWork page        
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.set(1, true);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA cceLHBDGRNY7ZEUZIDFNV7BQFVVNE wdgCMMZO5RACBHDBJSWHGGFKKSQ4Q" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.getView().reread(pid);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.set(0, false);
+    } else if(commandId == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecVP66JC4HXLNRDF5JABIFNQAABA cmdHAVWMBFTXXNRDF5OABIFNQAABA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) //Release
+    {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA cceLHBDGRNY7ZEUZIDFNV7BQFVVNE wdgZFBTPEOAYVAGLL737K7BJ6VE7U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.CurrentIndex = 1; //activate WaitingList page
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.set(0, true);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA cceLHBDGRNY7ZEUZIDFNV7BQFVVNE wdgONJB2ORG5VGRBKSFNDQDKRFXWA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.getView().reread(pid);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.set(1, false);
+    } else if(commandId == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecVP66JC4HXLNRDF5JABIFNQAABA cmd2B5PWFFTXXNRDF5OABIFNQAABA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) //Forward
+    {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.set(1, true);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA cceLHBDGRNY7ZEUZIDFNV7BQFVVNE wdgCMMZO5RACBHDBJSWHGGFKKSQ4Q" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.getView().reread();
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.set(0, false);
+    } else if(commandId == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecVP66JC4HXLNRDF5JABIFNQAABA cmdLCR5CJ5TXXNRDF5OABIFNQAABA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) //Comment
+    {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.set(1, true);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA cceLHBDGRNY7ZEUZIDFNV7BQFVVNE wdgCMMZO5RACBHDBJSWHGGFKKSQ4Q" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.getView().reread(pid);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.set(0, false);
+    } else //SubmitXXX
+    {
+        if(nextFormId!=null) {
+            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> nextPid =
+                    new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc6MUJT675HNGATDJ477ZWLDUOHM mthZERC4XWYWRFPFB3J5OEFQQ4CKM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="tblVP66JC4HXLNRDF5JABIFNQAABA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, nextFormId);
+            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA cceLHBDGRNY7ZEUZIDFNV7BQFVVNE wdgCMMZO5RACBHDBJSWHGGFKKSQ4Q" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.getView().reread(nextPid);
+        } else
+            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA cceLHBDGRNY7ZEUZIDFNV7BQFVVNE wdgCMMZO5RACBHDBJSWHGGFKKSQ4Q" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.getView().reread();
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.set(0, false);
+    }
+} catch(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="axcWSBFK4LYMVHTXL55MVC44THTGE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> e) {
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthMMW5WAHXNDORDBL2ABIFNQAABA" Name="activatePage" Nature="0" Environment="common-client" IsOverride="false">
+          <AccessRules/>
+          <Parameters>
+            <Parameter Name="index" Id="mprIPH5QGI4PBATTDFN3U2TRK33E4">
+              <Type TypeId="2"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="apcKXT7AQWRL3ORDBLQABIFNQAABA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="apcKXT7AQWRL3ORDBLQABIFNQAABA mth4FIYFIRYNDORDBLYABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>
+(
+   "activatePage(" + index.intValue() + ")\n" +
+   "isOpened(index)=" + </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA mthMVHFX3XWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(index) + "\n" +
+   "isModified(index)=" + </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA mthEJIR7XPWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(index) + "\n"
+);
+
+if(!</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA mthMVHFX3XWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(index))
+{
+   </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA mthQSMH6DPXNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(index);
+}
+else if(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA mthEJIR7XPWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(index))
+{
+   </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA mthYYZ72FPXNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(index);
+}   </xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthMVHFX3XWNDORDBL2ABIFNQAABA" Name="isOpened" Nature="0" Environment="common-client" IsOverride="false">
+          <AccessRules/>
+          <Parameters>
+            <Parameter Name="index" Id="mprPCN2MFEKTVDU3PIUJWQ7Q7ZVGM">
+              <Type TypeId="2"/>
+            </Parameter>
+          </Parameters>
+          <ReturnType TypeId="401" extStr="boolean"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>int i = index.intValue();
+return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpAZDRAT7WNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.get(i).booleanValue();
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthQSMH6DPXNDORDBL2ABIFNQAABA" Name="openPage" Nature="0" Environment="common-client" IsOverride="false">
+          <AccessRules/>
+          <Parameters>
+            <Parameter Name="index" Id="mpr6KKKXS3E6NF4JPZAAXRUAYHK5Y">
+              <Type TypeId="2"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>int i = index.intValue();
+switch(i)
+{
+    case 0: //MyWorkPage
+//        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA cceL73ENWOAJHORDBK3ABIFNQAABA wdgTEHD5COBJHORDBK3ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setPresentation
+//        (
+//            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecVP66JC4HXLNRDF5JABIFNQAABA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, //classId
+//            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecVP66JC4HXLNRDF5JABIFNQAABA sprRGTUKQ6BXXNRDF5OABIFNQAABA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> //id = Form.MyWork
+//        );
+        org.radixware.kernel.common.client.views.IEmbeddedSelector ev = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA mth5UD5QKPCEFEMVJSWHSVVG5QOAA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+        ev.setExplorerItem(this, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA xpiXCEBXZY6MLORDBLSABIFNQAABA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+        ev.bind();
+        ev.getModel().getRestrictions().setEditorRestricted(false);
+        ev.setVisible(true);
+        break;
+    case 1: //WaitingListPage
+//        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA cceL73ENWOAJHORDBK3ABIFNQAABA wdgRIVXHG6BJHORDBK3ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setPresentation
+//        (
+//            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecVP66JC4HXLNRDF5JABIFNQAABA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, //classId
+//            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecVP66JC4HXLNRDF5JABIFNQAABA sprAG62WS55XXNRDF5OABIFNQAABA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> //id = Form.WaitingList
+//        );
+        org.radixware.kernel.common.client.views.IEmbeddedSelector wv = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA mth4OT3UFBP2ZAHJJPSBIQNKMMO5I" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+        wv.setExplorerItem(this, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA xpiNKQCDSA7MLORDBLSABIFNQAABA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+        wv.bind();
+        wv.getModel().getRestrictions().setEditorRestricted(false);
+        wv.setVisible(true);
+        break;
+}
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpAZDRAT7WNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.set(i, true);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.set(i, false);
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthYYZ72FPXNDORDBL2ABIFNQAABA" Name="rereadPage" Nature="0" Environment="common-client" IsOverride="false">
+          <AccessRules/>
+          <Parameters>
+            <Parameter Name="index" Id="mprUOXLVKSQG5DSFPF24B5YEUTXKU">
+              <Type TypeId="2"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>try
+{
+    int i = index.intValue();
+    switch(i)
+    {
+        case 0: //MyWorkPage
+            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA mth5UD5QKPCEFEMVJSWHSVVG5QOAA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().setUpdatesEnabled(false);
+            try {
+                </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA mth5UD5QKPCEFEMVJSWHSVVG5QOAA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().getView().reread();
+            } finally {
+                </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA mth5UD5QKPCEFEMVJSWHSVVG5QOAA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().setUpdatesEnabled(true);
+            }
+            break;
+        case 1: //WaitingListPage
+            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA mth4OT3UFBP2ZAHJJPSBIQNKMMO5I" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().setUpdatesEnabled(false);
+            try {
+                </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA mth4OT3UFBP2ZAHJJPSBIQNKMMO5I" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().getView().reread(null);
+            } finally {
+                </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA mth4OT3UFBP2ZAHJJPSBIQNKMMO5I" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().setUpdatesEnabled(true);
+            }
+            break;
+    }
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.set(i, false);
+}
+catch(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="axcWSBFK4LYMVHTXL55MVC44THTGE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> e)
+{
+    showException(e);
+}
+finally 
+{
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthGX35YR6BJHORDBK3ABIFNQAABA_currentChanged" Name="pageList_currentChanged" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="index" Id="mpr33KB4YEVDVCIVFSQCJWSV5YEMM">
+              <Type TypeId="400" extStr="java.lang.Integer"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA mthM2HG5RVF2NG4FNVXTNZZV4WEMQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(index.intValue());</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthNC6CYLGBJHORDBK3ABIFNQAABA_opened" Name="customParagraph_opened" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules/>
+          <Parameters>
+            <Parameter Name="arg1" Id="mprXZ62ZBXDQRFB3HFOXQFX6NU44M">
+              <Type TypeId="411" Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpAZDRAT7WNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>==null)
+   </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpAZDRAT7WNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="201"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpAZDRAT7WNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.clear();
+for(int i=0; i&lt;2; i++)
+   </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpAZDRAT7WNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.add(false);
+
+if(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>==null)
+   </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="201"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.clear();
+for(int i=0; i&lt;2; i++)
+   </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.add(false);
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA cceL73ENWOAJHORDBK3ABIFNQAABA wdgG335YR6BJHORDBK3ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthPUWBC7L4QFCCRCCPSXJY2HF5IY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().setContentsMargins(0, 0, 0, 0);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA cceL73ENWOAJHORDBK3ABIFNQAABA wdgHD35YR6BJHORDBK3ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthPUWBC7L4QFCCRCCPSXJY2HF5IY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().setContentsMargins(0, 0, 0, 0);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA mthMMW5WAHXNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA cceL73ENWOAJHORDBK3ABIFNQAABA wdgGX35YR6BJHORDBK3ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.currentIndex());</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth6HHCGDHLPRC3JID4DVJ3356O2A" Name="webParagraph_opened" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpAZDRAT7WNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>==null)
+   </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpAZDRAT7WNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="201"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpAZDRAT7WNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.clear();
+for(int i=0; i&lt;2; i++)
+   </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpAZDRAT7WNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.add(false);
+
+if(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>==null)
+   </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="201"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.clear();
+for(int i=0; i&lt;2; i++)
+   </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.add(false);
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA mthMMW5WAHXNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA mthYFTO2LTUQVHH7CTEHWTVZEJ2TI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>());
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth5UD5QKPCEFEMVJSWHSVVG5QOAA" Name="getWorksView" Nature="0" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.views.IEmbeddedSelector"/>
+          <Sources>
+            <Src Environment="explorer">
+              <xsc:Item>
+                <xsc:Java>return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA cceL73ENWOAJHORDBK3ABIFNQAABA wdgTEHD5COBJHORDBK3ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;</xsc:Java>
+              </xsc:Item>
+            </Src>
+            <Src Environment="web">
+              <xsc:Item>
+                <xsc:Java>return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA cceLHBDGRNY7ZEUZIDFNV7BQFVVNE wdgCMMZO5RACBHDBJSWHGGFKKSQ4Q" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth4OT3UFBP2ZAHJJPSBIQNKMMO5I" Name="getWaitView" Nature="0" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.views.IEmbeddedSelector"/>
+          <Sources>
+            <Src Environment="explorer">
+              <xsc:Item>
+                <xsc:Java>return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA cceL73ENWOAJHORDBK3ABIFNQAABA wdgRIVXHG6BJHORDBK3ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;</xsc:Java>
+              </xsc:Item>
+            </Src>
+            <Src Environment="web">
+              <xsc:Item>
+                <xsc:Java>return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA cceLHBDGRNY7ZEUZIDFNV7BQFVVNE wdgONJB2ORG5VGRBKSFNDQDKRFXWA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthYFTO2LTUQVHH7CTEHWTVZEJ2TI" Name="getCurrentTabIndex" Nature="0" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <ReturnType TypeId="401" extStr="int"/>
+          <Sources>
+            <Src Environment="explorer">
+              <xsc:Item>
+                <xsc:Java>return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA cceL73ENWOAJHORDBK3ABIFNQAABA wdgGX35YR6BJHORDBK3ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.currentIndex();</xsc:Java>
+              </xsc:Item>
+            </Src>
+            <Src Environment="web">
+              <xsc:Item>
+                <xsc:Java>return  </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA cceLHBDGRNY7ZEUZIDFNV7BQFVVNE wdgZFBTPEOAYVAGLL737K7BJ6VE7U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.getCurrentIndex();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthO6IOX2LKGFAYXBNNKKEJZ7454A" Name="tabSet_onCurrentTabChange" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="oldTab" Id="mprEMYDAHRYBJB23I4XAT632S674U">
+              <Type TypeId="400" extStr="org.radixware.wps.rwt.TabLayout.Tab"/>
+            </Parameter>
+            <Parameter Name="newTab" Id="mprBV6MDVTWN5CHRL4EW7RR6EZICU">
+              <Type TypeId="400" extStr="org.radixware.wps.rwt.TabLayout.Tab"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA mthM2HG5RVF2NG4FNVXTNZZV4WEMQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA cceLHBDGRNY7ZEUZIDFNV7BQFVVNE wdgZFBTPEOAYVAGLL737K7BJ6VE7U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.CurrentIndex);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthM2HG5RVF2NG4FNVXTNZZV4WEMQ" Name="onTabChange" Nature="0" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="index" Id="mprVTYN7QX3XBDA3IAIEJ3PW54W34">
+              <Type TypeId="401" extStr="int"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="apcKXT7AQWRL3ORDBLQABIFNQAABA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="apcKXT7AQWRL3ORDBLQABIFNQAABA mth4FIYFIRYNDORDBLYABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>
+(
+   "page activated: "  + index
+);
+
+if(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpAZDRAT7WNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>==null) {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpAZDRAT7WNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="201"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+    for(int i=0; i&lt;2; i++)
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpAZDRAT7WNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.add(false);
+}
+
+if(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>==null) {
+   </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="201"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+   for(int i=0; i&lt;2; i++)
+      </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA prpDYOQ4RXWNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.add(false);
+}
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parL73ENWOAJHORDBK3ABIFNQAABA apmL73ENWOAJHORDBK3ABIFNQAABA mthMMW5WAHXNDORDBL2ABIFNQAABA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(index);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+      </Methods>
+    </Model>
+    <View Id="cceL73ENWOAJHORDBK3ABIFNQAABA" Name="View">
+      <ui:ui>
+        <ui:widget name="customParagraph" id="wdgNC6CYLGBJHORDBK3ABIFNQAABA" class="cceL73ENWOAJHORDBK3ABIFNQAABA" weight="0.0">
+          <ui:property name="geometry">
+            <ui:rect>
+              <ui:x>0</ui:x>
+              <ui:y>0</ui:y>
+              <ui:width>426</ui:width>
+              <ui:height>378</ui:height>
+            </ui:rect>
+          </ui:property>
+          <ui:property name="objectName">
+            <ui:string>customParagraph</ui:string>
+          </ui:property>
+          <ui:property name="objectName">
+            <ui:string>customParagraph</ui:string>
+          </ui:property>
+          <ui:layout class="QVBoxLayout" name="verticalLayout">
+            <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+              <ui:widget name="pageList" id="wdgGX35YR6BJHORDBK3ABIFNQAABA" class="QTabWidget" weight="0.0">
+                <ui:property name="buddy">
+                  <ui:string/>
+                </ui:property>
+                <ui:property name="currentIndex">
+                  <ui:int>0</ui:int>
+                </ui:property>
+                <ui:property name="geometry">
+                  <ui:rect>
+                    <ui:x>10</ui:x>
+                    <ui:y>10</ui:y>
+                    <ui:width>406</ui:width>
+                    <ui:height>358</ui:height>
+                  </ui:rect>
+                </ui:property>
+                <ui:property name="objectName">
+                  <ui:string>pageList</ui:string>
+                </ui:property>
+                <ui:property name="objectName">
+                  <ui:string>pageList</ui:string>
+                </ui:property>
+                <ui:property name="autoFillBackground">
+                  <ui:bool>false</ui:bool>
+                </ui:property>
+                <ui:widget name="tab" id="wdgG335YR6BJHORDBK3ABIFNQAABA" class="QWidget" weight="0.0">
+                  <ui:property name="geometry">
+                    <ui:rect>
+                      <ui:x>0</ui:x>
+                      <ui:y>0</ui:y>
+                      <ui:width>406</ui:width>
+                      <ui:height>358</ui:height>
+                    </ui:rect>
+                  </ui:property>
+                  <ui:property name="objectName">
+                    <ui:string>tab</ui:string>
+                  </ui:property>
+                  <ui:property name="title">
+                    <ui:mlstringid>mlsFSJ2ABXEONAI3FVY2GEYIJDBKM</ui:mlstringid>
+                  </ui:property>
+                  <ui:attribute name="title">
+                    <ui:mlstringid>mlsG735YR6BJHORDBK3ABIFNQAABA</ui:mlstringid>
+                  </ui:attribute>
+                  <ui:layout class="QVBoxLayout" name="verticalLayout">
+                    <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                      <ui:widget name="myWorkSelector" id="wdgTEHD5COBJHORDBK3ABIFNQAABA" class="org.radixware.kernel.explorer.widgets.EmbeddedSelector" weight="0.0">
+                        <ui:property name="objectName">
+                          <ui:string>myWorkSelector</ui:string>
+                        </ui:property>
+                        <ui:property name="openParams">
+                          <ui:embeddedSelectorOpenParams/>
+                        </ui:property>
+                        <ui:property name="objectName">
+                          <ui:string>myWorkSelector</ui:string>
+                        </ui:property>
+                        <ui:property name="autoFillBackground">
+                          <ui:bool>true</ui:bool>
+                        </ui:property>
+                      </ui:widget>
+                    </ui:item>
+                  </ui:layout>
+                </ui:widget>
+                <ui:widget name="tab_1" id="wdgHD35YR6BJHORDBK3ABIFNQAABA" class="QWidget" weight="0.0">
+                  <ui:property name="geometry">
+                    <ui:rect>
+                      <ui:x>0</ui:x>
+                      <ui:y>0</ui:y>
+                      <ui:width>406</ui:width>
+                      <ui:height>358</ui:height>
+                    </ui:rect>
+                  </ui:property>
+                  <ui:property name="objectName">
+                    <ui:string>tab_1</ui:string>
+                  </ui:property>
+                  <ui:property name="title">
+                    <ui:mlstringid>mlsDMIEHR2YQZBTHECF22SCYWDS5M</ui:mlstringid>
+                  </ui:property>
+                  <ui:attribute name="title">
+                    <ui:mlstringid>mlsHH35YR6BJHORDBK3ABIFNQAABA</ui:mlstringid>
+                  </ui:attribute>
+                  <ui:layout class="QVBoxLayout" name="verticalLayout">
+                    <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                      <ui:widget name="waitingListSelector" id="wdgRIVXHG6BJHORDBK3ABIFNQAABA" class="org.radixware.kernel.explorer.widgets.EmbeddedSelector" weight="0.0">
+                        <ui:property name="objectName">
+                          <ui:string>waitingListSelector</ui:string>
+                        </ui:property>
+                        <ui:property name="openParams">
+                          <ui:embeddedSelectorOpenParams/>
+                        </ui:property>
+                        <ui:property name="objectName">
+                          <ui:string>waitingListSelector</ui:string>
+                        </ui:property>
+                        <ui:property name="autoFillBackground">
+                          <ui:bool>true</ui:bool>
+                        </ui:property>
+                      </ui:widget>
+                    </ui:item>
+                  </ui:layout>
+                </ui:widget>
+              </ui:widget>
+            </ui:item>
+          </ui:layout>
+        </ui:widget>
+        <ui:connections>
+          <ui:connection>
+            <ui:sender>wdgNC6CYLGBJHORDBK3ABIFNQAABA</ui:sender>
+            <ui:signal>opened(com.trolltech.qt.gui.QWidget widget)</ui:signal>
+            <ui:slot>mthNC6CYLGBJHORDBK3ABIFNQAABA_opened</ui:slot>
+          </ui:connection>
+          <ui:connection>
+            <ui:sender>wdgGX35YR6BJHORDBK3ABIFNQAABA</ui:sender>
+            <ui:signal>currentChanged(java.lang.Integer index)</ui:signal>
+            <ui:slot>mthGX35YR6BJHORDBK3ABIFNQAABA_currentChanged</ui:slot>
+          </ui:connection>
+        </ui:connections>
+      </ui:ui>
+    </View>
+    <WebView Id="cceLHBDGRNY7ZEUZIDFNV7BQFVVNE" Name="WebView">
+      <ui:ui>
+        <ui:widget name="webParagraph" id="wdgOKIGNNIJHNHCVNBIGCYQLUQCA4" class="cceLHBDGRNY7ZEUZIDFNV7BQFVVNE" weight="0.0">
+          <ui:property name="geometry">
+            <ui:rect>
+              <ui:x>0</ui:x>
+              <ui:y>0</ui:y>
+              <ui:width>560</ui:width>
+              <ui:height>420</ui:height>
+            </ui:rect>
+          </ui:property>
+          <ui:property name="objectName">
+            <ui:string>webParagraph</ui:string>
+          </ui:property>
+          <ui:widget name="tabSet" id="wdgZFBTPEOAYVAGLL737K7BJ6VE7U" class="org.radixware.wps.rwt.TabLayout" weight="0.0">
+            <ui:property name="currentIndex">
+              <ui:int>0</ui:int>
+            </ui:property>
+            <ui:property name="geometry">
+              <ui:rect>
+                <ui:x>5</ui:x>
+                <ui:y>5</ui:y>
+                <ui:width>550</ui:width>
+                <ui:height>410</ui:height>
+              </ui:rect>
+            </ui:property>
+            <ui:property name="anchor">
+              <ui:anchor>
+                <ui:Bottom Part="1.0" Offset="-5"/>
+                <ui:Right Part="1.0" Offset="-5"/>
+              </ui:anchor>
+            </ui:property>
+            <ui:property name="objectName">
+              <ui:string>tabSet</ui:string>
+            </ui:property>
+            <ui:widget name="tab1" id="wdgJE5PIYC67JDXLAGAVIRD7SUA5M" class="org.radixware.wps.rwt.TabLayout.Tab" weight="0.0">
+              <ui:property name="title">
+                <ui:mlstringid>mlsWHP4BEZF7ZC3NEAAIYNAPRVNXU</ui:mlstringid>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>tab1</ui:string>
+              </ui:property>
+              <ui:widget name="worksSelector" id="wdgCMMZO5RACBHDBJSWHGGFKKSQ4Q" class="org.radixware.wps.views.selector.EmbeddedSelector" weight="0.0">
+                <ui:property name="geometry">
+                  <ui:rect>
+                    <ui:x>5</ui:x>
+                    <ui:y>5</ui:y>
+                    <ui:width>535</ui:width>
+                    <ui:height>379</ui:height>
+                  </ui:rect>
+                </ui:property>
+                <ui:property name="anchor">
+                  <ui:anchor>
+                    <ui:Bottom Part="1.0" Offset="-5"/>
+                    <ui:Right Part="1.0" Offset="-5"/>
+                  </ui:anchor>
+                </ui:property>
+                <ui:property name="enabled">
+                  <ui:bool>true</ui:bool>
+                </ui:property>
+                <ui:property name="objectName">
+                  <ui:string>worksSelector</ui:string>
+                </ui:property>
+              </ui:widget>
+            </ui:widget>
+            <ui:widget name="tab2" id="wdgY2ENRS5M35CGRLCENQZMVA5GTA" class="org.radixware.wps.rwt.TabLayout.Tab" weight="0.0">
+              <ui:property name="title">
+                <ui:mlstringid>mlsAR52KGQQRFD4DHCKELMI5EAN2I</ui:mlstringid>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>tab2</ui:string>
+              </ui:property>
+              <ui:widget name="waitListSelector" id="wdgONJB2ORG5VGRBKSFNDQDKRFXWA" class="org.radixware.wps.views.selector.EmbeddedSelector" weight="0.0">
+                <ui:property name="geometry">
+                  <ui:rect>
+                    <ui:x>5</ui:x>
+                    <ui:y>5</ui:y>
+                    <ui:width>535</ui:width>
+                    <ui:height>379</ui:height>
+                  </ui:rect>
+                </ui:property>
+                <ui:property name="anchor">
+                  <ui:anchor>
+                    <ui:Bottom Part="1.0" Offset="-5"/>
+                    <ui:Right Part="1.0" Offset="-5"/>
+                  </ui:anchor>
+                </ui:property>
+                <ui:property name="objectName">
+                  <ui:string>waitListSelector</ui:string>
+                </ui:property>
+              </ui:widget>
+            </ui:widget>
+          </ui:widget>
+        </ui:widget>
+        <ui:connections>
+          <ui:connection>
+            <ui:sender>wdgOKIGNNIJHNHCVNBIGCYQLUQCA4</ui:sender>
+            <ui:signal>opened()</ui:signal>
+            <ui:slot>mth6HHCGDHLPRC3JID4DVJ3356O2A</ui:slot>
+            <ui:interface>org.radixware.wps.views.paragraph.CustomParagEditor.RwtParagraphEditorListener</ui:interface>
+            <ui:registrator>addParagraphListener</ui:registrator>
+            <ui:returnType>void</ui:returnType>
+          </ui:connection>
+          <ui:connection>
+            <ui:sender>wdgZFBTPEOAYVAGLL737K7BJ6VE7U</ui:sender>
+            <ui:signal>onCurrentTabChange(org.radixware.wps.rwt.TabLayout.Tab, org.radixware.wps.rwt.TabLayout.Tab)</ui:signal>
+            <ui:slot>mthO6IOX2LKGFAYXBNNKKEJZ7454A</ui:slot>
+            <ui:interface>org.radixware.wps.rwt.TabLayout.TabListener</ui:interface>
+            <ui:registrator>addTabListener</ui:registrator>
+            <ui:returnType>void</ui:returnType>
+          </ui:connection>
+        </ui:connections>
+      </ui:ui>
+    </WebView>
+  </AdsParagraphDefinition>
+</AdsDefinition>

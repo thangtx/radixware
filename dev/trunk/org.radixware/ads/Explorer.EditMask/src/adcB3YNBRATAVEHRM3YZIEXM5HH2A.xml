@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcB3YNBRATAVEHRM3YZIEXM5HH2A" Name="EditMaskList" Type="3" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.meta.mask.EditMaskList"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcSEG6TLZF3VDBPIRTSWPLOSZZQI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc6ENHA5HTQVCWNCK7QNSM5KTV4A"/>
+    </Bodies>
+    <MethodGroup Id="cmg755GGL45URG7DIZHJ3DXW2PSZI" Name="Root"/>
+    <PropertyGroup Id="cpgT6E4TA6WWVDBHGLNWSON42RNWQ" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthV3QXIKNASBFX5P4LWKHWCJDHZM" Name="addItem" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="addItem(ILjava.lang.String;Ljava.lang.Object;)Lorg.radixware.kernel.common.client.meta.mask.EditMaskList.Item;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mprJAJP537W3RGZXC33ER2ICGG7BY">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="title" Id="mprXU3CIMGNMBDZHNWEUSWP5GLRKU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="value" Id="mprET3QEXGJLZHFBN6XLLGVLAGA4Q">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMaskList.Item"/>
+      </Method>
+      <Method Id="mthR4R65IIO5ZC7HNC6QQVKZ47II4" Name="EditMaskList" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.util.List&lt;Lorg.radixware.kernel.common.client.meta.mask.EditMaskList.Item;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="items" Id="mprLMGCZBXNCZHAXA7W5JSUONQQPU">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMaskList.Item"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthFBPNUEESYZEX3FMXSC4L6URBVI" Name="EditMaskList" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth5LYZFUATEBAMHPXV526H34642I" Name="EditMaskList" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.meta.mask.EditMaskList;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="source" Id="mpr2PSMMDHJYFGKBI6HKJ7VJVTQLI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMaskList"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthRXZPZ3WIKVDBPJZBTHMBEXIKME" Name="getItems" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getItems()Ljava.util.List&lt;Lorg.radixware.kernel.common.client.meta.mask.EditMaskList.Item;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMaskList.Item"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthBZGQEEIDFFHBZJ3F3WYNNO4FBI" Name="getValueByIdx" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getValueByIdx(I)Ljava.lang.Object;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mprEDBAT6AP4VCRTMX2EGF5PVBXCM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+      </Method>
+      <Method Id="mthQKLRWV7PVBBFZLLFWCPRSWLNEA" Name="removeItem" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="removeItem(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" Id="mprH5PXKZLBE5B57JR43LKC3RDOUI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthT74F6UYKCFENFI657D6YRRQXUU" Name="setItems" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setItems(Ljava.util.List&lt;Lorg.radixware.kernel.common.client.meta.mask.EditMaskList.Item;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="items" Id="mprLXFT454DZNF4BGGV7Q7FQGREHA">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMaskList.Item"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthVYFFTYI7LBGMZDCSNW34K5FCLM" Name="EditMaskList" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>([Lorg.radixware.kernel.common.client.meta.mask.EditMaskList.Item;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="items" Id="mprO4INYPFXFJDIXGACMYGIMHGKFU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMaskList.Item" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth535OWWTCYVFFJAQKIMDLE4TOMI" Name="addItem" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="addItem(Ljava.lang.String;Ljava.lang.Object;)Lorg.radixware.kernel.common.client.meta.mask.EditMaskList.Item;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" Id="mprFPIJDBZFHJHVPFQI4CVEAV7FTE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="value" Id="mprZVZ5JN5WRNDNNKHSO6TTPRRC3Q">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMaskList.Item"/>
+      </Method>
+      <Method Id="mthNEEJZZYYDBEWXKTP47SH6PPGLA" Name="clearItems" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="clearItems()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthJXKQ7SZFXRBF3A2FH45NY4BTIY" Name="createNewItem" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="createNewItem(Ljava.lang.String;Ljava.lang.Object;)Lorg.radixware.kernel.common.client.meta.mask.EditMaskList.Item;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" Id="mpr5VK2ZPTNMZB5XIFDP7QEYLB2WA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="value" Id="mpr776ILYY6LJAEXOVJZICX6Q4U6M">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMaskList.Item"/>
+      </Method>
+      <Method Id="mthUQHFPMPIGRHB7HMAFNC4BQ2EGI" Name="removeItemsWithValue" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="removeItemsWithValue(Ljava.lang.Object;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="value" Id="mprP2FQOIOWXZAHNESPYMMYICNWPA">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aecORSQ5ZLT2FGPXOYAV5PIR47XIY" Name="LicenseReportLog" Type="1">
+    <AccessRules IsFinal="true" IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderaecVMV52FA6HRH2ZFPFNAR3IX2BFI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaecVMV52FA6HRH2ZFPFNAR3IX2BFI"/>
+    </Bodies>
+    <MethodGroup Id="cmgZ3S5W4DZYNAZJJCYE5EZCZ3NVM" Name="Root"/>
+    <PropertyGroup Id="cpgSNWL2XV3EFCKVCKFWKWTEIAA7M" Name="Root">
+      <Group Id="cpg4FQ7WQX4EVGYLJYNEPPKVOOBAM" Name="DbProps" Members="colSUT7LCU475AEDKU453I6ZZMHQE colQW42UQ7FCZDP3JWHECUGWWYTRM colKWM74XGC2ZBZZMZ2E3CBD7ZBRY colNX4TCQYC3FEDZHADFCGYD2SU6I colBMCYNNDJK5AUPHZCX4EV4NYFJQ"/>
+    </PropertyGroup>
+    <Properties>
+      <Property Id="colSUT7LCU475AEDKU453I6ZZMHQE" Name="createDate" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="12"/>
+        <Presentation TitleId="mlsMMGTSEVY5BBUFLYIJDJ2RYNFHA" InheritanceMask="4">
+          <Editing EditPossibility="1" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colQW42UQ7FCZDP3JWHECUGWWYTRM" Name="id" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4">
+          <Editing NotNull="true" EditPossibility="1" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colKWM74XGC2ZBZZMZ2E3CBD7ZBRY" Name="reportHtml" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="27"/>
+        <Presentation InheritanceMask="4">
+          <Editing EditPossibility="1" IsDuplicatesEnabled="true" ReadSeparately="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colNX4TCQYC3FEDZHADFCGYD2SU6I" Name="reportXml" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="27"/>
+        <Presentation InheritanceMask="4" IsPresentable="false">
+          <Editing EditPossibility="1" IsDuplicatesEnabled="true" ReadSeparately="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colBMCYNNDJK5AUPHZCX4EV4NYFJQ" Name="sent" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="1"/>
+        <InitialValue>
+          <ValAsStr>0</ValAsStr>
+        </InitialValue>
+        <Presentation TitleId="mls7V4DD67XDRCT3FDLUFBHAATP74" InheritanceMask="4">
+          <Editing EditPossibility="4" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods/>
+    <Entity EntityId="tblORSQ5ZLT2FGPXOYAV5PIR47XIY">
+      <AccessAreas Type="None"/>
+    </Entity>
+    <Presentations ObjectTitleId="mlsXA23ERRO6RBOVAO2NIMH4J7A4A" EntityTitleId="mlsHW5PJEJYDVHA3FSYFWQ6AQEWAY" Restrictions="0">
+      <ObjectTitleFormat Id="etfKL43IIL4NVDKNDZ3IN5MX7XY2U"/>
+      <Commands>
+        <Command Id="cmdECUAEHRTQ5G6HJVE2ETMZMFAZ4" Name="viewHtml" Nature="0" IsVisible="true" IsConfirmationRequired="false" Accessibility="0" Scope="3">
+          <AccessRules IsPublished="false"/>
+        </Command>
+        <Command Id="cmd4VPW6YABEZDSXIQ6RZVND33NZI" Name="viewXml" Nature="0" IsVisible="true" IsConfirmationRequired="false" Accessibility="0" Scope="3">
+          <AccessRules IsPublished="false"/>
+        </Command>
+      </Commands>
+      <EditorPresentations>
+        <EditorPresentation Id="eprV2PETTK5IREUFN5DZSO4GWKAM4" Name="Edit" InheritanceMask="2192" Restrictions="0" EnabledCommandIds="" RightsInheritanceMode="0">
+          <AccessRules IsPublished="false"/>
+          <ChildExplorerItems/>
+          <ObjectTitleFormat Id="etfQE2KVF6GVJFHDKQ4BNZP3OZ5Y4"/>
+        </EditorPresentation>
+      </EditorPresentations>
+      <SelectorPresentations>
+        <SelectorPresentation Id="sprRADEYZWTJ5DS3EXFSEEIZHPPRM" Name="General" InheritanceMask="144" Restrictions="281711" EnabledCommandIds="" EditorPresentationIds="eprV2PETTK5IREUFN5DZSO4GWKAM4">
+          <AccessRules IsPublished="false"/>
+          <Condition>
+            <ConditionWhere/>
+            <ConditionFrom/>
+          </Condition>
+          <Addons AnyBaseFilterEnabled="false" AnyBaseSortingEnabled="false" CustomFilterEnabled="false" CustomSortingEnabled="false" FilterIsObligatory="false">
+            <DefaultHint/>
+          </Addons>
+          <SelectorColumns>
+            <Column Align="-1" PropId="colSUT7LCU475AEDKU453I6ZZMHQE" Visibility="1" SizePolicy="0"/>
+            <Column Align="-1" PropId="colBMCYNNDJK5AUPHZCX4EV4NYFJQ" Visibility="1" SizePolicy="0"/>
+          </SelectorColumns>
+        </SelectorPresentation>
+      </SelectorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="pdcEntity____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

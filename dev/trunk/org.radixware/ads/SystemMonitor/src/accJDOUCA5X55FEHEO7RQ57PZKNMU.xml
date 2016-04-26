@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="accJDOUCA5X55FEHEO7RQ57PZKNMU" Name="MetricStateForDashboardGroupByKind" Type="4">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderaccJDOUCA5X55FEHEO7RQ57PZKNMU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaccJDOUCA5X55FEHEO7RQ57PZKNMU"/>
+    </Bodies>
+    <MethodGroup Id="cmgNTNZT6XD6VHV5FYCLEQ3XDASM4" Name="Root"/>
+    <PropertyGroup Id="cpgUUQXWBUIXRFDFHQ2TY2W4DLKUE" Name="Root"/>
+    <Properties>
+      <Property Id="prf7TQ54JQCP5BQ3IPIDUF5KXB26U" Name="kind" Nature="3" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prfEHXF5H5LHZDPVIKG7SEDXC4IHU" Name="cnt" Nature="3" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="open" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <ReturnType TypeId="411" Path="accJDOUCA5X55FEHEO7RQ57PZKNMU"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="true">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>select
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="col2JJNBDFWIVG47OCFOCMCXVBFXI" Owner="TABLE">
+            <xsc:TableAlias>mt</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accJDOUCA5X55FEHEO7RQ57PZKNMU" PropId="prf7TQ54JQCP5BQ3IPIDUF5KXB26U" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, count(*) as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accJDOUCA5X55FEHEO7RQ57PZKNMU" PropId="prfEHXF5H5LHZDPVIKG7SEDXC4IHU" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+from 
+     </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y">
+            <xsc:TableAlias>ms</xsc:TableAlias>
+          </xsc:TableSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> inner join </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM">
+            <xsc:TableAlias>mt</xsc:TableAlias>
+          </xsc:TableSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> on </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="colFEAY3AHK6NBWFIEFHY5HMNRCSI" Owner="TABLE">
+            <xsc:TableAlias>ms</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="colNS4TO66OSNH3DCZS64EDNL7VDU" Owner="TABLE">
+            <xsc:TableAlias>mt</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+group by 
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="col2JJNBDFWIVG47OCFOCMCXVBFXI" Owner="TABLE">
+            <xsc:TableAlias>mt</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" Alias="ms"/>
+        <UsedTable TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" Alias="mt"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="411" Path="pdcCursor____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

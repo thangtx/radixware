@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsWebCustomDialogDefinition Id="cdl5HTZBW7LYRGLJKTX3LVB5QZLWA" Name="DashNewChildDialogWeb">
+    <AccessRules IsPublished="false"/>
+    <ui:ui>
+      <ui:widget name="dialog" id="wdgOEHHNZ4S65FZPGANGE4KLBK6AA" class="cdl5HTZBW7LYRGLJKTX3LVB5QZLWA" weight="0.0">
+        <ui:property name="standardButtons">
+          <ui:set>Ok|Cancel</ui:set>
+        </ui:property>
+        <ui:property name="geometry">
+          <ui:rect>
+            <ui:x>0</ui:x>
+            <ui:y>0</ui:y>
+            <ui:width>360</ui:width>
+            <ui:height>349</ui:height>
+          </ui:rect>
+        </ui:property>
+        <ui:property name="windowTitle">
+          <ui:mlstringid>mls464C63ZHVFF6LBRWYL74YEFXT4</ui:mlstringid>
+        </ui:property>
+        <ui:property name="objectName">
+          <ui:string>dialog</ui:string>
+        </ui:property>
+        <ui:widget name="mainLayout" id="wdgLSCIOZKKDRDOXF4S6ZP42VWM7Y" class="org.radixware.wps.rwt.LabeledEditGrid" weight="0.0">
+          <ui:property name="geometry">
+            <ui:rect>
+              <ui:x>4</ui:x>
+              <ui:y>4</ui:y>
+              <ui:width>352</ui:width>
+              <ui:height>311</ui:height>
+            </ui:rect>
+          </ui:property>
+          <ui:property name="anchor">
+            <ui:anchor>
+              <ui:Top Part="0.0" Offset="4"/>
+              <ui:Left Part="0.0" Offset="4"/>
+              <ui:Bottom Part="1.0" Offset="-4"/>
+              <ui:Right Part="1.0" Offset="-4"/>
+            </ui:anchor>
+          </ui:property>
+          <ui:property name="objectName">
+            <ui:string>mainLayout</ui:string>
+          </ui:property>
+          <ui:widget name="rbHistDiagram" id="wdgNHTQHD2YANGHNFCP754GRZ4Y3E" class="org.radixware.wps.rwt.RadioButton" weight="0.0">
+            <ui:property name="text">
+              <ui:mlstringid>mls25GF7YWELZFVVDNV2HDGLD22CM</ui:mlstringid>
+            </ui:property>
+            <ui:property name="geometry">
+              <ui:rect>
+                <ui:x>46</ui:x>
+                <ui:y>16</ui:y>
+                <ui:width>62</ui:width>
+                <ui:height>22</ui:height>
+              </ui:rect>
+            </ui:property>
+            <ui:property name="gridColumn">
+              <ui:int>0</ui:int>
+            </ui:property>
+            <ui:property name="gridRow">
+              <ui:int>0</ui:int>
+            </ui:property>
+            <ui:property name="objectName">
+              <ui:string>rbHistDiagram</ui:string>
+            </ui:property>
+            <ui:property name="selected">
+              <ui:bool>true</ui:bool>
+            </ui:property>
+            <ui:property name="label">
+              <ui:mlstringid xsi:nil="true"/>
+            </ui:property>
+          </ui:widget>
+        </ui:widget>
+      </ui:widget>
+      <ui:connections>
+        <ui:connection>
+          <ui:sender>wdgNHTQHD2YANGHNFCP754GRZ4Y3E</ui:sender>
+          <ui:signal>onClick(org.radixware.kernel.common.client.widgets.IButton button)</ui:signal>
+          <ui:slot>mthZ7R727CY7RHYFKWD4AJVUWYM4A</ui:slot>
+          <ui:interface>org.radixware.kernel.common.client.widgets.IButton.ClickHandler</ui:interface>
+          <ui:registrator>addClickHandler</ui:registrator>
+          <ui:returnType>void</ui:returnType>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgOEHHNZ4S65FZPGANGE4KLBK6AA</ui:sender>
+          <ui:signal>opened()</ui:signal>
+          <ui:slot>mthYQO6KRKCNFBRRJVS34RCHF4WPM</ui:slot>
+          <ui:interface>org.radixware.wps.views.dialog.RwtDialog.RwtDialogListener</ui:interface>
+          <ui:registrator>addDialogListener</ui:registrator>
+          <ui:returnType>void</ui:returnType>
+        </ui:connection>
+      </ui:connections>
+    </ui:ui>
+    <EmbeddedModel Id="adm5HTZBW7LYRGLJKTX3LVB5QZLWA" Name="DashNewChildDialogWeb:Model" Type="16">
+      <AccessRules IsPublished="false"/>
+      <Headers>
+        <Src Name="Headeradm5HTZBW7LYRGLJKTX3LVB5QZLWA"/>
+      </Headers>
+      <Bodies>
+        <Src Name="Bodyadm5HTZBW7LYRGLJKTX3LVB5QZLWA"/>
+      </Bodies>
+      <MethodGroup Id="cmgPILOIRABJJHE3OPI4BZNEDDD54" Name="Root"/>
+      <PropertyGroup Id="cpgNWUDNMAEAVFOZCMVL5JXIZN5KE" Name="Root"/>
+      <Properties>
+        <Property Id="prdUKA65WG6DZA6XEZKI6J4OCT5SA" Name="childType" Nature="2" IsConst="false" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="21" Path="acsW64RP5U7WZBVLO6KIDVMG3HPUI"/>
+          <InitialValue>
+            <ValAsStr>DIAGRAM</ValAsStr>
+          </InitialValue>
+        </Property>
+      </Properties>
+      <Methods>
+        <Method Id="mthZ7R727CY7RHYFKWD4AJVUWYM4A" Name="rbHistDiagram_onClick" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="button" Id="mprHAJXNXBDANCOBPRM24VPXXYINM">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IButton"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl5HTZBW7LYRGLJKTX3LVB5QZLWA adm5HTZBW7LYRGLJKTX3LVB5QZLWA prdUKA65WG6DZA6XEZKI6J4OCT5SA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsW64RP5U7WZBVLO6KIDVMG3HPUI aciEPETHHA3SJFJHPFGWI3TQLB52U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthYQO6KRKCNFBRRJVS34RCHF4WPM" Name="dialog_opened" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>((org.radixware.wps.rwt.RadioButton) </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl5HTZBW7LYRGLJKTX3LVB5QZLWA wdgNHTQHD2YANGHNFCP754GRZ4Y3E" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>).setGroup(new org.radixware.wps.rwt.RadioButton.Group());</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+      </Methods>
+    </EmbeddedModel>
+  </AdsWebCustomDialogDefinition>
+</AdsDefinition>

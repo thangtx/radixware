@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc7JKZ32XD2ZHKXNVZKALTND6YGA" Name="LastUpdateTimeGetterById" Type="3" Environment="server">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc7JKZ32XD2ZHKXNVZKALTND6YGA"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc7JKZ32XD2ZHKXNVZKALTND6YGA"/>
+    </Bodies>
+    <MethodGroup Id="cmgU2BOFYDVTBHH3PLX7TVY7KVDSM" Name="Root"/>
+    <PropertyGroup Id="cpgYOHN4U5WCRHQVCSIIKINARAZ24" Name="Root"/>
+    <Properties>
+      <Property Id="prd65DG47PVUNHU3NOKRSE5MDM3MI" Name="tableName" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prdKW4O75P66FAO5LGTYZYYRJVYVA" Name="lastUpdateTimeColName" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prdK542LC7ZBRG4HKYFGSTXUFIAGE" Name="idColName" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prdX243YRDWSZETBH53QBCUGV4HME" Name="id" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth3ZNTQ6O5QNDFXJZQ7WV3UWS6UA" Name="getLastUpdateTime" CompilerWarnings="67108967" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="acc7IDANU3NDZFXRMVCBNRTJ3TZQQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> cur = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="acc7IDANU3NDZFXRMVCBNRTJ3TZQQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acc7IDANU3NDZFXRMVCBNRTJ3TZQQ mth_stmt_execute_____________" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc7JKZ32XD2ZHKXNVZKALTND6YGA prd65DG47PVUNHU3NOKRSE5MDM3MI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc7JKZ32XD2ZHKXNVZKALTND6YGA prdKW4O75P66FAO5LGTYZYYRJVYVA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc7JKZ32XD2ZHKXNVZKALTND6YGA prdK542LC7ZBRG4HKYFGSTXUFIAGE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc7JKZ32XD2ZHKXNVZKALTND6YGA prdX243YRDWSZETBH53QBCUGV4HME" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+try {
+    if (cur.next()) {
+        return cur.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acc7IDANU3NDZFXRMVCBNRTJ3TZQQ prfIIZCV5APFZDXPA7LXQ32BPYKBE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+    } else {
+        return null;
+    }
+} finally {
+    cur.close();
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthQXSIGR56JBAUDIKYNRNVQJWQU4" Name="LastUpdateTimeGetterById" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="tableName" Id="mprEB7A7HDGEFG7VD4MA52WOON7JM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="lastUpdateTimeColName" Id="mprHZNCKIGEV5CTJJLPFSBHBRQOJI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="idColName" Id="mprDAEPCNPJDRHVXBLKAP55D7FHPU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="id" Id="mprDDNMMK4DB5CR3KMXQ2W76H4JXQ">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if(idColName.isEmpty() || lastUpdateTimeColName.isEmpty() || tableName.isEmpty()) {
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcFGLHWXKG3BB7TLTAJY2WUTIWIU mth3X6EGB3BRFGWJH4VNIE7PHVKRA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Empty value was passed to LastUpdateTimeGetterById constructor");
+}
+if(id == null) {
+    throw new NullPointerException("Null id");
+}
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc7JKZ32XD2ZHKXNVZKALTND6YGA prdX243YRDWSZETBH53QBCUGV4HME" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = id;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc7JKZ32XD2ZHKXNVZKALTND6YGA prdK542LC7ZBRG4HKYFGSTXUFIAGE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = idColName;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc7JKZ32XD2ZHKXNVZKALTND6YGA prd65DG47PVUNHU3NOKRSE5MDM3MI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = tableName;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc7JKZ32XD2ZHKXNVZKALTND6YGA prdKW4O75P66FAO5LGTYZYYRJVYVA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = lastUpdateTimeColName;
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Implements>
+      <Interface TypeId="411" Path="aicXF4OWKLITBEUVFDLTGO3V6PP2Y"/>
+    </Implements>
+  </AdsClassDefinition>
+</AdsDefinition>

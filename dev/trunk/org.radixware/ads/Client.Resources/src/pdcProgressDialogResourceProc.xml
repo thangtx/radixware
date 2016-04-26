@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="pdcProgressDialogResourceProc" Name="ProgressDialogProcessResource" DescriptionId="mls7P6MIVC25BCNZDRVM6KW5LAYZE" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.server.arte.resources.ProgressDialogResource.Process"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcNUX6EU73KFER7BYLLO2PASBJFQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc5R2YGJZGR5B23NJRIEUKBPFH54"/>
+    </Bodies>
+    <MethodGroup Id="cmgDCQRWRIPQ5BZJANFDX5HIQKFME" Name="Root"/>
+    <PropertyGroup Id="cpg3VVW6XZG3FCHDBC6LADNME6HRY" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthOO36ZLGAUFACFAOZH2H5IPXNJM" Name="checkIsCancelled" DescriptionId="mls24ENXDOPCFD4DNW6MTIQ5JLTLA" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="checkIsCancelled()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mls72TE3GT4BRBN7JXE3L565BS6ZI"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageException" DescriptionId="mls3KGKZ4SRURFYDOLJQNPTNAUJ2M"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageTimeout" DescriptionId="mls447NPVEULJD7JBJ3YJAGH5COCQ"/>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException" DescriptionId="mlsMXI4HDFEKBEWJAODZTA4ZAAECQ"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthWSRVEVBSWNGHJMYBYUMIR3THI4" Name="close" DescriptionId="mlsWMK6GGKOJZAKFLPBX7BXHQQNUQ" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="close()V"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageException" DescriptionId="mlsXPYHREN4XBAGXKGLMOYRRBGO5Y"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageTimeout" DescriptionId="mlsPVITIHEI6FDMNCKIOVOTDJXLLU"/>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException" DescriptionId="mlsZSK3O6QYWJBYZCBWXXO7RPYD2Y"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthUKXJNOGBTBFARGCZ52AQVJXHWM" Name="flushTrace" DescriptionId="mlsXISTJJOO35D5JFMD5QGTNO5UHY" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="flushTrace()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsCAA7NCKSDBDPTC4HGUJWL6F6MQ"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageException" DescriptionId="mlsJ44URYLALVH5VLTPB5RIVUWLOM"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageTimeout" DescriptionId="mlsBZJUV5QBGBGKTHMOLD3YHYNVDA"/>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException" DescriptionId="mlsAR65SFP5FJAU7IM5XQE3JPYWRA"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthAE7I7CG6LRCUTPDSXDSOB7YV2I" Name="set" DescriptionId="mlsEAC6MEXOURGPRDMB4DHQ2OQH5I" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="set(Ljava.lang.String;Ljava.lang.Float;Ljava.lang.Boolean;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" DescriptionId="mls6WY6VI6KC5H7ZBCP5V5ZR5L4FQ" Id="mprKUWBW2BKXVDRFAJ24MT4TEWEGI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="progress" DescriptionId="mls4JNIKQ4LCVHHRA2HQXDH2FLTUQ" Id="mprLBZ3MAAHAZGT3CJZQDALFXKE5A">
+            <Type TypeId="400" extStr="java.lang.Float"/>
+          </Parameter>
+          <Parameter Name="cancellable" DescriptionId="mls7M32QZW4ZBAFBOZQD27IIFWMCA" Id="mprLS4LMNP3UZGCJKJ6U5XXA6PXAE">
+            <Type TypeId="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsS64DERGJ25EC5PXLZ4D5GIH5RY"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException" DescriptionId="mlsH4FBXSMRUFESNDAEPHJLJLV24Q"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageException" DescriptionId="mlsUOYNLQLPYBGJRPYAYRS3IDPBKI"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageTimeout" DescriptionId="mls6UTVW27DUJHRNIUBUAIMOQ7VWE"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthPKELUBOU7JF45LHVSQQ5UBV3FI" Name="startNewProcess" DescriptionId="mls4O7E3K4GCBDT3OMCFUMIJPRHSA" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="startNewProcess(Ljava.lang.String;ZZ)Lorg.radixware.kernel.server.arte.resources.ProgressDialogResource.Process;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" DescriptionId="mlsKTYR6A6R65AAJOADY4L5XB57ZE" Id="mprDB2Q3DAPPRAFZNIS3TSH2P3MIQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="cancellable" DescriptionId="mlsLQDQBRK5H5BSNN3JOBL4JJV6XM" Id="mprLG54C3TPIVCTFJXKJPN27LY4Z4">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="showPercent" DescriptionId="mlsB35AFEVHGFCLDPI3HXG54XPEHY" Id="mprVYNKBQ5JDZEIXOARXEOAI6PDKI">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.arte.resources.ProgressDialogResource.Process" DescriptionId="mlsWTE7K7NHTRFIDEYRKSGUH365LI"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException" DescriptionId="mlsDX2G3ZCBZ5GSJIEXDNVS3GLGQU"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageException" DescriptionId="mlsRG4BT2LANNHR3PBB5LFRCEEFPE"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageTimeout" DescriptionId="mlsVFWDXRG6PFFPLMIVQOYLDRTQ2E"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthUX62G5OGGNCLZFU2YLEMSK5QMI" Name="trace" DescriptionId="mls7CFK62SLHFEY7CADNRPPLEMICA" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="trace(Lorg.radixware.schemas.eas.Trace;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="trace" DescriptionId="mlsUBIR6MGVLNGFPGWIF2PSE2CI7U" Id="mprH4PZWK6DJNENXPOLP4K3BVZUBI">
+            <Type TypeId="400" extStr="org.radixware.schemas.eas.Trace"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsHXZNMB6FLBFD7PWEWOSGQZVZAY"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException" DescriptionId="mlsCDAGZYMJC5ABLL3F4E4N33O6N4"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageException" DescriptionId="mlsZLKAFUVAYZDMLOON264WKGIZSA"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageTimeout" DescriptionId="mls2UOXETDVPBCBFI2TWIJRJOV4PM"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthZEWJOWXGM5DOFJJ43H6S435JUQ" Name="trace" DescriptionId="mlsHCVLM6YIJFCANLM6QHXHJMFOYM" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="trace(Lorg.radixware.schemas.eas.TraceLevelEnum.Enum;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="level" DescriptionId="mlsCG4LVCHCZZCOBP7T7PS2O53AIU" Id="mprWFV3VBNQOFAQDEG6IKTMXG6N7U">
+            <Type TypeId="400" extStr="org.radixware.schemas.eas.TraceLevelEnum.Enum"/>
+          </Parameter>
+          <Parameter Name="mess" DescriptionId="mlsKUB7RLDMWVHNNIVURLMVG47URY" Id="mpr5MRAN2LWC5CTTBP3ESZWUFHSMA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageException" DescriptionId="mlsDC7USR7EVJEQFHM7OFUOOOB7HE"/>
+        </ThrownExceptions>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclIQCN5O35ZJHYRBCK4IE6RKQYRQ" Name="MetricType.AppMetric.Event" Type="2" ClientEnvironment="explorer">
+    <AccessRules IsAbstract="true"/>
+    <Headers>
+      <Src Name="HeaderadcJFVKYNCCRNE4XC74PZLXJRTWJE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcW23LLWVMUJDSFL2BMQZXKCMPCQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgT4UTU3MQTJBIVGKT473PYFSIWA" Name="Root"/>
+    <PropertyGroup Id="cpgOCMISYVJU5DNRBCLJMDBZ7Y7DM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthBGY2OJS6LFCD5B3BNBHXUSGX6A" Name="calcValue" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true"/>
+        <Parameters>
+          <Parameter Name="lastControlTime" Id="mprQCT3R6KP4FAOTBQ4P4AUMS46MI">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="currentControlTime" Id="mprZXAMFPDN7ZASLO6AYJMZH2JCIA">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adcTS3X67BRTBDK7GGP26KPMKP6KE"/>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mth7M6YK3J5OREYTFHKMRDGE42Z3Q" Name="getSensorType" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="2" Path="acs2WII7XB6LVGGXPQAAGUF3WLP74"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acs2WII7XB6LVGGXPQAAGUF3WLP74 aciXWILY3UF7FCYJG5GQMI7Q5MJ2E" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthIT2CW4S27RB3XNEN22I7VDSY74" Name="getValueType" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <ReturnType TypeId="21" Path="acsJW5X3HYYBFFT3LECMFTSPIZYQE"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsJW5X3HYYBFFT3LECMFTSPIZYQE aciL47VGDVATZDLBORQBGLS37I77Y" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM"/>
+    <Presentations>
+      <EditorPresentations>
+        <EditorPresentation Id="epr6I3D7ZUOY5CDXESXGTITMJOXUY" Name="General" BasePresentationId="eprSE464PGOZVAYPG5C7DZYJQ4P3E" InheritanceMask="40112" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprSE464PGOZVAYPG5C7DZYJQ4P3E" ClientEnvironment="explorer">
+          <AccessRules IsPublished="false"/>
+          <ChildExplorerItems/>
+          <ObjectTitleFormat Id="etfIWBLD6HZURFBDDW245J6XMX72U"/>
+        </EditorPresentation>
+      </EditorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="aclMXE64MHT2VHC3K32SQMOHDM6F4"/>
+  </AdsClassDefinition>
+</AdsDefinition>

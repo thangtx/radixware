@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="ssc3Q6JMOTZWNCSRGTEH4GTMQK2TE" Name="InsertSchemeItemStmt" Type="9">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="true" PublishedName="org.radixware.kernel.server.types.Statement"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcBMYDJHX6LNEWHCPZPZCQDYDZ6Q"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcWEZJ55VXAFBI5PRAJJQ2FYZY5E"/>
+    </Bodies>
+    <MethodGroup Id="cmg3QXSZKGEGNE6DJRKVTAL6N6XXM" Name="Root"/>
+    <PropertyGroup Id="cpgUPAAEFNT4RC25B2NM4EZIWTWIM" Name="Root"/>
+    <Properties>
+      <Property Id="prmKP6RJFYB45D57EJDYNQUYRZCSQ" Name="schemeGuid" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmOHYNFABGWNF7XMW7KFUZO75P3I" Name="tableId" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmWMANYJNCTJB37JEEFM77PICZMM" Name="eventType" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmE6IVUHTGBZEJ5NFCJ5UYMJ6ALU" Name="saveData" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="1"/>
+      </Property>
+      <Property Id="prmEOBLGTBXJBB7FJA2PH4IE4KEAM" Name="storeDuration" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="execute" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="schemeGuid" Id="mprKP6RJFYB45D57EJDYNQUYRZCSQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="tableId" Id="mprOHYNFABGWNF7XMW7KFUZO75P3I">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="eventType" Id="mprWMANYJNCTJB37JEEFM77PICZMM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="saveData" Id="mprE6IVUHTGBZEJ5NFCJ5UYMJ6ALU">
+            <Type TypeId="1"/>
+          </Parameter>
+          <Parameter Name="storeDuration" Id="mprEOBLGTBXJBB7FJA2PH4IE4KEAM">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth_stmt_sendBatch___________" Name="sendBatch" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+      </Method>
+      <Method Id="mth_stmt_setExecuteBatch_____" Name="setExecuteBatch" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="size" Id="mprSize______________________">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>insert into </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblFEIALUQDMPNBDKV7ABINU7DB2Q">
+            <xsc:TableAlias>I</xsc:TableAlias>
+          </xsc:TableSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> (</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblFEIALUQDMPNBDKV7ABINU7DB2Q" PropId="colHOZ6HWIDMPNBDKV7ABINU7DB2Q" Owner="TABLE">
+            <xsc:TableAlias>I</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblFEIALUQDMPNBDKV7ABINU7DB2Q" PropId="colZMHWLZADMPNBDKV7ABINU7DB2Q" Owner="TABLE">
+            <xsc:TableAlias>I</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblFEIALUQDMPNBDKV7ABINU7DB2Q" PropId="colL7E3H7ADMPNBDKV7ABINU7DB2Q" Owner="TABLE">
+            <xsc:TableAlias>I</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblFEIALUQDMPNBDKV7ABINU7DB2Q" PropId="colWNMPOZQEMPNBDKV7ABINU7DB2Q" Owner="TABLE">
+            <xsc:TableAlias>I</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblFEIALUQDMPNBDKV7ABINU7DB2Q" PropId="colAUV5IYAEMPNBDKV7ABINU7DB2Q" Owner="TABLE">
+            <xsc:TableAlias>I</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>)
+values (</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmKP6RJFYB45D57EJDYNQUYRZCSQ"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmOHYNFABGWNF7XMW7KFUZO75P3I"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmWMANYJNCTJB37JEEFM77PICZMM"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmE6IVUHTGBZEJ5NFCJ5UYMJ6ALU"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmEOBLGTBXJBB7FJA2PH4IE4KEAM"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>)</xsc:Sql>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblFEIALUQDMPNBDKV7ABINU7DB2Q" Alias="I"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="400" extStr="org.radixware.kernel.server.types.SqlClass"/>
+  </AdsClassDefinition>
+</AdsDefinition>

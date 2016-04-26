@@ -1,0 +1,1688 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsCustomWidgetDefinition Id="wdcW5PID65T75HKXDBDATMEQELCKI" Name="ReportPubTreeWidget">
+    <ui:ui>
+      <ui:widget name="Widget" id="wdgCIGR5QZNZRHITK3NJDK5YJADEE" class="wdcW5PID65T75HKXDBDATMEQELCKI" weight="0.0">
+        <ui:property name="geometry">
+          <ui:rect>
+            <ui:x>0</ui:x>
+            <ui:y>0</ui:y>
+            <ui:width>403</ui:width>
+            <ui:height>383</ui:height>
+          </ui:rect>
+        </ui:property>
+        <ui:property name="toolTip">
+          <ui:mlstringid>mls3X7LHJPTE5ABRDGFUCMSAANX2A</ui:mlstringid>
+        </ui:property>
+        <ui:layout class="QVBoxLayout" name="verticalLayout">
+          <ui:property name="layoutLeftMargin">
+            <ui:int>0</ui:int>
+          </ui:property>
+          <ui:property name="layoutTopMargin">
+            <ui:int>0</ui:int>
+          </ui:property>
+          <ui:property name="layoutRightMargin">
+            <ui:int>0</ui:int>
+          </ui:property>
+          <ui:property name="layoutBottomMargin">
+            <ui:int>0</ui:int>
+          </ui:property>
+          <ui:property name="layoutSpacing">
+            <ui:int>2</ui:int>
+          </ui:property>
+          <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+            <ui:layout class="QHBoxLayout" name="horizontalLayout">
+              <ui:property name="layoutLeftMargin">
+                <ui:int>0</ui:int>
+              </ui:property>
+              <ui:property name="layoutTopMargin">
+                <ui:int>0</ui:int>
+              </ui:property>
+              <ui:property name="layoutRightMargin">
+                <ui:int>0</ui:int>
+              </ui:property>
+              <ui:property name="layoutBottomMargin">
+                <ui:int>0</ui:int>
+              </ui:property>
+              <ui:property name="layoutSpacing">
+                <ui:int>0</ui:int>
+              </ui:property>
+              <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                <ui:widget name="btGenerateReport" id="wdgC355OJ5WKJBUXM5LAKPNBEXAYU" class="QToolButton" weight="0.0">
+                  <ui:property name="text">
+                    <ui:mlstringid xsi:nil="true"/>
+                  </ui:property>
+                  <ui:property name="objectName">
+                    <ui:string>btGenerateReport</ui:string>
+                  </ui:property>
+                  <ui:property name="icon">
+                    <ui:imageRef>img3627K6GYUFGXFJYWMVCBQAPHUA</ui:imageRef>
+                  </ui:property>
+                  <ui:property name="iconSize">
+                    <ui:size>
+                      <ui:width>24</ui:width>
+                      <ui:height>24</ui:height>
+                    </ui:size>
+                  </ui:property>
+                  <ui:property name="toolTip">
+                    <ui:mlstringid>mlsHWKXIV6OPBDYDLXMGIFC3DBKAY</ui:mlstringid>
+                  </ui:property>
+                  <ui:property name="toolButtonStyle">
+                    <ui:enum>com.trolltech.qt.core.Qt.ToolButtonStyle.ToolButtonIconOnly</ui:enum>
+                  </ui:property>
+                  <ui:property name="autoRaise">
+                    <ui:bool>true</ui:bool>
+                  </ui:property>
+                  <ui:property name="sizePolicy">
+                    <ui:sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Fixed" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred"/>
+                  </ui:property>
+                </ui:widget>
+              </ui:item>
+              <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                <ui:widget name="btSaveXml" id="wdgDHLEK4ZVCVFFRNDUF3BDWD7IAA" class="QToolButton" weight="0.0">
+                  <ui:property name="text">
+                    <ui:mlstringid xsi:nil="true"/>
+                  </ui:property>
+                  <ui:property name="objectName">
+                    <ui:string>btSaveXml</ui:string>
+                  </ui:property>
+                  <ui:property name="toolButtonStyle">
+                    <ui:enum>com.trolltech.qt.core.Qt.ToolButtonStyle.ToolButtonIconOnly</ui:enum>
+                  </ui:property>
+                  <ui:property name="iconSize">
+                    <ui:size>
+                      <ui:width>24</ui:width>
+                      <ui:height>24</ui:height>
+                    </ui:size>
+                  </ui:property>
+                  <ui:property name="icon">
+                    <ui:imageRef>imgF55XRLWIGNHGRIZNT2JO7GGNDI</ui:imageRef>
+                  </ui:property>
+                  <ui:property name="toolTip">
+                    <ui:mlstringid>mlsAHEOLOI6ENDIXCAL6UY4S7P3DI</ui:mlstringid>
+                  </ui:property>
+                  <ui:property name="autoRaise">
+                    <ui:bool>true</ui:bool>
+                  </ui:property>
+                  <ui:property name="geometry">
+                    <ui:rect>
+                      <ui:x>124</ui:x>
+                      <ui:y>6</ui:y>
+                      <ui:width>32</ui:width>
+                      <ui:height>26</ui:height>
+                    </ui:rect>
+                  </ui:property>
+                </ui:widget>
+              </ui:item>
+              <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                <ui:widget name="btSaveCSV" id="wdgR4ESMZBN6BCJBMVEZXEZM75LNE" class="QToolButton" weight="0.0">
+                  <ui:property name="text">
+                    <ui:mlstringid xsi:nil="true"/>
+                  </ui:property>
+                  <ui:property name="objectName">
+                    <ui:string>btSaveCSV</ui:string>
+                  </ui:property>
+                  <ui:property name="toolButtonStyle">
+                    <ui:enum>com.trolltech.qt.core.Qt.ToolButtonStyle.ToolButtonIconOnly</ui:enum>
+                  </ui:property>
+                  <ui:property name="iconSize">
+                    <ui:size>
+                      <ui:width>24</ui:width>
+                      <ui:height>24</ui:height>
+                    </ui:size>
+                  </ui:property>
+                  <ui:property name="icon">
+                    <ui:imageRef>img2F5YCN6WLNFARF2KB5BNBYCPNQ</ui:imageRef>
+                  </ui:property>
+                  <ui:property name="toolTip">
+                    <ui:mlstringid>mlsBYYP2CRJ3VEXJGIW7CL6WGWPZU</ui:mlstringid>
+                  </ui:property>
+                  <ui:property name="autoRaise">
+                    <ui:bool>true</ui:bool>
+                  </ui:property>
+                  <ui:property name="geometry">
+                    <ui:rect>
+                      <ui:x>130</ui:x>
+                      <ui:y>2</ui:y>
+                      <ui:width>32</ui:width>
+                      <ui:height>26</ui:height>
+                    </ui:rect>
+                  </ui:property>
+                </ui:widget>
+              </ui:item>
+              <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                <ui:widget name="btSaveOOXML" id="wdgKGPF2CUZCZENDLMO5F6M3UAAM4" class="QToolButton" weight="0.0">
+                  <ui:property name="text">
+                    <ui:mlstringid>mlsRASJGJ7DMVF6RDAANJXFPTU4IU</ui:mlstringid>
+                  </ui:property>
+                  <ui:property name="geometry">
+                    <ui:rect>
+                      <ui:x>86</ui:x>
+                      <ui:y>137</ui:y>
+                      <ui:width>23</ui:width>
+                      <ui:height>20</ui:height>
+                    </ui:rect>
+                  </ui:property>
+                  <ui:property name="objectName">
+                    <ui:string>btSaveOOXML</ui:string>
+                  </ui:property>
+                  <ui:property name="iconSize">
+                    <ui:size>
+                      <ui:width>24</ui:width>
+                      <ui:height>24</ui:height>
+                    </ui:size>
+                  </ui:property>
+                  <ui:property name="autoRaise">
+                    <ui:bool>true</ui:bool>
+                  </ui:property>
+                  <ui:property name="toolButtonStyle">
+                    <ui:enum>com.trolltech.qt.core.Qt.ToolButtonStyle.ToolButtonIconOnly</ui:enum>
+                  </ui:property>
+                  <ui:property name="toolTip">
+                    <ui:mlstringid>mlsIFH3TTTQJZGOXKVJVFSDHRUUVM</ui:mlstringid>
+                  </ui:property>
+                  <ui:property name="icon">
+                    <ui:imageRef>imgHYAAEQ5HPNAQBBMAOKGF2WHPMI</ui:imageRef>
+                  </ui:property>
+                </ui:widget>
+              </ui:item>
+              <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                <ui:widget name="btSaveTXT" id="wdgNW6ATQ5F5FBJRADVSBM4WUT3IA" class="QToolButton" weight="0.0">
+                  <ui:property name="text">
+                    <ui:mlstringid>mls7HCXYHXIN5FE5KPFI7UV2I5ALQ</ui:mlstringid>
+                  </ui:property>
+                  <ui:property name="objectName">
+                    <ui:string>btSaveTXT</ui:string>
+                  </ui:property>
+                  <ui:property name="iconSize">
+                    <ui:size>
+                      <ui:width>24</ui:width>
+                      <ui:height>24</ui:height>
+                    </ui:size>
+                  </ui:property>
+                  <ui:property name="autoRaise">
+                    <ui:bool>true</ui:bool>
+                  </ui:property>
+                  <ui:property name="toolButtonStyle">
+                    <ui:enum>com.trolltech.qt.core.Qt.ToolButtonStyle.ToolButtonIconOnly</ui:enum>
+                  </ui:property>
+                  <ui:property name="toolTip">
+                    <ui:mlstringid>mls2AJXWGCYOZHJDIDILLDO7ATQT4</ui:mlstringid>
+                  </ui:property>
+                  <ui:property name="icon">
+                    <ui:imageRef>img4ZZKBX3U2RCVXAKHCQKQYHIZFA</ui:imageRef>
+                  </ui:property>
+                  <ui:property name="geometry">
+                    <ui:rect>
+                      <ui:x>119</ui:x>
+                      <ui:y>140</ui:y>
+                      <ui:width>32</ui:width>
+                      <ui:height>26</ui:height>
+                    </ui:rect>
+                  </ui:property>
+                </ui:widget>
+              </ui:item>
+              <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                <ui:spacer name="spacer">
+                  <ui:property name="orientation">
+                    <ui:enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</ui:enum>
+                  </ui:property>
+                  <ui:property name="sizeHint">
+                    <ui:size>
+                      <ui:width>2</ui:width>
+                      <ui:height>20</ui:height>
+                    </ui:size>
+                  </ui:property>
+                  <ui:property name="sizeType">
+                    <ui:enum>com.trolltech.qt.gui.QSizePolicy.Policy.Minimum</ui:enum>
+                  </ui:property>
+                  <ui:property name="spacerName">
+                    <ui:string>spacer</ui:string>
+                  </ui:property>
+                </ui:spacer>
+              </ui:item>
+              <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                <ui:widget name="btCfgReports" id="wdgPEAI3B72EZDTTEAWZLGZ5IUVWI" class="QToolButton" weight="0.0">
+                  <ui:property name="text">
+                    <ui:mlstringid xsi:nil="true"/>
+                  </ui:property>
+                  <ui:property name="objectName">
+                    <ui:string>btCfgReports</ui:string>
+                  </ui:property>
+                  <ui:property name="toolButtonStyle">
+                    <ui:enum>com.trolltech.qt.core.Qt.ToolButtonStyle.ToolButtonIconOnly</ui:enum>
+                  </ui:property>
+                  <ui:property name="iconSize">
+                    <ui:size>
+                      <ui:width>24</ui:width>
+                      <ui:height>24</ui:height>
+                    </ui:size>
+                  </ui:property>
+                  <ui:property name="icon">
+                    <ui:imageRef>imgRHBTGK3WKVEXZMIUWW2MKPBHLA</ui:imageRef>
+                  </ui:property>
+                  <ui:property name="toolTip">
+                    <ui:mlstringid>mlsN7FN36OGTJB3FLJRDLGC3Z75BI</ui:mlstringid>
+                  </ui:property>
+                  <ui:property name="autoRaise">
+                    <ui:bool>true</ui:bool>
+                  </ui:property>
+                  <ui:property name="geometry">
+                    <ui:rect>
+                      <ui:x>156</ui:x>
+                      <ui:y>5</ui:y>
+                      <ui:width>32</ui:width>
+                      <ui:height>26</ui:height>
+                    </ui:rect>
+                  </ui:property>
+                </ui:widget>
+              </ui:item>
+              <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                <ui:widget name="btRunReportDesigner" id="wdgZM57RKXVKBHN3MXOVSXCEWDRPE" class="QToolButton" weight="0.0">
+                  <ui:property name="text">
+                    <ui:mlstringid xsi:nil="true"/>
+                  </ui:property>
+                  <ui:property name="objectName">
+                    <ui:string>btRunReportDesigner</ui:string>
+                  </ui:property>
+                  <ui:property name="toolButtonStyle">
+                    <ui:enum>com.trolltech.qt.core.Qt.ToolButtonStyle.ToolButtonIconOnly</ui:enum>
+                  </ui:property>
+                  <ui:property name="iconSize">
+                    <ui:size>
+                      <ui:width>24</ui:width>
+                      <ui:height>24</ui:height>
+                    </ui:size>
+                  </ui:property>
+                  <ui:property name="icon">
+                    <ui:imageRef>imgRB32DSZQQBBLRIV2S6INMQSDGA</ui:imageRef>
+                  </ui:property>
+                  <ui:property name="toolTip">
+                    <ui:mlstringid>mlsIWY4F5EW2RHNPEFTVF7A7IRBQI</ui:mlstringid>
+                  </ui:property>
+                  <ui:property name="autoRaise">
+                    <ui:bool>true</ui:bool>
+                  </ui:property>
+                  <ui:property name="geometry">
+                    <ui:rect>
+                      <ui:x>135</ui:x>
+                      <ui:y>3</ui:y>
+                      <ui:width>32</ui:width>
+                      <ui:height>26</ui:height>
+                    </ui:rect>
+                  </ui:property>
+                </ui:widget>
+              </ui:item>
+              <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                <ui:spacer name="spacer">
+                  <ui:property name="orientation">
+                    <ui:enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</ui:enum>
+                  </ui:property>
+                  <ui:property name="sizeHint">
+                    <ui:size>
+                      <ui:width>40</ui:width>
+                      <ui:height>20</ui:height>
+                    </ui:size>
+                  </ui:property>
+                </ui:spacer>
+              </ui:item>
+            </ui:layout>
+          </ui:item>
+          <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+            <ui:widget name="object" id="wdgWLYGAWS3HRDJ7EGCKPFEYRI4CY" class="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U" weight="0.0"/>
+          </ui:item>
+        </ui:layout>
+      </ui:widget>
+      <ui:connections>
+        <ui:connection>
+          <ui:sender>wdgWLYGAWS3HRDJ7EGCKPFEYRI4CY</ui:sender>
+          <ui:signal>sig2A3MQZF46RB3JNIKWZIZIY6KJQ</ui:signal>
+          <ui:slot>mthJWQAOFFZU5BBDKQO6BYU4LZLZU</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgC355OJ5WKJBUXM5LAKPNBEXAYU</ui:sender>
+          <ui:signal>clicked(Bool checked)</ui:signal>
+          <ui:slot>mthHKWUZIEIXFDDTH7D64JELWKM4U</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgPEAI3B72EZDTTEAWZLGZ5IUVWI</ui:sender>
+          <ui:signal>clicked(Bool checked)</ui:signal>
+          <ui:slot>mthAMC4QMZKWZDJHKLWMXHYKRQJ4A</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgWLYGAWS3HRDJ7EGCKPFEYRI4CY</ui:sender>
+          <ui:signal>sigYVLUH7ZTU5GQPBSHGOEE6JCVOM</ui:signal>
+          <ui:slot>mthWIC5TWS7RRF7HCYRKLFMXU6CZI</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgDHLEK4ZVCVFFRNDUF3BDWD7IAA</ui:sender>
+          <ui:signal>clicked(Bool checked)</ui:signal>
+          <ui:slot>mthCGKCSAFPYJGXBD3UGFMYUJGFHU</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgR4ESMZBN6BCJBMVEZXEZM75LNE</ui:sender>
+          <ui:signal>clicked(Bool checked)</ui:signal>
+          <ui:slot>mthP4MJXHULXBA7JB2XPHMII5APGQ</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgZM57RKXVKBHN3MXOVSXCEWDRPE</ui:sender>
+          <ui:signal>clicked(Bool checked)</ui:signal>
+          <ui:slot>mthTOCR54XZBNBT3LTCKLAJN4CJD4</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgKGPF2CUZCZENDLMO5F6M3UAAM4</ui:sender>
+          <ui:signal>clicked(Bool checked)</ui:signal>
+          <ui:slot>mth6LBTTIXLU5GWRBI3RW4T24XYPE</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgNW6ATQ5F5FBJRADVSBM4WUT3IA</ui:sender>
+          <ui:signal>clicked(Bool checked)</ui:signal>
+          <ui:slot>mthF3SZAZHEYJD6FPFVJRS3UNRDCM</ui:slot>
+        </ui:connection>
+      </ui:connections>
+      <ui:signals/>
+      <ui:properties/>
+    </ui:ui>
+    <EmbeddedModel Id="admW5PID65T75HKXDBDATMEQELCKI" Name="ReportPubTreeWidget:Model" Type="23">
+      <AccessRules/>
+      <Headers>
+        <Src Name="HeaderadcVTTKQY2UBNDGHA6JHQ4TJ4356E" Environment="explorer">
+          <xsc:Item>
+            <xsc:Java>import com.trolltech.qt.gui.*;</xsc:Java>
+          </xsc:Item>
+        </Src>
+      </Headers>
+      <Bodies>
+        <Src Name="BodyadcSJAGZ526UZESXILJWAD4NQH6IA" Environment="explorer">
+          <xsc:Item>
+            <xsc:Java>private </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="411" Path="aic7HTUN45DRJBV3FWNY7QQ4I5YQM"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> reportPubModel = null;
+private </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> pubListClassId = null;
+private </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> cfgReportsCmdId = null;
+private </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> generateReportCmdId = null;
+private </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> exportReportCmdId = null;
+</xsc:Java>
+          </xsc:Item>
+        </Src>
+      </Bodies>
+      <MethodGroup Id="cmgJLE5C2D6Y5DZVHHBEDXVD7VASM" Name="Root"/>
+      <PropertyGroup Id="cpgGXPEDYA2WJCCXE6BUFLF7KZB7Y" Name="Root"/>
+      <Properties/>
+      <Methods>
+        <Method Id="mthL2WINAMHXNA7TMTYGDNX7FUWMY" Name="open" Nature="0" Environment="explorer" IsOverride="false">
+          <AccessRules/>
+          <Parameters>
+            <Parameter Name="reportPubModel" Id="mprAFU5URKEWJGSDD532CQ7U5BSDY">
+              <Type TypeId="411" Path="aic7HTUN45DRJBV3FWNY7QQ4I5YQM"/>
+            </Parameter>
+            <Parameter Name="pubListClassId" Id="mprOSPLJ47TSBDGZPOQWTESD326TY">
+              <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </Parameter>
+            <Parameter Name="cfgReportsCmdId" Id="mpr2LG7CD7QC5CQRHQI5R5JI7U4E4">
+              <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </Parameter>
+            <Parameter Name="generateReportCmdId" Id="mpr7DID3Z44RBHDBATHUUWKCYRIEA">
+              <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </Parameter>
+            <Parameter Name="exportReportCmdId" Id="mprWQPLAPDEWFCXPDGTIIGGGSLHUA">
+              <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>this.pubListClassId = pubListClassId;
+this.reportPubModel = reportPubModel;
+this.cfgReportsCmdId = cfgReportsCmdId;
+this.generateReportCmdId = generateReportCmdId;
+this.exportReportCmdId = exportReportCmdId;
+
+if (cfgReportsCmdId != null) {
+    final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> model = (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) reportPubModel;
+    final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcETZW74XVUBEX5N3MV3IZMMDTUU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> cfgReportsCmd = model.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthBN46PMVUBFADVFFMPLGSSR7ZRM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(cfgReportsCmdId);
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI wdgPEAI3B72EZDTTEAWZLGZ5IUVWI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(cfgReportsCmd != null &amp;&amp; cfgReportsCmd.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcETZW74XVUBEX5N3MV3IZMMDTUU mthRWHLEQZQWVAGRHQVCHPTMKMUA4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>());
+} else {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI wdgPEAI3B72EZDTTEAWZLGZ5IUVWI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(false);
+}
+
+if (exportReportCmdId == null) {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI wdgR4ESMZBN6BCJBMVEZXEZM75LNE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(false);
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI wdgDHLEK4ZVCVFFRNDUF3BDWD7IAA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(false);
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI wdgKGPF2CUZCZENDLMO5F6M3UAAM4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(false);
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI wdgNW6ATQ5F5FBJRADVSBM4WUT3IA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(false);
+}    
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI admW5PID65T75HKXDBDATMEQELCKI mthWRSYFZG5JBC4FAUNONQCB3SGMA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+        </xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthX7QOC34FGZCEBG3FEQ4L3JOMAU" Name="updateButtonsState" Nature="0" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>final boolean pubSelected = (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI wdgWLYGAWS3HRDJ7EGCKPFEYRI4CY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Model.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U admNQH3RLW7ERBQFEQQMFZTMZBY2U mth56CM6PGXKFD7XKQYKZZIZ5HZ4A" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>() != null);
+final boolean isGenerateEnable = (generateReportCmdId != null) &amp;&amp; pubSelected;
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI wdgC355OJ5WKJBUXM5LAKPNBEXAYU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(isGenerateEnable);
+
+if (exportReportCmdId != null) {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI wdgDHLEK4ZVCVFFRNDUF3BDWD7IAA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(pubSelected);
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI wdgR4ESMZBN6BCJBMVEZXEZM75LNE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(pubSelected &amp;&amp; </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI admW5PID65T75HKXDBDATMEQELCKI mth73LPIHWNSVDYVIL6UQVQBPAPQE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>());
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI wdgNW6ATQ5F5FBJRADVSBM4WUT3IA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(pubSelected &amp;&amp; </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI admW5PID65T75HKXDBDATMEQELCKI mthDRKCOA34SBEERARJLLA3F3BDUM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>());
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI wdgKGPF2CUZCZENDLMO5F6M3UAAM4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(pubSelected);
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI wdgDHLEK4ZVCVFFRNDUF3BDWD7IAA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(pubSelected);
+} else {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI wdgNW6ATQ5F5FBJRADVSBM4WUT3IA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(false);
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI wdgR4ESMZBN6BCJBMVEZXEZM75LNE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(false);
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI wdgDHLEK4ZVCVFFRNDUF3BDWD7IAA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(false);
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI wdgKGPF2CUZCZENDLMO5F6M3UAAM4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(false);
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI wdgDHLEK4ZVCVFFRNDUF3BDWD7IAA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(false);
+}
+
+boolean canEditReports = false;
+
+try {
+    boolean res = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthTCLGC64JWZHTXPEOXNHDRC6Z64" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="clcSHUFYNDCXVCWBPGM7LE2BYPXDY"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>)
+            &amp;&amp; org.radixware.kernel.common.client.RunParams.isUDSAccessible();
+
+    if (res) {
+        try {
+            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthRKLGSF7BNFDPXMXNAQP6UIV3GU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().executeContextlessCommand(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="clcSHUFYNDCXVCWBPGM7LE2BYPXDY"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, null, null);
+            canEditReports = true;
+        } catch (InterruptedException e) {
+        } catch (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="axcWSBFK4LYMVHTXL55MVC44THTGE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> e) {
+        }
+    }
+} catch (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="axcPVZKE3F7SVFBBAEO5YVM6RYGGQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> e) {//ignore
+} catch (Exception e) {
+}
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI wdgZM57RKXVKBHN3MXOVSXCEWDRPE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(canEditReports);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI wdgZM57RKXVKBHN3MXOVSXCEWDRPE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setVisible(canEditReports);
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthJWQAOFFZU5BBDKQO6BYU4LZLZU" Name="tree_currentItemChanged" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI admW5PID65T75HKXDBDATMEQELCKI mthX7QOC34FGZCEBG3FEQ4L3JOMAU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthHKWUZIEIXFDDTH7D64JELWKM4U" Name="btGenerateReport_clicked" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="checked" Id="mprS6XWUB53TRCXVLZERVGFDANPXY">
+              <Type TypeId="1"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI admW5PID65T75HKXDBDATMEQELCKI mth3XOETKGK7RATZLRBLS2UDE5AXI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthAMC4QMZKWZDJHKLWMXHYKRQJ4A" Name="btCfgReports_clicked" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="checked" Id="mpr6EKPSDVNSFDSFHYVEJGTTBELJ4">
+              <Type TypeId="1"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> model = (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) reportPubModel;
+final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcETZW74XVUBEX5N3MV3IZMMDTUU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> cfgReportsCmd = model.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthBN46PMVUBFADVFFMPLGSSR7ZRM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(cfgReportsCmdId);
+cfgReportsCmd.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcETZW74XVUBEX5N3MV3IZMMDTUU mthDF5VAAQHZJENVKGZHFWX5QMYFY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI admW5PID65T75HKXDBDATMEQELCKI mthWRSYFZG5JBC4FAUNONQCB3SGMA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthWRSYFZG5JBC4FAUNONQCB3SGMA" Name="update" Nature="0" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY mthLFDCDHCUHVARNMW6Q3AEVNSB5I" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI wdgWLYGAWS3HRDJ7EGCKPFEYRI4CY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Model,
+        reportPubModel,
+        pubListClassId);
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI admW5PID65T75HKXDBDATMEQELCKI mthX7QOC34FGZCEBG3FEQ4L3JOMAU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthWIC5TWS7RRF7HCYRKLFMXU6CZI" Name="tree_accepted" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI admW5PID65T75HKXDBDATMEQELCKI mth3XOETKGK7RATZLRBLS2UDE5AXI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth3XOETKGK7RATZLRBLS2UDE5AXI" Name="generateReport" Nature="0" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>try {
+    final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> reportPubPid = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI wdgWLYGAWS3HRDJ7EGCKPFEYRI4CY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Model.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U admNQH3RLW7ERBQFEQQMFZTMZBY2U mth56CM6PGXKFD7XKQYKZZIZ5HZ4A" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+    final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="aecUNC67IF5OBCX7NOPNLQOCUG374 eprFP5NARHOA5E7LNMKWHBCS5Y3FM aemFP5NARHOA5E7LNMKWHBCS5Y3FM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> reportPub = (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="aecUNC67IF5OBCX7NOPNLQOCUG374 eprFP5NARHOA5E7LNMKWHBCS5Y3FM aemFP5NARHOA5E7LNMKWHBCS5Y3FM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mthZ2ZROAGPG5FDRBWDS5INBAJ7HE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(Environment,
+            reportPubPid,
+            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecUNC67IF5OBCX7NOPNLQOCUG374"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>,
+            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecUNC67IF5OBCX7NOPNLQOCUG374 eprFP5NARHOA5E7LNMKWHBCS5Y3FM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+    final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> generateReportCmdOwner;
+
+    if (this.reportPubModel instanceof </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+        generateReportCmdOwner = (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) reportPubModel;
+    } else {
+        generateReportCmdOwner = reportPub; // for contextless (common) reports
+    }
+
+    final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcETZW74XVUBEX5N3MV3IZMMDTUU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> generateReportCmd = generateReportCmdOwner.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthBN46PMVUBFADVFFMPLGSSR7ZRM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(generateReportCmdId);
+    if (generateReportCmd.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcETZW74XVUBEX5N3MV3IZMMDTUU mthRWHLEQZQWVAGRHQVCHPTMKMUA4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>()) {
+        reportPub.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecUNC67IF5OBCX7NOPNLQOCUG374 eprFP5NARHOA5E7LNMKWHBCS5Y3FM aemFP5NARHOA5E7LNMKWHBCS5Y3FM mthNTRVW6B64ZANVNTQC3SQSORKPE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(generateReportCmd, null, null);
+    } else {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthRBQCV7YXWNFAFDCE2AZNZCHAAI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsL7VEVFKGYNAVZCJWH2GJKXPJWQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+    }
+} catch (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> ex) {
+// NOTHING - cancelled
+} catch (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> ex) {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthLEP5OWV3LFDULGYALX3KD3GT6A" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(ex);
+}
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthGEOG4FXTPNCWXIAG3ARC4OAIJU" Name="getCurrentReportPubPid" Nature="0" Environment="explorer" IsOverride="false">
+          <AccessRules/>
+          <ReturnType TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI wdgWLYGAWS3HRDJ7EGCKPFEYRI4CY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Model.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U admNQH3RLW7ERBQFEQQMFZTMZBY2U mth56CM6PGXKFD7XKQYKZZIZ5HZ4A" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthOPSK6PGCTNEM7HAM5JZ5XLDXHA" Name="getReportPubPids" Nature="0" Environment="explorer" IsOverride="false">
+          <AccessRules/>
+          <ReturnType TypeId="400" extStr="java.util.List">
+            <xsc:GenericArguments>
+              <xsc:Argument Alias="?">
+                <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.types.Pid"/>
+              </xsc:Argument>
+            </xsc:GenericArguments>
+          </ReturnType>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI wdgWLYGAWS3HRDJ7EGCKPFEYRI4CY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Model.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U admNQH3RLW7ERBQFEQQMFZTMZBY2U mthPCNAULKDENGNPGYKVSXQJZRDWM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthCGKCSAFPYJGXBD3UGFMYUJGFHU" Name="btSaveXml_clicked" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="checked" Id="mpr444GTW3CJBBJBD2LET3BMND5OA">
+              <Type TypeId="1"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI admW5PID65T75HKXDBDATMEQELCKI mthTIBVAXEMBRD3DAYQQPKMOAVGHI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE aciRO6YJVU2UJARPETZGVPPEDVGN4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthTIBVAXEMBRD3DAYQQPKMOAVGHI" Name="exportReport" Nature="0" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="type" Id="mprMRKQFSPRWZE7DM5I5OCE523XAI">
+              <Type TypeId="21" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if (exportReportCmdId == null)
+    return;
+
+try {
+    final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> reportPubPid = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI wdgWLYGAWS3HRDJ7EGCKPFEYRI4CY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Model.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U admNQH3RLW7ERBQFEQQMFZTMZBY2U mth56CM6PGXKFD7XKQYKZZIZ5HZ4A" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+    final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="aecUNC67IF5OBCX7NOPNLQOCUG374 eprFP5NARHOA5E7LNMKWHBCS5Y3FM aemFP5NARHOA5E7LNMKWHBCS5Y3FM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> reportPub = (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="aecUNC67IF5OBCX7NOPNLQOCUG374 eprFP5NARHOA5E7LNMKWHBCS5Y3FM aemFP5NARHOA5E7LNMKWHBCS5Y3FM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mthZ2ZROAGPG5FDRBWDS5INBAJ7HE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(Environment,
+            reportPubPid,
+            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecUNC67IF5OBCX7NOPNLQOCUG374"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>,
+            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecUNC67IF5OBCX7NOPNLQOCUG374 eprFP5NARHOA5E7LNMKWHBCS5Y3FM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> fileName = null;
+
+    if (reportPub.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecUNC67IF5OBCX7NOPNLQOCUG374 prdU62DMLZ7VBHRZI4XKH3QBOGE44" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value == Boolean.TRUE) {
+        fileName = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcRE2EXB6FO5DGHL6ZYQPDYNOVNY"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcRE2EXB6FO5DGHL6ZYQPDYNOVNY mthQB4YDIDIRVDKVEHNGNIWLJDHD4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(((org.radixware.kernel.explorer.views.IExplorerView) </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthTTUQQ3QNAVENTCMAW45HZ7Q4UE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>()).asQWidget());
+    } else {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> filter = "";
+        Str ext = "";
+        if (type.equals(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE aciKNDWK7PMWRD7JHQ25GV6BV7BEY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>)) {
+            filter = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mls5CLAWKUS65DLDN5ELZ7KVDJNIM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+            ext = "csv";
+        } else if (type.equals(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE aciRO6YJVU2UJARPETZGVPPEDVGN4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>)) {
+            filter = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsNJFKUKSXNFCHRDMQJMX5VK3O2E"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+            ext = "xml";
+        } else if (type.equals(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE aciIL3YBS33E5GHDLWOROHNBPAC5M" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>)) {
+            filter = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsQF6MUN3PTBCJJAPZ33C4W4GCFY"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+            ext = "xls";
+        } else if (type.equals(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE aciW2UXJEKEEJDCTEIMOBGJLBPZVU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>)) {
+            filter = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsY7O3VFP3DVCNVI2XMBAVY35554"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+            ext = "txt";
+        }
+
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcRE2EXB6FO5DGHL6ZYQPDYNOVNY"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> saveDialog = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcRE2EXB6FO5DGHL6ZYQPDYNOVNY"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(((org.radixware.kernel.explorer.views.IExplorerView) </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthTTUQQ3QNAVENTCMAW45HZ7Q4UE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>()).asQWidget());
+        saveDialog.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcRE2EXB6FO5DGHL6ZYQPDYNOVNY mthT4HLXXWSHNFUZFS4S6EIWCZYUA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcRE2EXB6FO5DGHL6ZYQPDYNOVNY"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.AcceptMode.AcceptSave);
+        saveDialog.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcRE2EXB6FO5DGHL6ZYQPDYNOVNY mthSNHCFUUO2RHMPPLOCP3RR6S76A" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(filter);
+        saveDialog.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcRE2EXB6FO5DGHL6ZYQPDYNOVNY mthZCCJSESMJNFLFBKIJEY6IKLJFU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(ext);
+        saveDialog.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthQF2WXV3YDFGHNPOLGSKADYYKNM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsVE6APU4VSVAXZAXHFHDYLZSF7M"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+
+        if (saveDialog.exec() == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcBQWVU3OGYFHPXEZH5ND56A3YBU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.DialogCode.Accepted.value()) {
+            java.util.List&lt;Str> selection = saveDialog.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcRE2EXB6FO5DGHL6ZYQPDYNOVNY mth2YUURIVNORCGZLZ6CGGUAI2WMY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+            if (!selection.isEmpty()) {
+                fileName = selection.get(0);
+            }
+        }
+
+    }
+
+ 
+
+    if (fileName == null || fileName.isEmpty())
+        return;
+
+    final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> exportReportCmdOwner;
+
+    if (this.reportPubModel instanceof </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+        exportReportCmdOwner = (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) reportPubModel;
+    } else {
+        exportReportCmdOwner = reportPub; // for contextless (common) reports
+    }
+
+    final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcETZW74XVUBEX5N3MV3IZMMDTUU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> exportReportCmd = exportReportCmdOwner.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthBN46PMVUBFADVFFMPLGSSR7ZRM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(exportReportCmdId);
+    if (exportReportCmd.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcETZW74XVUBEX5N3MV3IZMMDTUU mthRWHLEQZQWVAGRHQVCHPTMKMUA4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>()) {
+        reportPub.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecUNC67IF5OBCX7NOPNLQOCUG374 eprFP5NARHOA5E7LNMKWHBCS5Y3FM aemFP5NARHOA5E7LNMKWHBCS5Y3FM mthQSKFOO72WJFJHATZOEOE7L4U6A" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(exportReportCmd, fileName, type);
+    } else {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthRBQCV7YXWNFAFDCE2AZNZCHAAI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsBWX67GE3YNET3DITL6M6GVTCYA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+    }
+} catch (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> ex) {
+// NOTHING - cancelled
+} catch (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> ex) {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthLEP5OWV3LFDULGYALX3KD3GT6A" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(ex);
+}
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthP4MJXHULXBA7JB2XPHMII5APGQ" Name="btSaveCSV_clicked" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="checked" Id="mprEXROUMAY55A7LIFJGZ7H5X3I24">
+              <Type TypeId="1"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI admW5PID65T75HKXDBDATMEQELCKI mthTIBVAXEMBRD3DAYQQPKMOAVGHI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE aciKNDWK7PMWRD7JHQ25GV6BV7BEY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth73LPIHWNSVDYVIL6UQVQBPAPQE" Name="isExportToCsvEnabled" Nature="0" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <ReturnType TypeId="401" extStr="boolean"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI wdgWLYGAWS3HRDJ7EGCKPFEYRI4CY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Model.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U admNQH3RLW7ERBQFEQQMFZTMZBY2U mth6TUIMG4Y6BG2XF5NQIWNQPVPE4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE aciKNDWK7PMWRD7JHQ25GV6BV7BEY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthTOCR54XZBNBT3LTCKLAJN4CJD4" Name="btRunReportDesigner_clicked" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="checked" Id="mprHXEULLHXJJGA3K7XLSI5HPOW2A">
+              <Type TypeId="1"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcHEZJAXTI3JDGJHX3M3PJT6YIRE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcHEZJAXTI3JDGJHX3M3PJT6YIRE mthCPGLYV3UBNBM7KCMZII33J4WUQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(),</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsQRFRO6RU2JC3NC6LADMT3RGDZ4 aciZY44UBXZT5FAHOKSPI5YG4SJA4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth6LBTTIXLU5GWRBI3RW4T24XYPE" Name="btSaveOOXML_clicked" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="checked" Id="mprD4F6WDPOJJBTBNKYCTPJZEDYDU">
+              <Type TypeId="1"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI admW5PID65T75HKXDBDATMEQELCKI mthTIBVAXEMBRD3DAYQQPKMOAVGHI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE aciIL3YBS33E5GHDLWOROHNBPAC5M" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthF3SZAZHEYJD6FPFVJRS3UNRDCM" Name="btSaveTXT_clicked" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="checked" Id="mprUDM2U233WJGWFFQWQHP6GOK4FE">
+              <Type TypeId="1"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI admW5PID65T75HKXDBDATMEQELCKI mthTIBVAXEMBRD3DAYQQPKMOAVGHI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE aciW2UXJEKEEJDCTEIMOBGJLBPZVU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthDRKCOA34SBEERARJLLA3F3BDUM" Name="isExportToTxtEnabled" Nature="0" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <ReturnType TypeId="401" extStr="boolean"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcW5PID65T75HKXDBDATMEQELCKI wdgWLYGAWS3HRDJ7EGCKPFEYRI4CY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Model.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U admNQH3RLW7ERBQFEQQMFZTMZBY2U mth6TUIMG4Y6BG2XF5NQIWNQPVPE4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE aciW2UXJEKEEJDCTEIMOBGJLBPZVU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+      </Methods>
+    </EmbeddedModel>
+  </AdsCustomWidgetDefinition>
+</AdsDefinition>

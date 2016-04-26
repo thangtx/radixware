@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="axcBIUGIGWU7RCATP4DY2KS25NTMM" Name="UniqueConstraintViolation" Type="8" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.server.exceptions.UniqueConstraintViolation"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderaxcBIUGIGWU7RCATP4DY2KS25NTMM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaxcBIUGIGWU7RCATP4DY2KS25NTMM"/>
+    </Bodies>
+    <MethodGroup Id="cmgMDREEJT57JA27BWSRGHJXRFB7I" Name="Root"/>
+    <PropertyGroup Id="cpgMKWLZRXBJVHXPNNBRRYVPHP4KU" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth25LUKDZ6DVABXBQON6G4M2SN6A" Name="UniqueConstraintViolation" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.server.meta.clazzes.RadClassDef;Lorg.radixware.kernel.common.defs.dds.DdsTableDef;Lorg.radixware.kernel.common.defs.dds.DdsIndexDef;Ljava.lang.String;Ljava.sql.SQLException;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="classDef" Id="mprQW6EVJRJVBFPJIBDXQ4UKBAOLM">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.meta.clazzes.RadClassDef"/>
+          </Parameter>
+          <Parameter Name="fableDef" Id="mprIKXADQTIPBFLVNYDVXMXUWCFWM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.defs.dds.DdsTableDef"/>
+          </Parameter>
+          <Parameter Name="indefDef" Id="mprCTYQ7BZUSZDWFFBOSUXZXURLYY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.defs.dds.DdsIndexDef"/>
+          </Parameter>
+          <Parameter Name="mess" Id="mprEJF4CANOONA5BBOWKA4F2YFCAQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="sqlEx" Id="mprKUTBLFRV3NDXLAN7W5VJJUYKYI">
+            <Type TypeId="400" extStr="java.sql.SQLException"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthCCDOIY75YFHHJB7TUX7GETVRKE" Name="getClassId" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getClassId()Lorg.radixware.kernel.common.types.Id;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+      </Method>
+      <Method Id="mthCBZKIM3C4FD3TPTZAOVQGIQEXU" Name="getKey" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getKey()Lorg.radixware.kernel.common.defs.dds.DdsIndexDef;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.defs.dds.DdsIndexDef"/>
+      </Method>
+      <Method Id="mthODQ4HRFTOFDHPHXOFRMUCL6EEU" Name="getParentRefPropIdsForIndexColumn" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getParentRefPropIdsForIndexColumn(Lorg.radixware.kernel.common.types.Id;)Ljava.util.Set&lt;Lorg.radixware.kernel.common.types.Id;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprYATULRYC6VFM3IV4MGCCRUYWLM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.Set">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthWHU6FMIMXNCK7L6IWVSQQNDE34" Name="getTable" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getTable()Lorg.radixware.kernel.common.defs.dds.DdsTableDef;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.defs.dds.DdsTableDef"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

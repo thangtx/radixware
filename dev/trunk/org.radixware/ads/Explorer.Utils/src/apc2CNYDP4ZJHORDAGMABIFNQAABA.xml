@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="apc2CNYDP4ZJHORDAGMABIFNQAABA" Name="QtTypesConverter" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcFFZYQZEACBHA7GWTTMCS4Y3II4">
+        <xsc:Item>
+          <xsc:Java>import java.util.Calendar;
+import java.util.GregorianCalendar;
+import com.trolltech.qt.core.QDate;
+import com.trolltech.qt.core.QDateTime;
+import com.trolltech.qt.core.QTime;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc4VPOFCVKCBHQDFJB4KJDTVEUIM"/>
+    </Bodies>
+    <MethodGroup Id="cmgZZS2CKMBQJFGRI6PWN4HKXQREQ" Name="Root"/>
+    <PropertyGroup Id="cpgH5AUA4MCYREQLB2SJZHLICRLVE" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth4D2WAI47JHORDAGMABIFNQAABA" Name="toQtDateTime" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="dt" Id="mprSO4KFS6QB5FI7JEIHIPFGMGVMY">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.core.QDateTime"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (dt == null) 
+   return null; 
+   
+GregorianCalendar c=new GregorianCalendar();
+c.setTimeInMillis(dt.getTime());   
+
+QDate date = new QDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH));
+QTime time = new QTime(c.get(Calendar.HOUR), c.get(Calendar.MINUTE), c.get(Calendar.SECOND));
+return new QDateTime(date, time);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthWCQ5PTEZJHORDAGMABIFNQAABA" Name="fromQDateTime" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="dt" Id="mprIHYTX4TETNAJJF5D6YT7GA3QSM">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QDateTime"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (dt == null) 
+   return null;
+
+return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(
+   new GregorianCalendar(dt.date().year(), dt.date().month()-1, dt.date().day(),
+                         dt.time().hour(), dt.time().minute(), dt.time().second() )
+                         .getTimeInMillis()
+                    ); </xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

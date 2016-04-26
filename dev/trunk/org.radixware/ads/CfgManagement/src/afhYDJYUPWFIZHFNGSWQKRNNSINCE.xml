@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="afhYDJYUPWFIZHFNGSWQKRNNSINCE" Name="CfgExportForm.Single" TitleId="mlsWH7UU6ICYJEZFNRX4XNO3MAYOY" Type="19" ClientEnvironment="explorer">
+    <AccessRules IsAbstract="true"/>
+    <Headers>
+      <Src Name="HeaderafhYDJYUPWFIZHFNGSWQKRNNSINCE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyafhYDJYUPWFIZHFNGSWQKRNNSINCE"/>
+    </Bodies>
+    <MethodGroup Id="cmgHB2A7K7TPFEONBRC3DRG2EITBE" Name="Root"/>
+    <PropertyGroup Id="cpgDAXDKNIFZZEAREH5NVQFYQJRYA" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthBYHKXLVLX5DKDMRNN57QOYLWVM" Name="extractExportData" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsAbstract="true"/>
+        <Parameters>
+          <Parameter Name="cfgObject" Id="mprYQTYBH3QRZCCZHJQKBKTKL3CFQ">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="data" Id="mprPYLAMXSMVNHQZG5U5MWWFZXYTE">
+            <Type TypeId="411" Path="adcE2YCRKQL7JE7HBMJ7SVQTSLQRA"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthTYWXJRLODNAT7LXOISEO5SFPZU" Name="onSubmit" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="context" Id="mprFFH3HLG3HJDGPPEAUI3AKQYUOQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.FormHandler.Context"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.types.FormHandler.NextDialogsRequest"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcE2YCRKQL7JE7HBMJ7SVQTSLQRA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> data = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcE2YCRKQL7JE7HBMJ7SVQTSLQRA mthXKSVXXJ2YRDFLGEW4YXTUZZYLQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>((</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcEntity____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) context.entity);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhYDJYUPWFIZHFNGSWQKRNNSINCE mthBYHKXLVLX5DKDMRNN57QOYLWVM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(data.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcE2YCRKQL7JE7HBMJ7SVQTSLQRA prdLVEOXBUEYBDEFJLZDCYUZFOZSY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, data);
+
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhSSHRIVVMURHOZBFPNBAHOK4YOI prdH5MTLP7ERZBHVBJ55N7AERJZEM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == true)
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhSSHRIVVMURHOZBFPNBAHOK4YOI mthP32GXG2COBEJ5M7ELGGXVP3LNA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(data.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcE2YCRKQL7JE7HBMJ7SVQTSLQRA prdHTE6WGDJ35FFJGQAKSHOWDQWXY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+else
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhYDJYUPWFIZHFNGSWQKRNNSINCE mth6UI5GZVZPJA4ZOBJTD26PAF7BA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(data);
+    
+return null;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth6UI5GZVZPJA4ZOBJTD26PAF7BA" Name="writeToPacket" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="data" Id="mpr4MQXHTBN6FECHE2Q7DQJFTTBTE">
+            <Type TypeId="411" Path="adcE2YCRKQL7JE7HBMJ7SVQTSLQRA"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="acl3O3QBSF6KRHMLE5WQLUB3N2OG4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> item = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="acl3O3QBSF6KRHMLE5WQLUB3N2OG4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhSSHRIVVMURHOZBFPNBAHOK4YOI prdGIRD7QI6DNGFHP6IZTCDDGEAA4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclDITXIZNY6NBNROSDPK6PPO3RSM mthBNM53XYR2VHXDAPPS4E5GZWQAU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(data, null);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhYDJYUPWFIZHFNGSWQKRNNSINCE mthGQ2UW3DSLNCAXHZKKOTJMYCC6E" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(item);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthGQ2UW3DSLNCAXHZKKOTJMYCC6E" Name="storeExportOptions" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsAbstract="true"/>
+        <Parameters>
+          <Parameter Name="item" Id="mpr5WIJEEFS6BBVLG5SW3LR3J3GIU">
+            <Type TypeId="411" Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+    </Methods>
+    <Presentations>
+      <Form InheritanceMask="4112">
+        <Model Id="afmYDJYUPWFIZHFNGSWQKRNNSINCE" Name="CfgExportForm.Single:Model" Type="18">
+          <AccessRules/>
+          <Headers>
+            <Src Name="HeaderafmYDJYUPWFIZHFNGSWQKRNNSINCE"/>
+          </Headers>
+          <Bodies>
+            <Src Name="BodyafmYDJYUPWFIZHFNGSWQKRNNSINCE"/>
+          </Bodies>
+          <MethodGroup Id="cmgGH5ZG2YOZJDJJGPETQECXENANI" Name="Root"/>
+          <PropertyGroup Id="cpgO5PGLRTLGNFRHGLLHQACAZCCMI" Name="Root"/>
+          <Properties/>
+          <Methods/>
+        </Model>
+      </Form>
+    </Presentations>
+    <Extends TypeId="411" Path="afhSSHRIVVMURHOZBFPNBAHOK4YOI"/>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- You may freely edit this file. See commented blocks below for -->
+<!-- some examples of how to customize the build. -->
+<!-- (If you delete it and reopen the project it will be recreated.) -->
+<!-- By default, only the Clean and Build commands use this build script. -->
+<!-- Commands such as Run, Debug, and Test only use this build script if -->
+<!-- the Compile on Save feature is turned off for the project. -->
+<!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
+<!-- in the project's Project Properties dialog box.-->
+<project name="org.radixware-kernel-explorer" default="default" basedir=".">
+    <description>Builds, tests, and runs the project org.radixware-kernel-explorer.</description>
+    <import file="nbproject/build-impl.xml"/>
+
+    <!--
+
+    There exist several targets which are by default empty and which can be 
+    used for execution of your tasks. These targets are usually executed 
+    before and after some main targets. They are: 
+
+      -pre-init:                 called before initialization of project properties
+      -post-init:                called after initialization of project properties
+      -pre-compile:              called before javac compilation
+      -post-compile:             called after javac compilation
+      -pre-compile-single:       called before javac compilation of single file
+      -post-compile-single:      called after javac compilation of single file
+      -pre-compile-test:         called before javac compilation of JUnit tests
+      -post-compile-test:        called after javac compilation of JUnit tests
+      -pre-compile-test-single:  called before javac compilation of single JUnit test
+      -post-compile-test-single: called after javac compilation of single JUunit test
+      -pre-jar:                  called before JAR building
+      -post-jar:                 called after JAR building
+      -post-clean:               called after cleaning build products
+
+    (Targets beginning with '-' are not intended to be called on their own.)
+
+    Example of inserting an obfuscator after compilation could look like this:
+
+        <target name="-post-compile">
+            <obfuscate>
+                <fileset dir="${build.classes.dir}"/>
+            </obfuscate>
+        </target>
+
+    For list of available properties check the imported 
+    nbproject/build-impl.xml file. 
+
+
+    Another way to customize the build is by overriding existing main targets.
+    The targets of interest are: 
+
+      -init-macrodef-javac:     defines macro for javac compilation
+      -init-macrodef-junit:     defines macro for junit execution
+      -init-macrodef-debug:     defines macro for class debugging
+      -init-macrodef-java:      defines macro for class execution
+      -do-jar-with-manifest:    JAR building (if you are using a manifest)
+      -do-jar-without-manifest: JAR building (if you are not using a manifest)
+      run:                      execution of project 
+      -javadoc-build:           Javadoc generation
+      test-report:              JUnit report generation
+
+    An example of overriding the target for project execution could look like this:
+
+        <target name="run" depends="org.radixware-kernel-explorer-impl.jar">
+            <exec dir="bin" executable="launcher.exe">
+                <arg file="${dist.jar}"/>
+            </exec>
+        </target>
+
+    Notice that the overridden target depends on the jar target and not only on 
+    the compile target as the regular run target does. Again, for a list of available 
+    properties which you can use, check the target you are overriding in the
+    nbproject/build-impl.xml file. 
+
+    -->
+    
+    <property environment="env"/>
+    <condition property="tsrelease">
+        <available file="lrelease" filepath="${env.PATH}" type="file"/>
+    </condition>
+    <!-- *****************  Cobertura code coverage entries ***************** -->
+    <taskdef classpath="cobertura.jar" resource="tasks.properties" onerror="ignore"/>
+
+    <target name="-cobertura-init" if="cobertura.enabled">
+        <delete dir="${build.instrumented.dir}" />
+        <delete dir="${build.report.cobertura.dir}" />
+        <mkdir dir="${build.instrumented.dir}" />
+        <mkdir dir="${build.report.cobertura.dir}" />
+        <cobertura-instrument todir="${build.instrumented.dir}">
+            <fileset dir="${build.classes.dir}">
+                <include name="**/*.class"/>
+            </fileset>
+        </cobertura-instrument>
+    </target>
+
+    <target name="-cobertura-report" if="cobertura.enabled">
+        <!-- You can disable the html portion if you are using the hudson plugin and rely on the xml -->
+        <!--<cobertura-report format="html" srcdir="${src.dir}" destdir="${build.report.cobertura.dir}"/>-->
+        <!-- Used by the hudson plug-in -->
+        <cobertura-report format="xml" srcdir="${src.dir}" destdir="${build.report.cobertura.dir}"/>
+        <delete file="cobertura.ser" />
+    </target>
+
+    <target name="-pre-compile-test">
+        <antcall target="-cobertura-init"/>
+    </target>
+    <target name="-post-test-run">
+        <antcall target="-cobertura-report"/>
+    </target>
+
+<!-- *****************  compiling translations   ***************** -->
+    <target name="-pre-compile" depends="build-xbeans">
+        <antcall target="compile-ts" />
+        <antcall target="warning-ts" />
+    </target>
+    
+    <target name="compile-ts" if="${tsrelease}">
+        <echo message="Compiling translations..." />
+        <property name="tsfile" value="../../common/src/client/client_en.ts"/>
+        <property name="qmfile" value="../src/org/radixware/kernel/explorer/translation/explorer_ru.qm" />
+        
+        <exec executable="lrelease">
+            <arg value="${tsfile}"/>
+            <arg value="-qm"/>
+            <arg value="${qmfile}"/>         
+        </exec>
+    </target>
+    
+    <target name="warning-ts" unless="${tsrelease}">
+        <echo level="warning" message="Warning: lrelease has not been found in PATH"/>
+    </target>
+<!-- *****************  xbeans jar build ***************** -->
+    <target name="check-xbeans-uptodate" depends="init">
+        <condition property="xbeans-build-not-required">
+            <and>
+                <uptodate>
+                    <srcfiles dir= "${schema.src.dir}" includes="*.xsd"/>
+                    <mapper type="glob" from="*.xsd" to="{schema.dist.dir}/xb_*.jar"/>
+                </uptodate>
+                <uptodate>
+                    <srcfiles dir= "${schema.src.dir}" includes="*.wsdl"/>
+                    <mapper type="glob" from="*.wsdl" to="{schema.dist.dir}/xb_*.jar"/>
+                </uptodate>
+            </and>
+        </condition>
+    </target>
+    
+    <target name="check-schema-xbeans-uptodate">
+        <uptodate property="schema-xbeans-build-not-required" srcfile="${schema.src.dir}/${schema-file}" targetfile="${schema.dist.dir}/xb_${schema-name}.jar"/>
+    </target>
+    
+    <target name="schema-build-xbeans" depends="check-schema-xbeans-uptodate" unless="schema-xbeans-build-not-required">
+        <echo message="BUILD ${schema-file}"/>
+        <delete file="${schema.dist.dir}/xb_${schema-name}.jar"/>
+        <delete dir="${build.dir}/xbeans/${schema-name}"/>
+        <mkdir dir="${build.dir}/xbeans/${schema-name}"/>
+        <java classname="${xbeans-compiler-class}" fork="true">
+            <arg value="${schema.src.dir}/${schema-file}"/>
+            <arg value="${schema.dist.dir}/xb_${schema-name}.jar"/>
+            <arg value="${schema.dist.dir}/tmp_xb_${schema-name}.jar"/>
+            <arg value="-src"/>
+            <arg value="${build.dir}/xbeans/${schema-name}"/>
+            <arg value="-compile"/>
+		<!--	<arg value="-verbose"/> -->
+            <classpath>
+                <fileset dir="${schema.dist.dir}">
+                    <include name="**/xb_*.jar"/>
+                </fileset>
+                <pathelement path="${build.classes.dir}"/>
+                <pathelement path="${javac.classpath}"/>
+            </classpath>
+        </java>
+    </target>
+    
+    <target name="build-xbeans" depends="check-xbeans-uptodate" unless="xbeans-build-not-required">
+        <property name="xbeans-compiler-dir" value="org/radixware/kernel/common/build/xbeans"/>
+        <property name="xbeans-compiler-class" value="org.radixware.kernel.common.build.xbeans.XbeansSchemaCompilerAdapter"/>
+
+	<!-- compile enums firstly -->
+        <javac srcdir="${src.src.dir}" destdir="${build.classes.dir}"
+               includes="org/radixware/kernel/server/enums/*.*"
+               classpath="${javac.classpath}"
+               debug="@{debug}" deprecation="${javac.deprecation}" encoding="${source.encoding}"/>
+
+	<!-- define macros -->
+        <macrodef name="xbeans-build">
+            <attribute name="schema-file"/>
+            <attribute name="schema-name"/>
+            <sequential>
+                <antcall target="schema-build-xbeans">
+                    <param name="schema-file" value="@{schema-file}"/>
+                    <param name="schema-name" value="@{schema-name}"/>
+                </antcall>
+            </sequential>
+        </macrodef>
+
+	<!-- do build -->
+        <mkdir dir="${schema.dist.dir}"/>
+        <!--xbeans-build schema-file="connections.xsd"  schema-name="connections"/-->
+        <xbeans-build schema-file="testreport.xsd" schema-name="testreport"/>        
+        <xbeans-build schema-file="junittestreport.xsd"  schema-name="junittestreport"/>
+	<xbeans-build schema-file="monitoringSettings.xsd"  schema-name="monitoringSettings"/>
+        <xbeans-build schema-file="inspector.wsdl"  schema-name="inspector"/>
+    </target>
+    
+    
+    
+    <target name="-post-jar">
+        <copy todir="../bin" file="${dist.jar}"/>
+		<!-- *************** build directory.xml *****************  -->
+        <echo message="BUILD directory.xml"/>
+        <java classname="org.radixware.kernel.common.build.directory.DirectoryFileBuilder"
+  	      classpath="${javac.classpath}"
+              fork="true">
+		<!-- Command line must be: DirectoryFile excludeRegexp group1 regexp1  group2 regexp2 ... -->
+            <arg value="../directory.xml"/>
+	    <!-- lib/qtjambi-*.jar - libraries used only for explorer tests. Explorer uses libraries placed in lib/native/ directory when it runs throw starter. -->
+	    <arg value="(.*\.svn||src||xsd||doc||project||build||qt-modification)/.*"/>
+            <arg value="KernelExplorer"/>
+	    <arg value="((bin||lib)/.*\.jar||lib/native/.*/.*)"/>
+            <!--<arg value="(bin||lib)/.*\.jar" />-->
+            <classpath>
+                <fileset dir="${dist.dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+                <pathelement path="${build.classes.dir}"/>
+                <pathelement path="${javac.classpath}"/>
+            </classpath>
+        </java>
+        <java classname="org.radixware.kernel.common.build.directory.DirectoryFileSigner"
+  	      classpath="${javac.classpath}"
+              fork="true">
+            <arg value="../directory.xml"/>
+            <classpath>
+                <fileset dir="${dist.dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+                <pathelement path="${build.classes.dir}"/>
+                <pathelement path="${javac.classpath}"/>
+            </classpath>
+        </java>
+    </target>
+    <target name="-post-clean">
+        <delete dir="../bin"/>
+    </target>
+
+
+
+    <target name="distributive" depends="jar"/>
+
+</project>

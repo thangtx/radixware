@@ -1,0 +1,1807 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  Internal Error (constantPoolOop.cpp:91), pid=14845, tid=140030229513984
+#  guarantee(error != (Symbol*)NULL) failed: tag mismatch with resolution error table
+#
+# JRE version: OpenJDK Runtime Environment (7.0_51) (build 1.7.0_51-b00)
+# Java VM: OpenJDK 64-Bit Server VM (24.45-b08 mixed mode linux-amd64 compressed oops)
+# Failed to write core dump. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+# If you would like to submit a bug report, please include
+# instructions on how to reproduce the bug and visit:
+#   http://icedtea.classpath.org/bugzilla
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007f5ad282d000):  JavaThread "Module-Actions" daemon [_thread_in_vm, id=15849, stack(0x00007f5b54068000,0x00007f5b54169000)]
+
+Stack: [0x00007f5b54068000,0x00007f5b54169000],  sp=0x00007f5b54166580,  free space=1017k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [libjvm.so+0x8f7825]  VMError::report_and_die()+0x175
+V  [libjvm.so+0x46a11b]  report_vm_error(char const*, int, char const*, char const*)+0x5b
+V  [libjvm.so+0x461690]  constantPoolOopDesc::klass_at_impl(constantPoolHandle, int, Thread*)+0xbf0
+V  [libjvm.so+0x5ae580]  InterpreterRuntime::quicken_io_cc(JavaThread*)+0x1f0
+j  org.radixware.kernel.common.builder.release.ReleaseSettings.<init>(Lorg/radixware/kernel/common/repository/Branch;Lorg/radixware/kernel/common/defs/ads/build/IFlowLogger;Lorg/radixware/kernel/common/builder/api/IBuildEnvironment;ZLjava/lang/Object;)V+113
+j  org.radixeare.kernel.designer.ads.build.release.actions.ReleaseActionPerformer.perform(Lorg/radixware/kernel/common/repository/Branch;)V+47
+v  ~StubRoutines::call_stub
+V  [libjvm.so+0x5ba11c]  JavaCalls::call_helper(JavaValue*, methodHandle*, JavaCallArguments*, Thread*)+0x31c
+V  [libjvm.so+0x5b9bd5]  JavaCalls::call(JavaValue*, methodHandle, JavaCallArguments*, Thread*)+0x25
+V  [libjvm.so+0x7f6acf]  Reflection::invoke(instanceKlassHandle, methodHandle, Handle, bool, objArrayHandle, BasicType, objArrayHandle, bool, Thread*)+0x4ef
+V  [libjvm.so+0x7f7cd3]  Reflection::invoke_method(oopDesc*, Handle, objArrayHandle, Thread*)+0x1d3
+V  [libjvm.so+0x5fd9fa]  JVM_InvokeMethod+0x14a
+j  sun.reflect.NativeMethodAccessorImpl.invoke0(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+0
+j  sun.reflect.NativeMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+87
+j  sun.reflect.DelegatingMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+6
+j  java.lang.reflect.Method.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+57
+j  org.radixeare.kernel.designer.ads.build.release.actions.AbstractReleaseAction.performAction([Lorg/openide/nodes/Node;)V+88
+j  org.openide.util.actions.NodeAction$DelegateAction$1.run()V+14
+j  org.openide.util.actions.ActionInvoker$1.run()V+27
+j  org.openide.util.actions.ActionInvoker$ActionRunnable.actionPerformed(Ljava/awt/event/ActionEvent;)V+1
+j  org.netbeans.core.ModuleActions.invokeAction(Ljavax/swing/Action;Ljava/awt/event/ActionEvent;)V+23
+j  org.netbeans.modules.openide.actions.ActionsBridgeImpl.invokeAction(Ljavax/swing/Action;Ljava/awt/event/ActionEvent;)V+5
+j  org.openide.util.actions.ActionInvoker$ActionRunnable.doRun()V+23
+j  org.openide.util.actions.ActionInvoker$2.run()V+4
+j  org.openide.util.RequestProcessor$Task.run()V+51
+j  org.openide.util.RequestProcessor$Processor.run()V+247
+v  ~StubRoutines::call_stub
+V  [libjvm.so+0x5ba11c]  JavaCalls::call_helper(JavaValue*, methodHandle*, JavaCallArguments*, Thread*)+0x31c
+V  [libjvm.so+0x5b92f5]  JavaCalls::call_virtual(JavaValue*, KlassHandle, Symbol*, Symbol*, JavaCallArguments*, Thread*)+0x1d5
+V  [libjvm.so+0x5b934f]  JavaCalls::call_virtual(JavaValue*, Handle, KlassHandle, Symbol*, Symbol*, Thread*)+0x4f
+V  [libjvm.so+0x5f06d2]  thread_entry(JavaThread*, Thread*)+0x112
+V  [libjvm.so+0x8b3045]  JavaThread::thread_main_inner()+0x105
+V  [libjvm.so+0x8b3351]  JavaThread::run()+0x2b1
+V  [libjvm.so+0x783762]  java_start(Thread*)+0xf2
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+j  org.radixware.kernel.common.builder.release.ReleaseSettings.<init>(Lorg/radixware/kernel/common/repository/Branch;Lorg/radixware/kernel/common/defs/ads/build/IFlowLogger;Lorg/radixware/kernel/common/builder/api/IBuildEnvironment;ZLjava/lang/Object;)V+113
+j  org.radixeare.kernel.designer.ads.build.release.actions.ReleaseActionPerformer.perform(Lorg/radixware/kernel/common/repository/Branch;)V+47
+v  ~StubRoutines::call_stub
+j  sun.reflect.NativeMethodAccessorImpl.invoke0(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+0
+j  sun.reflect.NativeMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+87
+j  sun.reflect.DelegatingMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+6
+j  java.lang.reflect.Method.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+57
+j  org.radixeare.kernel.designer.ads.build.release.actions.AbstractReleaseAction.performAction([Lorg/openide/nodes/Node;)V+88
+j  org.openide.util.actions.NodeAction$DelegateAction$1.run()V+14
+j  org.openide.util.actions.ActionInvoker$1.run()V+27
+j  org.openide.util.actions.ActionInvoker$ActionRunnable.actionPerformed(Ljava/awt/event/ActionEvent;)V+1
+j  org.netbeans.core.ModuleActions.invokeAction(Ljavax/swing/Action;Ljava/awt/event/ActionEvent;)V+23
+j  org.netbeans.modules.openide.actions.ActionsBridgeImpl.invokeAction(Ljavax/swing/Action;Ljava/awt/event/ActionEvent;)V+5
+j  org.openide.util.actions.ActionInvoker$ActionRunnable.doRun()V+23
+j  org.openide.util.actions.ActionInvoker$2.run()V+4
+j  org.openide.util.RequestProcessor$Task.run()V+51
+j  org.openide.util.RequestProcessor$Processor.run()V+247
+v  ~StubRoutines::call_stub
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x00007f5ae8e38800 JavaThread "Inactive RequestProcessor thread [Was:Logging Flush/org.netbeans.core.startup.logging.DispatchingHandler]" daemon [_thread_blocked, id=15850, stack(0x00007f5b4666b000,0x00007f5b4676c000)]
+=>0x00007f5ad282d000 JavaThread "Module-Actions" daemon [_thread_in_vm, id=15849, stack(0x00007f5b54068000,0x00007f5b54169000)]
+  0x00007f5b0c03a800 JavaThread "Timer-4" daemon [_thread_blocked, id=14923, stack(0x00007f5b4d1de000,0x00007f5b4d2df000)]
+  0x00007f5a4c1db800 JavaThread "RadixWare Request Processor Thread #9" daemon [_thread_blocked, id=14919, stack(0x00007f5b36f4e000,0x00007f5b3704f000)]
+  0x00007f5a4c1da800 JavaThread "RadixWare Request Processor Thread #8" daemon [_thread_blocked, id=14918, stack(0x00007f5b3704f000,0x00007f5b37150000)]
+  0x00007f5a92239000 JavaThread "RadixWare Request Processor Thread #7" daemon [_thread_blocked, id=14917, stack(0x00007f5b37150000,0x00007f5b37251000)]
+  0x00007f5a92124000 JavaThread "RadixWare Request Processor Thread #6" daemon [_thread_blocked, id=14916, stack(0x00007f5b37251000,0x00007f5b37352000)]
+  0x00007f5a4c10a000 JavaThread "RadixWare Request Processor Thread #5" daemon [_thread_blocked, id=14915, stack(0x00007f5b37352000,0x00007f5b37453000)]
+  0x00007f5aebacd000 JavaThread "RadixWare Request Processor Thread #4" daemon [_thread_blocked, id=14914, stack(0x00007f5b37453000,0x00007f5b37554000)]
+  0x00007f5aeb8fd000 JavaThread "RadixWare Request Processor Thread #3" daemon [_thread_blocked, id=14913, stack(0x00007f5b37554000,0x00007f5b37655000)]
+  0x00007f5ad2928000 JavaThread "Timer-3" [_thread_blocked, id=14912, stack(0x00007f5b37655000,0x00007f5b37756000)]
+  0x00007f5ad28c5000 JavaThread "Timer-2" [_thread_blocked, id=14911, stack(0x00007f5b37756000,0x00007f5b37857000)]
+  0x00007f5aeb117800 JavaThread "RadixWare Request Processor Thread #2" daemon [_thread_blocked, id=14910, stack(0x00007f5b37857000,0x00007f5b37958000)]
+  0x00007f5ad2821000 JavaThread "Timer-1" [_thread_blocked, id=14909, stack(0x00007f5b37958000,0x00007f5b37a59000)]
+  0x00007f5aea45a800 JavaThread "RadixWare Request Processor Thread #1" daemon [_thread_blocked, id=14908, stack(0x00007f5b3c083000,0x00007f5b3c184000)]
+  0x00007f5aea44f000 JavaThread "RadixWare Request Processor Thread #0" daemon [_thread_blocked, id=14907, stack(0x00007f5b3c184000,0x00007f5b3c285000)]
+  0x00007f5ad0dfa000 JavaThread "Batik CleanerThread" daemon [_thread_blocked, id=14901, stack(0x00007f5b3cd13000,0x00007f5b3ce14000)]
+  0x00007f5abc01f000 JavaThread "Default RequestProcessor" daemon [_thread_blocked, id=14899, stack(0x00007f5b3cf15000,0x00007f5b3d016000)]
+  0x00007f5b6c00e800 JavaThread "DestroyJavaVM" [_thread_blocked, id=14846, stack(0x00007f5b725e6000,0x00007f5b726e7000)]
+  0x00007f5ae80d2000 JavaThread "Timer-0" daemon [_thread_blocked, id=14895, stack(0x00007f5b3d7fb000,0x00007f5b3d8fc000)]
+  0x00007f5ac4089000 JavaThread "pool-1-thread-1" [_thread_blocked, id=14894, stack(0x00007f5b3dafa000,0x00007f5b3dbfb000)]
+  0x00007f5adc542800 JavaThread "TimerQueue" daemon [_thread_blocked, id=14893, stack(0x00007f5b3d8fc000,0x00007f5b3d9fd000)]
+  0x00007f5adc512800 JavaThread "Thread-1" daemon [_thread_blocked, id=14892, stack(0x00007f5b3dbfb000,0x00007f5b3dcfc000)]
+  0x00007f5ad0003800 JavaThread "org.netbeans.modules.debugger.jpda.visual AWT Access Loop" daemon [_thread_blocked, id=14880, stack(0x00007f5b4c46f000,0x00007f5b4c570000)]
+  0x00007f5adc127000 JavaThread "AWT-EventQueue-0" [_thread_blocked, id=14878, stack(0x00007f5b4c671000,0x00007f5b4c772000)]
+  0x00007f5adc0e7000 JavaThread "AWT-Shutdown" [_thread_blocked, id=14877, stack(0x00007f5b4c772000,0x00007f5b4c873000)]
+  0x00007f5adc0b2800 JavaThread "AWT-XAWT" daemon [_thread_in_native, id=14876, stack(0x00007f5b4c873000,0x00007f5b4c974000)]
+  0x00007f5adc08f000 JavaThread "Java2D Disposer" daemon [_thread_blocked, id=14875, stack(0x00007f5b4c974000,0x00007f5b4ca75000)]
+  0x00007f5adc049000 JavaThread "RequestProcessor queue manager" daemon [_thread_blocked, id=14874, stack(0x00007f5b4d0dd000,0x00007f5b4d1de000)]
+  0x00007f5b6c343800 JavaThread "CLI Requests Server" daemon [_thread_in_native, id=14871, stack(0x00007f5b5c9db000,0x00007f5b5cadc000)]
+  0x00007f5b6c31d000 JavaThread "Active Reference Queue Daemon" daemon [_thread_blocked, id=14870, stack(0x00007f5b5cadc000,0x00007f5b5cbdd000)]
+  0x00007f5b6c0c3000 JavaThread "Service Thread" daemon [_thread_blocked, id=14868, stack(0x00007f5b5e51d000,0x00007f5b5e61e000)]
+  0x00007f5b6c0c0800 JavaThread "C2 CompilerThread1" daemon [_thread_blocked, id=14867, stack(0x00007f5b5e61e000,0x00007f5b5e71f000)]
+  0x00007f5b6c0bd800 JavaThread "C2 CompilerThread0" daemon [_thread_blocked, id=14866, stack(0x00007f5b5e71f000,0x00007f5b5e820000)]
+  0x00007f5b04001000 JavaThread "JDWP Command Reader" daemon [_thread_in_native, id=14863, stack(0x00007f5b5e820000,0x00007f5b5e921000)]
+  0x00007f5b6c0bb800 JavaThread "JDWP Event Helper Thread" daemon [_thread_blocked, id=14862, stack(0x00007f5b5e921000,0x00007f5b5ea22000)]
+  0x00007f5b6c0b7800 JavaThread "JDWP Transport Listener: dt_socket" daemon [_thread_blocked, id=14860, stack(0x00007f5b5ea22000,0x00007f5b5eb23000)]
+  0x00007f5b6c0aa800 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=14858, stack(0x00007f5b5ed28000,0x00007f5b5ee29000)]
+  0x00007f5b6c088800 JavaThread "Finalizer" daemon [_thread_blocked, id=14857, stack(0x00007f5b5ee29000,0x00007f5b5ef2a000)]
+  0x00007f5b6c086800 JavaThread "Reference Handler" daemon [_thread_blocked, id=14856, stack(0x00007f5b5ef2a000,0x00007f5b5f02b000)]
+
+Other Threads:
+  0x00007f5b6c082800 VMThread [stack: 0x00007f5b5f02b000,0x00007f5b5f12c000] [id=14855]
+  0x00007f5b6c0d5800 WatcherThread [stack: 0x00007f5b5e41c000,0x00007f5b5e51d000] [id=14869]
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap
+ PSYoungGen      total 873472K, used 754780K [0x00000007aaa80000, 0x0000000800000000, 0x0000000800000000)
+  eden space 782848K, 87% used [0x00000007aaa80000,0x00000007d482e0c8,0x00000007da700000)
+  from space 90624K, 76% used [0x00000007da700000,0x00000007dea68f50,0x00000007dff80000)
+  to   space 105472K, 0% used [0x00000007f9900000,0x00000007f9900000,0x0000000800000000)
+ ParOldGen       total 317952K, used 172428K [0x0000000700000000, 0x0000000713680000, 0x00000007aaa80000)
+  object space 317952K, 54% used [0x0000000700000000,0x000000070a863238,0x0000000713680000)
+ PSPermGen       total 168448K, used 88449K [0x0000000680000000, 0x000000068a480000, 0x0000000700000000)
+  object space 168448K, 52% used [0x0000000680000000,0x00000006856605d8,0x000000068a480000)
+
+Card table byte_map: [0x00007f5b66d42000,0x00007f5b67943000] byte_map_base: 0x00007f5b63942000
+
+Polling page: 0x00007f5b72712000
+
+Code Cache  [0x00007f5b67943000, 0x00007f5b68283000, 0x00007f5b6a943000)
+ total_blobs=3401 nmethods=2597 adapters=762 free_code_cache=39839Kb largest_free_block=40661440
+
+Compilation events (10 events):
+Event: 706.338 Thread 0x00007f5b6c0bd800 2938             java.awt.Component::getNativeContainer (29 bytes)
+Event: 706.339 Thread 0x00007f5b6c0bd800 nmethod 2938 0x00007f5b68231210 code [0x00007f5b68231360, 0x00007f5b68231458]
+Event: 707.216 Thread 0x00007f5b6c0c0800 2939             org.radixware.kernel.common.defs.ads.module.ModuleDefinitions$1::accept (36 bytes)
+Event: 707.222 Thread 0x00007f5b6c0bd800 2940             org.radixware.kernel.common.defs.ads.AdsDefinition::getFile (33 bytes)
+Event: 707.225 Thread 0x00007f5b6c0c0800 nmethod 2939 0x00007f5b68269990 code [0x00007f5b68269ba0, 0x00007f5b6826a740]
+Event: 707.229 Thread 0x00007f5b6c0bd800 nmethod 2940 0x00007f5b6826d590 code [0x00007f5b6826d760, 0x00007f5b6826dd88]
+Event: 712.040 Thread 0x00007f5b6c0c0800 2941             org.antlr.runtime.CommonTokenStream::LB (61 bytes)
+Event: 712.047 Thread 0x00007f5b6c0c0800 nmethod 2941 0x00007f5b6826e390 code [0x00007f5b6826e540, 0x00007f5b6826ec18]
+Event: 716.701 Thread 0x00007f5b6c0bd800 2942 % !         sun.awt.X11.XToolkit::run @ 59 (410 bytes)
+Event: 716.744 Thread 0x00007f5b6c0bd800 nmethod 2942% 0x00007f5b68273750 code [0x00007f5b68273fe0, 0x00007f5b68276d60]
+
+GC Heap History (10 events):
+Event: 9.644 GC heap before
+{Heap before GC invocations=8 (full 0):
+ PSYoungGen      total 280064K, used 280037K [0x00000007aaa80000, 0x00000007ce780000, 0x0000000800000000)
+  eden space 258560K, 100% used [0x00000007aaa80000,0x00000007ba700000,0x00000007ba700000)
+  from space 21504K, 99% used [0x00000007ba700000,0x00000007bbbf9568,0x00000007bbc00000)
+  to   space 34816K, 0% used [0x00000007cc580000,0x00000007cc580000,0x00000007ce780000)
+ ParOldGen       total 169984K, used 30220K [0x0000000700000000, 0x000000070a600000, 0x00000007aaa80000)
+  object space 169984K, 17% used [0x0000000700000000,0x0000000701d832b0,0x000000070a600000)
+ PSPermGen       total 57856K, used 57800K [0x0000000680000000, 0x0000000683880000, 0x0000000700000000)
+  object space 57856K, 99% used [0x0000000680000000,0x00000006838720b0,0x0000000683880000)
+Event: 9.686 GC heap after
+Heap after GC invocations=8 (full 0):
+ PSYoungGen      total 539136K, used 34812K [0x00000007aaa80000, 0x00000007d0080000, 0x0000000800000000)
+  eden space 504320K, 0% used [0x00000007aaa80000,0x00000007aaa80000,0x00000007c9700000)
+  from space 34816K, 99% used [0x00000007cc580000,0x00000007ce77f2b0,0x00000007ce780000)
+  to   space 47616K, 0% used [0x00000007c9700000,0x00000007c9700000,0x00000007cc580000)
+ ParOldGen       total 169984K, used 45150K [0x0000000700000000, 0x000000070a600000, 0x00000007aaa80000)
+  object space 169984K, 26% used [0x0000000700000000,0x0000000702c17948,0x000000070a600000)
+ PSPermGen       total 57856K, used 57800K [0x0000000680000000, 0x0000000683880000, 0x0000000700000000)
+  object space 57856K, 99% used [0x0000000680000000,0x00000006838720b0,0x0000000683880000)
+}
+Event: 11.928 GC heap before
+{Heap before GC invocations=9 (full 0):
+ PSYoungGen      total 539136K, used 539132K [0x00000007aaa80000, 0x00000007d0080000, 0x0000000800000000)
+  eden space 504320K, 100% used [0x00000007aaa80000,0x00000007c9700000,0x00000007c9700000)
+  from space 34816K, 99% used [0x00000007cc580000,0x00000007ce77f2b0,0x00000007ce780000)
+  to   space 47616K, 0% used [0x00000007c9700000,0x00000007c9700000,0x00000007cc580000)
+ ParOldGen       total 169984K, used 45150K [0x0000000700000000, 0x000000070a600000, 0x00000007aaa80000)
+  object space 169984K, 26% used [0x0000000700000000,0x0000000702c17948,0x000000070a600000)
+ PSPermGen       total 70656K, used 70365K [0x0000000680000000, 0x0000000684500000, 0x0000000700000000)
+  object space 70656K, 99% used [0x0000000680000000,0x00000006844b7788,0x0000000684500000)
+Event: 11.981 GC heap after
+Heap after GC invocations=9 (full 0):
+ PSYoungGen      total 551936K, used 47601K [0x00000007aaa80000, 0x00000007e4080000, 0x0000000800000000)
+  eden space 504320K, 0% used [0x00000007aaa80000,0x00000007aaa80000,0x00000007c9700000)
+  from space 47616K, 99% used [0x00000007c9700000,0x00000007cc57c688,0x00000007cc580000)
+  to   space 66560K, 0% used [0x00000007dff80000,0x00000007dff80000,0x00000007e4080000)
+ ParOldGen       total 169984K, used 72097K [0x0000000700000000, 0x000000070a600000, 0x00000007aaa80000)
+  object space 169984K, 42% used [0x0000000700000000,0x00000007046685d0,0x000000070a600000)
+ PSPermGen       total 70656K, used 70365K [0x0000000680000000, 0x0000000684500000, 0x0000000700000000)
+  object space 70656K, 99% used [0x0000000680000000,0x00000006844b7788,0x0000000684500000)
+}
+Event: 16.479 GC heap before
+{Heap before GC invocations=10 (full 0):
+ PSYoungGen      total 551936K, used 551921K [0x00000007aaa80000, 0x00000007e4080000, 0x0000000800000000)
+  eden space 504320K, 100% used [0x00000007aaa80000,0x00000007c9700000,0x00000007c9700000)
+  from space 47616K, 99% used [0x00000007c9700000,0x00000007cc57c688,0x00000007cc580000)
+  to   space 66560K, 0% used [0x00000007dff80000,0x00000007dff80000,0x00000007e4080000)
+ ParOldGen       total 169984K, used 72097K [0x0000000700000000, 0x000000070a600000, 0x00000007aaa80000)
+  object space 169984K, 42% used [0x0000000700000000,0x00000007046685d0,0x000000070a600000)
+ PSPermGen       total 80896K, used 80730K [0x0000000680000000, 0x0000000684f00000, 0x0000000700000000)
+  object space 80896K, 99% used [0x0000000680000000,0x0000000684ed6898,0x0000000684f00000)
+Event: 16.547 GC heap after
+Heap after GC invocations=10 (full 0):
+ PSYoungGen      total 849408K, used 66557K [0x00000007aaa80000, 0x00000007e6f80000, 0x0000000800000000)
+  eden space 782848K, 0% used [0x00000007aaa80000,0x00000007aaa80000,0x00000007da700000)
+  from space 66560K, 99% used [0x00000007dff80000,0x00000007e407f490,0x00000007e4080000)
+  to   space 90624K, 0% used [0x00000007da700000,0x00000007da700000,0x00000007dff80000)
+ ParOldGen       total 169984K, used 106370K [0x0000000700000000, 0x000000070a600000, 0x00000007aaa80000)
+  object space 169984K, 62% used [0x0000000700000000,0x00000007067e0888,0x000000070a600000)
+ PSPermGen       total 80896K, used 80730K [0x0000000680000000, 0x0000000684f00000, 0x0000000700000000)
+  object space 80896K, 99% used [0x0000000680000000,0x0000000684ed6898,0x0000000684f00000)
+}
+Event: 47.248 GC heap before
+{Heap before GC invocations=11 (full 0):
+ PSYoungGen      total 849408K, used 849405K [0x00000007aaa80000, 0x00000007e6f80000, 0x0000000800000000)
+  eden space 782848K, 100% used [0x00000007aaa80000,0x00000007da700000,0x00000007da700000)
+  from space 66560K, 99% used [0x00000007dff80000,0x00000007e407f490,0x00000007e4080000)
+  to   space 90624K, 0% used [0x00000007da700000,0x00000007da700000,0x00000007dff80000)
+ ParOldGen       total 169984K, used 106370K [0x0000000700000000, 0x000000070a600000, 0x00000007aaa80000)
+  object space 169984K, 62% used [0x0000000700000000,0x00000007067e0888,0x000000070a600000)
+ PSPermGen       total 84480K, used 84078K [0x0000000680000000, 0x0000000685280000, 0x0000000700000000)
+  object space 84480K, 99% used [0x0000000680000000,0x000000068521b8e8,0x0000000685280000)
+Event: 47.330 GC heap after
+Heap after GC invocations=11 (full 0):
+ PSYoungGen      total 873472K, used 88998K [0x00000007aaa80000, 0x0000000800000000, 0x0000000800000000)
+  eden space 782848K, 0% used [0x00000007aaa80000,0x00000007aaa80000,0x00000007da700000)
+  from space 90624K, 98% used [0x00000007da700000,0x00000007dfde99b8,0x00000007dff80000)
+  to   space 105472K, 0% used [0x00000007f9900000,0x00000007f9900000,0x0000000800000000)
+ ParOldGen       total 172544K, used 172517K [0x0000000700000000, 0x000000070a880000, 0x00000007aaa80000)
+  object space 172544K, 99% used [0x0000000700000000,0x000000070a8797b0,0x000000070a880000)
+ PSPermGen       total 84480K, used 84078K [0x0000000680000000, 0x0000000685280000, 0x0000000700000000)
+  object space 84480K, 99% used [0x0000000680000000,0x000000068521b8e8,0x0000000685280000)
+}
+Event: 47.330 GC heap before
+{Heap before GC invocations=12 (full 1):
+ PSYoungGen      total 873472K, used 88998K [0x00000007aaa80000, 0x0000000800000000, 0x0000000800000000)
+  eden space 782848K, 0% used [0x00000007aaa80000,0x00000007aaa80000,0x00000007da700000)
+  from space 90624K, 98% used [0x00000007da700000,0x00000007dfde99b8,0x00000007dff80000)
+  to   space 105472K, 0% used [0x00000007f9900000,0x00000007f9900000,0x0000000800000000)
+ ParOldGen       total 172544K, used 172517K [0x0000000700000000, 0x000000070a880000, 0x00000007aaa80000)
+  object space 172544K, 99% used [0x0000000700000000,0x000000070a8797b0,0x000000070a880000)
+ PSPermGen       total 84480K, used 84078K [0x0000000680000000, 0x0000000685280000, 0x0000000700000000)
+  object space 84480K, 99% used [0x0000000680000000,0x000000068521b8e8,0x0000000685280000)
+Event: 47.963 GC heap after
+Heap after GC invocations=12 (full 1):
+ PSYoungGen      total 873472K, used 69027K [0x00000007aaa80000, 0x0000000800000000, 0x0000000800000000)
+  eden space 782848K, 0% used [0x00000007aaa80000,0x00000007aaa80000,0x00000007da700000)
+  from space 90624K, 76% used [0x00000007da700000,0x00000007dea68f50,0x00000007dff80000)
+  to   space 105472K, 0% used [0x00000007f9900000,0x00000007f9900000,0x0000000800000000)
+ ParOldGen       total 317952K, used 172428K [0x0000000700000000, 0x0000000713680000, 0x00000007aaa80000)
+  object space 317952K, 54% used [0x0000000700000000,0x000000070a863238,0x0000000713680000)
+ PSPermGen       total 168448K, used 83995K [0x0000000680000000, 0x000000068a480000, 0x0000000700000000)
+  object space 168448K, 49% used [0x0000000680000000,0x0000000685206e20,0x000000068a480000)
+}
+
+Deoptimization events (10 events):
+Event: 102.922 Thread 0x00007f5adc127000 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007f5b67ca5738 method=javax.swing.text.Utilities.getTabbedTextOffset(Ljavax/swing/text/View;Ljavax/swing/text/Segment;Ljava/awt/FontMetrics;IILjavax/swing/text/TabExpander;IZ[I)I @ 212
+Event: 102.922 Thread 0x00007f5adc127000 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007f5b67ca5738 method=javax.swing.text.Utilities.getTabbedTextOffset(Ljavax/swing/text/View;Ljavax/swing/text/Segment;Ljava/awt/FontMetrics;IILjavax/swing/text/TabExpander;IZ[I)I @ 212
+Event: 102.922 Thread 0x00007f5adc127000 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007f5b67ca5738 method=javax.swing.text.Utilities.getTabbedTextOffset(Ljavax/swing/text/View;Ljavax/swing/text/Segment;Ljava/awt/FontMetrics;IILjavax/swing/text/TabExpander;IZ[I)I @ 212
+Event: 102.922 Thread 0x00007f5adc127000 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007f5b67ca5738 method=javax.swing.text.Utilities.getTabbedTextOffset(Ljavax/swing/text/View;Ljavax/swing/text/Segment;Ljava/awt/FontMetrics;IILjavax/swing/text/TabExpander;IZ[I)I @ 212
+Event: 107.472 Thread 0x00007f5adc127000 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007f5b6820db0c method=sun.awt.datatransfer.DataTransferer$IndexedComparator.compareIndices(Ljava/util/Map;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Integer;)I @ 2
+Event: 107.472 Thread 0x00007f5adc127000 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007f5b6820db0c method=sun.awt.datatransfer.DataTransferer$IndexedComparator.compareIndices(Ljava/util/Map;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Integer;)I @ 2
+Event: 107.472 Thread 0x00007f5adc127000 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007f5b6820db0c method=sun.awt.datatransfer.DataTransferer$IndexedComparator.compareIndices(Ljava/util/Map;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Integer;)I @ 2
+Event: 107.472 Thread 0x00007f5adc127000 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007f5b6820db0c method=sun.awt.datatransfer.DataTransferer$IndexedComparator.compareIndices(Ljava/util/Map;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Integer;)I @ 2
+Event: 301.189 Thread 0x00007f5a9967c000 Uncommon trap: reason=unreached action=reinterpret pc=0x00007f5b6821eaa4 method=sun.awt.datatransfer.DataTransferer.getFlavorsForFormats([JLjava/awt/datatransfer/FlavorTable;)Ljava/util/Map; @ 298
+Event: 301.230 Thread 0x00007f5a9967c000 Uncommon trap: reason=unloaded action=reinterpret pc=0x00007f5b682239e0 method=sun.awt.X11.XSelection.getData(JJ)[B @ 667
+
+Internal exceptions (10 events):
+Event: 196.834 Thread 0x00007f5a98cb4800 Threw 0x00000007c14cfcc8 at /build/buildd/openjdk-7-7u51-2.4.4/build/openjdk/hotspot/src/share/vm/runtime/reflection.cpp:1030
+Event: 198.867 Thread 0x00007f5adc127000 Threw 0x00000007c2349dc0 at /build/buildd/openjdk-7-7u51-2.4.4/build/openjdk/hotspot/src/share/vm/prims/jni.cpp:743
+Event: 205.918 Thread 0x00007f5a9967c000 Threw 0x00000007c50fe210 at /build/buildd/openjdk-7-7u51-2.4.4/build/openjdk/hotspot/src/share/vm/oops/constantPoolOop.cpp:95
+Event: 205.918 Thread 0x00007f5a9967c000 Threw 0x00000007c50fe330 at /build/buildd/openjdk-7-7u51-2.4.4/build/openjdk/hotspot/src/share/vm/runtime/reflection.cpp:1030
+Event: 212.787 Thread 0x00007f5adc127000 Threw 0x00000007c5ec18a8 at /build/buildd/openjdk-7-7u51-2.4.4/build/openjdk/hotspot/src/share/vm/prims/jni.cpp:743
+Event: 271.834 Thread 0x00007f5a98cb4800 Threw 0x00000007cb57cf88 at /build/buildd/openjdk-7-7u51-2.4.4/build/openjdk/hotspot/src/share/vm/oops/constantPoolOop.cpp:95
+Event: 271.855 Thread 0x00007f5a98cb4800 Threw 0x00000007cb57d0a8 at /build/buildd/openjdk-7-7u51-2.4.4/build/openjdk/hotspot/src/share/vm/runtime/reflection.cpp:1030
+Event: 302.138 Thread 0x00007f5adc127000 Threw 0x00000007cc38d378 at /build/buildd/openjdk-7-7u51-2.4.4/build/openjdk/hotspot/src/share/vm/prims/jni.cpp:743
+Event: 720.189 Thread 0x00007f5ad282d000 Threw 0x00000007d477deb0 at /build/buildd/openjdk-7-7u51-2.4.4/build/openjdk/hotspot/src/share/vm/prims/jvm.cpp:1244
+Event: 720.189 Thread 0x00007f5ad282d000 Threw 0x00000007d4780778 at /build/buildd/openjdk-7-7u51-2.4.4/build/openjdk/hotspot/src/share/vm/prims/jvm.cpp:1244
+
+Events (10 events):
+Event: 739.388 Executing VM operation: GetOrSetLocal
+Event: 739.388 Executing VM operation: GetOrSetLocal done
+Event: 741.407 Executing VM operation: GetOrSetLocal
+Event: 741.407 Executing VM operation: GetOrSetLocal done
+Event: 741.412 Executing VM operation: GetOrSetLocal
+Event: 741.412 Executing VM operation: GetOrSetLocal done
+Event: 746.698 Executing VM operation: ChangeBreakpoints
+Event: 746.698 Executing VM operation: ChangeBreakpoints done
+Event: 749.038 Executing VM operation: ChangeBreakpoints
+Event: 749.038 Executing VM operation: ChangeBreakpoints done
+
+
+Dynamic libraries:
+00400000-00401000 r-xp 00000000 08:11 668373                             /usr/lib/jvm/java-7-openjdk-amd64/jre/bin/java
+00600000-00601000 r--p 00000000 08:11 668373                             /usr/lib/jvm/java-7-openjdk-amd64/jre/bin/java
+00601000-00602000 rw-p 00001000 08:11 668373                             /usr/lib/jvm/java-7-openjdk-amd64/jre/bin/java
+00821000-00842000 rw-p 00000000 00:00 0                                  [heap]
+680000000-68a480000 rw-p 00000000 00:00 0 
+68a480000-700000000 rw-p 00000000 00:00 0 
+700000000-713680000 rw-p 00000000 00:00 0 
+713680000-7aaa80000 rw-p 00000000 00:00 0 
+7aaa80000-800000000 rw-p 00000000 00:00 0 
+7f5a26b39000-7f5a2c000000 r--p 00000000 08:11 1052324                    /usr/share/icons/gnome/icon-theme.cache
+7f5a2c000000-7f5a2ddac000 rw-p 00000000 00:00 0 
+7f5a2ddac000-7f5a30000000 ---p 00000000 00:00 0 
+7f5a34000000-7f5a37ffc000 rw-p 00000000 00:00 0 
+7f5a37ffc000-7f5a38000000 ---p 00000000 00:00 0 
+7f5a38000000-7f5a3bffd000 rw-p 00000000 00:00 0 
+7f5a3bffd000-7f5a3c000000 ---p 00000000 00:00 0 
+7f5a3c000000-7f5a3c021000 rw-p 00000000 00:00 0 
+7f5a3c021000-7f5a40000000 ---p 00000000 00:00 0 
+7f5a40000000-7f5a417d0000 rw-p 00000000 00:00 0 
+7f5a417d0000-7f5a44000000 ---p 00000000 00:00 0 
+7f5a44000000-7f5a44021000 rw-p 00000000 00:00 0 
+7f5a44021000-7f5a48000000 ---p 00000000 00:00 0 
+7f5a48000000-7f5a48021000 rw-p 00000000 00:00 0 
+7f5a48021000-7f5a4c000000 ---p 00000000 00:00 0 
+7f5a4c000000-7f5a4c434000 rw-p 00000000 00:00 0 
+7f5a4c434000-7f5a50000000 ---p 00000000 00:00 0 
+7f5a50000000-7f5a50021000 rw-p 00000000 00:00 0 
+7f5a50021000-7f5a54000000 ---p 00000000 00:00 0 
+7f5a54000000-7f5a54021000 rw-p 00000000 00:00 0 
+7f5a54021000-7f5a58000000 ---p 00000000 00:00 0 
+7f5a58000000-7f5a58021000 rw-p 00000000 00:00 0 
+7f5a58021000-7f5a5c000000 ---p 00000000 00:00 0 
+7f5a5c000000-7f5a5c021000 rw-p 00000000 00:00 0 
+7f5a5c021000-7f5a60000000 ---p 00000000 00:00 0 
+7f5a60000000-7f5a60021000 rw-p 00000000 00:00 0 
+7f5a60021000-7f5a64000000 ---p 00000000 00:00 0 
+7f5a64000000-7f5a64021000 rw-p 00000000 00:00 0 
+7f5a64021000-7f5a68000000 ---p 00000000 00:00 0 
+7f5a68000000-7f5a68021000 rw-p 00000000 00:00 0 
+7f5a68021000-7f5a6c000000 ---p 00000000 00:00 0 
+7f5a6c000000-7f5a6c021000 rw-p 00000000 00:00 0 
+7f5a6c021000-7f5a70000000 ---p 00000000 00:00 0 
+7f5a70000000-7f5a70021000 rw-p 00000000 00:00 0 
+7f5a70021000-7f5a74000000 ---p 00000000 00:00 0 
+7f5a74000000-7f5a74021000 rw-p 00000000 00:00 0 
+7f5a74021000-7f5a78000000 ---p 00000000 00:00 0 
+7f5a78000000-7f5a78021000 rw-p 00000000 00:00 0 
+7f5a78021000-7f5a7c000000 ---p 00000000 00:00 0 
+7f5a7c000000-7f5a7c021000 rw-p 00000000 00:00 0 
+7f5a7c021000-7f5a80000000 ---p 00000000 00:00 0 
+7f5a80000000-7f5a80021000 rw-p 00000000 00:00 0 
+7f5a80021000-7f5a84000000 ---p 00000000 00:00 0 
+7f5a84000000-7f5a84021000 rw-p 00000000 00:00 0 
+7f5a84021000-7f5a88000000 ---p 00000000 00:00 0 
+7f5a88000000-7f5a88021000 rw-p 00000000 00:00 0 
+7f5a88021000-7f5a8c000000 ---p 00000000 00:00 0 
+7f5a8c000000-7f5a8fffb000 rw-p 00000000 00:00 0 
+7f5a8fffb000-7f5a90000000 ---p 00000000 00:00 0 
+7f5a90000000-7f5a93ffd000 rw-p 00000000 00:00 0 
+7f5a93ffd000-7f5a94000000 ---p 00000000 00:00 0 
+7f5a94000000-7f5a94021000 rw-p 00000000 00:00 0 
+7f5a94021000-7f5a98000000 ---p 00000000 00:00 0 
+7f5a98000000-7f5a9ac81000 rw-p 00000000 00:00 0 
+7f5a9ac81000-7f5a9c000000 ---p 00000000 00:00 0 
+7f5a9c000000-7f5a9c021000 rw-p 00000000 00:00 0 
+7f5a9c021000-7f5aa0000000 ---p 00000000 00:00 0 
+7f5aa0000000-7f5aa0021000 rw-p 00000000 00:00 0 
+7f5aa0021000-7f5aa4000000 ---p 00000000 00:00 0 
+7f5aa4000000-7f5aa4021000 rw-p 00000000 00:00 0 
+7f5aa4021000-7f5aa8000000 ---p 00000000 00:00 0 
+7f5aa8000000-7f5aa8021000 rw-p 00000000 00:00 0 
+7f5aa8021000-7f5aac000000 ---p 00000000 00:00 0 
+7f5aac000000-7f5aac022000 rw-p 00000000 00:00 0 
+7f5aac022000-7f5ab0000000 ---p 00000000 00:00 0 
+7f5ab0000000-7f5ab0022000 rw-p 00000000 00:00 0 
+7f5ab0022000-7f5ab4000000 ---p 00000000 00:00 0 
+7f5ab4000000-7f5ab5575000 rw-p 00000000 00:00 0 
+7f5ab5575000-7f5ab8000000 ---p 00000000 00:00 0 
+7f5ab8000000-7f5ab8021000 rw-p 00000000 00:00 0 
+7f5ab8021000-7f5abc000000 ---p 00000000 00:00 0 
+7f5abc000000-7f5abc137000 rw-p 00000000 00:00 0 
+7f5abc137000-7f5ac0000000 ---p 00000000 00:00 0 
+7f5ac0000000-7f5ac05db000 rw-p 00000000 00:00 0 
+7f5ac05db000-7f5ac4000000 ---p 00000000 00:00 0 
+7f5ac4000000-7f5ac411a000 rw-p 00000000 00:00 0 
+7f5ac411a000-7f5ac8000000 ---p 00000000 00:00 0 
+7f5ac8000000-7f5ac8021000 rw-p 00000000 00:00 0 
+7f5ac8021000-7f5acc000000 ---p 00000000 00:00 0 
+7f5acc000000-7f5acc021000 rw-p 00000000 00:00 0 
+7f5acc021000-7f5ad0000000 ---p 00000000 00:00 0 
+7f5ad0000000-7f5ad2f01000 rw-p 00000000 00:00 0 
+7f5ad2f01000-7f5ad4000000 ---p 00000000 00:00 0 
+7f5ad4000000-7f5ad4021000 rw-p 00000000 00:00 0 
+7f5ad4021000-7f5ad8000000 ---p 00000000 00:00 0 
+7f5ad8000000-7f5ad8021000 rw-p 00000000 00:00 0 
+7f5ad8021000-7f5adc000000 ---p 00000000 00:00 0 
+7f5adc000000-7f5adc580000 rw-p 00000000 00:00 0 
+7f5adc580000-7f5ae0000000 ---p 00000000 00:00 0 
+7f5ae0000000-7f5ae0021000 rw-p 00000000 00:00 0 
+7f5ae0021000-7f5ae4000000 ---p 00000000 00:00 0 
+7f5ae4000000-7f5ae4021000 rw-p 00000000 00:00 0 
+7f5ae4021000-7f5ae8000000 ---p 00000000 00:00 0 
+7f5ae8000000-7f5aec000000 rw-p 00000000 00:00 0 
+7f5aec000000-7f5aec021000 rw-p 00000000 00:00 0 
+7f5aec021000-7f5af0000000 ---p 00000000 00:00 0 
+7f5af0000000-7f5af0058000 rw-p 00000000 00:00 0 
+7f5af0058000-7f5af4000000 ---p 00000000 00:00 0 
+7f5af4000000-7f5af5e80000 rw-p 00000000 00:00 0 
+7f5af5e80000-7f5af8000000 ---p 00000000 00:00 0 
+7f5af8000000-7f5af8021000 rw-p 00000000 00:00 0 
+7f5af8021000-7f5afc000000 ---p 00000000 00:00 0 
+7f5afc000000-7f5afc021000 rw-p 00000000 00:00 0 
+7f5afc021000-7f5b00000000 ---p 00000000 00:00 0 
+7f5b00000000-7f5b02305000 rw-p 00000000 00:00 0 
+7f5b02305000-7f5b04000000 ---p 00000000 00:00 0 
+7f5b04000000-7f5b0404f000 rw-p 00000000 00:00 0 
+7f5b0404f000-7f5b08000000 ---p 00000000 00:00 0 
+7f5b08000000-7f5b08128000 rw-p 00000000 00:00 0 
+7f5b08128000-7f5b0c000000 ---p 00000000 00:00 0 
+7f5b0c000000-7f5b0c099000 rw-p 00000000 00:00 0 
+7f5b0c099000-7f5b10000000 ---p 00000000 00:00 0 
+7f5b10000000-7f5b10021000 rw-p 00000000 00:00 0 
+7f5b10021000-7f5b14000000 ---p 00000000 00:00 0 
+7f5b14000000-7f5b14092000 rw-p 00000000 00:00 0 
+7f5b14092000-7f5b18000000 ---p 00000000 00:00 0 
+7f5b18000000-7f5b18021000 rw-p 00000000 00:00 0 
+7f5b18021000-7f5b1c000000 ---p 00000000 00:00 0 
+7f5b1c000000-7f5b28000000 rw-p 00000000 00:00 0 
+7f5b28000000-7f5b28021000 rw-p 00000000 00:00 0 
+7f5b28021000-7f5b2c000000 ---p 00000000 00:00 0 
+7f5b2ca3a000-7f5b30000000 r--p 00000000 08:11 1061332                    /usr/share/icons/hicolor/icon-theme.cache
+7f5b30000000-7f5b30040000 rw-p 00000000 00:00 0 
+7f5b30040000-7f5b34000000 ---p 00000000 00:00 0 
+7f5b357ac000-7f5b35a2f000 rw-s 00000000 00:04 153157738                  /SYSV00000000 (deleted)
+7f5b35a2f000-7f5b35b3d000 rw-s 00000000 00:04 146309240                  /SYSV00000000 (deleted)
+7f5b35b8d000-7f5b35c07000 rw-s 00000000 00:04 154632344                  /SYSV00000000 (deleted)
+7f5b35c34000-7f5b35c7f000 rw-s 00000000 00:04 159711314                  /SYSV00000000 (deleted)
+7f5b35c7f000-7f5b35cca000 rw-s 00000000 00:04 155484337                  /SYSV00000000 (deleted)
+7f5b35cca000-7f5b35f4d000 rw-s 00000000 00:04 145817716                  /SYSV00000000 (deleted)
+7f5b35f4d000-7f5b35f53000 r-xp 00000000 08:11 800513                     /lib/x86_64-linux-gnu/libnss_dns-2.17.so
+7f5b35f53000-7f5b36152000 ---p 00006000 08:11 800513                     /lib/x86_64-linux-gnu/libnss_dns-2.17.so
+7f5b36152000-7f5b36153000 r--p 00005000 08:11 800513                     /lib/x86_64-linux-gnu/libnss_dns-2.17.so
+7f5b36153000-7f5b36154000 rw-p 00006000 08:11 800513                     /lib/x86_64-linux-gnu/libnss_dns-2.17.so
+7f5b36154000-7f5b36156000 r-xp 00000000 08:11 787028                     /lib/libnss_mdns4_minimal.so.2
+7f5b36156000-7f5b36355000 ---p 00002000 08:11 787028                     /lib/libnss_mdns4_minimal.so.2
+7f5b36355000-7f5b36356000 r--p 00001000 08:11 787028                     /lib/libnss_mdns4_minimal.so.2
+7f5b36356000-7f5b36357000 rw-p 00002000 08:11 787028                     /lib/libnss_mdns4_minimal.so.2
+7f5b36357000-7f5b36378000 r-xp 00000000 08:11 787194                     /lib/x86_64-linux-gnu/liblzma.so.5.0.0
+7f5b36378000-7f5b36577000 ---p 00021000 08:11 787194                     /lib/x86_64-linux-gnu/liblzma.so.5.0.0
+7f5b36577000-7f5b36578000 r--p 00020000 08:11 787194                     /lib/x86_64-linux-gnu/liblzma.so.5.0.0
+7f5b36578000-7f5b36579000 rw-p 00021000 08:11 787194                     /lib/x86_64-linux-gnu/liblzma.so.5.0.0
+7f5b36579000-7f5b366d2000 r-xp 00000000 08:11 663662                     /usr/lib/x86_64-linux-gnu/libxml2.so.2.9.0
+7f5b366d2000-7f5b368d1000 ---p 00159000 08:11 663662                     /usr/lib/x86_64-linux-gnu/libxml2.so.2.9.0
+7f5b368d1000-7f5b368d9000 r--p 00158000 08:11 663662                     /usr/lib/x86_64-linux-gnu/libxml2.so.2.9.0
+7f5b368d9000-7f5b368db000 rw-p 00160000 08:11 663662                     /usr/lib/x86_64-linux-gnu/libxml2.so.2.9.0
+7f5b368db000-7f5b368dc000 rw-p 00000000 00:00 0 
+7f5b368dc000-7f5b36913000 r-xp 00000000 08:11 655566                     /usr/lib/x86_64-linux-gnu/libcroco-0.6.so.3.0.1
+7f5b36913000-7f5b36b12000 ---p 00037000 08:11 655566                     /usr/lib/x86_64-linux-gnu/libcroco-0.6.so.3.0.1
+7f5b36b12000-7f5b36b15000 r--p 00036000 08:11 655566                     /usr/lib/x86_64-linux-gnu/libcroco-0.6.so.3.0.1
+7f5b36b15000-7f5b36b16000 rw-p 00039000 08:11 655566                     /usr/lib/x86_64-linux-gnu/libcroco-0.6.so.3.0.1
+7f5b36b16000-7f5b36b4a000 r-xp 00000000 08:11 663851                     /usr/lib/x86_64-linux-gnu/librsvg-2.so.2.36.4
+7f5b36b4a000-7f5b36d49000 ---p 00034000 08:11 663851                     /usr/lib/x86_64-linux-gnu/librsvg-2.so.2.36.4
+7f5b36d49000-7f5b36d4a000 r--p 00033000 08:11 663851                     /usr/lib/x86_64-linux-gnu/librsvg-2.so.2.36.4
+7f5b36d4a000-7f5b36d4b000 rw-p 00034000 08:11 663851                     /usr/lib/x86_64-linux-gnu/librsvg-2.so.2.36.4
+7f5b36d4b000-7f5b36d4d000 r-xp 00000000 08:11 1442132                    /usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+7f5b36d4d000-7f5b36f4c000 ---p 00002000 08:11 1442132                    /usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+7f5b36f4c000-7f5b36f4d000 r--p 00001000 08:11 1442132                    /usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+7f5b36f4d000-7f5b36f4e000 rw-p 00002000 08:11 1442132                    /usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+7f5b36f4e000-7f5b36f51000 ---p 00000000 00:00 0 
+7f5b36f51000-7f5b3704f000 rw-p 00000000 00:00 0                          [stack:14919]
+7f5b3704f000-7f5b37052000 ---p 00000000 00:00 0 
+7f5b37052000-7f5b37150000 rw-p 00000000 00:00 0                          [stack:14918]
+7f5b37150000-7f5b37153000 ---p 00000000 00:00 0 
+7f5b37153000-7f5b37251000 rw-p 00000000 00:00 0                          [stack:14917]
+7f5b37251000-7f5b37254000 ---p 00000000 00:00 0 
+7f5b37254000-7f5b37352000 rw-p 00000000 00:00 0                          [stack:14916]
+7f5b37352000-7f5b37355000 ---p 00000000 00:00 0 
+7f5b37355000-7f5b37453000 rw-p 00000000 00:00 0                          [stack:14915]
+7f5b37453000-7f5b37456000 ---p 00000000 00:00 0 
+7f5b37456000-7f5b37554000 rw-p 00000000 00:00 0                          [stack:14914]
+7f5b37554000-7f5b37557000 ---p 00000000 00:00 0 
+7f5b37557000-7f5b37655000 rw-p 00000000 00:00 0                          [stack:14913]
+7f5b37655000-7f5b37658000 ---p 00000000 00:00 0 
+7f5b37658000-7f5b37756000 rw-p 00000000 00:00 0                          [stack:14912]
+7f5b37756000-7f5b37759000 ---p 00000000 00:00 0 
+7f5b37759000-7f5b37857000 rw-p 00000000 00:00 0                          [stack:14911]
+7f5b37857000-7f5b3785a000 ---p 00000000 00:00 0 
+7f5b3785a000-7f5b37958000 rw-p 00000000 00:00 0                          [stack:14910]
+7f5b37958000-7f5b3795b000 ---p 00000000 00:00 0 
+7f5b3795b000-7f5b37a59000 rw-p 00000000 00:00 0                          [stack:14909]
+7f5b37a59000-7f5b37a61000 r-xp 00000000 08:11 668348                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libmanagement.so
+7f5b37a61000-7f5b37c60000 ---p 00008000 08:11 668348                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libmanagement.so
+7f5b37c60000-7f5b37c61000 r--p 00007000 08:11 668348                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libmanagement.so
+7f5b37c61000-7f5b37c62000 rw-p 00008000 08:11 668348                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libmanagement.so
+7f5b37c62000-7f5b38000000 rw-s 00000000 00:04 139821116                  /SYSV00000000 (deleted)
+7f5b38000000-7f5b3802e000 rw-p 00000000 00:00 0 
+7f5b3802e000-7f5b3c000000 ---p 00000000 00:00 0 
+7f5b3c00a000-7f5b3c055000 rw-s 00000000 00:04 139952194                  /SYSV00000000 (deleted)
+7f5b3c055000-7f5b3c083000 rw-s 00000000 00:04 139886656                  /SYSV00000000 (deleted)
+7f5b3c083000-7f5b3c086000 ---p 00000000 00:00 0 
+7f5b3c086000-7f5b3c184000 rw-p 00000000 00:00 0                          [stack:14908]
+7f5b3c184000-7f5b3c187000 ---p 00000000 00:00 0 
+7f5b3c187000-7f5b3c285000 rw-p 00000000 00:00 0                          [stack:14907]
+7f5b3c285000-7f5b3c2a8000 r-xp 00000000 08:11 658454                     /usr/lib/x86_64-linux-gnu/libgnome-keyring.so.0.2.0
+7f5b3c2a8000-7f5b3c4a7000 ---p 00023000 08:11 658454                     /usr/lib/x86_64-linux-gnu/libgnome-keyring.so.0.2.0
+7f5b3c4a7000-7f5b3c4a8000 r--p 00022000 08:11 658454                     /usr/lib/x86_64-linux-gnu/libgnome-keyring.so.0.2.0
+7f5b3c4a8000-7f5b3c4a9000 rw-p 00023000 08:11 658454                     /usr/lib/x86_64-linux-gnu/libgnome-keyring.so.0.2.0
+7f5b3c4a9000-7f5b3c4c0000 r-xp 00000000 08:12 24548646                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/lib/amd64/linux/libjnidispatch-410.so
+7f5b3c4c0000-7f5b3c5bf000 ---p 00017000 08:12 24548646                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/lib/amd64/linux/libjnidispatch-410.so
+7f5b3c5bf000-7f5b3c5c1000 rw-p 00016000 08:12 24548646                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/lib/amd64/linux/libjnidispatch-410.so
+7f5b3c5c1000-7f5b3c697000 r-xp 00000000 08:11 668342                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libmlib_image.so
+7f5b3c697000-7f5b3c896000 ---p 000d6000 08:11 668342                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libmlib_image.so
+7f5b3c896000-7f5b3c897000 r--p 000d5000 08:11 668342                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libmlib_image.so
+7f5b3c897000-7f5b3c898000 rw-p 000d6000 08:11 668342                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libmlib_image.so
+7f5b3c8ab000-7f5b3c8dd000 rw-s 00000000 00:04 139788347                  /SYSV00000000 (deleted)
+7f5b3c8dd000-7f5b3c90f000 rw-s 00000000 00:04 139755578                  /SYSV00000000 (deleted)
+7f5b3c90f000-7f5b3c912000 ---p 00000000 00:00 0 
+7f5b3c912000-7f5b3ca10000 rw-p 00000000 00:00 0 
+7f5b3ca10000-7f5b3ca13000 ---p 00000000 00:00 0 
+7f5b3ca13000-7f5b3cb11000 rw-p 00000000 00:00 0 
+7f5b3cb11000-7f5b3cb14000 ---p 00000000 00:00 0 
+7f5b3cb14000-7f5b3cc12000 rw-p 00000000 00:00 0 
+7f5b3cc12000-7f5b3cc15000 ---p 00000000 00:00 0 
+7f5b3cc15000-7f5b3cd13000 rw-p 00000000 00:00 0 
+7f5b3cd13000-7f5b3cd16000 ---p 00000000 00:00 0 
+7f5b3cd16000-7f5b3ce14000 rw-p 00000000 00:00 0                          [stack:14901]
+7f5b3ce14000-7f5b3ce17000 ---p 00000000 00:00 0 
+7f5b3ce17000-7f5b3cf15000 rw-p 00000000 00:00 0 
+7f5b3cf15000-7f5b3cf18000 ---p 00000000 00:00 0 
+7f5b3cf18000-7f5b3d016000 rw-p 00000000 00:00 0                          [stack:14899]
+7f5b3d016000-7f5b3d5f9000 rw-s 00000000 00:04 139264024                  /SYSV00000000 (deleted)
+7f5b3d5f9000-7f5b3d5fc000 ---p 00000000 00:00 0 
+7f5b3d5fc000-7f5b3d6fa000 rw-p 00000000 00:00 0 
+7f5b3d6fa000-7f5b3d6fd000 ---p 00000000 00:00 0 
+7f5b3d6fd000-7f5b3d7fb000 rw-p 00000000 00:00 0 
+7f5b3d7fb000-7f5b3d7fe000 ---p 00000000 00:00 0 
+7f5b3d7fe000-7f5b3d8fc000 rw-p 00000000 00:00 0                          [stack:14895]
+7f5b3d8fc000-7f5b3d8ff000 ---p 00000000 00:00 0 
+7f5b3d8ff000-7f5b3d9fd000 rw-p 00000000 00:00 0                          [stack:14893]
+7f5b3da0e000-7f5b3da15000 rw-s 00000000 00:04 159744083                  /SYSV00000000 (deleted)
+7f5b3da15000-7f5b3da1c000 rw-s 00000000 00:04 139984963                  /SYSV00000000 (deleted)
+7f5b3da1c000-7f5b3da21000 rw-s 00000000 00:04 139919425                  /SYSV00000000 (deleted)
+7f5b3da21000-7f5b3da2c000 rw-s 00000000 00:04 139853887                  /SYSV00000000 (deleted)
+7f5b3da2c000-7f5b3da30000 rw-s 00000000 00:04 139722809                  /SYSV00000000 (deleted)
+7f5b3da30000-7f5b3da3b000 rw-s 00000000 00:04 139690040                  /SYSV00000000 (deleted)
+7f5b3da3b000-7f5b3da46000 rw-s 00000000 00:04 139657271                  /SYSV00000000 (deleted)
+7f5b3da46000-7f5b3da7a000 rw-s 00000000 00:04 139558964                  /SYSV00000000 (deleted)
+7f5b3da7d000-7f5b3dac8000 rw-s 00000000 00:04 153583720                  /SYSV00000000 (deleted)
+7f5b3dac8000-7f5b3dafa000 rw-s 00000000 00:04 153223276                  /SYSV00000000 (deleted)
+7f5b3dafa000-7f5b3dafd000 ---p 00000000 00:00 0 
+7f5b3dafd000-7f5b3dbfb000 rw-p 00000000 00:00 0                          [stack:14894]
+7f5b3dbfb000-7f5b3dbfe000 ---p 00000000 00:00 0 
+7f5b3dbfe000-7f5b3dcfc000 rw-p 00000000 00:00 0                          [stack:14892]
+7f5b3dcfc000-7f5b3dcfd000 ---p 00000000 00:00 0 
+7f5b3dcfd000-7f5b3e4fd000 rw-p 00000000 00:00 0 
+7f5b3e4fd000-7f5b3e517000 r-xp 00000000 08:11 655936                     /usr/lib/x86_64-linux-gnu/libdbusmenu-glib.so.4.0.12
+7f5b3e517000-7f5b3e716000 ---p 0001a000 08:11 655936                     /usr/lib/x86_64-linux-gnu/libdbusmenu-glib.so.4.0.12
+7f5b3e716000-7f5b3e717000 r--p 00019000 08:11 655936                     /usr/lib/x86_64-linux-gnu/libdbusmenu-glib.so.4.0.12
+7f5b3e717000-7f5b3e718000 rw-p 0001a000 08:11 655936                     /usr/lib/x86_64-linux-gnu/libdbusmenu-glib.so.4.0.12
+7f5b3e718000-7f5b3e72a000 r-xp 00000000 08:11 656223                     /usr/lib/x86_64-linux-gnu/libdbusmenu-gtk.so.4.0.12
+7f5b3e72a000-7f5b3e929000 ---p 00012000 08:11 656223                     /usr/lib/x86_64-linux-gnu/libdbusmenu-gtk.so.4.0.12
+7f5b3e929000-7f5b3e92a000 r--p 00011000 08:11 656223                     /usr/lib/x86_64-linux-gnu/libdbusmenu-gtk.so.4.0.12
+7f5b3e92a000-7f5b3e92b000 rw-p 00012000 08:11 656223                     /usr/lib/x86_64-linux-gnu/libdbusmenu-gtk.so.4.0.12
+7f5b3e92b000-7f5b3e930000 r-xp 00000000 08:11 1575047                    /usr/lib/x86_64-linux-gnu/gtk-2.0/2.10.0/menuproxies/libappmenu.so
+7f5b3e930000-7f5b3eb2f000 ---p 00005000 08:11 1575047                    /usr/lib/x86_64-linux-gnu/gtk-2.0/2.10.0/menuproxies/libappmenu.so
+7f5b3eb2f000-7f5b3eb30000 r--p 00004000 08:11 1575047                    /usr/lib/x86_64-linux-gnu/gtk-2.0/2.10.0/menuproxies/libappmenu.so
+7f5b3eb30000-7f5b3eb31000 rw-p 00005000 08:11 1575047                    /usr/lib/x86_64-linux-gnu/gtk-2.0/2.10.0/menuproxies/libappmenu.so
+7f5b3eb31000-7f5b3eb41000 r-xp 00000000 08:11 786490                     /lib/x86_64-linux-gnu/libudev.so.1.2.2
+7f5b3eb41000-7f5b3ed40000 ---p 00010000 08:11 786490                     /lib/x86_64-linux-gnu/libudev.so.1.2.2
+7f5b3ed40000-7f5b3ed41000 r--p 0000f000 08:11 786490                     /lib/x86_64-linux-gnu/libudev.so.1.2.2
+7f5b3ed41000-7f5b3ed42000 rw-p 00010000 08:11 786490                     /lib/x86_64-linux-gnu/libudev.so.1.2.2
+7f5b3ed42000-7f5b3ed77000 r-xp 00000000 08:11 666704                     /usr/lib/x86_64-linux-gnu/gvfs/libgvfscommon.so
+7f5b3ed77000-7f5b3ef77000 ---p 00035000 08:11 666704                     /usr/lib/x86_64-linux-gnu/gvfs/libgvfscommon.so
+7f5b3ef77000-7f5b3ef7c000 r--p 00035000 08:11 666704                     /usr/lib/x86_64-linux-gnu/gvfs/libgvfscommon.so
+7f5b3ef7c000-7f5b3ef7d000 rw-p 0003a000 08:11 666704                     /usr/lib/x86_64-linux-gnu/gvfs/libgvfscommon.so
+7f5b3ef7d000-7f5b3efac000 r-xp 00000000 08:11 787284                     /usr/lib/x86_64-linux-gnu/gio/modules/libgvfsdbus.so
+7f5b3efac000-7f5b3f1ab000 ---p 0002f000 08:11 787284                     /usr/lib/x86_64-linux-gnu/gio/modules/libgvfsdbus.so
+7f5b3f1ab000-7f5b3f1ac000 r--p 0002e000 08:11 787284                     /usr/lib/x86_64-linux-gnu/gio/modules/libgvfsdbus.so
+7f5b3f1ac000-7f5b3f1ae000 rw-p 0002f000 08:11 787284                     /usr/lib/x86_64-linux-gnu/gio/modules/libgvfsdbus.so
+7f5b3f1ae000-7f5b3f1f1000 r-xp 00000000 08:11 663591                     /usr/lib/x86_64-linux-gnu/libibus-1.0.so.0.402.0
+7f5b3f1f1000-7f5b3f3f0000 ---p 00043000 08:11 663591                     /usr/lib/x86_64-linux-gnu/libibus-1.0.so.0.402.0
+7f5b3f3f0000-7f5b3f3f2000 r--p 00042000 08:11 663591                     /usr/lib/x86_64-linux-gnu/libibus-1.0.so.0.402.0
+7f5b3f3f2000-7f5b3f3f3000 rw-p 00044000 08:11 663591                     /usr/lib/x86_64-linux-gnu/libibus-1.0.so.0.402.0
+7f5b3f3f3000-7f5b3f3f4000 rw-p 00000000 00:00 0 
+7f5b3f3f4000-7f5b3f3fa000 r-xp 00000000 08:11 1573068                    /usr/lib/x86_64-linux-gnu/gtk-2.0/2.10.0/immodules/im-ibus.so
+7f5b3f3fa000-7f5b3f5f9000 ---p 00006000 08:11 1573068                    /usr/lib/x86_64-linux-gnu/gtk-2.0/2.10.0/immodules/im-ibus.so
+7f5b3f5f9000-7f5b3f5fa000 r--p 00005000 08:11 1573068                    /usr/lib/x86_64-linux-gnu/gtk-2.0/2.10.0/immodules/im-ibus.so
+7f5b3f5fa000-7f5b3f5fb000 rw-p 00006000 08:11 1573068                    /usr/lib/x86_64-linux-gnu/gtk-2.0/2.10.0/immodules/im-ibus.so
+7f5b3f5fb000-7f5b3f5fe000 r-xp 00000000 08:11 657892                     /usr/lib/x86_64-linux-gnu/pango/1.8.0/modules/pango-basic-fc.so
+7f5b3f5fe000-7f5b3f7fd000 ---p 00003000 08:11 657892                     /usr/lib/x86_64-linux-gnu/pango/1.8.0/modules/pango-basic-fc.so
+7f5b3f7fd000-7f5b3f7fe000 r--p 00002000 08:11 657892                     /usr/lib/x86_64-linux-gnu/pango/1.8.0/modules/pango-basic-fc.so
+7f5b3f7fe000-7f5b3f7ff000 rw-p 00003000 08:11 657892                     /usr/lib/x86_64-linux-gnu/pango/1.8.0/modules/pango-basic-fc.so
+7f5b3f7ff000-7f5b3f800000 ---p 00000000 00:00 0 
+7f5b3f800000-7f5b40000000 rw-p 00000000 00:00 0                          [stack:14885]
+7f5b40000000-7f5b4002d000 rw-p 00000000 00:00 0 
+7f5b4002d000-7f5b44000000 ---p 00000000 00:00 0 
+7f5b44003000-7f5b4400e000 rw-s 00000000 00:04 139624502                  /SYSV00000000 (deleted)
+7f5b4400e000-7f5b44012000 rw-s 00000000 00:04 139591733                  /SYSV00000000 (deleted)
+7f5b44012000-7f5b44046000 rw-s 00000000 00:04 139526195                  /SYSV00000000 (deleted)
+7f5b44046000-7f5b44050000 rw-s 00000000 00:04 139493421                  /SYSV00000000 (deleted)
+7f5b44050000-7f5b4405a000 rw-s 00000000 00:04 139460652                  /SYSV00000000 (deleted)
+7f5b4405a000-7f5b44065000 rw-s 00000000 00:04 139427883                  /SYSV00000000 (deleted)
+7f5b44065000-7f5b440c5000 rw-s 00000000 00:04 139296795                  /SYSV00000000 (deleted)
+7f5b440c5000-7f5b440c8000 ---p 00000000 00:00 0 
+7f5b440c8000-7f5b440fe000 rw-p 00000000 00:00 0 
+7f5b440fe000-7f5b4410a000 r--p 00000000 08:11 1051562                    /usr/share/fonts/opentype/cantarell/Cantarell-Regular.otf
+7f5b4410a000-7f5b44111000 rw-s 00000000 00:04 155517106                  /SYSV00000000 (deleted)
+7f5b44111000-7f5b4411c000 rw-s 00000000 00:04 155189416                  /SYSV00000000 (deleted)
+7f5b4411c000-7f5b44123000 rw-s 00000000 00:04 153616505                  /SYSV00000000 (deleted)
+7f5b44123000-7f5b4412e000 rw-s 00000000 00:04 153288814                  /SYSV00000000 (deleted)
+7f5b4412e000-7f5b44139000 rw-s 00000000 00:04 153256045                  /SYSV00000000 (deleted)
+7f5b44139000-7f5b4416b000 rw-s 00000000 00:04 153190507                  /SYSV00000000 (deleted)
+7f5b4416b000-7f5b44199000 rw-s 00000000 00:04 153124969                  /SYSV00000000 (deleted)
+7f5b44199000-7f5b441e4000 rw-s 00000000 00:04 151420962                  /SYSV00000000 (deleted)
+7f5b441e4000-7f5b441ef000 rw-s 00000000 00:04 151388192                  /SYSV00000000 (deleted)
+7f5b441ef000-7f5b441fa000 rw-s 00000000 00:04 151355423                  /SYSV00000000 (deleted)
+7f5b441fa000-7f5b44205000 rw-s 00000000 00:04 151322674                  /SYSV00000000 (deleted)
+7f5b44205000-7f5b44305000 rw-s 00000000 00:04 145293413                  /SYSV00000000 (deleted)
+7f5b44305000-7f5b44326000 r--s 00000000 08:11 1054226                    /usr/share/mime/mime.cache
+7f5b44326000-7f5b44328000 r--s 00012000 08:12 24561053                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-editor-indent-project.jar
+7f5b44328000-7f5b4432c000 rw-s 00000000 00:04 139395114                  /SYSV00000000 (deleted)
+7f5b4432c000-7f5b44330000 rw-s 00000000 00:04 139362345                  /SYSV00000000 (deleted)
+7f5b44336000-7f5b4433a000 rw-s 00000000 00:04 153321583                  /SYSV00000000 (deleted)
+7f5b4433a000-7f5b4433b000 r--s 00000000 08:11 1835762                    /var/cache/fontconfig/c05880de57d1f5e948fdfacc138775d9-le64.cache-3
+7f5b4433b000-7f5b44344000 r--s 00000000 08:11 1835766                    /var/cache/fontconfig/945677eb7aeaf62f1d50efc3fb3ec7d8-le64.cache-3
+7f5b44344000-7f5b44346000 r--s 00000000 08:11 1835761                    /var/cache/fontconfig/99e8ed0e538f840c565b6ed5dad60d56-le64.cache-3
+7f5b44346000-7f5b44348000 r--s 00000000 08:11 1835757                    /var/cache/fontconfig/0fafd173547752dce4dee1a69e0b3c95-le64.cache-3
+7f5b44348000-7f5b44350000 r--s 00000000 08:11 1835745                    /var/cache/fontconfig/a6d8cf8e4ec09cdbc8633c31745a07dd-le64.cache-3
+7f5b44350000-7f5b44355000 r--s 00000000 08:11 1845043                    /var/cache/fontconfig/2cd17615ca594fa2959ae173292e504c-le64.cache-3
+7f5b44355000-7f5b44356000 r--s 00000000 08:11 1835754                    /var/cache/fontconfig/e7071f4a29fa870f4323321c154eba04-le64.cache-3
+7f5b44356000-7f5b4435b000 r--s 00000000 08:11 1840458                    /var/cache/fontconfig/6eb3985aa4124903f6ff08ba781cd364-le64.cache-3
+7f5b4435b000-7f5b4435c000 r--s 00000000 08:11 1835753                    /var/cache/fontconfig/0d8c3b2ac0904cb8a57a757ad11a4a08-le64.cache-3
+7f5b4435c000-7f5b44362000 r--s 00000000 08:11 1835750                    /var/cache/fontconfig/a755afe4a08bf5b97852ceb7400b47bc-le64.cache-3
+7f5b44362000-7f5b4436b000 r--s 00000000 08:11 1835736                    /var/cache/fontconfig/6d41288fd70b0be22e8c3a91e032eec0-le64.cache-3
+7f5b4436b000-7f5b4437b000 r--s 00000000 08:11 1835742                    /var/cache/fontconfig/04aabc0a78ac019cf9454389977116d2-le64.cache-3
+7f5b4437b000-7f5b4437c000 r--s 00000000 08:11 1868632                    /var/cache/fontconfig/1ac9eb803944fde146138c791f5cc56a-le64.cache-3
+7f5b4437c000-7f5b4437f000 r--s 00000000 08:11 1835740                    /var/cache/fontconfig/385c0604a188198f04d133e54aba7fe7-le64.cache-3
+7f5b4437f000-7f5b44380000 r--s 00000000 08:11 1868631                    /var/cache/fontconfig/dc05db6664285cc2f12bf69c139ae4c3-le64.cache-3
+7f5b44380000-7f5b44382000 r--s 00000000 08:11 1868630                    /var/cache/fontconfig/767a8244fc0220cfb567a839d0392e0b-le64.cache-3
+7f5b44382000-7f5b44383000 r--s 00000000 08:11 1837746                    /var/cache/fontconfig/4794a0821666d79190d59a36cb4f44b5-le64.cache-3
+7f5b44383000-7f5b44386000 r--s 00000000 08:11 1835732                    /var/cache/fontconfig/8801497958630a81b71ace7c5f9b32a8-le64.cache-3
+7f5b44386000-7f5b443b4000 r--s 00000000 08:11 1835739                    /var/cache/fontconfig/365b55f210c0a22e9a19e35191240f32-le64.cache-3
+7f5b443b4000-7f5b443b9000 r--s 00000000 08:11 1835724                    /var/cache/fontconfig/3047814df9a2f067bd2d96a2b9c36e5a-le64.cache-3
+7f5b443b9000-7f5b443ba000 r--s 00000000 08:11 1835735                    /var/cache/fontconfig/56cf4f4769d0f4abc89a4895d7bd3ae1-le64.cache-3
+7f5b443ba000-7f5b443bf000 r--s 00000000 08:11 1836115                    /var/cache/fontconfig/b47c4e1ecd0709278f4910c18777a504-le64.cache-3
+7f5b443bf000-7f5b443c7000 r--s 00000000 08:11 1836267                    /var/cache/fontconfig/52f7bdb7ce746bfd7eaa1985bd9cfa93-le64.cache-3
+7f5b443c7000-7f5b443ca000 r--s 00000000 08:11 1868629                    /var/cache/fontconfig/e49e89034d371f0f9de17aab02136486-le64.cache-3
+7f5b443ca000-7f5b443cc000 r--s 00000000 08:11 1868628                    /var/cache/fontconfig/4b14b093aebc79c320de5e86ae1d3314-le64.cache-3
+7f5b443cc000-7f5b443dd000 r--s 00000000 08:11 1838496                    /var/cache/fontconfig/d52a8644073d54c13679302ca1180695-le64.cache-3
+7f5b443dd000-7f5b443e4000 r--s 00000000 08:11 1840019                    /var/cache/fontconfig/3f7329c5293ffd510edef78f73874cfd-le64.cache-3
+7f5b443e4000-7f5b443e7000 r--s 00000000 08:11 1845163                    /var/cache/fontconfig/e13b20fdb08344e0e664864cc2ede53d-le64.cache-3
+7f5b443e8000-7f5b443ec000 rw-s 00000000 00:04 151552069                  /SYSV00000000 (deleted)
+7f5b443ec000-7f5b444d6000 r--p 00000000 08:11 1050478                    /usr/share/icons/Humanity/icon-theme.cache
+7f5b444d6000-7f5b444e1000 r--p 00000000 08:11 1050397                    /usr/share/icons/Humanity-Dark/icon-theme.cache
+7f5b444e1000-7f5b44532000 r-xp 00000000 08:11 668349                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libfontmanager.so
+7f5b44532000-7f5b44732000 ---p 00051000 08:11 668349                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libfontmanager.so
+7f5b44732000-7f5b44735000 r--p 00051000 08:11 668349                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libfontmanager.so
+7f5b44735000-7f5b44736000 rw-p 00054000 08:11 668349                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libfontmanager.so
+7f5b44736000-7f5b44737000 ---p 00000000 00:00 0 
+7f5b44737000-7f5b44f37000 rw-p 00000000 00:00 0                          [stack:14884]
+7f5b44f37000-7f5b44f42000 r-xp 00000000 08:11 786639                     /usr/lib/x86_64-linux-gnu/gio/modules/libdconfsettings.so
+7f5b44f42000-7f5b45141000 ---p 0000b000 08:11 786639                     /usr/lib/x86_64-linux-gnu/gio/modules/libdconfsettings.so
+7f5b45141000-7f5b45142000 r--p 0000a000 08:11 786639                     /usr/lib/x86_64-linux-gnu/gio/modules/libdconfsettings.so
+7f5b45142000-7f5b45143000 rw-p 0000b000 08:11 786639                     /usr/lib/x86_64-linux-gnu/gio/modules/libdconfsettings.so
+7f5b45143000-7f5b4518e000 r--p 00000000 08:11 1054330                    /usr/share/glib-2.0/schemas/gschemas.compiled
+7f5b4518e000-7f5b451bd000 r-xp 00000000 08:11 1573012                    /usr/lib/x86_64-linux-gnu/gtk-2.0/2.10.0/engines/libmurrine.so
+7f5b451bd000-7f5b453bd000 ---p 0002f000 08:11 1573012                    /usr/lib/x86_64-linux-gnu/gtk-2.0/2.10.0/engines/libmurrine.so
+7f5b453bd000-7f5b453be000 r--p 0002f000 08:11 1573012                    /usr/lib/x86_64-linux-gnu/gtk-2.0/2.10.0/engines/libmurrine.so
+7f5b453be000-7f5b453bf000 rw-p 00030000 08:11 1573012                    /usr/lib/x86_64-linux-gnu/gtk-2.0/2.10.0/engines/libmurrine.so
+7f5b453bf000-7f5b453d0000 r-xp 00000000 08:11 1574028                    /usr/lib/x86_64-linux-gnu/gtk-2.0/modules/liboverlay-scrollbar.so
+7f5b453d0000-7f5b455cf000 ---p 00011000 08:11 1574028                    /usr/lib/x86_64-linux-gnu/gtk-2.0/modules/liboverlay-scrollbar.so
+7f5b455cf000-7f5b455d0000 r--p 00010000 08:11 1574028                    /usr/lib/x86_64-linux-gnu/gtk-2.0/modules/liboverlay-scrollbar.so
+7f5b455d0000-7f5b455d1000 rw-p 00011000 08:11 1574028                    /usr/lib/x86_64-linux-gnu/gtk-2.0/modules/liboverlay-scrollbar.so
+7f5b455d1000-7f5b455d7000 r-xp 00000000 08:11 657300                     /usr/lib/x86_64-linux-gnu/libogg.so.0.8.0
+7f5b455d7000-7f5b457d6000 ---p 00006000 08:11 657300                     /usr/lib/x86_64-linux-gnu/libogg.so.0.8.0
+7f5b457d6000-7f5b457d7000 r--p 00005000 08:11 657300                     /usr/lib/x86_64-linux-gnu/libogg.so.0.8.0
+7f5b457d7000-7f5b457d8000 rw-p 00006000 08:11 657300                     /usr/lib/x86_64-linux-gnu/libogg.so.0.8.0
+7f5b457d8000-7f5b45803000 r-xp 00000000 08:11 658941                     /usr/lib/x86_64-linux-gnu/libvorbis.so.0.4.5
+7f5b45803000-7f5b45a03000 ---p 0002b000 08:11 658941                     /usr/lib/x86_64-linux-gnu/libvorbis.so.0.4.5
+7f5b45a03000-7f5b45a04000 r--p 0002b000 08:11 658941                     /usr/lib/x86_64-linux-gnu/libvorbis.so.0.4.5
+7f5b45a04000-7f5b45a05000 rw-p 0002c000 08:11 658941                     /usr/lib/x86_64-linux-gnu/libvorbis.so.0.4.5
+7f5b45a05000-7f5b45a0e000 r-xp 00000000 08:11 659366                     /usr/lib/x86_64-linux-gnu/libltdl.so.7.3.0
+7f5b45a0e000-7f5b45c0d000 ---p 00009000 08:11 659366                     /usr/lib/x86_64-linux-gnu/libltdl.so.7.3.0
+7f5b45c0d000-7f5b45c0e000 r--p 00008000 08:11 659366                     /usr/lib/x86_64-linux-gnu/libltdl.so.7.3.0
+7f5b45c0e000-7f5b45c0f000 rw-p 00009000 08:11 659366                     /usr/lib/x86_64-linux-gnu/libltdl.so.7.3.0
+7f5b45c0f000-7f5b45c1f000 r-xp 00000000 08:11 659965                     /usr/lib/x86_64-linux-gnu/libtdb.so.1.2.10
+7f5b45c1f000-7f5b45e1f000 ---p 00010000 08:11 659965                     /usr/lib/x86_64-linux-gnu/libtdb.so.1.2.10
+7f5b45e1f000-7f5b45e20000 r--p 00010000 08:11 659965                     /usr/lib/x86_64-linux-gnu/libtdb.so.1.2.10
+7f5b45e20000-7f5b45e21000 rw-p 00011000 08:11 659965                     /usr/lib/x86_64-linux-gnu/libtdb.so.1.2.10
+7f5b45e21000-7f5b45e28000 r-xp 00000000 08:11 662328                     /usr/lib/x86_64-linux-gnu/libvorbisfile.so.3.3.4
+7f5b45e28000-7f5b46027000 ---p 00007000 08:11 662328                     /usr/lib/x86_64-linux-gnu/libvorbisfile.so.3.3.4
+7f5b46027000-7f5b46028000 r--p 00006000 08:11 662328                     /usr/lib/x86_64-linux-gnu/libvorbisfile.so.3.3.4
+7f5b46028000-7f5b46029000 rw-p 00007000 08:11 662328                     /usr/lib/x86_64-linux-gnu/libvorbisfile.so.3.3.4
+7f5b46029000-7f5b46038000 r-xp 00000000 08:11 663037                     /usr/lib/x86_64-linux-gnu/libcanberra.so.0.2.5
+7f5b46038000-7f5b46237000 ---p 0000f000 08:11 663037                     /usr/lib/x86_64-linux-gnu/libcanberra.so.0.2.5
+7f5b46237000-7f5b46238000 r--p 0000e000 08:11 663037                     /usr/lib/x86_64-linux-gnu/libcanberra.so.0.2.5
+7f5b46238000-7f5b46239000 rw-p 0000f000 08:11 663037                     /usr/lib/x86_64-linux-gnu/libcanberra.so.0.2.5
+7f5b46239000-7f5b4623d000 r-xp 00000000 08:11 659535                     /usr/lib/x86_64-linux-gnu/libcanberra-gtk.so.0.1.9
+7f5b4623d000-7f5b4643c000 ---p 00004000 08:11 659535                     /usr/lib/x86_64-linux-gnu/libcanberra-gtk.so.0.1.9
+7f5b4643c000-7f5b4643d000 r--p 00003000 08:11 659535                     /usr/lib/x86_64-linux-gnu/libcanberra-gtk.so.0.1.9
+7f5b4643d000-7f5b4643e000 rw-p 00004000 08:11 659535                     /usr/lib/x86_64-linux-gnu/libcanberra-gtk.so.0.1.9
+7f5b4643e000-7f5b4643f000 r--s 00000000 08:11 1835731                    /var/cache/fontconfig/b9d506c9ac06c20b433354fa67a72993-le64.cache-3
+7f5b4643f000-7f5b46440000 r--s 00000000 08:11 1868626                    /var/cache/fontconfig/0c9eb80ebd1c36541ebe2852d3bb0c49-le64.cache-3
+7f5b46440000-7f5b46444000 r--s 00000000 08:11 1868625                    /var/cache/fontconfig/7ef2298fde41cc6eeb7af42e48b7d293-le64.cache-3
+7f5b46445000-7f5b4644c000 rw-s 00000000 00:04 151453731                  /SYSV00000000 (deleted)
+7f5b4644c000-7f5b46458000 r--p 00000000 08:11 1054392                    /usr/share/icons/ubuntu-mono-dark/icon-theme.cache
+7f5b46458000-7f5b46465000 r--p 00000000 08:12 24428662                   /home/akrylov/.config/dconf/user
+7f5b46465000-7f5b4646a000 r-xp 00000000 08:11 1573079                    /usr/lib/x86_64-linux-gnu/gtk-2.0/modules/libcanberra-gtk-module.so
+7f5b4646a000-7f5b46669000 ---p 00005000 08:11 1573079                    /usr/lib/x86_64-linux-gnu/gtk-2.0/modules/libcanberra-gtk-module.so
+7f5b46669000-7f5b4666a000 r--p 00004000 08:11 1573079                    /usr/lib/x86_64-linux-gnu/gtk-2.0/modules/libcanberra-gtk-module.so
+7f5b4666a000-7f5b4666b000 rw-p 00005000 08:11 1573079                    /usr/lib/x86_64-linux-gnu/gtk-2.0/modules/libcanberra-gtk-module.so
+7f5b4666b000-7f5b4666e000 ---p 00000000 00:00 0 
+7f5b4666e000-7f5b4676c000 rw-p 00000000 00:00 0                          [stack:15850]
+7f5b4676c000-7f5b4676f000 ---p 00000000 00:00 0 
+7f5b4676f000-7f5b4686d000 rw-p 00000000 00:00 0 
+7f5b4686d000-7f5b46870000 ---p 00000000 00:00 0 
+7f5b46870000-7f5b4696e000 rw-p 00000000 00:00 0 
+7f5b4696e000-7f5b46985000 r--s 0010b000 08:12 24562087                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/ext/xerces-2.8.0.jar
+7f5b46985000-7f5b46986000 r--s 00001000 08:12 24561932                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-libs-xerces.jar
+7f5b46986000-7f5b46988000 r--s 00009000 08:12 24398218                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-core-io-ui.jar
+7f5b46988000-7f5b46989000 r--s 00002000 08:12 24561453                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-core-multitabs-project.jar
+7f5b46989000-7f5b4698c000 r--s 00035000 08:12 24398156                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-core-multitabs.jar
+7f5b4698c000-7f5b4698e000 r--s 00017000 08:12 24398187                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-core-network.jar
+7f5b4698e000-7f5b46992000 r--s 0007f000 08:12 24398184                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-core-output2.jar
+7f5b46992000-7f5b4699e000 r--s 00097000 08:12 24562004                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/ext/freemarker-2.3.19.jar
+7f5b4699e000-7f5b4699f000 r--s 00007000 08:12 24561805                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-libs-freemarker.jar
+7f5b4699f000-7f5b469a1000 r--s 00014000 08:12 24561841                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/ext/svnClientAdapter-javahl.jar
+7f5b469a1000-7f5b469a7000 r--s 00028000 08:12 24562122                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/ext/svnjavahl.jar
+7f5b469a7000-7f5b469a8000 r--s 00003000 08:12 24561137                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-libs-svnClientAdapter-javahl.jar
+7f5b469a8000-7f5b469aa000 r--s 00015000 08:12 24561843                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/ext/svnClientAdapter-svnkit.jar
+7f5b469aa000-7f5b469f3000 r--s 00555000 08:12 24562133                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/ext/svnkit.jar
+7f5b469f3000-7f5b469f8000 r--s 00039000 08:12 24562085                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/ext/trilead.ssh2.jar
+7f5b469f8000-7f5b46a07000 r--s 000a9000 08:12 24562134                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/ext/sqljet.jar
+7f5b46a07000-7f5b46a08000 r--s 00001000 08:12 24561139                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-libs-svnClientAdapter-svnkit.jar
+7f5b46a08000-7f5b46a0c000 r--s 00024000 08:12 24562009                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/ext/antlr-runtime-3.4.jar
+7f5b46a0c000-7f5b46a0d000 r--s 00000000 08:12 24561600                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-libs-antlr3-runtime.jar
+7f5b46a0d000-7f5b46a10000 r--s 000db000 08:12 24403015                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/ext/jna-4.1.0.jar
+7f5b46a10000-7f5b46a11000 r--s 00001000 08:12 24398388                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-libs-jna.jar
+7f5b46a11000-7f5b46a12000 r--s 0000a000 08:12 24397990                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-modules-autoupdate-cli.jar
+7f5b46a12000-7f5b46a19000 r--s 000a6000 08:12 24561606                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-db-dataview.jar
+7f5b46a19000-7f5b46a1a000 r--s 00004000 08:12 24561680                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-db-drivers.jar
+7f5b46a1a000-7f5b46a1c000 r--s 00006000 08:12 24561880                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-dbapi.jar
+7f5b46a1c000-7f5b46a1f000 r--s 0004d000 08:12 24561769                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-defaults.jar
+7f5b46a1f000-7f5b46a21000 r--s 00009000 08:12 24561141                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-editor-global-format.jar
+7f5b46a21000-7f5b46a23000 r--s 0000b000 08:12 24397832                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-modules-editor-mimelookup-impl.jar
+7f5b46a23000-7f5b46a24000 r--s 00003000 08:12 24561565                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-editor-plain.jar
+7f5b46a24000-7f5b46a25000 r--s 00001000 08:12 24561356                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-editor-plain-lib.jar
+7f5b46a25000-7f5b46a29000 r--s 0004c000 08:12 24561487                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-editor-search.jar
+7f5b46a29000-7f5b46a3d000 r--s 004c8000 08:12 24563306                   /home/akrylov/netbeans-8.0.2-for-radix/java/modules/org-netbeans-modules-java-hints.jar
+7f5b46a3d000-7f5b46a50000 r--s 002bc000 08:12 24563287                   /home/akrylov/netbeans-8.0.2-for-radix/java/modules/org-netbeans-modules-java-editor.jar
+7f5b46a50000-7f5b46a51000 r--s 0000c000 08:12 24562927                   /home/akrylov/netbeans-8.0.2-for-radix/java/modules/org-netbeans-modules-java-hints-legacy-spi.jar
+7f5b46a51000-7f5b46a58000 r--s 00096000 08:12 24563140                   /home/akrylov/netbeans-8.0.2-for-radix/java/modules/org-netbeans-modules-java-navigation.jar
+7f5b46a58000-7f5b46a5a000 r--s 00002000 08:12 24561451                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-lexer-nbbridge.jar
+7f5b46a5a000-7f5b46a5b000 r--s 00004000 08:12 24561668                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-parsing-ui.jar
+7f5b46a5b000-7f5b46a5c000 r--s 00002000 08:12 24561546                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-print-editor.jar
+7f5b46a5c000-7f5b46a5e000 r--s 00024000 08:12 24398054                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-modules-progress-ui.jar
+7f5b46a5e000-7f5b46a74000 r--s 0032d000 08:12 24563096                   /home/akrylov/netbeans-8.0.2-for-radix/java/modules/org-netbeans-modules-refactoring-java.jar
+7f5b46a74000-7f5b46a76000 r--s 0000d000 08:12 24561775                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-gototest.jar
+7f5b46a76000-7f5b46a7c000 r--s 0006f000 08:12 24561456                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-gsf-testrunner.jar
+7f5b46a7c000-7f5b46a7f000 r--s 0004d000 08:12 24563200                   /home/akrylov/netbeans-8.0.2-for-radix/java/modules/org-netbeans-modules-java-sourceui.jar
+7f5b46a7f000-7f5b46a81000 r--s 00007000 08:12 24561184                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-tasklist-projectint.jar
+7f5b46a81000-7f5b46a86000 r--s 0006a000 08:12 24561608                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-tasklist-ui.jar
+7f5b46a86000-7f5b46a88000 r--s 00010000 08:12 24561771                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-team-ide.jar
+7f5b46a88000-7f5b46a8f000 r--s 00088000 08:12 24561563                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-team-commons.jar
+7f5b46a8f000-7f5b46aac000 r--s 00149000 08:12 24562028                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/ext/swingx-all-1.6.4.jar
+7f5b46aac000-7f5b46aad000 r--s 00001000 08:12 24561937                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-libs-swingx.jar
+7f5b46aad000-7f5b46aae000 r--s 00005000 08:12 24561185                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-versioning-masterfs.jar
+7f5b46aae000-7f5b46ab1000 r--s 00024000 08:12 24563331                   /home/akrylov/netbeans-8.0.2-for-radix/java/modules/org-netbeans-modules-whitelist.jar
+7f5b46ab1000-7f5b46ab3000 r--s 0001e000 08:12 24561721                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-xml-tools.jar
+7f5b46ab3000-7f5b46ab9000 r--s 0007b000 08:12 24562029                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/ext/org-netbeans-tax.jar
+7f5b46ab9000-7f5b46ac0000 r--s 0006e000 08:12 24561810                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-xml-tax.jar
+7f5b46ac0000-7f5b46ac6000 r--s 00084000 08:12 24561936                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-xml.jar
+7f5b46ac6000-7f5b46ac9000 r--s 00043000 08:12 24561512                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-xml-retriever.jar
+7f5b46ac9000-7f5b46ace000 r--s 00082000 08:12 24561806                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-xml-axi.jar
+7f5b46acf000-7f5b46ad0000 rw-p 00000000 00:00 0 
+7f5b46ad0000-7f5b46ad4000 rw-s 00000000 00:04 151519300                  /SYSV00000000 (deleted)
+7f5b46ad4000-7f5b46ad5000 r--s 00000000 08:12 26607881                   /home/akrylov/.local/share/mime/mime.cache
+7f5b46ad5000-7f5b46add000 r--s 000c9000 08:12 24561765                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-xml-text.jar
+7f5b46add000-7f5b46adf000 r--s 00025000 08:12 24561351                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-editor-structure.jar
+7f5b46adf000-7f5b46ae2000 r--s 00061000 08:12 24561802                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-xml-xdm.jar
+7f5b46ae2000-7f5b46ae3000 r--s 00008000 08:12 24561711                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-xml-lexer.jar
+7f5b46ae3000-7f5b46ae6000 r--s 00038000 08:12 24561811                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-xml-xam.jar
+7f5b46ae6000-7f5b46ae9000 r--s 00024000 08:12 24561762                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-xml-core.jar
+7f5b46ae9000-7f5b46aeb000 r--s 00015000 08:12 24561298                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-spi-editor-hints-projects.jar
+7f5b46aeb000-7f5b46aec000 r--s 00006000 08:12 24561143                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-editor-tools-storage.jar
+7f5b46aec000-7f5b46af4000 r--s 000ca000 08:12 24563380                   /home/akrylov/netbeans-8.0.2-for-radix/java/modules/org-netbeans-spi-java-hints.jar
+7f5b46af4000-7f5b46af8000 r--s 00053000 08:12 24561510                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-code-analysis.jar
+7f5b46af8000-7f5b46b01000 r--s 000fa000 08:12 24398007                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-modules-autoupdate-ui.jar
+7f5b46b01000-7f5b46b0a000 r--s 000d0000 08:12 24563246                   /home/akrylov/netbeans-8.0.2-for-radix/java/modules/org-netbeans-modules-java-project.jar
+7f5b46b0a000-7f5b46b11000 r--s 000b1000 08:12 24561604                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-project-ant.jar
+7f5b46b11000-7f5b46b16000 r--s 0006f000 08:12 24561609                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-xml-catalog.jar
+7f5b46b16000-7f5b46b18000 r--s 00014000 08:12 24562088                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/ext/resolver-1.2.jar
+7f5b46b18000-7f5b46b19000 r--s 00000000 08:12 24561963                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-apache-xml-resolver.jar
+7f5b46b19000-7f5b46b1e000 r--s 00086000 08:12 24562311                   /home/akrylov/netbeans-8.0.2-for-radix/extide/modules/org-apache-tools-ant-module.jar
+7f5b46b1e000-7f5b46b20000 r--s 00001000 08:12 24562308                   /home/akrylov/netbeans-8.0.2-for-radix/extide/modules/org-netbeans-modules-options-java.jar
+7f5b46b20000-7f5b46b22000 r--s 00016000 08:12 24562024                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-api-xml.jar
+7f5b46b22000-7f5b46b24000 r--s 0000d000 08:02 2503502                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/rfs.jar
+7f5b46b24000-7f5b46b28000 r--s 00011000 08:02 2503511                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/xb_connections.jar
+7f5b46b28000-7f5b46b50000 r--s 00240000 08:02 2503491                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/client.jar
+7f5b46b50000-7f5b46b56000 r--s 0001a000 08:02 2503518                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/xb_groupsettings.jar
+7f5b46b56000-7f5b46b58000 r--s 00025000 08:02 2535786                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/org-radixware-kernel-designer-eas.jar
+7f5b46b58000-7f5b46b5a000 r--s 0001e000 08:02 26818                      /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite/build/cluster/modules/org-radixware-kernel-designer-editors.jar
+7f5b46b5a000-7f5b46b5d000 r--s 00021000 08:02 40449                      /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite/build/cluster/modules/org-radixware-kernel-designer-uds.jar
+7f5b46b5d000-7f5b46b6c000 r--s 00163000 08:02 40439                      /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite/build/cluster/modules/org-radixware-kernel-designer-environment.jar
+7f5b46b6c000-7f5b46b7c000 r--s 00175000 08:12 24561713                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-projectui.jar
+7f5b46b7c000-7f5b46b7f000 r--s 00021000 08:12 24398157                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-core-execution.jar
+7f5b46b7f000-7f5b46b81000 r--s 00019000 08:12 24398117                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-modules-sendopts.jar
+7f5b46b81000-7f5b46b86000 r--s 00049000 08:02 40403                      /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite/build/cluster/modules/org-radixware-kernel-designer-dds-tree.jar
+7f5b46b86000-7f5b46b88000 r--s 0000f000 08:02 40144                      /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite/build/cluster/modules/org-radixeare-kernel-designer-ads-build-release.jar
+7f5b46b88000-7f5b46b89000 r--s 00002000 08:02 26465                      /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite/build/cluster/modules/org-radixware-kernel-designer-dds-actualizer-oracle.jar
+7f5b46b89000-7f5b46b8b000 r--s 00011000 08:02 26405                      /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite/build/cluster/modules/org-radixware-kernel-designer-dds-actualizer.jar
+7f5b46b8b000-7f5b46b91000 r--s 0008e000 08:02 2535804                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/org-radixware-kernel-designer-ads-localization.jar
+7f5b46b91000-7f5b46b9c000 r--s 0009c000 08:02 40410                      /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite/build/cluster/modules/org-radixware-kernel-designer-tree-ads-nodes.jar
+7f5b46b9c000-7f5b46ba3000 r--s 0007d000 08:02 26811                      /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite/build/cluster/modules/org-radixware-kernel-designer-debugger.jar
+7f5b46ba3000-7f5b46bb6000 r--s 00151000 08:12 24561808                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-spi-debugger-ui.jar
+7f5b46bb6000-7f5b46bba000 r--s 00052000 08:12 24561902                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-api-debugger.jar
+7f5b46bba000-7f5b46bbe000 r--s 0005f000 08:12 24561881                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-spi-viewmodel.jar
+7f5b46bbe000-7f5b46bf1000 r--s 00516000 08:02 40395                      /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite/build/cluster/modules/org-radixware-kernel-designer-ads-editors.jar
+7f5b46bf1000-7f5b46c00000 r--s 00137000 08:02 40158                      /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite/build/cluster/modules/org-radixware-kernel-dds-editors.jar
+7f5b46c00000-7f5b46c04000 r--s 00030000 08:02 26371                      /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite/build/cluster/modules/org-radixware-kernel-common-dialogs-db.jar
+7f5b46c04000-7f5b46c07000 r--s 0004d000 08:12 24562145                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/ext/ddl.jar
+7f5b46c07000-7f5b46c17000 r--s 00184000 08:12 24561958                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-db.jar
+7f5b46c17000-7f5b46c1b000 r--s 0004e000 08:12 24561306                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-project-libraries.jar
+7f5b46c1b000-7f5b46c1d000 r--s 00008000 08:12 24561999                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-core-ide.jar
+7f5b46c1d000-7f5b46c26000 r--s 0007d000 08:12 24403004                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/ext/jhall-2.0_05.jar
+7f5b46c26000-7f5b46c29000 r--s 00030000 08:12 24398111                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-modules-javahelp.jar
+7f5b46c29000-7f5b46c2c000 r--s 0003b000 08:12 24561300                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-db-metadata-model.jar
+7f5b46c2c000-7f5b46c2f000 r--s 00013000 08:02 40149                      /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite/build/cluster/modules/org-radixware-kernel-designer-common-tree.jar
+7f5b46c2f000-7f5b46c34000 r--s 00077000 08:02 26966                      /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite/build/cluster/modules/org-radixware-kernel-designer-subversion.jar
+7f5b46c34000-7f5b46c4f000 r--s 00352000 08:12 24561664                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-subversion.jar
+7f5b46c4f000-7f5b46c52000 r--s 00015000 08:12 24562101                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/ext/ini4j-0.5.1.jar
+7f5b46c52000-7f5b46c53000 r--s 00000000 08:12 24561962                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-libs-ini4j.jar
+7f5b46c53000-7f5b46c55000 r--s 0003e000 08:12 24403018                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/ext/updater.jar
+7f5b46c55000-7f5b46c5a000 r--s 000bc000 08:12 24397885                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-modules-autoupdate-services.jar
+7f5b46c5a000-7f5b46c5b000 r--s 0001c000 08:12 24398231                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/ext/swing-layout-1.0.4.jar
+7f5b46c5b000-7f5b46c5d000 r--s 00000000 08:12 24402979                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-jdesktop-layout.jar
+7f5b46c5d000-7f5b46c60000 r--s 0000f000 08:12 24561904                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/ext/svnClientAdapter-main.jar
+7f5b46c60000-7f5b46c62000 r--s 00001000 08:12 24561517                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-libs-svnClientAdapter.jar
+7f5b46c62000-7f5b46c6e000 r--s 00131000 08:12 24561406                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-versioning-util.jar
+7f5b46c6e000-7f5b46c70000 r--s 0001a000 08:12 24398084                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-modules-favorites.jar
+7f5b46c70000-7f5b46c7d000 r--s 00142000 08:12 24398219                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-api-visual.jar
+7f5b46c7d000-7f5b46c90000 r--s 00185000 08:02 24451                      /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.reports/build/cluster/modules/org-radixware-kernel-designer-ads-reports.jar
+7f5b46c90000-7f5b47dff000 r-xp 00000000 08:11 657882                     /usr/lib/x86_64-linux-gnu/libicudata.so.48.1.1
+7f5b47dff000-7f5b47ffe000 ---p 0116f000 08:11 657882                     /usr/lib/x86_64-linux-gnu/libicudata.so.48.1.1
+7f5b47ffe000-7f5b47fff000 r--p 0116e000 08:11 657882                     /usr/lib/x86_64-linux-gnu/libicudata.so.48.1.1
+7f5b47fff000-7f5b48000000 rw-p 0116f000 08:11 657882                     /usr/lib/x86_64-linux-gnu/libicudata.so.48.1.1
+7f5b48000000-7f5b4802c000 rw-p 00000000 00:00 0 
+7f5b4802c000-7f5b4c000000 ---p 00000000 00:00 0 
+7f5b4c000000-7f5b4c002000 r--s 00017000 08:12 24561667                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-versioning.jar
+7f5b4c002000-7f5b4c006000 r--s 00055000 08:12 24561411                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-versioning-core.jar
+7f5b4c006000-7f5b4c00a000 r--s 00038000 08:12 24561564                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-extexecution.jar
+7f5b4c00a000-7f5b4c00c000 r--s 00004000 08:12 24560986                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-spellchecker-apimodule.jar
+7f5b4c00c000-7f5b4c017000 r--s 000ae000 08:02 2535812                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/org-radixware-kernel-designer-tree-common.jar
+7f5b4c017000-7f5b4c01c000 r--s 00069000 08:02 2535776                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/org-radixware-kernel-designer-ads-method.jar
+7f5b4c01c000-7f5b4c021000 r--s 00043000 08:02 2535800                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/org-radixware-kernel-designer-tree-base.jar
+7f5b4c021000-7f5b4c026000 r--s 0006a000 08:02 2535781                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/org-radixware-kernel-designer-ads-editors-sql.jar
+7f5b4c026000-7f5b4c04d000 r--s 003a5000 08:02 2535772                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/org-radixware-kernel-designer-ads-editors-base.jar
+7f5b4c04d000-7f5b4c065000 r--s 00213000 08:02 2535765                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/org-radixware-kernel-designer-common-editors.jar
+7f5b4c065000-7f5b4c06a000 r--s 0006d000 08:12 24561931                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-spi-palette.jar
+7f5b4c06a000-7f5b4c070000 r--s 00052000 08:02 2535756                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/org-radixware-kernel-designer-ads-common.jar
+7f5b4c070000-7f5b4c073000 r--s 00011000 08:02 2535753                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/org-radixware-kernel-designer-ads-build.jar
+7f5b4c073000-7f5b4c0ab000 r--s 0046f000 08:02 2535744                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/org-radixware-kernel-designer-common-dialogs.jar
+7f5b4c0ab000-7f5b4c0c6000 r--s 00410000 08:12 24563276                   /home/akrylov/netbeans-8.0.2-for-radix/java/modules/org-netbeans-modules-java-source.jar
+7f5b4c0c6000-7f5b4c0c7000 r--s 00000000 08:11 1839626                    /var/cache/fontconfig/62f91419b9ebdb6975e7e41ab6412357-le64.cache-3
+7f5b4c0c7000-7f5b4c0c8000 r--s 00000000 00:14 67348                      /run/user/akrylov/dconf/user
+7f5b4c0c8000-7f5b4c0ca000 r--s 0001c000 08:12 24563425                   /home/akrylov/netbeans-8.0.2-for-radix/java/modules/org-netbeans-lib-nbjavac.jar
+7f5b4c0ca000-7f5b4c0cd000 r--s 0002b000 08:12 24563216                   /home/akrylov/netbeans-8.0.2-for-radix/java/modules/org-netbeans-modules-java-platform.jar
+7f5b4c0cd000-7f5b4c0ce000 r--s 00005000 08:12 24562840                   /home/akrylov/netbeans-8.0.2-for-radix/java/modules/org-netbeans-modules-java-preprocessorbridge.jar
+7f5b4c0ce000-7f5b4c0d0000 r--s 0000c000 08:12 24563449                   /home/akrylov/netbeans-8.0.2-for-radix/java/modules/org-netbeans-api-java.jar
+7f5b4c0d0000-7f5b4c0f3000 r--s 0026f000 08:12 24563472                   /home/akrylov/netbeans-8.0.2-for-radix/java/modules/ext/nb-javac-impl.jar
+7f5b4c0f3000-7f5b4c0f4000 r--s 00001000 08:12 24563385                   /home/akrylov/netbeans-8.0.2-for-radix/java/modules/org-netbeans-libs-javacimpl.jar
+7f5b4c0f4000-7f5b4c0fb000 r--s 00024000 08:12 24563474                   /home/akrylov/netbeans-8.0.2-for-radix/java/modules/ext/nb-javac-api.jar
+7f5b4c0fb000-7f5b4c0fc000 r--s 00002000 08:12 24563397                   /home/akrylov/netbeans-8.0.2-for-radix/java/modules/org-netbeans-libs-javacapi.jar
+7f5b4c0fc000-7f5b4c0ff000 r--s 00028000 08:12 24563337                   /home/akrylov/netbeans-8.0.2-for-radix/java/modules/org-netbeans-modules-classfile.jar
+7f5b4c0ff000-7f5b4c100000 r--s 0000f000 08:12 24563309                   /home/akrylov/netbeans-8.0.2-for-radix/java/modules/org-netbeans-modules-java-lexer.jar
+7f5b4c100000-7f5b4c102000 r--s 00024000 08:12 24561055                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-editor-bracesmatching.jar
+7f5b4c102000-7f5b4c10c000 r--s 00081000 08:02 2503561                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/batik-bridge.jar
+7f5b4c10c000-7f5b4c10f000 r--s 0001d000 08:02 2503575                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/batik-util.jar
+7f5b4c10f000-7f5b4c114000 r--s 00027000 08:02 2503564                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/batik-dom.jar
+7f5b4c114000-7f5b4c11b000 r--s 0005d000 08:02 2503560                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/batik-awt-util.jar
+7f5b4c11b000-7f5b4c121000 r--s 00025000 08:02 2503567                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/batik-gui-util.jar
+7f5b4c121000-7f5b4c126000 r--s 00011000 08:02 2503578                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/xml-apis-ext.jar
+7f5b4c126000-7f5b4c129000 r--s 0001c000 08:02 2503574                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/batik-transcoder.jar
+7f5b4c129000-7f5b4c12b000 r--s 0000f000 08:02 2503566                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/batik-extension.jar
+7f5b4c12b000-7f5b4c12c000 r--s 00007000 08:02 2503576                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/batik-xml.jar
+7f5b4c12c000-7f5b4c12e000 r--s 00016000 08:02 2503559                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/batik-anim.jar
+7f5b4c12e000-7f5b4c132000 r--s 00038000 08:02 2503568                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/batik-gvt.jar
+7f5b4c132000-7f5b4c13f000 r--s 00089000 08:02 2503571                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/batik-svg-dom.jar
+7f5b4c13f000-7f5b4c142000 r--s 0000d000 08:02 2503570                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/batik-script.jar
+7f5b4c142000-7f5b4c145000 r--s 00010000 08:02 2503569                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/batik-parser.jar
+7f5b4c145000-7f5b4c14a000 r--s 00029000 08:02 2503573                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/batik-swing.jar
+7f5b4c14a000-7f5b4c14d000 r--s 00026000 08:02 2503562                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/batik-codec.jar
+7f5b4c14d000-7f5b4c152000 r--s 00031000 08:02 2503572                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/batik-svggen.jar
+7f5b4c152000-7f5b4c15a000 r--s 00046000 08:02 2503563                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/batik-css.jar
+7f5b4c15a000-7f5b4c15b000 r--s 00002000 08:02 2503565                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/batik-ext.jar
+7f5b4c15b000-7f5b4c15d000 r--s 00000000 08:02 2503476                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/org-apache-batik.jar
+7f5b4c15d000-7f5b4c15e000 r--s 00012000 08:12 24563147                   /home/akrylov/netbeans-8.0.2-for-radix/java/modules/org-netbeans-modules-java-editor-lib.jar
+7f5b4c15e000-7f5b4c160000 r--s 00029000 08:12 24555825                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-editor-deprecated-pre65formatting.jar
+7f5b4c160000-7f5b4c16e000 r--s 0013b000 08:12 24561807                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-csl-api.jar
+7f5b4c16e000-7f5b4c171000 r--s 00041000 08:12 24398158                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-core-multiview.jar
+7f5b4c171000-7f5b4c173000 r--s 00017000 08:12 24561882                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-spi-navigator.jar
+7f5b4c173000-7f5b4c175000 r--s 00011000 08:12 24561245                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-editor-breadcrumbs.jar
+7f5b4c175000-7f5b4c17e000 r--s 000a7000 08:12 24561412                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-refactoring-api.jar
+7f5b4c17e000-7f5b4c180000 r--s 00017000 08:12 24561509                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-editor-guards.jar
+7f5b4c180000-7f5b4c186000 r--s 00073000 08:12 24561846                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-jumpto.jar
+7f5b4c186000-7f5b4c192000 r--s 0011f000 08:12 24398215                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-api-search.jar
+7f5b4c192000-7f5b4c19d000 r--s 00161000 08:12 24561605                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-parsing-api.jar
+7f5b4c19d000-7f5b4c19f000 r--s 0000a000 08:12 24561906                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-spi-tasklist.jar
+7f5b4c19f000-7f5b4c1a3000 r--s 0003b000 08:12 24561452                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-parsing-lucene.jar
+7f5b4c1a3000-7f5b4c1a8000 r--s 00071000 08:12 24398115                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-modules-masterfs.jar
+7f5b4c1a8000-7f5b4c1c1000 r--s 00149000 08:12 24562007                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/ext/lucene-core-3.5.0.jar
+7f5b4c1c1000-7f5b4c1c2000 r--s 00000000 08:12 24561929                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-libs-lucene.jar
+7f5b4c1c2000-7f5b4c1c4000 r--s 0001f000 08:12 24561662                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-api-java-classpath.jar
+7f5b4c1c4000-7f5b4c1c5000 r--s 00008000 08:12 24398375                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-openide-execution.jar
+7f5b4c1c5000-7f5b4c1ca000 r--s 0005f000 08:12 24402956                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-core-ui.jar
+7f5b4c1ca000-7f5b4c1cc000 r--s 0000d000 08:12 24561459                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-editor-actions.jar
+7f5b4c1cc000-7f5b4c1d0000 r--s 00053000 08:12 24561140                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-editor-codetemplates.jar
+7f5b4c1d0000-7f5b4c1d4000 r--s 0004a000 08:12 24561776                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-spi-editor-hints.jar
+7f5b4c1d4000-7f5b4c1d7000 r--s 00044000 08:12 24561302                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-editor-completion.jar
+7f5b4c1d7000-7f5b4c1e0000 r--s 00113000 08:12 24561903                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-diff.jar
+7f5b4c1e0000-7f5b4c1e5000 r--s 00080000 08:12 24561460                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-options-editor.jar
+7f5b4c1e5000-7f5b4c1ef000 r--s 000d9000 08:12 24561837                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-editor.jar
+7f5b4c1ef000-7f5b4c1f2000 r--s 00033000 08:12 24561350                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-editor-fold-nbui.jar
+7f5b4c1f2000-7f5b4c1f4000 r--s 00015000 08:12 24561243                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-editor-errorstripe.jar
+7f5b4c1f4000-7f5b4c203000 r--s 001d3000 08:12 24561675                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-editor-lib.jar
+7f5b4c203000-7f5b4c205000 r--s 00014000 08:12 24561513                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-editor-indent.jar
+7f5b4c205000-7f5b4c208000 r--s 00043000 08:12 24561615                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-editor-fold.jar
+7f5b4c208000-7f5b4c252000 r--s 003a7000 08:02 2503489                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/ads.jar
+7f5b4c252000-7f5b4c290000 r--s 0025d000 08:02 2503557                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/xbean.jar
+7f5b4c290000-7f5b4c291000 r--s 00002000 08:12 24560984                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-project-indexingbridge.jar
+7f5b4c291000-7f5b4c292000 r--s 00002000 08:12 24560985                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-editor-errorstripe-api.jar
+7f5b4c292000-7f5b4c296000 r--s 0005e000 08:12 24560930                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-editor-settings-storage.jar
+7f5b4c296000-7f5b4c29a000 r--s 00067000 08:12 24397991                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-modules-options-keymap.jar
+7f5b4c29a000-7f5b4c2a5000 r--s 00131000 08:12 24561611                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-editor-lib2.jar
+7f5b4c2a5000-7f5b4c2a7000 r--s 00015000 08:12 24561408                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-editor-settings.jar
+7f5b4c2a7000-7f5b4c2ab000 r--s 0008a000 08:12 24561879                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-lexer.jar
+7f5b4c2ab000-7f5b4c2ad000 r--s 00023000 08:12 24561603                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-editor-util.jar
+7f5b4c2ad000-7f5b4c2b0000 r--s 0003f000 08:02 2535715                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/org-radixware-kernel-designer-dds-script-generation.jar
+7f5b4c2b0000-7f5b4c2b1000 r--s 00000000 08:02 23562                      /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite/build/cluster/modules/locale/org-netbeans-core-windows_designer.jar
+7f5b4c2b1000-7f5b4c2c1000 r--s 0023c000 08:12 24398185                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-core-windows.jar
+7f5b4c2c1000-7f5b4c2c4000 r--s 0003f000 08:12 24398096                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-modules-settings.jar
+7f5b4c2c4000-7f5b4c2c8000 r--s 0002a000 08:02 2535710                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/org-radixware-kernel-designer-common-general.jar
+7f5b4c2c8000-7f5b4c2c9000 r--s 00005000 08:02 2535698                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/org-radixware-kernel-designer-common-annotations.jar
+7f5b4c2c9000-7f5b4c2d0000 r--s 0001d000 08:02 2503530                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/xb_types.jar
+7f5b4c2d0000-7f5b4c2d6000 r--s 00021000 08:02 2503522                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/xb_radixdoc.jar
+7f5b4c2d6000-7f5b4c301000 r--s 00475000 08:02 2503549                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/org.eclipse.jdt.core_3.9.2.v20140114-1555.jar
+7f5b4c301000-7f5b4c306000 r--s 00042000 08:02 2503542                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/commons-lang-2.6.jar
+7f5b4c306000-7f5b4c30f000 r--s 0004b000 08:02 2503496                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/msdl_editor.jar
+7f5b4c30f000-7f5b4c312000 r--s 0001f000 08:02 2503506                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/userreport.jar
+7f5b4c312000-7f5b4c314000 r--s 00008000 08:02 2503507                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/xb_acs.jar
+7f5b4c314000-7f5b4c330000 r--s 00154000 08:02 2503554                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/swingx-1.6.4.jar
+7f5b4c330000-7f5b4c340000 r--s 0005b000 08:02 2503523                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/xb_reports.jar
+7f5b4c340000-7f5b4c342000 r--s 0000b000 08:02 2503505                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/uds.jar
+7f5b4c342000-7f5b4c344000 r--s 0004e000 08:02 2503500                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/radixdoc.jar
+7f5b4c344000-7f5b4c355000 r--s 00069000 08:02 2503537                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/xb_xscml.jar
+7f5b4c355000-7f5b4c362000 r--s 00062000 08:02 2503532                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/xb_ui.jar
+7f5b4c362000-7f5b4c371000 r--s 00067000 08:02 2503512                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/xb_ddsdef.jar
+7f5b4c371000-7f5b4c374000 r--s 0000f000 08:02 2503550                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/sequence-library-1.0.3.jar
+7f5b4c374000-7f5b4c378000 r--s 00042000 08:02 2503551                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/serializer.jar
+7f5b4c378000-7f5b4c37f000 r--s 00023000 08:02 2503515                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/xb_editmask.jar
+7f5b4c37f000-7f5b4c388000 r--s 00039000 08:02 2503520                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/xb_msdl.jar
+7f5b4c388000-7f5b4c3c9000 r--s 001b1000 08:02 2503514                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/xb_eas.jar
+7f5b4c3c9000-7f5b4c3cc000 r--s 00015000 08:02 2503503                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/sqlscript.jar
+7f5b4c3cc000-7f5b4c3f1000 r--s 002fb000 08:02 2503556                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/xalan-for-radix-1.0.jar
+7f5b4c3f1000-7f5b4c3f9000 r--s 0006b000 08:02 2503547                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/mail.jar
+7f5b4c3f9000-7f5b4c3fe000 r--s 00010000 08:02 2503526                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/xb_soap.jar
+7f5b4c3fe000-7f5b4c408000 r--s 0002b000 08:02 2503535                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/xb_utils.jar
+7f5b4c408000-7f5b4c43b000 r--s 003ae000 08:02 2503553                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/svnkit-1.8.6.jar
+7f5b4c43b000-7f5b4c43f000 r--s 0003a000 08:02 2503555                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/trilead-ssh2-1.0.0-build217.jar
+7f5b4c43f000-7f5b4c465000 r--s 001b8000 08:02 2503494                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/general.jar
+7f5b4c465000-7f5b4c468000 r--s 0000c000 08:02 2503510                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/xb_commondef.jar
+7f5b4c468000-7f5b4c46f000 r--s 00050000 08:02 2503504                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/svn.jar
+7f5b4c46f000-7f5b4c472000 ---p 00000000 00:00 0 
+7f5b4c472000-7f5b4c570000 rw-p 00000000 00:00 0                          [stack:14880]
+7f5b4c570000-7f5b4c573000 ---p 00000000 00:00 0 
+7f5b4c573000-7f5b4c671000 rw-p 00000000 00:00 0 
+7f5b4c671000-7f5b4c674000 ---p 00000000 00:00 0 
+7f5b4c674000-7f5b4c772000 rw-p 00000000 00:00 0                          [stack:14878]
+7f5b4c772000-7f5b4c775000 ---p 00000000 00:00 0 
+7f5b4c775000-7f5b4c873000 rw-p 00000000 00:00 0                          [stack:14877]
+7f5b4c873000-7f5b4c876000 ---p 00000000 00:00 0 
+7f5b4c876000-7f5b4c974000 rw-p 00000000 00:00 0                          [stack:14876]
+7f5b4c974000-7f5b4c977000 ---p 00000000 00:00 0 
+7f5b4c977000-7f5b4ca75000 rw-p 00000000 00:00 0                          [stack:14875]
+7f5b4ca75000-7f5b4ca7d000 r-xp 00000000 08:11 656319                     /usr/lib/x86_64-linux-gnu/libgif.so.4.1.6
+7f5b4ca7d000-7f5b4cc7c000 ---p 00008000 08:11 656319                     /usr/lib/x86_64-linux-gnu/libgif.so.4.1.6
+7f5b4cc7c000-7f5b4cc7d000 r--p 00007000 08:11 656319                     /usr/lib/x86_64-linux-gnu/libgif.so.4.1.6
+7f5b4cc7d000-7f5b4cc7e000 rw-p 00008000 08:11 656319                     /usr/lib/x86_64-linux-gnu/libgif.so.4.1.6
+7f5b4cc7e000-7f5b4ccbd000 r-xp 00000000 08:11 661783                     /usr/lib/x86_64-linux-gnu/libjpeg.so.8.0.2
+7f5b4ccbd000-7f5b4cebd000 ---p 0003f000 08:11 661783                     /usr/lib/x86_64-linux-gnu/libjpeg.so.8.0.2
+7f5b4cebd000-7f5b4cebe000 r--p 0003f000 08:11 661783                     /usr/lib/x86_64-linux-gnu/libjpeg.so.8.0.2
+7f5b4cebe000-7f5b4cebf000 rw-p 00040000 08:11 661783                     /usr/lib/x86_64-linux-gnu/libjpeg.so.8.0.2
+7f5b4cebf000-7f5b4cecf000 rw-p 00000000 00:00 0 
+7f5b4cecf000-7f5b4ced9000 r-xp 00000000 08:11 655952                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libsplashscreen.so
+7f5b4ced9000-7f5b4d0d8000 ---p 0000a000 08:11 655952                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libsplashscreen.so
+7f5b4d0d8000-7f5b4d0d9000 r--p 00009000 08:11 655952                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libsplashscreen.so
+7f5b4d0d9000-7f5b4d0da000 rw-p 0000a000 08:11 655952                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libsplashscreen.so
+7f5b4d0da000-7f5b4d0dd000 rw-p 00000000 00:00 0 
+7f5b4d0dd000-7f5b4d0e0000 ---p 00000000 00:00 0 
+7f5b4d0e0000-7f5b4d1de000 rw-p 00000000 00:00 0                          [stack:14874]
+7f5b4d1de000-7f5b4d1e1000 ---p 00000000 00:00 0 
+7f5b4d1e1000-7f5b4d2df000 rw-p 00000000 00:00 0                          [stack:14923]
+7f5b4d2df000-7f5b4d2e2000 r-xp 00000000 08:11 787307                     /lib/x86_64-linux-gnu/libgpg-error.so.0.8.0
+7f5b4d2e2000-7f5b4d4e1000 ---p 00003000 08:11 787307                     /lib/x86_64-linux-gnu/libgpg-error.so.0.8.0
+7f5b4d4e1000-7f5b4d4e2000 r--p 00002000 08:11 787307                     /lib/x86_64-linux-gnu/libgpg-error.so.0.8.0
+7f5b4d4e2000-7f5b4d4e3000 rw-p 00003000 08:11 787307                     /lib/x86_64-linux-gnu/libgpg-error.so.0.8.0
+7f5b4d4e3000-7f5b4d4e5000 r-xp 00000000 08:11 786553                     /lib/x86_64-linux-gnu/libkeyutils.so.1.4
+7f5b4d4e5000-7f5b4d6e5000 ---p 00002000 08:11 786553                     /lib/x86_64-linux-gnu/libkeyutils.so.1.4
+7f5b4d6e5000-7f5b4d6e6000 r--p 00002000 08:11 786553                     /lib/x86_64-linux-gnu/libkeyutils.so.1.4
+7f5b4d6e6000-7f5b4d6e7000 rw-p 00003000 08:11 786553                     /lib/x86_64-linux-gnu/libkeyutils.so.1.4
+7f5b4d6e7000-7f5b4d83d000 r-xp 00000000 08:11 657885                     /usr/lib/x86_64-linux-gnu/libicuuc.so.48.1.1
+7f5b4d83d000-7f5b4da3c000 ---p 00156000 08:11 657885                     /usr/lib/x86_64-linux-gnu/libicuuc.so.48.1.1
+7f5b4da3c000-7f5b4da4d000 r--p 00155000 08:11 657885                     /usr/lib/x86_64-linux-gnu/libicuuc.so.48.1.1
+7f5b4da4d000-7f5b4da4e000 rw-p 00166000 08:11 657885                     /usr/lib/x86_64-linux-gnu/libicuuc.so.48.1.1
+7f5b4da4e000-7f5b4da52000 rw-p 00000000 00:00 0 
+7f5b4da52000-7f5b4da84000 r-xp 00000000 08:11 657883                     /usr/lib/x86_64-linux-gnu/libicule.so.48.1.1
+7f5b4da84000-7f5b4dc84000 ---p 00032000 08:11 657883                     /usr/lib/x86_64-linux-gnu/libicule.so.48.1.1
+7f5b4dc84000-7f5b4dc86000 r--p 00032000 08:11 657883                     /usr/lib/x86_64-linux-gnu/libicule.so.48.1.1
+7f5b4dc86000-7f5b4dc87000 rw-p 00034000 08:11 657883                     /usr/lib/x86_64-linux-gnu/libicule.so.48.1.1
+7f5b4dc87000-7f5b4dcca000 r-xp 00000000 08:11 787200                     /lib/x86_64-linux-gnu/libdbus-1.so.3.7.2
+7f5b4dcca000-7f5b4dec9000 ---p 00043000 08:11 787200                     /lib/x86_64-linux-gnu/libdbus-1.so.3.7.2
+7f5b4dec9000-7f5b4deca000 r--p 00042000 08:11 787200                     /lib/x86_64-linux-gnu/libdbus-1.so.3.7.2
+7f5b4deca000-7f5b4decb000 rw-p 00043000 08:11 787200                     /lib/x86_64-linux-gnu/libdbus-1.so.3.7.2
+7f5b4decb000-7f5b4dedd000 r-xp 00000000 08:11 667673                     /usr/lib/x86_64-linux-gnu/libp11-kit.so.0.0.0
+7f5b4dedd000-7f5b4e0dd000 ---p 00012000 08:11 667673                     /usr/lib/x86_64-linux-gnu/libp11-kit.so.0.0.0
+7f5b4e0dd000-7f5b4e0de000 r--p 00012000 08:11 667673                     /usr/lib/x86_64-linux-gnu/libp11-kit.so.0.0.0
+7f5b4e0de000-7f5b4e0df000 rw-p 00013000 08:11 667673                     /usr/lib/x86_64-linux-gnu/libp11-kit.so.0.0.0
+7f5b4e0df000-7f5b4e0ee000 r-xp 00000000 08:11 655497                     /usr/lib/x86_64-linux-gnu/libtasn1.so.3.2.0
+7f5b4e0ee000-7f5b4e2ee000 ---p 0000f000 08:11 655497                     /usr/lib/x86_64-linux-gnu/libtasn1.so.3.2.0
+7f5b4e2ee000-7f5b4e2ef000 r--p 0000f000 08:11 655497                     /usr/lib/x86_64-linux-gnu/libtasn1.so.3.2.0
+7f5b4e2ef000-7f5b4e2f0000 rw-p 00010000 08:11 655497                     /usr/lib/x86_64-linux-gnu/libtasn1.so.3.2.0
+7f5b4e2f0000-7f5b4e36a000 r-xp 00000000 08:11 786497                     /lib/x86_64-linux-gnu/libgcrypt.so.11.7.0
+7f5b4e36a000-7f5b4e56a000 ---p 0007a000 08:11 786497                     /lib/x86_64-linux-gnu/libgcrypt.so.11.7.0
+7f5b4e56a000-7f5b4e56b000 r--p 0007a000 08:11 786497                     /lib/x86_64-linux-gnu/libgcrypt.so.11.7.0
+7f5b4e56b000-7f5b4e56e000 rw-p 0007b000 08:11 786497                     /lib/x86_64-linux-gnu/libgcrypt.so.11.7.0
+7f5b4e56e000-7f5b4e575000 r-xp 00000000 08:11 657255                     /usr/lib/x86_64-linux-gnu/libkrb5support.so.0.1
+7f5b4e575000-7f5b4e774000 ---p 00007000 08:11 657255                     /usr/lib/x86_64-linux-gnu/libkrb5support.so.0.1
+7f5b4e774000-7f5b4e775000 r--p 00006000 08:11 657255                     /usr/lib/x86_64-linux-gnu/libkrb5support.so.0.1
+7f5b4e775000-7f5b4e776000 rw-p 00007000 08:11 657255                     /usr/lib/x86_64-linux-gnu/libkrb5support.so.0.1
+7f5b4e776000-7f5b4e779000 r-xp 00000000 08:11 787270                     /lib/x86_64-linux-gnu/libcom_err.so.2.1
+7f5b4e779000-7f5b4e978000 ---p 00003000 08:11 787270                     /lib/x86_64-linux-gnu/libcom_err.so.2.1
+7f5b4e978000-7f5b4e979000 r--p 00002000 08:11 787270                     /lib/x86_64-linux-gnu/libcom_err.so.2.1
+7f5b4e979000-7f5b4e97a000 rw-p 00003000 08:11 787270                     /lib/x86_64-linux-gnu/libcom_err.so.2.1
+7f5b4e97a000-7f5b4e9a0000 r-xp 00000000 08:11 668016                     /usr/lib/x86_64-linux-gnu/libk5crypto.so.3.1
+7f5b4e9a0000-7f5b4eba0000 ---p 00026000 08:11 668016                     /usr/lib/x86_64-linux-gnu/libk5crypto.so.3.1
+7f5b4eba0000-7f5b4eba1000 r--p 00026000 08:11 668016                     /usr/lib/x86_64-linux-gnu/libk5crypto.so.3.1
+7f5b4eba1000-7f5b4eba2000 rw-p 00027000 08:11 668016                     /usr/lib/x86_64-linux-gnu/libk5crypto.so.3.1
+7f5b4eba2000-7f5b4eba3000 rw-p 00000000 00:00 0 
+7f5b4eba3000-7f5b4ec67000 r-xp 00000000 08:11 656833                     /usr/lib/x86_64-linux-gnu/libkrb5.so.3.3
+7f5b4ec67000-7f5b4ee66000 ---p 000c4000 08:11 656833                     /usr/lib/x86_64-linux-gnu/libkrb5.so.3.3
+7f5b4ee66000-7f5b4ee70000 r--p 000c3000 08:11 656833                     /usr/lib/x86_64-linux-gnu/libkrb5.so.3.3
+7f5b4ee70000-7f5b4ee71000 rw-p 000cd000 08:11 656833                     /usr/lib/x86_64-linux-gnu/libkrb5.so.3.3
+7f5b4ee71000-7f5b4ef06000 r-xp 00000000 08:11 662718                     /usr/lib/x86_64-linux-gnu/libharfbuzz.so.0.913.0
+7f5b4ef06000-7f5b4f105000 ---p 00095000 08:11 662718                     /usr/lib/x86_64-linux-gnu/libharfbuzz.so.0.913.0
+7f5b4f105000-7f5b4f107000 r--p 00094000 08:11 662718                     /usr/lib/x86_64-linux-gnu/libharfbuzz.so.0.913.0
+7f5b4f107000-7f5b4f108000 rw-p 00096000 08:11 662718                     /usr/lib/x86_64-linux-gnu/libharfbuzz.so.0.913.0
+7f5b4f108000-7f5b4f110000 r-xp 00000000 08:11 661173                     /usr/lib/x86_64-linux-gnu/libxcb-render.so.0.0.0
+7f5b4f110000-7f5b4f310000 ---p 00008000 08:11 661173                     /usr/lib/x86_64-linux-gnu/libxcb-render.so.0.0.0
+7f5b4f310000-7f5b4f311000 r--p 00008000 08:11 661173                     /usr/lib/x86_64-linux-gnu/libxcb-render.so.0.0.0
+7f5b4f311000-7f5b4f312000 rw-p 00009000 08:11 661173                     /usr/lib/x86_64-linux-gnu/libxcb-render.so.0.0.0
+7f5b4f312000-7f5b4f314000 r-xp 00000000 08:11 661199                     /usr/lib/x86_64-linux-gnu/libxcb-shm.so.0.0.0
+7f5b4f314000-7f5b4f513000 ---p 00002000 08:11 661199                     /usr/lib/x86_64-linux-gnu/libxcb-shm.so.0.0.0
+7f5b4f513000-7f5b4f514000 r--p 00001000 08:11 661199                     /usr/lib/x86_64-linux-gnu/libxcb-shm.so.0.0.0
+7f5b4f514000-7f5b4f515000 rw-p 00002000 08:11 661199                     /usr/lib/x86_64-linux-gnu/libxcb-shm.so.0.0.0
+7f5b4f515000-7f5b4f53a000 r-xp 00000000 08:11 787288                     /lib/x86_64-linux-gnu/libpng12.so.0.49.0
+7f5b4f53a000-7f5b4f739000 ---p 00025000 08:11 787288                     /lib/x86_64-linux-gnu/libpng12.so.0.49.0
+7f5b4f739000-7f5b4f73a000 r--p 00024000 08:11 787288                     /lib/x86_64-linux-gnu/libpng12.so.0.49.0
+7f5b4f73a000-7f5b4f73b000 rw-p 00025000 08:11 787288                     /lib/x86_64-linux-gnu/libpng12.so.0.49.0
+7f5b4f73b000-7f5b4f7dd000 r-xp 00000000 08:11 660431                     /usr/lib/x86_64-linux-gnu/libpixman-1.so.0.30.2
+7f5b4f7dd000-7f5b4f9dd000 ---p 000a2000 08:11 660431                     /usr/lib/x86_64-linux-gnu/libpixman-1.so.0.30.2
+7f5b4f9dd000-7f5b4f9e4000 r--p 000a2000 08:11 660431                     /usr/lib/x86_64-linux-gnu/libpixman-1.so.0.30.2
+7f5b4f9e4000-7f5b4f9e5000 rw-p 000a9000 08:11 660431                     /usr/lib/x86_64-linux-gnu/libpixman-1.so.0.30.2
+7f5b4f9e5000-7f5b4f9ea000 r-xp 00000000 08:11 655527                     /usr/lib/x86_64-linux-gnu/libXdmcp.so.6.0.0
+7f5b4f9ea000-7f5b4fbe9000 ---p 00005000 08:11 655527                     /usr/lib/x86_64-linux-gnu/libXdmcp.so.6.0.0
+7f5b4fbe9000-7f5b4fbea000 r--p 00004000 08:11 655527                     /usr/lib/x86_64-linux-gnu/libXdmcp.so.6.0.0
+7f5b4fbea000-7f5b4fbeb000 rw-p 00005000 08:11 655527                     /usr/lib/x86_64-linux-gnu/libXdmcp.so.6.0.0
+7f5b4fbeb000-7f5b4fbed000 r-xp 00000000 08:11 657350                     /usr/lib/x86_64-linux-gnu/libXau.so.6.0.0
+7f5b4fbed000-7f5b4fded000 ---p 00002000 08:11 657350                     /usr/lib/x86_64-linux-gnu/libXau.so.6.0.0
+7f5b4fded000-7f5b4fdee000 r--p 00002000 08:11 657350                     /usr/lib/x86_64-linux-gnu/libXau.so.6.0.0
+7f5b4fdee000-7f5b4fdef000 rw-p 00003000 08:11 657350                     /usr/lib/x86_64-linux-gnu/libXau.so.6.0.0
+7f5b4fdef000-7f5b4fdfe000 r-xp 00000000 08:11 667869                     /usr/lib/x86_64-linux-gnu/libavahi-client.so.3.2.9
+7f5b4fdfe000-7f5b4fffe000 ---p 0000f000 08:11 667869                     /usr/lib/x86_64-linux-gnu/libavahi-client.so.3.2.9
+7f5b4fffe000-7f5b4ffff000 r--p 0000f000 08:11 667869                     /usr/lib/x86_64-linux-gnu/libavahi-client.so.3.2.9
+7f5b4ffff000-7f5b50000000 rw-p 00010000 08:11 667869                     /usr/lib/x86_64-linux-gnu/libavahi-client.so.3.2.9
+7f5b50000000-7f5b50032000 rw-p 00000000 00:00 0 
+7f5b50032000-7f5b54000000 ---p 00000000 00:00 0 
+7f5b54000000-7f5b54001000 r--s 00008000 08:02 2503544                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/javadbf-for-radix-1.0.jar
+7f5b54001000-7f5b54011000 r--s 000ad000 08:02 2503552                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/sqljet-1.1.10.jar
+7f5b54011000-7f5b5401e000 r--s 00084000 08:02 2503493                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/dds.jar
+7f5b5401e000-7f5b54020000 r--s 00011000 08:02 2503548                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/miglayout-3.7-swing.jar
+7f5b54020000-7f5b54024000 r--s 00025000 08:02 2503541                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/antlr-runtime-3.4.jar
+7f5b54024000-7f5b54068000 r--s 001e5000 08:02 2503508                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/xb_adsdef.jar
+7f5b54068000-7f5b5406b000 ---p 00000000 00:00 0 
+7f5b5406b000-7f5b54169000 rw-p 00000000 00:00 0                          [stack:15849]
+7f5b54169000-7f5b54174000 r-xp 00000000 08:11 667861                     /usr/lib/x86_64-linux-gnu/libavahi-common.so.3.5.3
+7f5b54174000-7f5b54373000 ---p 0000b000 08:11 667861                     /usr/lib/x86_64-linux-gnu/libavahi-common.so.3.5.3
+7f5b54373000-7f5b54374000 r--p 0000a000 08:11 667861                     /usr/lib/x86_64-linux-gnu/libavahi-common.so.3.5.3
+7f5b54374000-7f5b54375000 rw-p 0000b000 08:11 667861                     /usr/lib/x86_64-linux-gnu/libavahi-common.so.3.5.3
+7f5b54375000-7f5b5442a000 r-xp 00000000 08:11 655541                     /usr/lib/x86_64-linux-gnu/libgnutls.so.26.22.6
+7f5b5442a000-7f5b54629000 ---p 000b5000 08:11 655541                     /usr/lib/x86_64-linux-gnu/libgnutls.so.26.22.6
+7f5b54629000-7f5b5462f000 r--p 000b4000 08:11 655541                     /usr/lib/x86_64-linux-gnu/libgnutls.so.26.22.6
+7f5b5462f000-7f5b54630000 rw-p 000ba000 08:11 655541                     /usr/lib/x86_64-linux-gnu/libgnutls.so.26.22.6
+7f5b54630000-7f5b54631000 rw-p 00000000 00:00 0 
+7f5b54631000-7f5b5466c000 r-xp 00000000 08:11 657241                     /usr/lib/x86_64-linux-gnu/libgssapi_krb5.so.2.2
+7f5b5466c000-7f5b5486c000 ---p 0003b000 08:11 657241                     /usr/lib/x86_64-linux-gnu/libgssapi_krb5.so.2.2
+7f5b5486c000-7f5b5486d000 r--p 0003b000 08:11 657241                     /usr/lib/x86_64-linux-gnu/libgssapi_krb5.so.2.2
+7f5b5486d000-7f5b5486f000 rw-p 0003c000 08:11 657241                     /usr/lib/x86_64-linux-gnu/libgssapi_krb5.so.2.2
+7f5b5486f000-7f5b54895000 r-xp 00000000 08:11 786681                     /lib/x86_64-linux-gnu/libexpat.so.1.6.0
+7f5b54895000-7f5b54a95000 ---p 00026000 08:11 786681                     /lib/x86_64-linux-gnu/libexpat.so.1.6.0
+7f5b54a95000-7f5b54a97000 r--p 00026000 08:11 786681                     /lib/x86_64-linux-gnu/libexpat.so.1.6.0
+7f5b54a97000-7f5b54a98000 rw-p 00028000 08:11 786681                     /lib/x86_64-linux-gnu/libexpat.so.1.6.0
+7f5b54a98000-7f5b54b2f000 r-xp 00000000 08:11 667529                     /usr/lib/x86_64-linux-gnu/libfreetype.so.6.10.0
+7f5b54b2f000-7f5b54d2e000 ---p 00097000 08:11 667529                     /usr/lib/x86_64-linux-gnu/libfreetype.so.6.10.0
+7f5b54d2e000-7f5b54d34000 r--p 00096000 08:11 667529                     /usr/lib/x86_64-linux-gnu/libfreetype.so.6.10.0
+7f5b54d34000-7f5b54d35000 rw-p 0009c000 08:11 667529                     /usr/lib/x86_64-linux-gnu/libfreetype.so.6.10.0
+7f5b54d35000-7f5b54d37000 r-xp 00000000 08:11 660964                     /usr/lib/x86_64-linux-gnu/libXdamage.so.1.1.0
+7f5b54d37000-7f5b54f36000 ---p 00002000 08:11 660964                     /usr/lib/x86_64-linux-gnu/libXdamage.so.1.1.0
+7f5b54f36000-7f5b54f37000 r--p 00001000 08:11 660964                     /usr/lib/x86_64-linux-gnu/libXdamage.so.1.1.0
+7f5b54f37000-7f5b54f38000 rw-p 00002000 08:11 660964                     /usr/lib/x86_64-linux-gnu/libXdamage.so.1.1.0
+7f5b54f38000-7f5b54f3a000 r-xp 00000000 08:11 668067                     /usr/lib/x86_64-linux-gnu/libXcomposite.so.1.0.0
+7f5b54f3a000-7f5b55139000 ---p 00002000 08:11 668067                     /usr/lib/x86_64-linux-gnu/libXcomposite.so.1.0.0
+7f5b55139000-7f5b5513a000 r--p 00001000 08:11 668067                     /usr/lib/x86_64-linux-gnu/libXcomposite.so.1.0.0
+7f5b5513a000-7f5b5513b000 rw-p 00002000 08:11 668067                     /usr/lib/x86_64-linux-gnu/libXcomposite.so.1.0.0
+7f5b5513b000-7f5b55144000 r-xp 00000000 08:11 656555                     /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2
+7f5b55144000-7f5b55344000 ---p 00009000 08:11 656555                     /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2
+7f5b55344000-7f5b55345000 r--p 00009000 08:11 656555                     /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2
+7f5b55345000-7f5b55346000 rw-p 0000a000 08:11 656555                     /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2
+7f5b55346000-7f5b5534f000 r-xp 00000000 08:11 659873                     /usr/lib/x86_64-linux-gnu/libXrandr.so.2.2.0
+7f5b5534f000-7f5b5554e000 ---p 00009000 08:11 659873                     /usr/lib/x86_64-linux-gnu/libXrandr.so.2.2.0
+7f5b5554e000-7f5b5554f000 r--p 00008000 08:11 659873                     /usr/lib/x86_64-linux-gnu/libXrandr.so.2.2.0
+7f5b5554f000-7f5b55550000 rw-p 00009000 08:11 659873                     /usr/lib/x86_64-linux-gnu/libXrandr.so.2.2.0
+7f5b55550000-7f5b55552000 r-xp 00000000 08:11 659365                     /usr/lib/x86_64-linux-gnu/libXinerama.so.1.0.0
+7f5b55552000-7f5b55751000 ---p 00002000 08:11 659365                     /usr/lib/x86_64-linux-gnu/libXinerama.so.1.0.0
+7f5b55751000-7f5b55752000 r--p 00001000 08:11 659365                     /usr/lib/x86_64-linux-gnu/libXinerama.so.1.0.0
+7f5b55752000-7f5b55753000 rw-p 00002000 08:11 659365                     /usr/lib/x86_64-linux-gnu/libXinerama.so.1.0.0
+7f5b55753000-7f5b55766000 r-xp 00000000 08:11 657903                     /usr/lib/x86_64-linux-gnu/libpangoft2-1.0.so.0.3200.5
+7f5b55766000-7f5b55965000 ---p 00013000 08:11 657903                     /usr/lib/x86_64-linux-gnu/libpangoft2-1.0.so.0.3200.5
+7f5b55965000-7f5b55966000 r--p 00012000 08:11 657903                     /usr/lib/x86_64-linux-gnu/libpangoft2-1.0.so.0.3200.5
+7f5b55966000-7f5b55967000 rw-p 00013000 08:11 657903                     /usr/lib/x86_64-linux-gnu/libpangoft2-1.0.so.0.3200.5
+7f5b55967000-7f5b55a65000 r-xp 00000000 08:11 661226                     /usr/lib/x86_64-linux-gnu/libcairo.so.2.11200.14
+7f5b55a65000-7f5b55c65000 ---p 000fe000 08:11 661226                     /usr/lib/x86_64-linux-gnu/libcairo.so.2.11200.14
+7f5b55c65000-7f5b55c68000 r--p 000fe000 08:11 661226                     /usr/lib/x86_64-linux-gnu/libcairo.so.2.11200.14
+7f5b55c68000-7f5b55c69000 rw-p 00101000 08:11 661226                     /usr/lib/x86_64-linux-gnu/libcairo.so.2.11200.14
+7f5b55c69000-7f5b55c6b000 rw-p 00000000 00:00 0 
+7f5b55c6b000-7f5b55c8b000 r-xp 00000000 08:11 657540                     /usr/lib/x86_64-linux-gnu/libatk-1.0.so.0.20809.1
+7f5b55c8b000-7f5b55e8a000 ---p 00020000 08:11 657540                     /usr/lib/x86_64-linux-gnu/libatk-1.0.so.0.20809.1
+7f5b55e8a000-7f5b55e8c000 r--p 0001f000 08:11 657540                     /usr/lib/x86_64-linux-gnu/libatk-1.0.so.0.20809.1
+7f5b55e8c000-7f5b55e8d000 rw-p 00021000 08:11 657540                     /usr/lib/x86_64-linux-gnu/libatk-1.0.so.0.20809.1
+7f5b55e8d000-7f5b55e92000 r-xp 00000000 08:11 663670                     /usr/lib/x86_64-linux-gnu/libXfixes.so.3.1.0
+7f5b55e92000-7f5b56091000 ---p 00005000 08:11 663670                     /usr/lib/x86_64-linux-gnu/libXfixes.so.3.1.0
+7f5b56091000-7f5b56092000 r--p 00004000 08:11 663670                     /usr/lib/x86_64-linux-gnu/libXfixes.so.3.1.0
+7f5b56092000-7f5b56093000 rw-p 00005000 08:11 663670                     /usr/lib/x86_64-linux-gnu/libXfixes.so.3.1.0
+7f5b56093000-7f5b5609e000 r-xp 00000000 08:11 657901                     /usr/lib/x86_64-linux-gnu/libpangocairo-1.0.so.0.3200.5
+7f5b5609e000-7f5b5629e000 ---p 0000b000 08:11 657901                     /usr/lib/x86_64-linux-gnu/libpangocairo-1.0.so.0.3200.5
+7f5b5629e000-7f5b5629f000 r--p 0000b000 08:11 657901                     /usr/lib/x86_64-linux-gnu/libpangocairo-1.0.so.0.3200.5
+7f5b5629f000-7f5b562a0000 rw-p 0000c000 08:11 657901                     /usr/lib/x86_64-linux-gnu/libpangocairo-1.0.so.0.3200.5
+7f5b562a0000-7f5b562bd000 r-xp 00000000 08:11 657380                     /usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
+7f5b562bd000-7f5b564bc000 ---p 0001d000 08:11 657380                     /usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
+7f5b564bc000-7f5b564bd000 r--p 0001c000 08:11 657380                     /usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
+7f5b564bd000-7f5b564be000 rw-p 0001d000 08:11 657380                     /usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
+7f5b564be000-7f5b56518000 r-xp 00000000 08:11 658793                     /usr/lib/x86_64-linux-gnu/libcups.so.2
+7f5b56518000-7f5b56718000 ---p 0005a000 08:11 658793                     /usr/lib/x86_64-linux-gnu/libcups.so.2
+7f5b56718000-7f5b5671d000 r--p 0005a000 08:11 658793                     /usr/lib/x86_64-linux-gnu/libcups.so.2
+7f5b5671d000-7f5b5671e000 rw-p 0005f000 08:11 658793                     /usr/lib/x86_64-linux-gnu/libcups.so.2
+7f5b5671e000-7f5b5671f000 r-xp 00000000 08:11 655875                     /usr/lib/x86_64-linux-gnu/libgthread-2.0.so.0.3600.0
+7f5b5671f000-7f5b5691e000 ---p 00001000 08:11 655875                     /usr/lib/x86_64-linux-gnu/libgthread-2.0.so.0.3600.0
+7f5b5691e000-7f5b5691f000 r--p 00000000 08:11 655875                     /usr/lib/x86_64-linux-gnu/libgthread-2.0.so.0.3600.0
+7f5b5691f000-7f5b56920000 rw-p 00001000 08:11 655875                     /usr/lib/x86_64-linux-gnu/libgthread-2.0.so.0.3600.0
+7f5b56920000-7f5b56957000 r-xp 00000000 08:11 655386                     /usr/lib/x86_64-linux-gnu/libfontconfig.so.1.6.2
+7f5b56957000-7f5b56b57000 ---p 00037000 08:11 655386                     /usr/lib/x86_64-linux-gnu/libfontconfig.so.1.6.2
+7f5b56b57000-7f5b56b58000 r--p 00037000 08:11 655386                     /usr/lib/x86_64-linux-gnu/libfontconfig.so.1.6.2
+7f5b56b58000-7f5b56b59000 rw-p 00038000 08:11 655386                     /usr/lib/x86_64-linux-gnu/libfontconfig.so.1.6.2
+7f5b56b59000-7f5b56b5a000 rw-p 00000000 00:00 0 
+7f5b56b5a000-7f5b56ba2000 r-xp 00000000 08:11 657900                     /usr/lib/x86_64-linux-gnu/libpango-1.0.so.0.3200.5
+7f5b56ba2000-7f5b56da2000 ---p 00048000 08:11 657900                     /usr/lib/x86_64-linux-gnu/libpango-1.0.so.0.3200.5
+7f5b56da2000-7f5b56da4000 r--p 00048000 08:11 657900                     /usr/lib/x86_64-linux-gnu/libpango-1.0.so.0.3200.5
+7f5b56da4000-7f5b56da5000 rw-p 0004a000 08:11 657900                     /usr/lib/x86_64-linux-gnu/libpango-1.0.so.0.3200.5
+7f5b56da5000-7f5b56dc3000 r-xp 00000000 08:11 656682                     /usr/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so.0.2800.0
+7f5b56dc3000-7f5b56fc3000 ---p 0001e000 08:11 656682                     /usr/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so.0.2800.0
+7f5b56fc3000-7f5b56fc4000 r--p 0001e000 08:11 656682                     /usr/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so.0.2800.0
+7f5b56fc4000-7f5b56fc5000 rw-p 0001f000 08:11 656682                     /usr/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so.0.2800.0
+7f5b56fc5000-7f5b57072000 r-xp 00000000 08:11 661424                     /usr/lib/x86_64-linux-gnu/libgdk-x11-2.0.so.0.2400.17
+7f5b57072000-7f5b57271000 ---p 000ad000 08:11 661424                     /usr/lib/x86_64-linux-gnu/libgdk-x11-2.0.so.0.2400.17
+7f5b57271000-7f5b57275000 r--p 000ac000 08:11 661424                     /usr/lib/x86_64-linux-gnu/libgdk-x11-2.0.so.0.2400.17
+7f5b57275000-7f5b57277000 rw-p 000b0000 08:11 661424                     /usr/lib/x86_64-linux-gnu/libgdk-x11-2.0.so.0.2400.17
+7f5b57277000-7f5b576a4000 r-xp 00000000 08:11 663542                     /usr/lib/x86_64-linux-gnu/libgtk-x11-2.0.so.0.2400.17
+7f5b576a4000-7f5b578a3000 ---p 0042d000 08:11 663542                     /usr/lib/x86_64-linux-gnu/libgtk-x11-2.0.so.0.2400.17
+7f5b578a3000-7f5b578aa000 r--p 0042c000 08:11 663542                     /usr/lib/x86_64-linux-gnu/libgtk-x11-2.0.so.0.2400.17
+7f5b578aa000-7f5b578ae000 rw-p 00433000 08:11 663542                     /usr/lib/x86_64-linux-gnu/libgtk-x11-2.0.so.0.2400.17
+7f5b578ae000-7f5b578b0000 rw-p 00000000 00:00 0 
+7f5b578b0000-7f5b578be000 r-xp 00000000 08:11 656130                     /usr/lib/x86_64-linux-gnu/libXi.so.6.1.0
+7f5b578be000-7f5b57abe000 ---p 0000e000 08:11 656130                     /usr/lib/x86_64-linux-gnu/libXi.so.6.1.0
+7f5b57abe000-7f5b57abf000 r--p 0000e000 08:11 656130                     /usr/lib/x86_64-linux-gnu/libXi.so.6.1.0
+7f5b57abf000-7f5b57ac0000 rw-p 0000f000 08:11 656130                     /usr/lib/x86_64-linux-gnu/libXi.so.6.1.0
+7f5b57ac0000-7f5b57ac5000 r-xp 00000000 08:11 663059                     /usr/lib/x86_64-linux-gnu/libXtst.so.6.1.0
+7f5b57ac5000-7f5b57cc4000 ---p 00005000 08:11 663059                     /usr/lib/x86_64-linux-gnu/libXtst.so.6.1.0
+7f5b57cc4000-7f5b57cc5000 r--p 00004000 08:11 663059                     /usr/lib/x86_64-linux-gnu/libXtst.so.6.1.0
+7f5b57cc5000-7f5b57cc6000 rw-p 00005000 08:11 663059                     /usr/lib/x86_64-linux-gnu/libXtst.so.6.1.0
+7f5b57cc6000-7f5b57dfa000 r-xp 00000000 08:11 657394                     /usr/lib/x86_64-linux-gnu/libX11.so.6.3.0
+7f5b57dfa000-7f5b57ffa000 ---p 00134000 08:11 657394                     /usr/lib/x86_64-linux-gnu/libX11.so.6.3.0
+7f5b57ffa000-7f5b57ffb000 r--p 00134000 08:11 657394                     /usr/lib/x86_64-linux-gnu/libX11.so.6.3.0
+7f5b57ffb000-7f5b58000000 rw-p 00135000 08:11 657394                     /usr/lib/x86_64-linux-gnu/libX11.so.6.3.0
+7f5b58000000-7f5b58027000 rw-p 00000000 00:00 0 
+7f5b58027000-7f5b5c000000 ---p 00000000 00:00 0 
+7f5b5c000000-7f5b5c001000 r--s 00000000 08:02 2503540                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/DdsRadixDocCodeGenerator.jar
+7f5b5c001000-7f5b5c003000 r--s 00488000 08:02 2503539                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/utils.jar
+7f5b5c003000-7f5b5c005000 r--s 0000f000 08:02 2503545                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/jettison-1.1.jar
+7f5b5c005000-7f5b5c007000 r--s 0000e000 08:02 2503543                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/commons-logging-1.1.1.jar
+7f5b5c007000-7f5b5c01a000 r--s 001b9000 08:02 2503501                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/resources.jar
+7f5b5c01a000-7f5b5c01d000 r--s 00006000 08:02 2503513                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/xb_dictionary.jar
+7f5b5c01d000-7f5b5c020000 r--s 00007000 08:02 2503531                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/xb_udsdef.jar
+7f5b5c020000-7f5b5c032000 r--s 000d6000 08:02 2503490                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/builder.jar
+7f5b5c032000-7f5b5c038000 r--s 00023000 08:02 2503536                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/xb_wsdl.jar
+7f5b5c038000-7f5b5c05d000 r--s 000e7000 08:02 2503521                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/xb_product.jar
+7f5b5c05d000-7f5b5c05f000 r--s 00001000 08:02 2503495                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/license-api.jar
+7f5b5c05f000-7f5b5c063000 r--s 00100000 08:02 2503546                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/ext/jna-4.1.0.jar
+7f5b5c063000-7f5b5c064000 r--s 00003000 08:02 2503488                    /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster/modules/org-radixware-kernel-common.jar
+7f5b5c064000-7f5b5c06a000 r--s 0007c000 08:12 24398055                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-modules-options-api.jar
+7f5b5c06a000-7f5b5c071000 r--s 00095000 08:12 24402999                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-core.jar
+7f5b5c071000-7f5b5c075000 r--s 0003a000 08:12 24398217                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-swing-plaf.jar
+7f5b5c075000-7f5b5c076000 r--s 0000c000 08:12 24403013                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-openide-io.jar
+7f5b5c076000-7f5b5c078000 r--s 00003000 08:12 24398134                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-modules-keyring.jar
+7f5b5c078000-7f5b5c07a000 r--s 00009000 08:12 24398133                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-modules-sampler.jar
+7f5b5c07a000-7f5b5c07d000 r--s 0002f000 08:12 24398136                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-spi-quicksearch.jar
+7f5b5c07d000-7f5b5c082000 r--s 00056000 08:12 24561566                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-projectuiapi.jar
+7f5b5c082000-7f5b5c087000 r--s 00046000 08:12 24561660                   /home/akrylov/netbeans-8.0.2-for-radix/ide/modules/org-netbeans-modules-projectapi.jar
+7f5b5c087000-7f5b5c092000 r--s 00152000 08:12 24402978                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-openide-loaders.jar
+7f5b5c092000-7f5b5c094000 r--s 0000d000 08:12 24398135                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-modules-queries.jar
+7f5b5c094000-7f5b5c097000 r--s 00034000 08:12 24402975                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-openide-actions.jar
+7f5b5c097000-7f5b5c0a0000 r-xp 00000000 08:11 656855                     /usr/lib/x86_64-linux-gnu/libXrender.so.1.3.0
+7f5b5c0a0000-7f5b5c29f000 ---p 00009000 08:11 656855                     /usr/lib/x86_64-linux-gnu/libXrender.so.1.3.0
+7f5b5c29f000-7f5b5c2a0000 r--p 00008000 08:11 656855                     /usr/lib/x86_64-linux-gnu/libXrender.so.1.3.0
+7f5b5c2a0000-7f5b5c2a1000 rw-p 00009000 08:11 656855                     /usr/lib/x86_64-linux-gnu/libXrender.so.1.3.0
+7f5b5c2a1000-7f5b5c2b2000 r-xp 00000000 08:11 656852                     /usr/lib/x86_64-linux-gnu/libXext.so.6.4.0
+7f5b5c2b2000-7f5b5c4b1000 ---p 00011000 08:11 656852                     /usr/lib/x86_64-linux-gnu/libXext.so.6.4.0
+7f5b5c4b1000-7f5b5c4b2000 r--p 00010000 08:11 656852                     /usr/lib/x86_64-linux-gnu/libXext.so.6.4.0
+7f5b5c4b2000-7f5b5c4b3000 rw-p 00011000 08:11 656852                     /usr/lib/x86_64-linux-gnu/libXext.so.6.4.0
+7f5b5c4b3000-7f5b5c506000 r-xp 00000000 08:11 664228                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/xawt/libmawt.so
+7f5b5c506000-7f5b5c705000 ---p 00053000 08:11 664228                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/xawt/libmawt.so
+7f5b5c705000-7f5b5c706000 r--p 00052000 08:11 664228                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/xawt/libmawt.so
+7f5b5c706000-7f5b5c709000 rw-p 00053000 08:11 664228                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/xawt/libmawt.so
+7f5b5c709000-7f5b5c70a000 rw-p 00000000 00:00 0 
+7f5b5c70a000-7f5b5c7ab000 r-xp 00000000 08:11 668353                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libawt.so
+7f5b5c7ab000-7f5b5c9aa000 ---p 000a1000 08:11 668353                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libawt.so
+7f5b5c9aa000-7f5b5c9ab000 r--p 000a0000 08:11 668353                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libawt.so
+7f5b5c9ab000-7f5b5c9b6000 rw-p 000a1000 08:11 668353                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libawt.so
+7f5b5c9b6000-7f5b5c9db000 rw-p 00000000 00:00 0 
+7f5b5c9db000-7f5b5c9de000 ---p 00000000 00:00 0 
+7f5b5c9de000-7f5b5cadc000 rw-p 00000000 00:00 0                          [stack:14871]
+7f5b5cadc000-7f5b5cadf000 ---p 00000000 00:00 0 
+7f5b5cadf000-7f5b5cbdd000 rw-p 00000000 00:00 0                          [stack:14870]
+7f5b5cbdd000-7f5b5cc47000 r--s 0069a000 08:11 657714                     /usr/lib/jvm/java-7-openjdk-amd64/lib/tools.jar
+7f5b5cc47000-7f5b5cc78000 rw-p 00000000 00:00 0 
+7f5b5cc78000-7f5b5ccb5000 r-xp 00000000 08:11 787746                     /lib/x86_64-linux-gnu/libpcre.so.3.13.1
+7f5b5ccb5000-7f5b5ceb5000 ---p 0003d000 08:11 787746                     /lib/x86_64-linux-gnu/libpcre.so.3.13.1
+7f5b5ceb5000-7f5b5ceb6000 r--p 0003d000 08:11 787746                     /lib/x86_64-linux-gnu/libpcre.so.3.13.1
+7f5b5ceb6000-7f5b5ceb7000 rw-p 0003e000 08:11 787746                     /lib/x86_64-linux-gnu/libpcre.so.3.13.1
+7f5b5ceb7000-7f5b5cebe000 r-xp 00000000 08:11 655837                     /usr/lib/x86_64-linux-gnu/libffi.so.6.0.1
+7f5b5cebe000-7f5b5d0bd000 ---p 00007000 08:11 655837                     /usr/lib/x86_64-linux-gnu/libffi.so.6.0.1
+7f5b5d0bd000-7f5b5d0be000 r--p 00006000 08:11 655837                     /usr/lib/x86_64-linux-gnu/libffi.so.6.0.1
+7f5b5d0be000-7f5b5d0bf000 rw-p 00007000 08:11 655837                     /usr/lib/x86_64-linux-gnu/libffi.so.6.0.1
+7f5b5d0bf000-7f5b5d0d5000 r-xp 00000000 08:11 800279                     /lib/x86_64-linux-gnu/libresolv-2.17.so
+7f5b5d0d5000-7f5b5d2d5000 ---p 00016000 08:11 800279                     /lib/x86_64-linux-gnu/libresolv-2.17.so
+7f5b5d2d5000-7f5b5d2d6000 r--p 00016000 08:11 800279                     /lib/x86_64-linux-gnu/libresolv-2.17.so
+7f5b5d2d6000-7f5b5d2d7000 rw-p 00017000 08:11 800279                     /lib/x86_64-linux-gnu/libresolv-2.17.so
+7f5b5d2d7000-7f5b5d2d9000 rw-p 00000000 00:00 0 
+7f5b5d2d9000-7f5b5d2f6000 r-xp 00000000 08:11 787208                     /lib/x86_64-linux-gnu/libselinux.so.1
+7f5b5d2f6000-7f5b5d4f5000 ---p 0001d000 08:11 787208                     /lib/x86_64-linux-gnu/libselinux.so.1
+7f5b5d4f5000-7f5b5d4f6000 r--p 0001c000 08:11 787208                     /lib/x86_64-linux-gnu/libselinux.so.1
+7f5b5d4f6000-7f5b5d4f7000 rw-p 0001d000 08:11 787208                     /lib/x86_64-linux-gnu/libselinux.so.1
+7f5b5d4f7000-7f5b5d4f8000 rw-p 00000000 00:00 0 
+7f5b5d4f8000-7f5b5d4fb000 r-xp 00000000 08:11 655863                     /usr/lib/x86_64-linux-gnu/libgmodule-2.0.so.0.3600.0
+7f5b5d4fb000-7f5b5d6fa000 ---p 00003000 08:11 655863                     /usr/lib/x86_64-linux-gnu/libgmodule-2.0.so.0.3600.0
+7f5b5d6fa000-7f5b5d6fb000 r--p 00002000 08:11 655863                     /usr/lib/x86_64-linux-gnu/libgmodule-2.0.so.0.3600.0
+7f5b5d6fb000-7f5b5d6fc000 rw-p 00003000 08:11 655863                     /usr/lib/x86_64-linux-gnu/libgmodule-2.0.so.0.3600.0
+7f5b5d6fc000-7f5b5d7f5000 r-xp 00000000 08:11 786547                     /lib/x86_64-linux-gnu/libglib-2.0.so.0.3600.0
+7f5b5d7f5000-7f5b5d9f5000 ---p 000f9000 08:11 786547                     /lib/x86_64-linux-gnu/libglib-2.0.so.0.3600.0
+7f5b5d9f5000-7f5b5d9f6000 r--p 000f9000 08:11 786547                     /lib/x86_64-linux-gnu/libglib-2.0.so.0.3600.0
+7f5b5d9f6000-7f5b5d9f7000 rw-p 000fa000 08:11 786547                     /lib/x86_64-linux-gnu/libglib-2.0.so.0.3600.0
+7f5b5d9f7000-7f5b5d9f8000 rw-p 00000000 00:00 0 
+7f5b5d9f8000-7f5b5da45000 r-xp 00000000 08:11 655869                     /usr/lib/x86_64-linux-gnu/libgobject-2.0.so.0.3600.0
+7f5b5da45000-7f5b5dc45000 ---p 0004d000 08:11 655869                     /usr/lib/x86_64-linux-gnu/libgobject-2.0.so.0.3600.0
+7f5b5dc45000-7f5b5dc46000 r--p 0004d000 08:11 655869                     /usr/lib/x86_64-linux-gnu/libgobject-2.0.so.0.3600.0
+7f5b5dc46000-7f5b5dc47000 rw-p 0004e000 08:11 655869                     /usr/lib/x86_64-linux-gnu/libgobject-2.0.so.0.3600.0
+7f5b5dc47000-7f5b5dd9a000 r-xp 00000000 08:11 655902                     /usr/lib/x86_64-linux-gnu/libgio-2.0.so.0.3600.0
+7f5b5dd9a000-7f5b5df99000 ---p 00153000 08:11 655902                     /usr/lib/x86_64-linux-gnu/libgio-2.0.so.0.3600.0
+7f5b5df99000-7f5b5df9d000 r--p 00152000 08:11 655902                     /usr/lib/x86_64-linux-gnu/libgio-2.0.so.0.3600.0
+7f5b5df9d000-7f5b5df9f000 rw-p 00156000 08:11 655902                     /usr/lib/x86_64-linux-gnu/libgio-2.0.so.0.3600.0
+7f5b5df9f000-7f5b5dfa1000 rw-p 00000000 00:00 0 
+7f5b5dfa1000-7f5b5dfa5000 r--s 00066000 08:12 24403005                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-openide-text.jar
+7f5b5dfa5000-7f5b5dfa7000 r--s 0000b000 08:12 24397930                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-modules-editor-mimelookup.jar
+7f5b5dfa7000-7f5b5dfb5000 r--s 001b6000 08:12 24402955                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-openide-explorer.jar
+7f5b5dfb5000-7f5b5dfb8000 r--s 00043000 08:12 24398169                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-swing-outline.jar
+7f5b5dfb8000-7f5b5dfc7000 r--s 00115000 08:12 24398114                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-swing-tabcontrol.jar
+7f5b5dfc7000-7f5b5dfca000 r--s 0002a000 08:12 24402976                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-openide-windows.jar
+7f5b5dfca000-7f5b5dfcf000 r--s 0008f000 08:12 24402997                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-openide-nodes.jar
+7f5b5dfcf000-7f5b5dfd1000 r--s 00034000 08:12 24402977                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-openide-dialogs.jar
+7f5b5dfd1000-7f5b5dfd4000 r--s 00014000 08:12 24398186                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-api-progress.jar
+7f5b5dfd4000-7f5b5dfdc000 r--s 000a6000 08:12 24403009                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-openide-awt.jar
+7f5b5dfdc000-7f5b5dfdd000 r--s 00004000 08:12 24397993                   /home/akrylov/netbeans-8.0.2-for-radix/platform/modules/org-netbeans-api-annotations-common.jar
+7f5b5dfdd000-7f5b5dfe7000 r--s 000b8000 08:11 668296                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/resources.jar
+7f5b5dfe7000-7f5b5dfec000 r--s 0004c000 08:11 668324                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/jsse.jar
+7f5b5dfec000-7f5b5dff2000 r--s 0001f000 08:11 657711                     /usr/lib/jvm/java-7-openjdk-amd64/lib/dt.jar
+7f5b5dff2000-7f5b5e008000 r-xp 00000000 08:11 668343                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libnet.so
+7f5b5e008000-7f5b5e208000 ---p 00016000 08:11 668343                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libnet.so
+7f5b5e208000-7f5b5e209000 r--p 00016000 08:11 668343                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libnet.so
+7f5b5e209000-7f5b5e20a000 rw-p 00017000 08:11 668343                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libnet.so
+7f5b5e20a000-7f5b5e21a000 r-xp 00000000 08:11 668339                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libnio.so
+7f5b5e21a000-7f5b5e41a000 ---p 00010000 08:11 668339                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libnio.so
+7f5b5e41a000-7f5b5e41b000 r--p 00010000 08:11 668339                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libnio.so
+7f5b5e41b000-7f5b5e41c000 rw-p 00011000 08:11 668339                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libnio.so
+7f5b5e41c000-7f5b5e41d000 ---p 00000000 00:00 0 
+7f5b5e41d000-7f5b5e51d000 rw-p 00000000 00:00 0                          [stack:14869]
+7f5b5e51d000-7f5b5e520000 ---p 00000000 00:00 0 
+7f5b5e520000-7f5b5e61e000 rw-p 00000000 00:00 0                          [stack:14868]
+7f5b5e61e000-7f5b5e621000 ---p 00000000 00:00 0 
+7f5b5e621000-7f5b5e71f000 rw-p 00000000 00:00 0                          [stack:14867]
+7f5b5e71f000-7f5b5e722000 ---p 00000000 00:00 0 
+7f5b5e722000-7f5b5e820000 rw-p 00000000 00:00 0                          [stack:14866]
+7f5b5e820000-7f5b5e823000 ---p 00000000 00:00 0 
+7f5b5e823000-7f5b5e921000 rw-p 00000000 00:00 0                          [stack:14863]
+7f5b5e921000-7f5b5e924000 ---p 00000000 00:00 0 
+7f5b5e924000-7f5b5ea22000 rw-p 00000000 00:00 0                          [stack:14862]
+7f5b5ea22000-7f5b5ea25000 ---p 00000000 00:00 0 
+7f5b5ea25000-7f5b5eb23000 rw-p 00000000 00:00 0                          [stack:14860]
+7f5b5eb23000-7f5b5eb27000 r-xp 00000000 08:11 668365                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libdt_socket.so
+7f5b5eb27000-7f5b5ed26000 ---p 00004000 08:11 668365                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libdt_socket.so
+7f5b5ed26000-7f5b5ed27000 r--p 00003000 08:11 668365                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libdt_socket.so
+7f5b5ed27000-7f5b5ed28000 rw-p 00004000 08:11 668365                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libdt_socket.so
+7f5b5ed28000-7f5b5ed2b000 ---p 00000000 00:00 0 
+7f5b5ed2b000-7f5b5ee29000 rw-p 00000000 00:00 0                          [stack:14858]
+7f5b5ee29000-7f5b5ee2c000 ---p 00000000 00:00 0 
+7f5b5ee2c000-7f5b5ef2a000 rw-p 00000000 00:00 0                          [stack:14857]
+7f5b5ef2a000-7f5b5ef2d000 ---p 00000000 00:00 0 
+7f5b5ef2d000-7f5b5f02b000 rw-p 00000000 00:00 0                          [stack:14856]
+7f5b5f02b000-7f5b5f02c000 ---p 00000000 00:00 0 
+7f5b5f02c000-7f5b60000000 rw-p 00000000 00:00 0                          [stack:14855]
+7f5b60000000-7f5b6002d000 rw-p 00000000 00:00 0 
+7f5b6002d000-7f5b64000000 ---p 00000000 00:00 0 
+7f5b64000000-7f5b64002000 r--s 00000000 08:12 24553076                   /home/akrylov/netbeans-8.0.2-for-radix/platform/lib/locale/org-openide-util_zh_CN.jar
+7f5b64002000-7f5b64003000 r--s 00001000 08:12 24553741                   /home/akrylov/netbeans-8.0.2-for-radix/platform/lib/locale/org-openide-util_ru.jar
+7f5b64003000-7f5b64005000 r--s 00000000 08:12 24552957                   /home/akrylov/netbeans-8.0.2-for-radix/platform/lib/locale/org-openide-util_pt_BR.jar
+7f5b64005000-7f5b64007000 r--s 00000000 08:12 24553740                   /home/akrylov/netbeans-8.0.2-for-radix/platform/lib/locale/org-openide-util_ja.jar
+7f5b64007000-7f5b64008000 r--s 00000000 08:12 24552931                   /home/akrylov/netbeans-8.0.2-for-radix/platform/lib/locale/org-openide-util-lookup_zh_CN.jar
+7f5b64008000-7f5b64009000 r--s 00000000 08:12 24552946                   /home/akrylov/netbeans-8.0.2-for-radix/platform/lib/locale/org-openide-util-lookup_ru.jar
+7f5b64009000-7f5b6400a000 r--s 00000000 08:12 24552927                   /home/akrylov/netbeans-8.0.2-for-radix/platform/lib/locale/org-openide-util-lookup_pt_BR.jar
+7f5b6400a000-7f5b6400b000 r--s 00000000 08:12 24552950                   /home/akrylov/netbeans-8.0.2-for-radix/platform/lib/locale/org-openide-util-lookup_ja.jar
+7f5b6400b000-7f5b6400c000 r--s 00000000 08:12 24552954                   /home/akrylov/netbeans-8.0.2-for-radix/platform/lib/locale/org-openide-modules_zh_CN.jar
+7f5b6400c000-7f5b6400d000 r--s 00000000 08:12 24553075                   /home/akrylov/netbeans-8.0.2-for-radix/platform/lib/locale/org-openide-modules_ru.jar
+7f5b6400d000-7f5b6400e000 r--s 00000000 08:12 24552951                   /home/akrylov/netbeans-8.0.2-for-radix/platform/lib/locale/org-openide-modules_pt_BR.jar
+7f5b6400e000-7f5b64dc6000 rw-p 00000000 00:00 0 
+7f5b64dc6000-7f5b64f74000 r--s 01cf4000 08:11 668293                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/rt.jar
+7f5b64f74000-7f5b65ce5000 rw-p 00000000 00:00 0 
+7f5b65ce5000-7f5b65ce6000 ---p 00000000 00:00 0 
+7f5b65ce6000-7f5b65de6000 rw-p 00000000 00:00 0                          [stack:14854]
+7f5b65de6000-7f5b65de7000 ---p 00000000 00:00 0 
+7f5b65de7000-7f5b65ee7000 rw-p 00000000 00:00 0                          [stack:14853]
+7f5b65ee7000-7f5b65ee8000 ---p 00000000 00:00 0 
+7f5b65ee8000-7f5b65fe8000 rw-p 00000000 00:00 0                          [stack:14852]
+7f5b65fe8000-7f5b65fe9000 ---p 00000000 00:00 0 
+7f5b65fe9000-7f5b660e9000 rw-p 00000000 00:00 0                          [stack:14851]
+7f5b660e9000-7f5b660ea000 ---p 00000000 00:00 0 
+7f5b660ea000-7f5b661ea000 rw-p 00000000 00:00 0                          [stack:14850]
+7f5b661ea000-7f5b661eb000 ---p 00000000 00:00 0 
+7f5b661eb000-7f5b662eb000 rw-p 00000000 00:00 0                          [stack:14849]
+7f5b662eb000-7f5b662ec000 ---p 00000000 00:00 0 
+7f5b662ec000-7f5b6643f000 rw-p 00000000 00:00 0                          [stack:14848]
+7f5b6643f000-7f5b667ec000 rw-p 00000000 00:00 0 
+7f5b667ec000-7f5b66888000 rw-p 00000000 00:00 0 
+7f5b66888000-7f5b66d42000 rw-p 00000000 00:00 0 
+7f5b66d42000-7f5b66d95000 rw-p 00000000 00:00 0 
+7f5b66d95000-7f5b67142000 rw-p 00000000 00:00 0 
+7f5b67142000-7f5b671de000 rw-p 00000000 00:00 0 
+7f5b671de000-7f5b67697000 rw-p 00000000 00:00 0 
+7f5b67697000-7f5b67942000 rw-p 00000000 00:00 0 
+7f5b67942000-7f5b67943000 rw-p 00000000 00:00 0 
+7f5b67943000-7f5b68283000 rwxp 00000000 00:00 0 
+7f5b68283000-7f5b6a943000 rw-p 00000000 00:00 0 
+7f5b6a943000-7f5b6a94b000 r-xp 00000000 08:11 668368                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libzip.so
+7f5b6a94b000-7f5b6ab4a000 ---p 00008000 08:11 668368                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libzip.so
+7f5b6ab4a000-7f5b6ab4b000 r--p 00007000 08:11 668368                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libzip.so
+7f5b6ab4b000-7f5b6ab4c000 rw-p 00008000 08:11 668368                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libzip.so
+7f5b6ab4c000-7f5b6ab58000 r-xp 00000000 08:11 800470                     /lib/x86_64-linux-gnu/libnss_files-2.17.so
+7f5b6ab58000-7f5b6ad57000 ---p 0000c000 08:11 800470                     /lib/x86_64-linux-gnu/libnss_files-2.17.so
+7f5b6ad57000-7f5b6ad58000 r--p 0000b000 08:11 800470                     /lib/x86_64-linux-gnu/libnss_files-2.17.so
+7f5b6ad58000-7f5b6ad59000 rw-p 0000c000 08:11 800470                     /lib/x86_64-linux-gnu/libnss_files-2.17.so
+7f5b6ad59000-7f5b6ad64000 r-xp 00000000 08:11 800678                     /lib/x86_64-linux-gnu/libnss_nis-2.17.so
+7f5b6ad64000-7f5b6af63000 ---p 0000b000 08:11 800678                     /lib/x86_64-linux-gnu/libnss_nis-2.17.so
+7f5b6af63000-7f5b6af64000 r--p 0000a000 08:11 800678                     /lib/x86_64-linux-gnu/libnss_nis-2.17.so
+7f5b6af64000-7f5b6af65000 rw-p 0000b000 08:11 800678                     /lib/x86_64-linux-gnu/libnss_nis-2.17.so
+7f5b6af65000-7f5b6af7c000 r-xp 00000000 08:11 800287                     /lib/x86_64-linux-gnu/libnsl-2.17.so
+7f5b6af7c000-7f5b6b17b000 ---p 00017000 08:11 800287                     /lib/x86_64-linux-gnu/libnsl-2.17.so
+7f5b6b17b000-7f5b6b17c000 r--p 00016000 08:11 800287                     /lib/x86_64-linux-gnu/libnsl-2.17.so
+7f5b6b17c000-7f5b6b17d000 rw-p 00017000 08:11 800287                     /lib/x86_64-linux-gnu/libnsl-2.17.so
+7f5b6b17d000-7f5b6b17f000 rw-p 00000000 00:00 0 
+7f5b6b17f000-7f5b6b187000 r-xp 00000000 08:11 800684                     /lib/x86_64-linux-gnu/libnss_compat-2.17.so
+7f5b6b187000-7f5b6b386000 ---p 00008000 08:11 800684                     /lib/x86_64-linux-gnu/libnss_compat-2.17.so
+7f5b6b386000-7f5b6b387000 r--p 00007000 08:11 800684                     /lib/x86_64-linux-gnu/libnss_compat-2.17.so
+7f5b6b387000-7f5b6b388000 rw-p 00008000 08:11 800684                     /lib/x86_64-linux-gnu/libnss_compat-2.17.so
+7f5b6b388000-7f5b6b783000 r--p 00000000 08:11 656426                     /usr/lib/locale/locale-archive
+7f5b6b783000-7f5b6b786000 r-xp 00000000 08:11 668335                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libnpt.so
+7f5b6b786000-7f5b6b985000 ---p 00003000 08:11 668335                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libnpt.so
+7f5b6b985000-7f5b6b986000 r--p 00002000 08:11 668335                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libnpt.so
+7f5b6b986000-7f5b6b987000 rw-p 00003000 08:11 668335                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libnpt.so
+7f5b6b987000-7f5b6b9c1000 r-xp 00000000 08:11 668340                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libjdwp.so
+7f5b6b9c1000-7f5b6bbc0000 ---p 0003a000 08:11 668340                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libjdwp.so
+7f5b6bbc0000-7f5b6bbc1000 r--p 00039000 08:11 668340                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libjdwp.so
+7f5b6bbc1000-7f5b6bbc2000 rw-p 0003a000 08:11 668340                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libjdwp.so
+7f5b6bbc2000-7f5b6bbed000 r-xp 00000000 08:11 668352                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libjava.so
+7f5b6bbed000-7f5b6bdec000 ---p 0002b000 08:11 668352                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libjava.so
+7f5b6bdec000-7f5b6bded000 r--p 0002a000 08:11 668352                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libjava.so
+7f5b6bded000-7f5b6bdef000 rw-p 0002b000 08:11 668352                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libjava.so
+7f5b6bdef000-7f5b6bdfe000 r-xp 00000000 08:11 668351                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libverify.so
+7f5b6bdfe000-7f5b6bffd000 ---p 0000f000 08:11 668351                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libverify.so
+7f5b6bffd000-7f5b6bfff000 r--p 0000e000 08:11 668351                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libverify.so
+7f5b6bfff000-7f5b6c000000 rw-p 00010000 08:11 668351                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/libverify.so
+7f5b6c000000-7f5b6c379000 rw-p 00000000 00:00 0 
+7f5b6c379000-7f5b70000000 ---p 00000000 00:00 0 
+7f5b70000000-7f5b70001000 r--s 00000000 08:12 24552985                   /home/akrylov/netbeans-8.0.2-for-radix/platform/lib/locale/org-openide-modules_ja.jar
+7f5b70001000-7f5b70002000 r--s 00000000 08:12 24553839                   /home/akrylov/netbeans-8.0.2-for-radix/platform/lib/locale/boot_zh_CN.jar
+7f5b70002000-7f5b70003000 r--s 00000000 08:12 24553845                   /home/akrylov/netbeans-8.0.2-for-radix/platform/lib/locale/boot_ru.jar
+7f5b70003000-7f5b70004000 r--s 00000000 08:12 24553840                   /home/akrylov/netbeans-8.0.2-for-radix/platform/lib/locale/boot_pt_BR.jar
+7f5b70004000-7f5b70005000 r--s 00000000 08:12 24553846                   /home/akrylov/netbeans-8.0.2-for-radix/platform/lib/locale/boot_ja.jar
+7f5b70005000-7f5b70006000 r--s 00034000 08:02 23559                      /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite/build/cluster/core/locale/core_designer.jar
+7f5b70006000-7f5b70007000 r--s 00001000 08:12 24552932                   /home/akrylov/netbeans-8.0.2-for-radix/platform/core/locale/org-openide-filesystems_ja.jar
+7f5b70007000-7f5b70008000 r--s 00001000 08:12 24552920                   /home/akrylov/netbeans-8.0.2-for-radix/platform/core/locale/org-openide-filesystems_pt_BR.jar
+7f5b70008000-7f5b7000f000 r--s 000ed000 08:12 24553824                   /home/akrylov/netbeans-8.0.2-for-radix/platform/core/org-openide-filesystems.jar
+7f5b7000f000-7f5b70010000 ---p 00000000 00:00 0 
+7f5b70010000-7f5b70110000 rw-p 00000000 00:00 0                          [stack:14847]
+7f5b70110000-7f5b70117000 r-xp 00000000 08:11 800519                     /lib/x86_64-linux-gnu/librt-2.17.so
+7f5b70117000-7f5b70316000 ---p 00007000 08:11 800519                     /lib/x86_64-linux-gnu/librt-2.17.so
+7f5b70316000-7f5b70317000 r--p 00006000 08:11 800519                     /lib/x86_64-linux-gnu/librt-2.17.so
+7f5b70317000-7f5b70318000 rw-p 00007000 08:11 800519                     /lib/x86_64-linux-gnu/librt-2.17.so
+7f5b70318000-7f5b7032c000 r-xp 00000000 08:11 787184                     /lib/x86_64-linux-gnu/libgcc_s.so.1
+7f5b7032c000-7f5b7052c000 ---p 00014000 08:11 787184                     /lib/x86_64-linux-gnu/libgcc_s.so.1
+7f5b7052c000-7f5b7052d000 r--p 00014000 08:11 787184                     /lib/x86_64-linux-gnu/libgcc_s.so.1
+7f5b7052d000-7f5b7052e000 rw-p 00015000 08:11 787184                     /lib/x86_64-linux-gnu/libgcc_s.so.1
+7f5b7052e000-7f5b70631000 r-xp 00000000 08:11 800682                     /lib/x86_64-linux-gnu/libm-2.17.so
+7f5b70631000-7f5b70831000 ---p 00103000 08:11 800682                     /lib/x86_64-linux-gnu/libm-2.17.so
+7f5b70831000-7f5b70832000 r--p 00103000 08:11 800682                     /lib/x86_64-linux-gnu/libm-2.17.so
+7f5b70832000-7f5b70833000 rw-p 00104000 08:11 800682                     /lib/x86_64-linux-gnu/libm-2.17.so
+7f5b70833000-7f5b70918000 r-xp 00000000 08:11 657337                     /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.17
+7f5b70918000-7f5b70b17000 ---p 000e5000 08:11 657337                     /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.17
+7f5b70b17000-7f5b70b1f000 r--p 000e4000 08:11 657337                     /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.17
+7f5b70b1f000-7f5b70b21000 rw-p 000ec000 08:11 657337                     /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.17
+7f5b70b21000-7f5b70b36000 rw-p 00000000 00:00 0 
+7f5b70b36000-7f5b715fc000 r-xp 00000000 08:11 668356                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/server/libjvm.so
+7f5b715fc000-7f5b717fc000 ---p 00ac6000 08:11 668356                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/server/libjvm.so
+7f5b717fc000-7f5b71894000 r--p 00ac6000 08:11 668356                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/server/libjvm.so
+7f5b71894000-7f5b718b7000 rw-p 00b5e000 08:11 668356                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/server/libjvm.so
+7f5b718b7000-7f5b718e4000 rw-p 00000000 00:00 0 
+7f5b718e4000-7f5b718fa000 r-xp 00000000 08:11 786462                     /lib/x86_64-linux-gnu/libz.so.1.2.7
+7f5b718fa000-7f5b71af9000 ---p 00016000 08:11 786462                     /lib/x86_64-linux-gnu/libz.so.1.2.7
+7f5b71af9000-7f5b71afa000 r--p 00015000 08:11 786462                     /lib/x86_64-linux-gnu/libz.so.1.2.7
+7f5b71afa000-7f5b71afb000 rw-p 00016000 08:11 786462                     /lib/x86_64-linux-gnu/libz.so.1.2.7
+7f5b71afb000-7f5b71b13000 r-xp 00000000 08:11 800291                     /lib/x86_64-linux-gnu/libpthread-2.17.so
+7f5b71b13000-7f5b71d12000 ---p 00018000 08:11 800291                     /lib/x86_64-linux-gnu/libpthread-2.17.so
+7f5b71d12000-7f5b71d13000 r--p 00017000 08:11 800291                     /lib/x86_64-linux-gnu/libpthread-2.17.so
+7f5b71d13000-7f5b71d14000 rw-p 00018000 08:11 800291                     /lib/x86_64-linux-gnu/libpthread-2.17.so
+7f5b71d14000-7f5b71d18000 rw-p 00000000 00:00 0 
+7f5b71d18000-7f5b71d1b000 r-xp 00000000 08:11 800439                     /lib/x86_64-linux-gnu/libdl-2.17.so
+7f5b71d1b000-7f5b71f1a000 ---p 00003000 08:11 800439                     /lib/x86_64-linux-gnu/libdl-2.17.so
+7f5b71f1a000-7f5b71f1b000 r--p 00002000 08:11 800439                     /lib/x86_64-linux-gnu/libdl-2.17.so
+7f5b71f1b000-7f5b71f1c000 rw-p 00003000 08:11 800439                     /lib/x86_64-linux-gnu/libdl-2.17.so
+7f5b71f1c000-7f5b720db000 r-xp 00000000 08:11 800696                     /lib/x86_64-linux-gnu/libc-2.17.so
+7f5b720db000-7f5b722da000 ---p 001bf000 08:11 800696                     /lib/x86_64-linux-gnu/libc-2.17.so
+7f5b722da000-7f5b722de000 r--p 001be000 08:11 800696                     /lib/x86_64-linux-gnu/libc-2.17.so
+7f5b722de000-7f5b722e0000 rw-p 001c2000 08:11 800696                     /lib/x86_64-linux-gnu/libc-2.17.so
+7f5b722e0000-7f5b722e5000 rw-p 00000000 00:00 0 
+7f5b722e5000-7f5b722f2000 r-xp 00000000 08:11 668336                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/jli/libjli.so
+7f5b722f2000-7f5b724f1000 ---p 0000d000 08:11 668336                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/jli/libjli.so
+7f5b724f1000-7f5b724f2000 r--p 0000c000 08:11 668336                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/jli/libjli.so
+7f5b724f2000-7f5b724f3000 rw-p 0000d000 08:11 668336                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/jli/libjli.so
+7f5b724f3000-7f5b72516000 r-xp 00000000 08:11 800275                     /lib/x86_64-linux-gnu/ld-2.17.so
+7f5b72516000-7f5b72517000 r--s 00001000 08:12 24553844                   /home/akrylov/netbeans-8.0.2-for-radix/platform/core/locale/core_ja.jar
+7f5b72517000-7f5b72518000 r--s 00001000 08:12 24552924                   /home/akrylov/netbeans-8.0.2-for-radix/platform/core/locale/org-openide-filesystems_zh_CN.jar
+7f5b72518000-7f5b72519000 r--s 00001000 08:12 24553842                   /home/akrylov/netbeans-8.0.2-for-radix/platform/core/locale/core_ru.jar
+7f5b72519000-7f5b7251f000 r--s 000c9000 08:12 24553849                   /home/akrylov/netbeans-8.0.2-for-radix/platform/core/core.jar
+7f5b7251f000-7f5b72526000 r--s 000b1000 08:12 24553841                   /home/akrylov/netbeans-8.0.2-for-radix/platform/lib/org-openide-util.jar
+7f5b72526000-7f5b7254b000 rw-p 00000000 00:00 0 
+7f5b7254b000-7f5b725e6000 rw-p 00000000 00:00 0 
+7f5b725e6000-7f5b725e9000 ---p 00000000 00:00 0 
+7f5b725e9000-7f5b726ec000 rw-p 00000000 00:00 0                          [stack:14846]
+7f5b726ec000-7f5b726ed000 r--s 00001000 08:12 24552941                   /home/akrylov/netbeans-8.0.2-for-radix/platform/core/locale/org-openide-filesystems_ru.jar
+7f5b726ed000-7f5b726ee000 r--s 00001000 08:12 24553838                   /home/akrylov/netbeans-8.0.2-for-radix/platform/core/locale/core_zh_CN.jar
+7f5b726ee000-7f5b726ef000 r--s 00001000 08:12 24553835                   /home/akrylov/netbeans-8.0.2-for-radix/platform/core/locale/core_pt_BR.jar
+7f5b726ef000-7f5b726f2000 r--s 00055000 08:12 24553829                   /home/akrylov/netbeans-8.0.2-for-radix/platform/lib/org-openide-util-lookup.jar
+7f5b726f2000-7f5b726f4000 r--s 00009000 08:12 24553832                   /home/akrylov/netbeans-8.0.2-for-radix/platform/lib/org-openide-modules.jar
+7f5b726f4000-7f5b726f7000 r--s 00075000 08:12 24553850                   /home/akrylov/netbeans-8.0.2-for-radix/platform/lib/boot.jar
+7f5b726f7000-7f5b726fb000 r--s 0003b000 08:11 668298                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/ext/sunpkcs11.jar
+7f5b726fb000-7f5b726fd000 r--s 00006000 08:11 1049080                    /usr/share/java/java-atk-wrapper.jar
+7f5b726fd000-7f5b726ff000 r--s 00012000 08:11 668302                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/ext/zipfs.jar
+7f5b726ff000-7f5b72703000 r--s 00085000 08:11 668308                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/ext/localedata.jar
+7f5b72703000-7f5b72706000 r--s 00032000 08:11 668300                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/ext/sunjce_provider.jar
+7f5b72706000-7f5b72708000 r--s 0000f000 08:11 668306                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/ext/pulse-java.jar
+7f5b72708000-7f5b72709000 r--s 00002000 08:11 668304                     /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/ext/dnsns.jar
+7f5b72709000-7f5b72711000 rw-s 00000000 08:11 792557                     /tmp/hsperfdata_akrylov/14845
+7f5b72711000-7f5b72712000 rw-p 00000000 00:00 0 
+7f5b72712000-7f5b72713000 r--p 00000000 00:00 0 
+7f5b72713000-7f5b72715000 rw-p 00000000 00:00 0 
+7f5b72715000-7f5b72716000 r--p 00022000 08:11 800275                     /lib/x86_64-linux-gnu/ld-2.17.so
+7f5b72716000-7f5b72718000 rw-p 00023000 08:11 800275                     /lib/x86_64-linux-gnu/ld-2.17.so
+7fffa07e4000-7fffa0806000 rw-p 00000000 00:00 0                          [stack]
+7fffa0903000-7fffa0905000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+
+VM Arguments:
+jvm_args: -Djdk.home=/usr/lib/jvm/java-7-openjdk-amd64 -Dnetbeans.running.environment=gnome -Dnetbeans.dirs=/home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite/build/cluster:/home/akrylov/netbeans-8.0.2-for-radix/extide:/home/akrylov/netbeans-8.0.2-for-radix/ide:/home/akrylov/netbeans-8.0.2-for-radix/java:/home/akrylov/netbeans-8.0.2-for-radix/platform:/home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.common/build/cluster:/home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite.reports/build/cluster -Dnetbeans.home=/home/akrylov/netbeans-8.0.2-for-radix/platform -Dnetbeans.logger.console=true -ea -Xdebug -Xrunjdwp:transport=dt_socket,suspend=y,server=n,address=web.radixware.org:59361 -Xmx4096m -XX:MaxPermSize=2048m -Dsun.java2d.noddraw=true -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite/build/testuserdir/var/log/heapdump.hprof 
+java_command: org.netbeans.Main --cachedir /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite/build/testuserdir/var/cache --userdir /home/akrylov/ssd/radix/dev/trunk/org.radixware/kernel/designer/src/suite/build/testuserdir --branding designer --branding designer --development --locale en:US
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games
+LD_LIBRARY_PATH=/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/i386:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/i386:
+SHELL=/bin/bash
+DISPLAY=:0.0
+
+Signal Handlers:
+SIGSEGV: [libjvm.so+0x8f8310], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGBUS: [libjvm.so+0x8f8310], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGFPE: [libjvm.so+0x781ce0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGPIPE: SIG_IGN, sa_mask[0]=0x00001000, sa_flags=0x10000000
+SIGXFSZ: [libjvm.so+0x781ce0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGILL: [libjvm.so+0x781ce0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGUSR1: SIG_DFL, sa_mask[0]=0x00000000, sa_flags=0x00000000
+SIGUSR2: [libjvm.so+0x781fd0], sa_mask[0]=0x00000004, sa_flags=0x10000004
+SIGHUP: [libjvm.so+0x782140], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGINT: SIG_IGN, sa_mask[0]=0x00000000, sa_flags=0x00000000
+SIGTERM: [libjvm.so+0x782140], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGQUIT: [libjvm.so+0x782140], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+
+
+---------------  S Y S T E M  ---------------
+
+OS:Ubuntu 13.04 (raring)
+uname:Linux 3.8.0-27-generic #40-Ubuntu SMP Tue Jul 9 00:17:05 UTC 2013 x86_64
+libc:glibc 2.17 NPTL 2.17 
+rlimit: STACK 8192k, CORE 0k, NPROC 127474, NOFILE 4096, AS infinity
+load average:0.16 0.45 0.83
+
+/proc/meminfo:
+MemTotal:       16350324 kB
+MemFree:          190036 kB
+Buffers:         1559684 kB
+Cached:          6491084 kB
+SwapCached:           28 kB
+Active:         10249132 kB
+Inactive:        4531740 kB
+Active(anon):    5926328 kB
+Inactive(anon):   997296 kB
+Active(file):    4322804 kB
+Inactive(file):  3534444 kB
+Unevictable:          32 kB
+Mlocked:              32 kB
+SwapTotal:      15624188 kB
+SwapFree:       15623832 kB
+Dirty:               368 kB
+Writeback:            56 kB
+AnonPages:       6729940 kB
+Mapped:           455536 kB
+Shmem:            193132 kB
+Slab:            1202804 kB
+SReclaimable:    1153052 kB
+SUnreclaim:        49752 kB
+KernelStack:        5968 kB
+PageTables:        48416 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:    23799348 kB
+Committed_AS:   10668872 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:      375692 kB
+VmallocChunk:   34359358828 kB
+HardwareCorrupted:     0 kB
+AnonHugePages:         0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+DirectMap4k:       65344 kB
+DirectMap2M:    16627712 kB
+
+
+CPU:total 8 (4 cores per cpu, 2 threads per core) family 6 model 42 stepping 7, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, avx, aes, ht, tsc, tscinvbit
+
+/proc/cpuinfo:
+processor	: 0
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 42
+model name	: Intel(R) Core(TM) i7-2600K CPU @ 3.40GHz
+stepping	: 7
+microcode	: 0x14
+cpu MHz		: 3701.000
+cache size	: 8192 KB
+physical id	: 0
+siblings	: 8
+core id		: 0
+cpu cores	: 4
+apicid		: 0
+initial apicid	: 0
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 popcnt tsc_deadline_timer aes xsave avx lahf_lm ida arat epb xsaveopt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid
+bogomips	: 6784.33
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 36 bits physical, 48 bits virtual
+power management:
+
+processor	: 1
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 42
+model name	: Intel(R) Core(TM) i7-2600K CPU @ 3.40GHz
+stepping	: 7
+microcode	: 0x14
+cpu MHz		: 1600.000
+cache size	: 8192 KB
+physical id	: 0
+siblings	: 8
+core id		: 1
+cpu cores	: 4
+apicid		: 2
+initial apicid	: 2
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 popcnt tsc_deadline_timer aes xsave avx lahf_lm ida arat epb xsaveopt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid
+bogomips	: 6784.33
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 36 bits physical, 48 bits virtual
+power management:
+
+processor	: 2
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 42
+model name	: Intel(R) Core(TM) i7-2600K CPU @ 3.40GHz
+stepping	: 7
+microcode	: 0x14
+cpu MHz		: 1600.000
+cache size	: 8192 KB
+physical id	: 0
+siblings	: 8
+core id		: 2
+cpu cores	: 4
+apicid		: 4
+initial apicid	: 4
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 popcnt tsc_deadline_timer aes xsave avx lahf_lm ida arat epb xsaveopt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid
+bogomips	: 6784.33
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 36 bits physical, 48 bits virtual
+power management:
+
+processor	: 3
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 42
+model name	: Intel(R) Core(TM) i7-2600K CPU @ 3.40GHz
+stepping	: 7
+microcode	: 0x14
+cpu MHz		: 1600.000
+cache size	: 8192 KB
+physical id	: 0
+siblings	: 8
+core id		: 3
+cpu cores	: 4
+apicid		: 6
+initial apicid	: 6
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 popcnt tsc_deadline_timer aes xsave avx lahf_lm ida arat epb xsaveopt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid
+bogomips	: 6784.33
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 36 bits physical, 48 bits virtual
+power management:
+
+processor	: 4
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 42
+model name	: Intel(R) Core(TM) i7-2600K CPU @ 3.40GHz
+stepping	: 7
+microcode	: 0x14
+cpu MHz		: 1600.000
+cache size	: 8192 KB
+physical id	: 0
+siblings	: 8
+core id		: 0
+cpu cores	: 4
+apicid		: 1
+initial apicid	: 1
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 popcnt tsc_deadline_timer aes xsave avx lahf_lm ida arat epb xsaveopt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid
+bogomips	: 6784.33
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 36 bits physical, 48 bits virtual
+power management:
+
+processor	: 5
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 42
+model name	: Intel(R) Core(TM) i7-2600K CPU @ 3.40GHz
+stepping	: 7
+microcode	: 0x14
+cpu MHz		: 1600.000
+cache size	: 8192 KB
+physical id	: 0
+siblings	: 8
+core id		: 1
+cpu cores	: 4
+apicid		: 3
+initial apicid	: 3
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 popcnt tsc_deadline_timer aes xsave avx lahf_lm ida arat epb xsaveopt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid
+bogomips	: 6784.33
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 36 bits physical, 48 bits virtual
+power management:
+
+processor	: 6
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 42
+model name	: Intel(R) Core(TM) i7-2600K CPU @ 3.40GHz
+stepping	: 7
+microcode	: 0x14
+cpu MHz		: 3701.000
+cache size	: 8192 KB
+physical id	: 0
+siblings	: 8
+core id		: 2
+cpu cores	: 4
+apicid		: 5
+initial apicid	: 5
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 popcnt tsc_deadline_timer aes xsave avx lahf_lm ida arat epb xsaveopt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid
+bogomips	: 6784.33
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 36 bits physical, 48 bits virtual
+power management:
+
+processor	: 7
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 42
+model name	: Intel(R) Core(TM) i7-2600K CPU @ 3.40GHz
+stepping	: 7
+microcode	: 0x14
+cpu MHz		: 1600.000
+cache size	: 8192 KB
+physical id	: 0
+siblings	: 8
+core id		: 3
+cpu cores	: 4
+apicid		: 7
+initial apicid	: 7
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 popcnt tsc_deadline_timer aes xsave avx lahf_lm ida arat epb xsaveopt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid
+bogomips	: 6784.33
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 36 bits physical, 48 bits virtual
+power management:
+
+
+
+Memory: 4k page, physical 16350324k(190036k free), swap 15624188k(15623832k free)
+
+vm_info: OpenJDK 64-Bit Server VM (24.45-b08) for linux-amd64 JRE (1.7.0_51-b00), built on Jan 16 2014 18:17:06 by "buildd" with gcc 4.7.3
+
+time: Tue Oct 13 11:46:38 2015
+elapsed time: 750 seconds
+

@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" FormatVersion="6">
+  <AdsClassDefinition Id="aclVFFSHAEK6HNRDF6RABIFNQAABA" Name="MessageBoxForm" Type="2">
+    <AccessRules/>
+    <Headers>
+      <Src Name="HeaderadcAULHHR5FRJAPFM5SUZ3YIH6TNM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcRZMUQCJUZFC5NNFWWNVXZVMZO4"/>
+    </Bodies>
+    <MethodGroup Id="cmg3AQEN2KJ6FAKTNPXJHY3XIJK3M" Name="Root"/>
+    <PropertyGroup Id="cpgQYFTTNWGBBGR7FQ3EHX5HMQTLY" Name="Root">
+      <Group Id="cpgKJBDQWQTQNAR7KD37KM7XPOOF4" Name="User Props" Members="pru47MJZ44Y6HNRDF6RABIFNQAABA"/>
+    </PropertyGroup>
+    <Properties>
+      <Property Id="pru47MJZ44Y6HNRDF6RABIFNQAABA" Name="messageText" Nature="1" IsConst="false" InitializationPolicy="1" IsOverride="false" SuppressedWarnings="2003">
+        <AccessRules/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mls6UTVQOK4OXOBDFKUAAMPGXUWTQ" InheritanceMask="4">
+          <Editing IsMemo="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods/>
+    <Entity EntityId="tblVP66JC4HXLNRDF5JABIFNQAABA"/>
+    <Presentations ObjectTitleId="mlsALZVIP24OXOBDFKUAAMPGXUWTQ">
+      <EditorPresentations>
+        <EditorPresentation Id="eprUA4OLLU2FPOBDGAEABIFNQAABA" Name="General" TitleId="mlsLJHN6R76FJCELNSCSNPPQNSOF4" InheritanceMask="8208" Restrictions="23663" EnabledCommandIds="" RightsSourceId="eprGKXLJMUIOZB5BNTVI5ZB3SRKVU" RightsInheritanceMode="1">
+          <Model Id="aemUA4OLLU2FPOBDGAEABIFNQAABA" Name="General:Model" Type="15">
+            <AccessRules/>
+            <Headers>
+              <Src Name="HeaderadcDY7QI2K6E5HFNJXIZK7Y4XZ5EE" Environment="explorer">
+                <xsc:Item>
+                  <xsc:Java>import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.gui.QFont;
+</xsc:Java>
+                </xsc:Item>
+              </Src>
+            </Headers>
+            <Bodies>
+              <Src Name="Bodyadc5BYV6KPDRFE4XHNHQSEOCYUDLU"/>
+            </Bodies>
+            <MethodGroup Id="cmgUN23GQVKTVAZBBXGXC5BBC7UVI" Name="Root"/>
+            <PropertyGroup Id="cpgQYUR2BYQ5BADBEOABUEKPIS4FA" Name="Root"/>
+            <Properties/>
+            <Methods>
+              <Method Id="mthFGKFAPJZJDORDBKYABIFNQAABA_opened" Name="customEditor_opened" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+                <AccessRules/>
+                <Parameters>
+                  <Parameter Name="parent" Id="mprKVBV4MJB3RCRZLRT2D3HUWY57E">
+                    <Type TypeId="411" Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4"/>
+                  </Parameter>
+                </Parameters>
+                <Sources>
+                  <Src>
+                    <xsc:Item>
+                      <xsc:Java>if (</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aclVFFSHAEK6HNRDF6RABIFNQAABA eprUA4OLLU2FPOBDGAEABIFNQAABA aemUA4OLLU2FPOBDGAEABIFNQAABA pru47MJZ44Y6HNRDF6RABIFNQAABA" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java> == null)
+    return;
+   
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aclVFFSHAEK6HNRDF6RABIFNQAABA eprUA4OLLU2FPOBDGAEABIFNQAABA ceeUA4OLLU2FPOBDGAEABIFNQAABA wdgZQ2RJF7KNHORDBL3ABIFNQAABA" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.setText(</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aclVFFSHAEK6HNRDF6RABIFNQAABA eprUA4OLLU2FPOBDGAEABIFNQAABA aemUA4OLLU2FPOBDGAEABIFNQAABA pru47MJZ44Y6HNRDF6RABIFNQAABA" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.getValue());
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aclVFFSHAEK6HNRDF6RABIFNQAABA eprUA4OLLU2FPOBDGAEABIFNQAABA ceeUA4OLLU2FPOBDGAEABIFNQAABA wdgZQ2RJF7KNHORDBL3ABIFNQAABA" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse);
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aclVFFSHAEK6HNRDF6RABIFNQAABA eprUA4OLLU2FPOBDGAEABIFNQAABA ceeUA4OLLU2FPOBDGAEABIFNQAABA wdgZQ2RJF7KNHORDBL3ABIFNQAABA" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.setWordWrap(false);
+   
+final QFont font = ((</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>)getEntityView()).font();
+font.setBold(true);
+font.setPointSize(font.pointSize()+1);
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aclVFFSHAEK6HNRDF6RABIFNQAABA eprUA4OLLU2FPOBDGAEABIFNQAABA ceeUA4OLLU2FPOBDGAEABIFNQAABA wdgZQ2RJF7KNHORDBL3ABIFNQAABA" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.setFont(font);</xsc:Java>
+                    </xsc:Item>
+                  </Src>
+                </Sources>
+              </Method>
+              <Method Id="mthOJ6UTYKQJ5GPBIZXWUDIFAVIYY" Name="root_afterOpen" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false">
+                <AccessRules IsPublished="false"/>
+                <Sources>
+                  <Src>
+                    <xsc:Item>
+                      <xsc:Java>if (</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aclVFFSHAEK6HNRDF6RABIFNQAABA eprUA4OLLU2FPOBDGAEABIFNQAABA aemUA4OLLU2FPOBDGAEABIFNQAABA pru47MJZ44Y6HNRDF6RABIFNQAABA" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java> == null)
+    return;
+   
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aclVFFSHAEK6HNRDF6RABIFNQAABA eprUA4OLLU2FPOBDGAEABIFNQAABA ceeSTSCAWKUPBCMLFTAOFJEEGIAW4 wdgLE4X2VHMQNGUTAMLR77CMLP2DQ" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.setText(</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aclVFFSHAEK6HNRDF6RABIFNQAABA eprUA4OLLU2FPOBDGAEABIFNQAABA aemUA4OLLU2FPOBDGAEABIFNQAABA pru47MJZ44Y6HNRDF6RABIFNQAABA" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.getValue());
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aclVFFSHAEK6HNRDF6RABIFNQAABA eprUA4OLLU2FPOBDGAEABIFNQAABA ceeSTSCAWKUPBCMLFTAOFJEEGIAW4 wdgLE4X2VHMQNGUTAMLR77CMLP2DQ" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.getHtml().setCss("font-weight", "bold");
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aclVFFSHAEK6HNRDF6RABIFNQAABA eprUA4OLLU2FPOBDGAEABIFNQAABA ceeSTSCAWKUPBCMLFTAOFJEEGIAW4 wdgLE4X2VHMQNGUTAMLR77CMLP2DQ" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.getHtml().setCss("font-size", "8.0pt");
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aclVFFSHAEK6HNRDF6RABIFNQAABA eprUA4OLLU2FPOBDGAEABIFNQAABA ceeSTSCAWKUPBCMLFTAOFJEEGIAW4 wdgLE4X2VHMQNGUTAMLR77CMLP2DQ" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.getHtml().setCss("white-space", "pre-line");</xsc:Java>
+                    </xsc:Item>
+                  </Src>
+                </Sources>
+              </Method>
+            </Methods>
+          </Model>
+          <View Id="ceeUA4OLLU2FPOBDGAEABIFNQAABA" Name="View">
+            <ui:ui>
+              <ui:widget name="customEditor" id="wdgFGKFAPJZJDORDBKYABIFNQAABA" class="ceeUA4OLLU2FPOBDGAEABIFNQAABA" weight="0.0">
+                <ui:property name="geometry">
+                  <ui:rect>
+                    <ui:x>0</ui:x>
+                    <ui:y>0</ui:y>
+                    <ui:width>400</ui:width>
+                    <ui:height>300</ui:height>
+                  </ui:rect>
+                </ui:property>
+                <ui:property name="objectName">
+                  <ui:string>customEditor</ui:string>
+                </ui:property>
+                <ui:property name="objectName">
+                  <ui:string>customEditor</ui:string>
+                </ui:property>
+                <ui:layout class="QHBoxLayout" name="horizontalLayout">
+                  <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                    <ui:spacer name="spacer">
+                      <ui:property name="orientation">
+                        <ui:enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</ui:enum>
+                      </ui:property>
+                      <ui:property name="sizeHint">
+                        <ui:size>
+                          <ui:width>40</ui:width>
+                          <ui:height>20</ui:height>
+                        </ui:size>
+                      </ui:property>
+                    </ui:spacer>
+                  </ui:item>
+                  <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                    <ui:widget name="label" id="wdgZQ2RJF7KNHORDBL3ABIFNQAABA" class="QLabel" weight="0.0">
+                      <ui:property name="sizePolicy">
+                        <ui:sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Expanding"/>
+                      </ui:property>
+                      <ui:property name="text">
+                        <ui:mlstringid>mlsZU2RJF7KNHORDBL3ABIFNQAABA</ui:mlstringid>
+                      </ui:property>
+                      <ui:property name="objectName">
+                        <ui:string>label</ui:string>
+                      </ui:property>
+                      <ui:property name="alignment">
+                        <ui:set>com.trolltech.qt.core.Qt.AlignmentFlag.AlignLeft | com.trolltech.qt.core.Qt.AlignmentFlag.AlignVCenter</ui:set>
+                      </ui:property>
+                    </ui:widget>
+                  </ui:item>
+                  <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                    <ui:spacer name="spacer">
+                      <ui:property name="orientation">
+                        <ui:enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</ui:enum>
+                      </ui:property>
+                      <ui:property name="sizeHint">
+                        <ui:size>
+                          <ui:width>40</ui:width>
+                          <ui:height>20</ui:height>
+                        </ui:size>
+                      </ui:property>
+                    </ui:spacer>
+                  </ui:item>
+                </ui:layout>
+              </ui:widget>
+              <ui:connections>
+                <ui:connection>
+                  <ui:sender>wdgFGKFAPJZJDORDBKYABIFNQAABA</ui:sender>
+                  <ui:signal>opened(com.trolltech.qt.gui.QWidget widget)</ui:signal>
+                  <ui:slot>mthFGKFAPJZJDORDBKYABIFNQAABA_opened</ui:slot>
+                </ui:connection>
+              </ui:connections>
+            </ui:ui>
+          </View>
+          <WebView Id="ceeSTSCAWKUPBCMLFTAOFJEEGIAW4" Name="WebView">
+            <ui:ui>
+              <ui:widget name="root" id="wdgGLNPZ4I5FBC53GDSLX75E6OAGY" class="ceeSTSCAWKUPBCMLFTAOFJEEGIAW4" weight="0.0">
+                <ui:property name="geometry">
+                  <ui:rect>
+                    <ui:x>0</ui:x>
+                    <ui:y>0</ui:y>
+                    <ui:width>489</ui:width>
+                    <ui:height>302</ui:height>
+                  </ui:rect>
+                </ui:property>
+                <ui:property name="objectName">
+                  <ui:string>root</ui:string>
+                </ui:property>
+                <ui:widget name="label" id="wdgLE4X2VHMQNGUTAMLR77CMLP2DQ" class="org.radixware.wps.rwt.Label" weight="0.0">
+                  <ui:property name="text">
+                    <ui:mlstringid>mlsPWZJQIYVURBYTIXB3ZM2X4AY7E</ui:mlstringid>
+                  </ui:property>
+                  <ui:property name="geometry">
+                    <ui:rect>
+                      <ui:x>5</ui:x>
+                      <ui:y>5</ui:y>
+                      <ui:width>479</ui:width>
+                      <ui:height>292</ui:height>
+                    </ui:rect>
+                  </ui:property>
+                  <ui:property name="anchor">
+                    <ui:anchor>
+                      <ui:Bottom Part="1.0" Offset="-5"/>
+                      <ui:Right Part="1.0" Offset="-5"/>
+                    </ui:anchor>
+                  </ui:property>
+                  <ui:property name="objectName">
+                    <ui:string>label</ui:string>
+                  </ui:property>
+                </ui:widget>
+              </ui:widget>
+              <ui:connections>
+                <ui:connection>
+                  <ui:sender>wdgGLNPZ4I5FBC53GDSLX75E6OAGY</ui:sender>
+                  <ui:signal>afterOpen()</ui:signal>
+                  <ui:slot>mthOJ6UTYKQJ5GPBIZXWUDIFAVIYY</ui:slot>
+                  <ui:interface>org.radixware.kernel.common.client.views.IEditor.OpenHandler</ui:interface>
+                  <ui:registrator>addOpenHandler</ui:registrator>
+                  <ui:returnType>void</ui:returnType>
+                </ui:connection>
+              </ui:connections>
+            </ui:ui>
+          </WebView>
+          <ChildExplorerItems/>
+          <ObjectTitleFormat Id="etfSBBFC6WDN5CDBKG5AU6OE4DHEQ" NullTitleId="mlsDPP6UEZSEBACDP2W5NQWLP3URI">
+            <TitleItem PropId="colJGHFDGEHXLNRDF5JABIFNQAABA">
+              <Pattern># - </Pattern>
+            </TitleItem>
+            <TitleItem PropId="col34WUQDUIXLNRDF5JABIFNQAABA">
+              <Pattern xsi:nil="true"/>
+            </TitleItem>
+          </ObjectTitleFormat>
+        </EditorPresentation>
+      </EditorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="aclMSJV23P2XTNRDF5NABIFNQAABA"/>
+  </AdsClassDefinition>
+</AdsDefinition>

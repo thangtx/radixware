@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc7JTRTIBUEVD2LJHWJYH2DRG3R4" Name="AcsClientCommonUtils" Type="3" Environment="common-client">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc7JTRTIBUEVD2LJHWJYH2DRG3R4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc7JTRTIBUEVD2LJHWJYH2DRG3R4"/>
+    </Bodies>
+    <MethodGroup Id="cmgB4NQJQL7YZG2VE7FOHM56JSPZ4" Name="Root"/>
+    <PropertyGroup Id="cpgVPFWXB5MYND5DFHN6LMARLORNM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthCLF5DVQR2BBHBELJ46AVM4BBRQ" Name="processAcceptedCommand" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="acceptedOutput" Id="mprPO6APF34KBD77MCHQTJQDEDOLQ">
+            <Type TypeId="451" Path="xsdQLUXCQIPKNBCZIQTOHKTT5Q664" extStr="AcceptedRolesDocument"/>
+          </Parameter>
+          <Parameter Name="environment" Id="mprGOVBQ5F5Z5BPHJXGA3VQJASGFY">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
+          <Parameter Name="isUserEntry" Id="mprJP2YD7D5BNCATBSFXKCVUTA7LQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>String message;
+if (isUserEntry){
+    message = String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsCXCDLVSTONBORHEQQ7ND5Q6S6M"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, 
+        acceptedOutput.AcceptedRoles.AddedRolesCount,
+        acceptedOutput.AcceptedRoles.ReplacedRolesCount, 
+        acceptedOutput.AcceptedRoles.RemovedRolesCount,
+        acceptedOutput.AcceptedRoles.AddedUser2GroupCount, 
+        acceptedOutput.AcceptedRoles.RemovedUser2GroupCount);
+}
+else{
+    message = String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsILSKQF4AJJDOHACWNKA2YDEULI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, 
+        acceptedOutput.AcceptedRoles.AddedRolesCount,
+        acceptedOutput.AcceptedRoles.ReplacedRolesCount, 
+        acceptedOutput.AcceptedRoles.RemovedRolesCount,
+        acceptedOutput.AcceptedRoles.AddedUser2GroupCount, 
+        acceptedOutput.AcceptedRoles.RemovedUser2GroupCount);
+}
+
+{
+    final String sUnacceptedRoles = acceptedOutput.AcceptedRoles.UnacceptedRoles;
+    if (sUnacceptedRoles!=null &amp;&amp; !sUnacceptedRoles.isEmpty()){
+        if (!message.endsWith("\n")){
+            message += "\n";
+        }
+        message += String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls53KS2266QNHOJKL7YXIB5QAPTI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, sUnacceptedRoles);
+    }
+} 
+
+{
+    final String sUnacceptedUsersOrGroups = acceptedOutput.AcceptedRoles.UnacceptedUsersOrGroups;
+    if (sUnacceptedUsersOrGroups!=null &amp;&amp; !sUnacceptedUsersOrGroups.isEmpty()){
+        if (!message.endsWith("\n")){
+            message += "\n";
+        }
+        if (isUserEntry){
+            message += String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls3O5QBC53NVD45ISX7WECV57KBM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, sUnacceptedUsersOrGroups);
+        }
+        else{
+            message += String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls3VQIMQHJRNAPDK5OEJV37KKHI4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, sUnacceptedUsersOrGroups);
+        }
+    }
+}
+environment.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthZ7S4BY675BD6BHV4PD4UZFF6HA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsTGOXQYABM5H4JFR7PBACSHZS5U"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, message);
+
+
+ 
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

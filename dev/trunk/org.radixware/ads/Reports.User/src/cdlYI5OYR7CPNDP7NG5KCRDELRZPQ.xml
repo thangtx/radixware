@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsCustomDialogDefinition Id="cdlYI5OYR7CPNDP7NG5KCRDELRZPQ" Name="ChooseUserReportImportDlg">
+    <ui:ui>
+      <ui:widget name="Dialog" id="wdgBG7SNZIFZVFGHNNL3ZO4NUOXVM" class="cdlYI5OYR7CPNDP7NG5KCRDELRZPQ" weight="0.0">
+        <ui:property name="geometry">
+          <ui:rect>
+            <ui:x>0</ui:x>
+            <ui:y>0</ui:y>
+            <ui:width>595</ui:width>
+            <ui:height>92</ui:height>
+          </ui:rect>
+        </ui:property>
+        <ui:property name="windowTitle">
+          <ui:mlstringid>mlsR2IS5M7ZDNDHNK65QEZBZMN6CY</ui:mlstringid>
+        </ui:property>
+        <ui:layout class="QVBoxLayout" name="verticalLayout">
+          <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+            <ui:widget name="label" id="wdgSPMVFT3G3JAQTHLYH6XCTE7XB4" class="QLabel" weight="0.0">
+              <ui:property name="text">
+                <ui:mlstringid>mlsDNB27GERNZHIVIP7WVM7AQQT3M</ui:mlstringid>
+              </ui:property>
+            </ui:widget>
+          </ui:item>
+          <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+            <ui:widget name="frame" id="wdgWATR6463HVCHXLC6GROK2ZFENY" class="QFrame" weight="0.0">
+              <ui:property name="frameShape">
+                <ui:enum>com.trolltech.qt.gui.QFrame.Shape.NoFrame</ui:enum>
+              </ui:property>
+              <ui:property name="frameShadow">
+                <ui:enum>com.trolltech.qt.gui.QFrame.Shadow.Raised</ui:enum>
+              </ui:property>
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>92</ui:x>
+                  <ui:y>40</ui:y>
+                  <ui:width>120</ui:width>
+                  <ui:height>120</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:layout class="QHBoxLayout" name="horizontalLayout">
+                <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                  <ui:spacer name="spacer">
+                    <ui:property name="orientation">
+                      <ui:enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</ui:enum>
+                    </ui:property>
+                    <ui:property name="sizeHint">
+                      <ui:size>
+                        <ui:width>40</ui:width>
+                        <ui:height>20</ui:height>
+                      </ui:size>
+                    </ui:property>
+                  </ui:spacer>
+                </ui:item>
+                <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                  <ui:widget name="btnNewReport" id="wdgVB5Q6CNR7JE3VKGHDRJJ6QZJSA" class="QPushButton" weight="0.0">
+                    <ui:property name="text">
+                      <ui:mlstringid>mlsTLBNR7KMGVFDXOAPDJDWVT4TI4</ui:mlstringid>
+                    </ui:property>
+                    <ui:property name="geometry">
+                      <ui:rect>
+                        <ui:x>285</ui:x>
+                        <ui:y>39</ui:y>
+                        <ui:width>94</ui:width>
+                        <ui:height>23</ui:height>
+                      </ui:rect>
+                    </ui:property>
+                    <ui:property name="objectName">
+                      <ui:string>btnNewReport</ui:string>
+                    </ui:property>
+                  </ui:widget>
+                </ui:item>
+                <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                  <ui:widget name="btnAddVersions" id="wdgOHQ7GHEVDVHLZK225V5MJUH2ZU" class="QPushButton" weight="0.0">
+                    <ui:property name="text">
+                      <ui:mlstringid>mlsWJFFGIGAG5FPRPZ7YIO5DNOZVM</ui:mlstringid>
+                    </ui:property>
+                    <ui:property name="geometry">
+                      <ui:rect>
+                        <ui:x>493</ui:x>
+                        <ui:y>10</ui:y>
+                        <ui:width>94</ui:width>
+                        <ui:height>23</ui:height>
+                      </ui:rect>
+                    </ui:property>
+                    <ui:property name="objectName">
+                      <ui:string>btnAddVersions</ui:string>
+                    </ui:property>
+                  </ui:widget>
+                </ui:item>
+                <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                  <ui:widget name="btnCancel" id="wdgTPACBCJ5NFDQHI7CTCSJXMXDWI" class="QPushButton" weight="0.0">
+                    <ui:property name="text">
+                      <ui:mlstringid>mlsH2EF3NHBENE27HEUBMGBL2EZSA</ui:mlstringid>
+                    </ui:property>
+                    <ui:property name="geometry">
+                      <ui:rect>
+                        <ui:x>555</ui:x>
+                        <ui:y>13</ui:y>
+                        <ui:width>94</ui:width>
+                        <ui:height>23</ui:height>
+                      </ui:rect>
+                    </ui:property>
+                    <ui:property name="objectName">
+                      <ui:string>btnCancel</ui:string>
+                    </ui:property>
+                  </ui:widget>
+                </ui:item>
+              </ui:layout>
+            </ui:widget>
+          </ui:item>
+        </ui:layout>
+      </ui:widget>
+      <ui:connections>
+        <ui:connection>
+          <ui:sender>wdgVB5Q6CNR7JE3VKGHDRJJ6QZJSA</ui:sender>
+          <ui:signal>clicked(Bool checked)</ui:signal>
+          <ui:slot>mthZL2LLQCT7FEWNKZS2ZFOQTYXKY</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgOHQ7GHEVDVHLZK225V5MJUH2ZU</ui:sender>
+          <ui:signal>clicked(Bool checked)</ui:signal>
+          <ui:slot>mthIQYSX33QINEF5DLKQUPJDJAKXE</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgTPACBCJ5NFDQHI7CTCSJXMXDWI</ui:sender>
+          <ui:signal>clicked(Bool checked)</ui:signal>
+          <ui:slot>mthMXCG4RIXMBGFVD6FDA63S46L2I</ui:slot>
+        </ui:connection>
+      </ui:connections>
+    </ui:ui>
+    <EmbeddedModel Id="admYI5OYR7CPNDP7NG5KCRDELRZPQ" Name="ChooseUserReportImportDlg:Model" Type="16">
+      <AccessRules/>
+      <Headers>
+        <Src Name="HeaderadmYI5OYR7CPNDP7NG5KCRDELRZPQ"/>
+      </Headers>
+      <Bodies>
+        <Src Name="BodyadmYI5OYR7CPNDP7NG5KCRDELRZPQ"/>
+      </Bodies>
+      <MethodGroup Id="cmgEXPIWKNRSVEUBHCZDMGWTJDLWY" Name="Root"/>
+      <PropertyGroup Id="cpgD7IUE42LGJBBPDCCHJBSAQYVBY" Name="Root"/>
+      <Properties>
+        <Property Id="prdYXZUTWAOP5A6LEV4BCBNYBOB6Q" Name="result" Nature="2" IsConst="false" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="2"/>
+        </Property>
+      </Properties>
+      <Methods>
+        <Method Id="mthZL2LLQCT7FEWNKZS2ZFOQTYXKY" Name="btnNewReport_clicked" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="checked" Id="mprUD23OQGVUBCRZG2WVTSOCGJRA4">
+              <Type TypeId="1"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlYI5OYR7CPNDP7NG5KCRDELRZPQ admYI5OYR7CPNDP7NG5KCRDELRZPQ prdYXZUTWAOP5A6LEV4BCBNYBOB6Q" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>=1;
+this.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mth7EFAYV56HBHZTJRSCD227GZ2ZA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthIQYSX33QINEF5DLKQUPJDJAKXE" Name="btnAddVersions_clicked" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="checked" Id="mprPTOAEDEYWJDKJEEZWWJUULDJOI">
+              <Type TypeId="1"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlYI5OYR7CPNDP7NG5KCRDELRZPQ admYI5OYR7CPNDP7NG5KCRDELRZPQ prdYXZUTWAOP5A6LEV4BCBNYBOB6Q" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>=2;
+this.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mth7EFAYV56HBHZTJRSCD227GZ2ZA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthMXCG4RIXMBGFVD6FDA63S46L2I" Name="btnCancel_clicked" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="checked" Id="mprCV3MBK3XWRFE3OGTEG4F3GPFGY">
+              <Type TypeId="1"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlYI5OYR7CPNDP7NG5KCRDELRZPQ admYI5OYR7CPNDP7NG5KCRDELRZPQ prdYXZUTWAOP5A6LEV4BCBNYBOB6Q" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>=0;
+this.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mthYEMLDE62GNCTVNB2L3I2YFWHF4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+      </Methods>
+    </EmbeddedModel>
+  </AdsCustomDialogDefinition>
+</AdsDefinition>

@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="apcIXRGI4PQXBG7NFV622KAZ666XA" Name="Mime" Type="3" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcJMY6DJBMOFGJJNR3JQNKF4SMIE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcJWAW2YJBU5HVVL5CQ23UMPACYU"/>
+    </Bodies>
+    <MethodGroup Id="cmgM5ICRKKDERB6PI5JMRXXY6FN7A" Name="Root"/>
+    <PropertyGroup Id="cpgG6RTOJRYMNE6REZTNPXX4K6KMY" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthEIMI4RBTENGJVIKWRVQLTVSCGQ" Name="getExtensionForMimeType" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="mimeType" Id="mprTEK4JARCLBDQTCDET3OTBQABJM">
+            <Type TypeId="21" Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21" Dimension="1"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (mimeType == null) {
+    return new String[0];
+}
+switch (mimeType) {
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLKBEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new String[]{"htm", "html"};
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLGBEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new String[]{"pdf"};
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLOBEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new String[]{"txt"};
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciELEGM4UMC7PBDEJBAASCCED2RY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new String[]{"jpg", "jpeg"};
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aci5R42JJEMC7PBDEJBAASCCED2RY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new String[]{"bmp"};
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciGLX3EWEMC7PBDEJBAASCCED2RY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new String[]{"gif"};
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciWYOTNCEMC7PBDEJBAASCCED2RY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new String[]{"png"};
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciBDL4FFMMC7PBDEJBAASCCED2RY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new String[]{"tif", "tiff"};
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aci4DLISJ4NC7PBDEJBAASCCED2RY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new String[]{"svg"};
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciZQSLNMEMC7PBDEJBAASCCED2RY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new String[]{"pbm"};
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciEXICFUEMC7PBDEJBAASCCED2RY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new String[]{"pgm"};
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciNAWQH3EMC7PBDEJBAASCCED2RY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new String[]{"ppm"};
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciKCWTQBMNC7PBDEJBAASCCED2RY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new String[]{"xbm"};
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciCAX3SFMNC7PBDEJBAASCCED2RY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new String[]{"xpm"};
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aci4ODMGOUNC7PBDEJBAASCCED2RY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new String[]{"mng"};
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciEY22JOUK3FD77C6TACCKYVNTHM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new String[]{"xml"};
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLP47FN76EJDQNA7JA33OTD6CJE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new String[]{"doc"};
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciEHA7W6GWKBBOXBAAM74VY5JOAE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new String[]{"docx"};
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciMVUCANRDC5GHZJUHCNB2RQ4F5M" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new String[]{"ppt"};
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciOJTSMUDYGVASLH5CDP7P3CETXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new String[]{"pptx"};
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciWVQTZB5N7FFILAIHMSOUABGZ5I" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new String[]{"xls"};
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciX7AMY4GDX5HOZDHFTMXAICWS3A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new String[]{"xlsx"};
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciI3UF4BTO3NBFVCQJLCHYEPTXUI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new String[]{"odt"};
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciMY5GSYJRQJHPPOXFDKFEBE44W4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new String[]{"odp"};  
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciBPMYPPLSBNHZJERSF764HAZIRU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new String[]{"ods"};
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciM4I5RPCJABF4DAOSADHPBMWMXU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return new String[]{"rtf"};   
+    default:
+        return new String[]{};
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth4Y7MTUHG3NGPXF2M7Z7EUGKPKA" Name="getMimeTypeForExt" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="ext" Id="mprPKSYAJVCFRFYHC32KY2FY4YZJ4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21" Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (ext == null) {
+    return null;
+}
+
+ext = ext.toLowerCase();
+
+for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21" Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> enumItem : </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21" Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.values()) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>[] variants = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcIXRGI4PQXBG7NFV622KAZ666XA mthEIMI4RBTENGJVIKWRVQLTVSCGQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(enumItem);
+    if (variants != null &amp;&amp; variants.length > 0) {
+        for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> variant : variants) {
+            if (ext.equals(variant)) {
+                return enumItem;
+            }
+        }
+    }
+}
+
+return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

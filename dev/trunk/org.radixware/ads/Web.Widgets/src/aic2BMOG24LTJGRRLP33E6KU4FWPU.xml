@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aic2BMOG24LTJGRRLP33E6KU4FWPU" Name="Grid.CurrentCellListener" Type="5" Environment="web">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.wps.rwt.Grid.CurrentCellListener"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeraic2BMOG24LTJGRRLP33E6KU4FWPU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyaic2BMOG24LTJGRRLP33E6KU4FWPU"/>
+    </Bodies>
+    <MethodGroup Id="cmgCVVPAGGILNGZPC3Y4LPMZNLPU4" Name="Root"/>
+    <PropertyGroup Id="cpgEQITFR53ARF3ZHGGKIPFE4WFE4" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthT3XD7SNUARGUNORPQHJ7WGAA4M" Name="beforeChangeCurrentCell" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="beforeChangeCurrentCell(Lorg.radixware.wps.rwt.Grid.Cell;Lorg.radixware.wps.rwt.Grid.Cell;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="previousCell" Id="mprH2DPQJACBRC6JPLIBDTDT56E6A">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.Grid.Cell"/>
+          </Parameter>
+          <Parameter Name="newCell" Id="mprOMTH7FTDMBG7NP5TFLZOMOPWZI">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.Grid.Cell"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthG2OJNWLUMFD7VCADEJTXVM4VEM" Name="currentCellChanged" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="currentCellChanged(Lorg.radixware.wps.rwt.Grid.Cell;Lorg.radixware.wps.rwt.Grid.Cell;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="previousCell" Id="mprDIDTEUI4PBHTBJ6OBJSQEOPKF4">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.Grid.Cell"/>
+          </Parameter>
+          <Parameter Name="newCell" Id="mprUPNLUSUASRGNZNCX6VG6L3MPL4">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.Grid.Cell"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcRS4KU2OTGFALJAYSRTWALZR2SQ" Name="SelectorTree" Type="3" Environment="web">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.wps.views.selector.tree.RwtSelectorTree"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcRS4KU2OTGFALJAYSRTWALZR2SQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcRS4KU2OTGFALJAYSRTWALZR2SQ"/>
+    </Bodies>
+    <MethodGroup Id="cmg5AQZ2BHPUNHMTPVGVYIVQ6LCDQ" Name="Root"/>
+    <PropertyGroup Id="cpg35RK67MAXJHKHGKW7WQJ3XPFMI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthPX6BV3FU6BEHLAHORYMX6CUZGE" Name="createChildObject" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="createChildObject()Lorg.radixware.kernel.common.client.models.EntityModel;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+      </Method>
+      <Method Id="mthNT7EH2FDPFEXPKSOGO3YCJ66UI" Name="rereadChildrenForCurrentEntity" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="rereadChildrenForCurrentEntity()V"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth7FZENXMNBREX3N7VK4BZO3AYNY" Name="SelectorTree" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.views.ISelector;Lorg.radixware.kernel.common.client.models.GroupModel;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="selector" Id="mprOBXNJSH7FZHLPN3XAHJKQB33Z4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.views.ISelector"/>
+          </Parameter>
+          <Parameter Name="groupModel" Id="mprTENZYZBZFZCX7N6B5PLCWXKAZE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthPJXG6RAPLZEVLBZYXX3CDLRNBQ" Name="getChildEntityModelIcon" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getChildEntityModelIcon(Lorg.radixware.wps.views.selector.tree.SelectorTreeNode;Lorg.radixware.kernel.common.client.models.EntityModel;)Lorg.radixware.kernel.common.client.types.Icon;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parentNode" Id="mprQQWBOETHBRACPB5SUYDVWHZ634">
+            <Type TypeId="400" extStr="org.radixware.wps.views.selector.tree.SelectorTreeNode"/>
+          </Parameter>
+          <Parameter Name="entityModel" Id="mprGFJTFBKL6NDAHPMGBBOAWWNPM4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.types.Icon"/>
+      </Method>
+      <Method Id="mthEKEOCALAJJDJVFUUHFZJR6PJQE" Name="getChildGroupModelSettings" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getChildGroupModelSettings(Lorg.radixware.wps.views.selector.tree.SelectorTreeNode;)Ljava.util.List&lt;Lorg.radixware.wps.views.selector.tree.ChildGroupModelSettings;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parentNode" Id="mpr5TRF3PB2ONCWRJ7TSJHSQQF4XU">
+            <Type TypeId="400" extStr="org.radixware.wps.views.selector.tree.SelectorTreeNode"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.wps.views.selector.tree.ChildGroupModelSettings"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthPMFEJ6FXP5CLXKSOIAW3VEK4NY" Name="createRootNode" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="createRootNode()Lorg.radixware.wps.rwt.tree.Node;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.rwt.tree.Node"/>
+      </Method>
+      <Method Id="mthNJXEC7ET2FDAVKJMHE7MZ6FUFQ" Name="getTitleOfCreateChildObjectAction" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getTitleOfCreateChildObjectAction()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthGGWNQITP6BFH5NPOQPNYVLCW5Y" Name="setTitleOfCreateChildObjectAction" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setTitleOfCreateChildObjectAction(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" Id="mprFOW37DM6URGPRGRTLKW363ZLBA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthMHGD43GMOBCUBJOL3X2DFNC5QM" Name="getTitleOfPasteChildObjectAction" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getTitleOfPasteChildObjectAction()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthKGD2VHPAVVANXKEN2PT6WCX7TI" Name="setTitleOfPasteChildObjectAction" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setTitleOfPasteChildObjectAction(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" Id="mprCP7LKKZRTVGIJKNKC6D4CG24TU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

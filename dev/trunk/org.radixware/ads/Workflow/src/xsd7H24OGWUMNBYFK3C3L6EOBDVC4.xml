@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsd7H24OGWUMNBYFK3C3L6EOBDVC4" Name="ImpExpXsd" TargetNamespace="http://schemas.radixware.org/workflowImpExp.xsd" Environment="common"><xs:schema targetNamespace="http://schemas.radixware.org/workflowImpExp.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:this="http://schemas.radixware.org/workflowImpExp.xsd" xmlns:t="http://schemas.radixware.org/types.xsd" xmlns:rcmn="http://schemas.radixware.org/common.xsd">
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/common.xsd" schemaLocation="common.xsd"/>
+    <xs:complexType name="ProcessType">
+        <xs:complexContent>
+            <xs:extension base="rcmn:ImpExpEntity">
+                <xs:all>
+                    <xs:element name="Guid" type="t:Str"/>
+                    <xs:element name="Title" type="t:Str" nillable="true"/>
+                    <xs:element name="AlgoClassGuid" type="t:Str"/>
+                    <xs:element name="TraceProfile" type="t:Str" minOccurs="0"/>
+                    <xs:element name="AdminRoleGuids" nillable="true" minOccurs="0">
+                        <xs:simpleType>
+                            <xs:list itemType="t:Str"/>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="ClerkRoleGuids" nillable="true" minOccurs="0">
+                        <xs:simpleType>
+                            <xs:list itemType="t:Str"/>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="ProcessStoreDays" type="t:Int"/>
+                    <xs:element name="InstName" type="t:Str" nillable="true" minOccurs="0"/>
+                    <xs:element name="Notes" type="t:Str" nillable="true" minOccurs="0"/>
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="ProcessType" type="this:ProcessType"/>
+    <xs:complexType name="ProcessTypeGroup">
+        <xs:sequence>
+            <xs:element name="Item" type="this:ProcessType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="InstName" type="t:Str" use="optional"/>
+    </xs:complexType>
+    <xs:element name="ProcessTypeGroup" type="this:ProcessTypeGroup"/>
+</xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

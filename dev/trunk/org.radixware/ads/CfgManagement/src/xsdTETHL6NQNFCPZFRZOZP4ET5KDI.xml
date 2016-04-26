@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdTETHL6NQNFCPZFRZOZP4ET5KDI" Name="ImpExpXsd" TargetNamespace="http://schemas.radixware.org/cfgManagement-impExp.xsd" Environment="common"><xs:schema targetNamespace="http://schemas.radixware.org/cfgManagement-impExp.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:this="http://schemas.radixware.org/cfgManagement-impExp.xsd" xmlns:t="http://schemas.radixware.org/types.xsd">
+	<xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+	<xs:complexType name="Item">
+		<xs:sequence>
+			<xs:element name="ObjectPid" type="t:Str" minOccurs="0"/>
+			<xs:element name="ObjectRid" type="t:Str" minOccurs="0"/>
+			<xs:element name="ObjectTitle" type="t:Str" minOccurs="0"/>
+			<xs:element name="Data" type="xs:anyType" minOccurs="0"/>
+			<xs:element name="Children" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Item" type="this:Item" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="Id" type="t:Int" use="required"/>
+		<xs:attribute name="ClassId" type="t:Id" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="Packet">
+		<xs:sequence>
+			<xs:element name="Title" type="t:Str" minOccurs="0"/>
+			<xs:element name="Notes" type="t:Str" minOccurs="0"/>
+			<xs:element name="Item" type="this:Item" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="Id" type="t:Int" use="required"/>
+		<xs:attribute name="DbUrl" type="t:Str" use="required"/>
+		<xs:attribute name="AppVer" type="t:Str" use="required"/>
+		<xs:attribute name="ExpUser" type="t:Str"/>
+		<xs:attribute name="ExpTime" type="t:DateTime" use="required"/>
+		<xs:attribute name="FileName" type="t:Str"/>
+	</xs:complexType>
+	<xs:element name="Packet" type="this:Packet"/>
+</xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

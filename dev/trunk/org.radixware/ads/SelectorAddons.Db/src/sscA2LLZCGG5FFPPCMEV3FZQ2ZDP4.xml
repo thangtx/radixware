@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="sscA2LLZCGG5FFPPCMEV3FZQ2ZDP4" Name="UpdateSeqFieldStmt" Type="9">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="true" PublishedName="org.radixware.kernel.server.types.Statement"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcB4OWISWARFGIZNIIGNOTKGIJGU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc3GZ4LIXAD5HMRC5MDKK2HF7ALY"/>
+    </Bodies>
+    <MethodGroup Id="cmgNLVFNPFOHNEVTNCG6VTQYXDBVY" Name="Root"/>
+    <PropertyGroup Id="cpgGWI6PWC7CJATZGOHR4MW7AE35Y" Name="Root"/>
+    <Properties>
+      <Property Id="prmG4SLZH7CAFC7DFZSR253LHDOQE" Name="parGuid" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmW5QJ5LE5CNEHNET7YHAQZXGUAQ" Name="parNewSeq" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prmANFGNRGQUBAR5PGEHAJCYF7PTM" Name="parUserName" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmZDT4HGGMDBEINBVQQUODP5BISE" Name="parTime" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="12"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="execute" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="parGuid" Id="mprG4SLZH7CAFC7DFZSR253LHDOQE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="parNewSeq" Id="mprW5QJ5LE5CNEHNET7YHAQZXGUAQ">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="parUserName" Id="mprANFGNRGQUBAR5PGEHAJCYF7PTM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="parTime" Id="mprZDT4HGGMDBEINBVQQUODP5BISE">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth_stmt_sendBatch___________" Name="sendBatch" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+      </Method>
+      <Method Id="mth_stmt_setExecuteBatch_____" Name="setExecuteBatch" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="size" Id="mprSize______________________">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>update </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:TableSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+set </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colYNFESMLQLBCGDCKG7FGDPYNPR4" Owner="TABLE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmW5QJ5LE5CNEHNET7YHAQZXGUAQ"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colVTTB5PHSCFG5TAUCLOI27MO5XM" Owner="TABLE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmANFGNRGQUBAR5PGEHAJCYF7PTM"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colTZ42HZBXFFBPVL6P4MTIMOAHQE" Owner="TABLE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmZDT4HGGMDBEINBVQQUODP5BISE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colTOTOEP36JFH35MA7BJYRU67GKU" Owner="TABLE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmG4SLZH7CAFC7DFZSR253LHDOQE"/>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" Alias="addons"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="400" extStr="org.radixware.kernel.server.types.SqlClass"/>
+  </AdsClassDefinition>
+</AdsDefinition>

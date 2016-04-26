@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aic4XUXMXRWTREMHAT5S7SM55XC6A" Name="ISelector" Type="5" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.views.ISelector"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcIPJWSQNI2FAE7HD4MRRKOPYFX4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcSMSCLZ4RFFF4HOPMIOWFH34J4M"/>
+    </Bodies>
+    <MethodGroup Id="cmg3TULVB4BZZGPDJH42YG5M3DBQM" Name="Root"/>
+    <PropertyGroup Id="cpgWMQCXAABSJHIVDXKS6ALYZAJ5U" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthE24M4Y6IQNBJHGHIURIHRVZX5E" Name="isUpdatesEnabled" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isUpdatesEnabled()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth67ZCDKCR3BCE7GAPOECMYYZCNU" Name="setCurrentEntity" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setCurrentEntity(Lorg.radixware.kernel.common.client.models.EntityModel;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="entityModel" Id="mprLTBO3FAI6JEAPCTXRK5YQ646NQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthBMLTTLP55BD77F2V2LQKSCOP2U" Name="addCurrentEntityHandler" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="addCurrentEntityHandler(Lorg.radixware.kernel.common.client.views.ISelector.CurrentEntityHandler;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="handler" Id="mpr3WLHKFTQ6BAT5CWEOLQ7WWT6GU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.views.ISelector.CurrentEntityHandler"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthO2NFV47B4NFJ7A4XU6K2XY3VCY" Name="getGroupModel" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getGroupModel()Lorg.radixware.kernel.common.client.models.GroupModel;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+      </Method>
+      <Method Id="mth3HJDADMRMNCJDNX2O3NN5CHYWU" Name="setSelectorWidget" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setSelectorWidget(Lorg.radixware.kernel.common.client.widgets.selector.ISelectorWidget;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="selectorWidget" Id="mprA3GWARKX2BA45IIN6ASZBXZQGY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.selector.ISelectorWidget"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthPMEUED2MFZGLHHYMQ54UMEZ4HA" Name="getCurrentEntity" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getCurrentEntity()Lorg.radixware.kernel.common.client.models.EntityModel;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+      </Method>
+      <Method Id="mth7AT2QIFIEBAT3JSJJ3JXBMSVDI" Name="canChangeCurrentEntity" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="canChangeCurrentEntity(Z)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="canChange" Id="mpr7KYW6QFIQVCFTM7HBU7ACZBHVI">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthBSFHMH2QCJDV3P2AJKQNQ6CWUM" Name="reread" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="reread(Lorg.radixware.kernel.common.client.types.Pid;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="pid" Id="mprODNKVRTH6ZAVFJQ3GWEP44224A">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.types.Pid"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthCH267L5NQBGQZEZSEE7Q2KXFTE" Name="removeCurrentEntityHandler" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="removeCurrentEntityHandler(Lorg.radixware.kernel.common.client.views.ISelector.CurrentEntityHandler;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="handler" Id="mprCRGVOWAWR5HXXIHPGBQEE3BVV4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.views.ISelector.CurrentEntityHandler"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthYYZIZ5O44RF2PJP2IGWCJ3745E" Name="repaint" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="repaint()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthW3DVRJOFAJH6BPHMGGUASDAD5I" Name="entityRemoved" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="entityRemoved(Lorg.radixware.kernel.common.client.types.Pid;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="pid" Id="mprG6EDL5OLNFAC3GJPDZHQDBCLYI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.types.Pid"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthPHBOKDZNGBDMTANN2WYAPW7O7U" Name="setToolBarHidden" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setToolBarHidden(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="hidden" Id="mprEQAKGNH6JFHI7KFYR6BNFLQGME">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthVFDGCDN3RNDRBDL3CVC4MWR56Y" Name="getActions" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getActions()Lorg.radixware.kernel.common.client.views.ISelector.Actions;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.views.ISelector.Actions"/>
+      </Method>
+      <Method Id="mthDOJ5FNXTFJF6BD6NWHTCAADGZI" Name="getSelectorWidget" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getSelectorWidget()Lorg.radixware.kernel.common.client.widgets.selector.ISelectorWidget;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.widgets.selector.ISelectorWidget"/>
+      </Method>
+      <Method Id="mthMBNTZNNZEBDQPIHT2QK2YCKTYM" Name="refresh" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="refresh()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth4NW4OP3E5RCJNDI7VFXQEDA2VI" Name="leaveCurrentEntity" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="leaveCurrentEntity(Z)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="forced" Id="mprRKXKQ5EWYBAIJJCNYMWJEN4IYE">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthWUGAE7HFYNBYVGAPGWPBHZ5XNY" Name="disable" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="disable()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthZUYPGNSO7BHULN2S5H2JDTHFTM" Name="applyChanges" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="applyChanges()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.client.exceptions.ModelException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthMX6SHCBM6BGEZFMLGAHE3BMXLM" Name="create" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="create()Lorg.radixware.kernel.common.client.models.EntityModel;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthS6I74BFDVJBNTPAPL77EYEMRT4" Name="deleteAll" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="deleteAll()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthQ2VE72J5D5CFZIPS4ZTXANGF74" Name="duplicate" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="duplicate()Lorg.radixware.kernel.common.client.models.EntityModel;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthFWX34DX2MBFHBEIR7CPXCELOS4" Name="insertEntity" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="insertEntity()Lorg.radixware.kernel.common.client.tree.ExplorerItemView;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.tree.ExplorerItemView"/>
+      </Method>
+      <Method Id="mthTERVDPP6BBHEPCLT7RTLTOWWZA" Name="insertEntityWithReplace" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="insertEntityWithReplace()Lorg.radixware.kernel.common.client.tree.ExplorerItemView;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.tree.ExplorerItemView"/>
+      </Method>
+      <Method Id="mthSXBSOD6NGJERBG36EFE7LMURSY" Name="isAutoInsertEnabled" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isAutoInsertEnabled()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthBN4FJQTEQJEZVOHQBTLTTXXUHQ" Name="paste" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="paste()Ljava.util.List&lt;Lorg.radixware.kernel.common.client.models.EntityModel;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthMBUBRQXEDFHF7FVD5LVRRIFCYI" Name="runEditorDialog" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="runEditorDialog()V"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthO7YHPMJN2ZF6FLQ4CELC6BAUZI" Name="setAutoInsertEnabled" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setAutoInsertEnabled(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isEnabled" Id="mpr6WCLU4U37JCFRLCCCM7DOKID7E">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthNSAX6CG3RJD6JFR2EJR3WWPSJE" Name="setCommandBarHidden" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setCommandBarHidden(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isHidden" Id="mpr4D4EGI3LWVG6JETNEEPBDBQO3I">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthW4AY2YQBKZCBLBLQVDJUHXCTDM" Name="setCurrentFilter" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setCurrentFilter(Lorg.radixware.kernel.common.client.models.FilterModel;Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="filter" Id="mprPTCHBCRRXNH2VB6VV7UCF6Z4K4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.FilterModel"/>
+          </Parameter>
+          <Parameter Name="apply" Id="mprTTNGCTHSF5DOPNROGQ55W46Q7U">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth545ZEKIRV5D33EMVPBRONC6HNQ" Name="setEditorToolBarHidden" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setEditorToolBarHidden(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isHidden" Id="mprFTVABB2PINBI3ASYTOVBG2XTXU">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthMCT7AZDTI5GX3DWM4P3MAOSKX4" Name="setEditorCommandBarHidden" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setEditorCommandBarHidden(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isHidden" Id="mprCH45D4HF75AMDOYHKOREXG57SM">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth6ULWLNRMBBAKDDSW5YJ24SOO3E" Name="deleteSelected" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="deleteSelected()Lorg.radixware.kernel.common.client.models.BatchDeleteResult;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.BatchDeleteResult"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth26EHSER4EFF23LXYAP2KVTWLAY" Name="duplicateSelected" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="duplicateSelected()Lorg.radixware.kernel.common.client.views.BatchCopyResult;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.views.BatchCopyResult"/>
+      </Method>
+      <Method Id="mthROAYZIAERZAWVLZJVGPEFO5WFM" Name="blockRedraw" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="blockRedraw()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthQTJMKEC3URD6JGBQM5LP7LBV2I" Name="unblockRedraw" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="unblockRedraw()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthXSUW426KZNFBJHUPVT2NP2GE3I" Name="cancelChanges" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="cancelChanges()V"/>
+        </AccessRules>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

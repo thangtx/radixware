@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcNC7RELKU45EFBK2XRUG6T2L5DE" Name="Hex" DescriptionId="mlsGMYHALDKCZFMJMXGMIH5B5NTHA" Type="3" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.utils.Hex"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc3J4WFRGXCJANNGOJYGJGQZ2HKY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcRL6NCIRAPZG7NPI4UOFOYEK46Y"/>
+    </Bodies>
+    <MethodGroup Id="cmgKGK56OXLOZFUJCWJBFW5FKTWBA" Name="Root"/>
+    <PropertyGroup Id="cpgCNVOZO76PNGLTG5ILRTACVVZTQ" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthZYA6V7D5HFDZXKYBVLHCJKUE5U" Name="decode" DescriptionId="mlsST2ZF4CWQNH67MAWOPWHNYXHOQ" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true">
+          <Transparence Extendable="false" PublishedName="decode(Ljava.lang.String;)[B"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="str" DescriptionId="mls2WHLTJGNXVCTNL46T3COBOWM7M" Id="mprSZPMUHW4S5HODGTA53NHMJDRUI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="byte" Dimension="1" DescriptionId="mlsPG3NO2CH2VFHTIFONLCGRG2BBY"/>
+      </Method>
+      <Method Id="mthLOCUMHMZ5ZDG7NDBYGMWSCLZBU" Name="encode" DescriptionId="mlsWTAL5AFHCNFPHP7LHBJQGNQZIA" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true">
+          <Transparence Extendable="false" PublishedName="encode([B)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="bytes" DescriptionId="mlsMV3DCH3H2RCA7M3EUF55ABBGEI" Id="mprIEB4OE5VGBAAHKTI2PSNKYJRPY">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21" DescriptionId="mlsGHLWC3NF3FAOFKCXQXEZZPI5CI"/>
+      </Method>
+      <Method Id="mthD74X2HFVIZCLVGAD7A5SOGYPXM" Name="isHexDigit" DescriptionId="mls3VG5TNVPVVGT3MDZ7NBHJCOICY" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="isHexDigit(B)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="b" DescriptionId="mlsQWHQQAOJ3ZCMXLTOFBMAH2NQL4" Id="mprXYVJJ3QIEBFS3M2XCQWP652CDI">
+            <Type TypeId="401" extStr="byte"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mls4PPO76TANJH3HMU4P5YJ2J2RLI"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

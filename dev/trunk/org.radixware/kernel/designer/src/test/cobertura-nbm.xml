@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="cobertura-rcp">
+
+    <path id="cobertura.classpath">
+        <fileset dir="${cobertura.dir}">
+            <include name="cobertura.jar" />
+            <include name="lib/**/*.jar" />
+        </fileset>
+    </path>
+
+    <taskdef classpathref="cobertura.classpath" resource="tasks.properties"/>
+
+    <target name="cobertura-init" depends="build-init">
+        <!-- FIXME: this is a patch, but without this setting NB 6 won't compile JUnit tests. -->
+        <!--<property name="test.unit.lib.cp" value="${nbplatform.default.harness.dir}/../java1/modules/ext/junit-4.1.jar"/>-->
+
+        <property name="build.test.cobertura.classes.dir" value="coverage/cobertura/instrumented"/>
+        <property name="cobertura.report.dir" value="coverage/cobertura/report"/>
+        <property name="cobertura.datafile" value="${basedir}/cobertura.ser"/>
+        <property name="continue.after.failing.tests" value="true" />
+
+        <delete file="${cobertura.datafile}" failonerror="false"/>
+        <delete dir="${cobertura.report.dir}" failonerror="false"/>
+
+        <path id="cobertura.test.classpath">
+            <pathelement location="${build.test.cobertura.classes.dir}" />
+            <pathelement location="${cobertura.dir}/cobertura.jar" />
+        </path>
+    </target>
+
+    <target name="cobertura-instrument" depends="cobertura-init, test-build">
+        <delete dir="${build.test.cobertura.classes.dir}" failonerror="false"/>
+        <cobertura-instrument todir="${build.test.cobertura.classes.dir}">
+            <fileset dir="../" includes="**/org/radixware/kernel/designer/**/*.class" excludes="**/org/radixware/kernel/designer/test/**/*.class"/>
+        </cobertura-instrument>
+    </target>
+
+    <target name="test-with-cobertura" depends="cobertura-init,init,test-init,netbeans,test-build">
+        <mkdir dir="${build.test.unit.results.dir}"/>
+        <junit showoutput="true" fork="true" failureproperty="tests.failed" errorproperty="tests.failed" filtertrace="${test.filter.trace}" tempdir="${build.test.unit.results.dir}">
+            <batchtest todir="${build.test.unit.results.dir}">
+                <fileset dir="${build.test.unit.classes.dir}">
+                    <include name="**/*Test.class"/>
+                </fileset>
+            </batchtest>
+<!-- FIX1: don't know how to inject this path in other ways since it must come first -->
+            <classpath refid="cobertura.test.classpath"/>
+            <classpath refid="test.unit.run.cp"/>
+            <syspropertyset refid="test.unit.properties"/>
+            <jvmarg value="-ea"/>
+<!-- FIX2: Without this setting, cobertura tries to create cobertura.ser in / and fails. -->
+<!-- And in any case, we want control where to put it. -->
+            <sysproperty key="net.sourceforge.cobertura.datafile" file="${cobertura.datafile}" />
+            <formatter type="brief" usefile="false"/>
+            <formatter type="xml"/>
+        </junit>
+        <fail if="tests.failed" unless="continue.after.failing.tests">Some tests failed; see details above.</fail>
+    </target>
+
+    <target name="test-coverage" depends="cobertura-init, cobertura-instrument, test-with-cobertura"/>
+
+    <target name="cobertura-coverage-report" depends="test-coverage">
+        <cobertura-report datafile="${cobertura.datafile}" format="xml" srcdir="${src.dir}" destdir="${cobertura.report.dir}"/>
+        <!--<cobertura-report datafile="${cobertura.datafile}" format="html" srcdir="${src.dir}" destdir="${cobertura.report.dir}"/>-->
+        <delete file="${cobertura.datafile}"/>
+    </target>
+
+</project>

@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcDMXY2ZHCMZGYNBDQNMEQ33TYAA" Name="UserQueryParameters" Type="3" Environment="explorer">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcHN5KLYT7LZDGTFUGSKRYZIYYQE">
+        <xsc:Item>
+          <xsc:Java>import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
+</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcZMXGQRTC7FFDDKDYOSDUMNLFXY"/>
+    </Bodies>
+    <MethodGroup Id="cmg2U4CJOKAAFFLTHT7ON2YCUMZ3A" Name="Root"/>
+    <PropertyGroup Id="cpgMYF2U6YNYNCEHB2ZFNQZYJK23U" Name="Root"/>
+    <Properties>
+      <Property Id="prd23Y6SJELMJAI5P7IQQS4NBE2WE" Name="paramList" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="aicIE3EW6PV3NH7VELFM2GPPPFESQ"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </Type>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthCP6652GOE5E2FI5SCRPQRABKWU" Name="size" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="401" extStr="int"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDMXY2ZHCMZGYNBDQNMEQ33TYAA prd23Y6SJELMJAI5P7IQQS4NBE2WE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.size();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth2XGEZW4FPNHTHK7HJJNUAFXKPU" Name="addParameter" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="parameter" Id="mpr2G7XWFWSRNAVJLKTTMCBJIGTMU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlModifiableParameter"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return -1;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthFAPS6AOVLNCRXL7IG55JIGY5UA" Name="createNewParameter" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="environment" Id="mprAVDENIIYOZBQXB4GXWPEQRT7FM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parentWidget" Id="mprBIXJ52W3ZZHYBC7T3U5SDWEKQM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IWidget"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlModifiableParameter"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth56WOR4M4RZCVHHQIKZTI42IU3U" Name="get" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="index" Id="mprH3VFV6XYXFD4LAD66DELTIGVKQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlParameter"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDMXY2ZHCMZGYNBDQNMEQ33TYAA prd23Y6SJELMJAI5P7IQQS4NBE2WE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.get(index);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth76P2EFMW4ZGV3I5WHLIVPEJ3TA" Name="getAll" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlParameter"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDMXY2ZHCMZGYNBDQNMEQ33TYAA prd23Y6SJELMJAI5P7IQQS4NBE2WE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthC3UBLAOK4RGXZG4OU7DKG75QGQ" Name="getParameterById" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="paramId" Id="mprIUTOZA57DZEHRA3BMMJAS43AGE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlParameter"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>for(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicIE3EW6PV3NH7VELFM2GPPPFESQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> parameter : </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDMXY2ZHCMZGYNBDQNMEQ33TYAA prd23Y6SJELMJAI5P7IQQS4NBE2WE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+    if(parameter.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aic7KKGRHXJ6RC6NGITQO57QCZ2AY mth2EKZYTTCQZHMDJNXLFW6TBOS2U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().equals(paramId)) {
+        return parameter;
+    }
+}
+return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthBDCDUXEA2NAG5ALWINPOQ36X3A" Name="openParameterEditor" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="environment" Id="mprV6KCP4ARR5FJFL74LBI5HWVGNI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parameter" Id="mprJQ6QHHK65NG2RCMV4KNPWZLRTM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlParameter"/>
+          </Parameter>
+          <Parameter Name="isReadOnly" Id="mpr4HLS2CCP6BBRPG34YXJHGAK5SM">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="parentWidget" Id="mprS5O5ELQAQJECHNZCH6YDX3LEFU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IWidget"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.views.IDialog.DialogResult"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthC22NS4A73ZGUTGY7UIDOCMOQEY" Name="removeParameter" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="index" Id="mprBBGZEHPJ3NFARCQOKREHSOKV6I">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return false;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthLBRTLWH6ARBBBJHEISY236IRG4" Name="UserQueryParameters" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>List&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicIE3EW6PV3NH7VELFM2GPPPFESQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> parameters = new ArrayList&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicIE3EW6PV3NH7VELFM2GPPPFESQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();
+parameters.add(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc7JSGIXCENJDWHA5Q34KCSU2CCM mthCOCWXNBY3BAIBOPKRN7ZMHSTJA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acs563QRZVDBBFOJIHDROPZ6NROWQ aci4B35LNXOUFCMRC3TKPPODMMACU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciTN7UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, "metricId"));
+parameters.add(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc7JSGIXCENJDWHA5Q34KCSU2CCM mthCOCWXNBY3BAIBOPKRN7ZMHSTJA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acs563QRZVDBBFOJIHDROPZ6NROWQ aciHOJ7COZO4ZGQHAPJRJV2KZIJ3M" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciTJ7UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, "begTime"));
+parameters.add(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc7JSGIXCENJDWHA5Q34KCSU2CCM mthCOCWXNBY3BAIBOPKRN7ZMHSTJA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acs563QRZVDBBFOJIHDROPZ6NROWQ aciC3NWY5INJVBYRJZM7GAJYDPWNI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciTJ7UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, "endTime"));
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDMXY2ZHCMZGYNBDQNMEQ33TYAA prd23Y6SJELMJAI5P7IQQS4NBE2WE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = Collections.unmodifiableList(parameters);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth7SAS6S3WBRD6VAVLZ45NZGFNZM" Name="swapParameters" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="x" Id="mprP4STF4O5ENFOLFWIPN5LEATCWY">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="y" Id="mprYVX267ENOVCANCMTZW3BXE5R5A">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return false;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthWNDIL2JLY5CVZJOPADHUANEZAE" Name="isReadonly" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return true;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Implements>
+      <Interface TypeId="411" Path="aic7OWB7GQDAZAGFGO6XZK2SCXMBQ"/>
+    </Implements>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcJY23D47GDFBFTLU26GY5RGU7KY" Name="DialogModel" Type="3" Environment="common-client">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.models.DialogModel"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcVZD4NN6RU5CD5EMAN3J7LR5AUU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcKQ5XUMUN2ZDOJLXCNG32CLXSA4"/>
+    </Bodies>
+    <MethodGroup Id="cmgP5UMV5XKQRGXNK632DXOSG67RM" Name="Root"/>
+    <PropertyGroup Id="cpgKTTH6MXNIRG6JD2PFI4ZO2ZGBI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth4M65I3622ZBMBBDAP4MQETM4AY" Name="DialogModel" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.client.views.ICustomDialog;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprFIORRH3YZNBYBBSCYRMRPUXUXY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="dialog" Id="mprUVXNU3GLEVH4BO6DWUV2JAJPHA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.views.ICustomDialog"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthM7MITE3RHVF77LRWY7RCQJUPWM" Name="getDialogContext" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getDialogContext()Lorg.radixware.kernel.common.client.models.IContext.Dialog;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.IContext.Dialog"/>
+      </Method>
+      <Method Id="mthKFPFBBN2DBA73E6LCUFCLDLB6Q" Name="getDialogView" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getDialogView()Lorg.radixware.kernel.common.client.views.IDialog;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.views.IDialog"/>
+      </Method>
+      <Method Id="mthLPH424JJSFHA3LTQF2HIUYTNNM" Name="beforeCloseDialog" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="beforeCloseDialog(Lorg.radixware.kernel.common.client.views.IDialog.DialogResult;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="result" Id="mprNEPLGHAKNNFEVJS2DVEOVN72PM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.views.IDialog.DialogResult"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth7EFAYV56HBHZTJRSCD227GZ2ZA" Name="acceptDialog" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="acceptDialog()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthYEMLDE62GNCTVNB2L3I2YFWHF4" Name="rejectDialog" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="rejectDialog()V"/>
+        </AccessRules>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

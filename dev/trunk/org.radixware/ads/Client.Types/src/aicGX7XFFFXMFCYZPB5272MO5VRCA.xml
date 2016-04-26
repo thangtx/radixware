@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicGX7XFFFXMFCYZPB5272MO5VRCA" Name="IWidget" Type="5" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.widgets.IWidget"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcMS4JOSG2JZGDPKSOTY3SKS43HQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcMFOZSSDOABDMJPDXGVJ3JNJFTI"/>
+    </Bodies>
+    <MethodGroup Id="cmg4667DNWANJE73GDGMWSDZYJ5TE" Name="Root"/>
+    <PropertyGroup Id="cpgWGRVINDTQRDUBGW2DCQKNULVEM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthR6D4CAPDNFFLNOIN7MCCDGWPJM" Name="height" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="height()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthX3DJEW45MVCLHEVDMVQK3N4HTY" Name="width" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="width()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthOLYZBPAYGJBDNLAW42YSMPW6E4" Name="findChild" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="findChild(Ljava.lang.Class&lt;*>;Ljava.lang.String;)Ljava.lang.Object;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="childClass" Id="mpr3A4R2DJAWNE3ZCVPWEHTPIXS6M">
+            <Type TypeId="400" extStr="java.lang.Class">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?"/>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="childObjectName" Id="mprSA5SFAHRPZCGFLBLI6FVEOB5XY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+      </Method>
+      <Method Id="mthBIL4ITXF6BEDFIAW4QN2HV3TSQ" Name="startTimer" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="startTimer(Lorg.radixware.kernel.common.client.widgets.TimerEventHandler;)Lorg.radixware.kernel.common.client.widgets.IPeriodicalTask;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="handler" Id="mprAUTLNQGTHND3LPABFZVTDX5ZNE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.TimerEventHandler"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IPeriodicalTask"/>
+      </Method>
+      <Method Id="mthNPFGZFZQGRGONH34OMPVOSGVHE" Name="isDisposed" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="isDisposed()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthUNH425WLDRCV7KQBZ7UZKNX6GU" Name="isEnabled" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="isEnabled()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthCDJRM3G6NVA7BJSLJ2IQITC53M" Name="killTimer" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="killTimer(Lorg.radixware.kernel.common.client.widgets.IPeriodicalTask;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="task" Id="mprAXI5FCY6PFAXTAP72FDQOJNNFE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IPeriodicalTask"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthTLXT5MDETFFKPGI6CWMWYMZNXA" Name="setEnabled" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setEnabled(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="enabled" Id="mprN4AQHX3LVFGDNKIFKK7XWZPC2E">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthITOA3OVRZBCRTPUC5IY27PHISY" Name="setToolTip" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setToolTip(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="toolTip" Id="mpr36J5FWJ5C5BMNCBJYKQNWKOZRU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

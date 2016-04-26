@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclOHGQF6ZXEZEURCRKRHCBXC3K4Q" Name="ReportPub.WfForm" Type="2">
+    <AccessRules/>
+    <Headers>
+      <Src Name="HeaderadcWFW4EBDBERDTFMQDZDJUIXJSVA"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcHFABOPD7VZA6ZLAN75LL2TKCRA"/>
+    </Bodies>
+    <MethodGroup Id="cmgZ4GANSWNQZEMFFHVLL5RGEJ2CQ" Name="Root"/>
+    <PropertyGroup Id="cpgM5GCKDPICVGD5DH3NJXH3OP6YY" Name="Root"/>
+    <Properties>
+      <Property Id="pruHVEQIXJM2BBJ7G7PG4XPKWFONE" Name="condition" Nature="1" IsConst="false" InitializationPolicy="1" IsOverride="false" SuppressedWarnings="2003">
+        <AccessRules/>
+        <Type TypeId="32" Path="aclTSIK4SF3OJFC3IGIQZMXM2DKY4"/>
+        <Presentation TitleId="mlsPNK4KROG3VEOLBB2RRZUIADP4I" InheritanceMask="4">
+          <Editing EditEnvironment="explorer" IsDuplicatesEnabled="true" ObjectEditorPresentationIdList="epr7IKMB24XZHOBDCMTAALOMT5GDM"/>
+          <Object CreationEditorPresentationIds="epr7IKMB24XZHOBDCMTAALOMT5GDM"/>
+        </Presentation>
+      </Property>
+      <Property Id="pru3K335F5DVNCQDPHOO7VMBY3XKQ" Name="preExecFunc" Nature="1" IsConst="false" InitializationPolicy="1" IsOverride="false" SuppressedWarnings="2003">
+        <AccessRules/>
+        <Type TypeId="32" Path="aclTSIK4SF3OJFC3IGIQZMXM2DKY4"/>
+        <Presentation TitleId="mlsY3OPC7OMDJHXLIGFHR5I6HUMTM" InheritanceMask="4">
+          <Editing EditEnvironment="explorer" IsDuplicatesEnabled="true" ObjectEditorPresentationIdList="epr7IKMB24XZHOBDCMTAALOMT5GDM"/>
+          <Object CreationEditorPresentationIds="epr7IKMB24XZHOBDCMTAALOMT5GDM"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthHR2SSO3ZF5D5FC5YCVP3AP5YPA" Name="check" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="contextObject" Id="mpr6MTTU5QVEVA4XKITTK4TWJ4QHQ">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="isPreExecCheck" Id="mprTGJQUJCOUBGX5DHPBRQX3BRP5Q">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecVP66JC4HXLNRDF5JABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> form = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecVP66JC4HXLNRDF5JABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)contextObject; // before - to check type (throw ClassCastException if required)
+if (!isPreExecCheck)
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclOHGQF6ZXEZEURCRKRHCBXC3K4Q pruHVEQIXJM2BBJ7G7PG4XPKWFONE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null || </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclOHGQF6ZXEZEURCRKRHCBXC3K4Q pruHVEQIXJM2BBJ7G7PG4XPKWFONE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclTSIK4SF3OJFC3IGIQZMXM2DKY4 mthZQDJDMGGUZHABOMKLIXT3H4J5U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(form, this);
+else 
+    if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclOHGQF6ZXEZEURCRKRHCBXC3K4Q pru3K335F5DVNCQDPHOO7VMBY3XKQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null &amp;&amp; !</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclOHGQF6ZXEZEURCRKRHCBXC3K4Q pru3K335F5DVNCQDPHOO7VMBY3XKQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclTSIK4SF3OJFC3IGIQZMXM2DKY4 mthZQDJDMGGUZHABOMKLIXT3H4J5U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(form, this))
+        throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc5LUISDZ63BEF7O6K6AOQJQLKSA mthUQWZDXH3VZAMTGF3W7T33X7CTE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsCRB4QOQAIVB5JEOP54CYARDFII"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    else
+        return true;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthU2QN6PMEORASHGRBEXZDXVR2JI" Name="getContextObjectClassId" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecVP66JC4HXLNRDF5JABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblUNC67IF5OBCX7NOPNLQOCUG374"/>
+    <Presentations ObjectTitleId="mlsYXQKUKUSDBBXNEUEPFNYYSCEKA">
+      <ClassCatalogs>
+        <ClassCatalog Id="eccT4QYI4WWYZCK5LWBE3U565SQMU" Name="Form">
+          <ClassRef Order="10.0"/>
+        </ClassCatalog>
+      </ClassCatalogs>
+      <EditorPresentations>
+        <EditorPresentation Id="eprQML625S7W5CE5MZWJVD36BQJXI" Name="General" BasePresentationId="eprFP5NARHOA5E7LNMKWHBCS5Y3FM" InheritanceMask="36016" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprFP5NARHOA5E7LNMKWHBCS5Y3FM">
+          <AccessRules IsPublished="false"/>
+          <ChildExplorerItems/>
+          <EditorPages>
+            <Page Id="epgA4JVIX47OFEH5NN2N6O7WB7R6I" Name="Common" TitleId="mlsNIF4KM54MZBKBBZ3TAONAOTSDE" Type="1" IconId="imgZV433DCBJRFDTFK7PCI7ZJURGU">
+              <Properties>
+                <Property Id="col5Z77DJW25NE3NOMCZ6G7JSIGSQ" Row="0" Column="0"/>
+                <Property Id="colKRIJCTPH4BBTJACPINFNMGHFOU" Row="1" Column="0"/>
+                <Property Id="colXU7SJ5KBINF27AV7GLWZLCIO4E" Row="4" Column="0"/>
+                <Property Id="colNCCJD67UNVD4LM7B3IKHJPER5Y" Row="6" Column="0"/>
+                <Property Id="colLOAH3AWYW5DLBHJSUCBMFDJEHY" Row="7" Column="0"/>
+                <Property Id="colX5QBHA4M3NABRLT52FMFOWQVYQ" Row="10" Column="0"/>
+                <Property Id="prdQ5NFR5GNJNA7BMUCQG7VVJHGGQ" Row="11" Column="0"/>
+                <Property Id="colGPFZICKAKZCNXCW7XNDNUCERJM" Row="2" Column="0"/>
+                <Property Id="prd3CGHHRLW55CQJNQJXE6DBUPWQY" Row="3" Column="0"/>
+                <Property Id="prdFD67H7DF35E6DHJIDDOFGPQD4E" Row="5" Column="0"/>
+                <Property Id="colVP3HR4T4VRDJXE2SQKI3CUOSJI" Row="12" Column="0"/>
+                <Property Id="pruHVEQIXJM2BBJ7G7PG4XPKWFONE" Row="8" Column="0"/>
+                <Property Id="pru3K335F5DVNCQDPHOO7VMBY3XKQ" Row="9" Column="0"/>
+              </Properties>
+            </Page>
+            <PageOrder>
+              <Item PageId="epgA4JVIX47OFEH5NN2N6O7WB7R6I" Level="1"/>
+              <Item PageId="epg3E4TYYDJNJCVHGUXVRIA3SM6VQ" Level="1"/>
+            </PageOrder>
+          </EditorPages>
+          <ObjectTitleFormat Id="etfGTNV5RLRGVHRVENPAYC6FHEQII"/>
+        </EditorPresentation>
+      </EditorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="aecUNC67IF5OBCX7NOPNLQOCUG374"/>
+  </AdsClassDefinition>
+</AdsDefinition>

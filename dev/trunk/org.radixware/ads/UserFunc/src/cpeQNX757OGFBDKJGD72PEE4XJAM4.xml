@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" xmlns:edit="http://schemas.radixware.org/editmask.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsCustomPropEditorDefinition Id="cpeQNX757OGFBDKJGD72PEE4XJAM4" Name="LibFuncNameEditor">
+    <AccessRules IsPublished="false"/>
+    <ui:ui>
+      <ui:widget name="PropEditorDialog" id="wdgUJNO5KUTJZGHTHTICUSW2B7QNQ" class="cpeQNX757OGFBDKJGD72PEE4XJAM4" weight="0.0">
+        <ui:property name="geometry">
+          <ui:rect>
+            <ui:x>0</ui:x>
+            <ui:y>0</ui:y>
+            <ui:width>373</ui:width>
+            <ui:height>124</ui:height>
+          </ui:rect>
+        </ui:property>
+        <ui:layout class="QGridLayout" name="gridLayout">
+          <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+            <ui:widget name="namePropTitle" id="wdgRH3XXM4B2VAL3BDMH3JLV3FGVU" class="org.radixware.kernel.explorer.widgets.PropLabel" weight="0.0">
+              <ui:property name="property">
+                <ui:propertyRef>prdBSFNJHGZUNEY5LMPJHOTJTDWCM</ui:propertyRef>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>namePropTitle</ui:string>
+              </ui:property>
+            </ui:widget>
+          </ui:item>
+          <ui:item column="1" row="0" colSpan="1" rowSpan="1">
+            <ui:widget name="namePropEditor" id="wdgHUTY3J6Y7NFK7DVV3JOJHLL5AQ" class="org.radixware.kernel.explorer.widgets.propeditors.PropEditor" weight="0.0">
+              <ui:property name="property">
+                <ui:propertyRef>prdBSFNJHGZUNEY5LMPJHOTJTDWCM</ui:propertyRef>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>namePropEditor</ui:string>
+              </ui:property>
+            </ui:widget>
+          </ui:item>
+          <ui:item column="1" row="1" colSpan="1" rowSpan="1">
+            <ui:spacer name="spacer">
+              <ui:property name="orientation">
+                <ui:enum>com.trolltech.qt.core.Qt.Orientation.Vertical</ui:enum>
+              </ui:property>
+              <ui:property name="sizeHint">
+                <ui:size>
+                  <ui:width>20</ui:width>
+                  <ui:height>40</ui:height>
+                </ui:size>
+              </ui:property>
+            </ui:spacer>
+          </ui:item>
+          <ui:item column="0" row="2" colSpan="2" rowSpan="1">
+            <ui:widget name="buttonBox" id="wdg3EI7YFHSUJBUBHATAK3URAGMC4" class="QDialogButtonBox" weight="0.0">
+              <ui:property name="standardButtons">
+                <ui:set>org.radixware.kernel.common.enums.EDialogButtonType.OK | org.radixware.kernel.common.enums.EDialogButtonType.CANCEL</ui:set>
+              </ui:property>
+              <ui:property name="autoConnectRejectSignal">
+                <ui:bool>true</ui:bool>
+              </ui:property>
+            </ui:widget>
+          </ui:item>
+        </ui:layout>
+      </ui:widget>
+      <ui:connections>
+        <ui:connection>
+          <ui:sender>wdgUJNO5KUTJZGHTHTICUSW2B7QNQ</ui:sender>
+          <ui:signal>opened(com.trolltech.qt.gui.QWidget widget)</ui:signal>
+          <ui:slot>mthFPPPB3BWLZBYZPKJ2B3TS4H234</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdg3EI7YFHSUJBUBHATAK3URAGMC4</ui:sender>
+          <ui:signal>accepted()</ui:signal>
+          <ui:slot>mthQ3O44UN3TVF7XO6OZK65IXPYX4</ui:slot>
+        </ui:connection>
+      </ui:connections>
+    </ui:ui>
+    <EmbeddedModel Id="armQNX757OGFBDKJGD72PEE4XJAM4" Name="LibFuncNameEditor:Model" Type="17">
+      <AccessRules IsPublished="false"/>
+      <Headers>
+        <Src Name="HeaderarmQNX757OGFBDKJGD72PEE4XJAM4"/>
+      </Headers>
+      <Bodies>
+        <Src Name="BodyarmQNX757OGFBDKJGD72PEE4XJAM4"/>
+      </Bodies>
+      <MethodGroup Id="cmg26U4QUFFDFFF5KS4VY42HVKL6Q" Name="Root"/>
+      <PropertyGroup Id="cpgP6ZQVKTLGFEEHPHQKYW2Y5LVWQ" Name="Root"/>
+      <Properties>
+        <Property Id="prdBSFNJHGZUNEY5LMPJHOTJTDWCM" Name="name" Nature="8" IsConst="false" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="21"/>
+          <DependentItems/>
+          <EmbeddedProperty Id="prdBSFNJHGZUNEY5LMPJHOTJTDWCM" Name="name" Nature="2" IsConst="false">
+            <AccessRules IsPublished="false"/>
+            <Type TypeId="21"/>
+            <Presentation TitleId="mls63GOL7GR7ZCCTJFIHJPHE26HFU" InheritanceMask="4">
+              <Editing NotNull="true" IsDuplicatesEnabled="true">
+                <EditMask>
+                  <edit:Str IsPassword="false" MaxLength="300" ValidatorType="3" Mask="[a-zA-Z_$][a-zA-Z0-9_$]*" CaseSensitive="false"/>
+                </EditMask>
+              </Editing>
+            </Presentation>
+          </EmbeddedProperty>
+        </Property>
+      </Properties>
+      <Methods>
+        <Method Id="mthFPPPB3BWLZBYZPKJ2B3TS4H234" Name="PropEditorDialog_opened" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="widget" Id="mprMJJGOLREYFHEHHAGYMECPIQBGA">
+              <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeQNX757OGFBDKJGD72PEE4XJAM4 armQNX757OGFBDKJGD72PEE4XJAM4 prdBSFNJHGZUNEY5LMPJHOTJTDWCM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthZBTI63XF4RBXJJXOH54ZV3GT6I" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcIGHXUXORMFFNXGVBAEOQKN3Q6Y mth7UWTWB24FVASZBR3RCXXWXC4PU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthLSANOBLXINHNPFDVOGRUZDVNV4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>());</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthQ3O44UN3TVF7XO6OZK65IXPYX4" Name="buttonBox_accepted" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthULTTDBUUKZHFBNXQNYAFBN3SLU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+this.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcIGHXUXORMFFNXGVBAEOQKN3Q6Y mth7UWTWB24FVASZBR3RCXXWXC4PU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthZBTI63XF4RBXJJXOH54ZV3GT6I" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeQNX757OGFBDKJGD72PEE4XJAM4 armQNX757OGFBDKJGD72PEE4XJAM4 prdBSFNJHGZUNEY5LMPJHOTJTDWCM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthLSANOBLXINHNPFDVOGRUZDVNV4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>());
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mth7EFAYV56HBHZTJRSCD227GZ2ZA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+      </Methods>
+    </EmbeddedModel>
+  </AdsCustomPropEditorDefinition>
+</AdsDefinition>

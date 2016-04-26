@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcALSUNAYZOBBUXDIUQ7JWYGWAC4" Name="AbstractArrayEditor" Type="3" Environment="explorer">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.explorer.editors.AbstractArrayEditor"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcBBJDQCI7KVD6NEDF7UBN333JUU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcW3UQ4ISGSFCTXH3IPTVSLXVJI4"/>
+    </Bodies>
+    <MethodGroup Id="cmg2IJP3ZGBE5D2HGPUODDEUTH23A" Name="Root"/>
+    <PropertyGroup Id="cpgZME7NV3UTNFCJDOLD5KZMXZRFI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth4AHWGLL2KZCOJFDHJRQERVDU7Y" Name="setMandatory" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setMandatory(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isMandatory" Id="mpr35YDLOQVSRCH5I2N7KV5NU44PU">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthMQMKTLXY3NC6LDWTXZCSKRMMQQ" Name="inEditState" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="inEditState()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth2W5ICAOAY5ETFM76OTRHFTGVMU" Name="createNewItems" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="createNewItems()Ljava.util.List&lt;Lcom.trolltech.qt.gui.QTableWidgetItem;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="com.trolltech.qt.gui.QTableWidgetItem"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthPUKERP7ZRNCPJEJZG3T3GJAAL4" Name="isReadonly" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isReadonly()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthTDP4DPGRYBD4ZINJGPDEU737MY" Name="setItemMoveMode" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setItemMoveMode(Lorg.radixware.kernel.explorer.editors.AbstractArrayEditor.EItemMoveMode;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="moveMode" Id="mprMADE3YES4VDFZKINRTQSPJMQCM">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.editors.AbstractArrayEditor.EItemMoveMode"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthONUVXDHP3JCL3M5JQGXFQRXD4Q" Name="AbstractArrayEditor" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Lcom.trolltech.qt.gui.QWidget;ZZZ)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprORN3RTQBERAUJEVGLONGXY6URA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parent" Id="mprCBNHNAQICVGSZODBRNNO5BY7II">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+          <Parameter Name="readonly" Id="mprCJC537U76FCXXJ5FXW7MFAS36Q">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="mandatory" Id="mprQZLKXAQ3KRHTLEQ2MRHRD54EGI">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="duplicatesAllowed" Id="mpr2T6TAB4AORBU7DLICTAAMHJ4VA">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthC3H5FLUOC5FVPA36J57MEXWLRQ" Name="getItemMoveMode" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getItemMoveMode()Lorg.radixware.kernel.explorer.editors.AbstractArrayEditor.EItemMoveMode;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.editors.AbstractArrayEditor.EItemMoveMode"/>
+      </Method>
+      <Method Id="mthSCHFIDE26NHHHOCHGNIINCYWJE" Name="isDuplicatesEnabled" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isDuplicatesEnabled()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth35B3BVCVERDJHKXCJRPMISWBYQ" Name="onKeyEvent" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="onKeyEvent(Lcom.trolltech.qt.gui.QKeyEvent;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="event" Id="mprJGH72GFGRFCAFC4C62SEFDLPB4">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QKeyEvent"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthXN3TEHZS2JETPDUJJHOFBXPJ3A" Name="getValues" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getValues(I)Ljava.util.List&lt;Ljava.lang.Object;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="exceptItem" Id="mpr2TMWNW733BE6NOZZ2YW6G33WIQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthDXDPHV6WQNF4PCT4TOK3BKUCHQ" Name="swapItems" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="swapItems(II)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="i" Id="mpr3PESQLXIBNHN5HA4ZSPTTFOETU">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="j" Id="mprIPQS6O4SVNGLBPEZMJNWQPSGCU">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthLPY4W2R3MFHGLI4TJ5LR3JE5MQ" Name="AbstractArrayEditor" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Lcom.trolltech.qt.gui.QWidget;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprIK5WD6LCWRALBCIL63EXPJTCAM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parent" Id="mpr3J64YVIWERFTXCC7JEBTORLIXQ">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthTGOLGDV3QZAV5CL7ADKA35NQ6Y" Name="getItemFlags" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getItemFlags()Lcom.trolltech.qt.core.Qt.ItemFlags;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.core.Qt.ItemFlags"/>
+      </Method>
+      <Method Id="mthMQ5AE7TQR5DVRM6ADW5UHYHOVY" Name="getValue" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getValue()Ljava.util.ArrayList;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.ArrayList"/>
+      </Method>
+      <Method Id="mth73ORNDVSDBF3VC3KGYJHKSGBRQ" Name="isMandatory" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isMandatory()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthXPZSCGAUCBEDZC4A2QWDWDZWS4" Name="finishEdit" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="finishEdit()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth66DNPEDBU5FZ7K6XPKJIZYQXCI" Name="updateItemPrototype" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="updateItemPrototype()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthQC7R363IEZE7FINN64LDUTVRJE" Name="setReadonly" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setReadonly(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="readonly" Id="mprXTYPXMLN55ETLMDJ6E7RO3BWUQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthD53HFBCTY5DLTFCK464646GMHM" Name="setDuplicatesEnabled" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setDuplicatesEnabled(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isEnabled" Id="mprVBMYJAZDNJCOTNBIHRWZSD5OBU">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthOZ3AKJGUMFCRXIQPJ3TPPZBASI" Name="getItem" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getItem(I)Lcom.trolltech.qt.gui.QTableWidgetItem;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mprYNQSDA2VFNGNROA6DQQ67GPNYE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QTableWidgetItem"/>
+      </Method>
+      <Method Id="mthSZHM6PR745C45PGWISX446LW5A" Name="onDataChanged" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="onDataChanged(Lcom.trolltech.qt.gui.QTableWidgetItem;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="item" Id="mprQSFZ6JUOCJG27GYMEAB5DCA3HY">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QTableWidgetItem"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthPZ522CP2KNH2XGX2QGZJQELN4M" Name="onCurrentItemChanged" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="onCurrentItemChanged(Lcom.trolltech.qt.gui.QTableWidgetItem;Lcom.trolltech.qt.gui.QTableWidgetItem;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="item1" Id="mprXODQHCLEX5DJ3DP73YUIJI6WIE">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QTableWidgetItem"/>
+          </Parameter>
+          <Parameter Name="item2" Id="mprIIPOCIY6VZENDHDJ6MUWSIXUKQ">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QTableWidgetItem"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthBOCBQE33FFHF3DHVVKFCGUHR24" Name="getCurrentItem" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getCurrentItem()Lcom.trolltech.qt.gui.QTableWidgetItem;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QTableWidgetItem"/>
+      </Method>
+      <Method Id="mthXDG7QRA4ZJCRNMHQSQFBC4T7QY" Name="createItemForValue" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="createItemForValue(Ljava.lang.Object;)Lcom.trolltech.qt.gui.QTableWidgetItem;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="value" Id="mprEIMQ2NXVWFFZNA4W67JETFPGYI">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QTableWidgetItem"/>
+      </Method>
+      <Method Id="mth4ARAW55S7VDPXAOVAJEFDNBRXQ" Name="setValue" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setValue(Ljava.util.ArrayList;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="value" Id="mprPYSMIJUPYFC6HDYBXY5GF7EO2I">
+            <Type TypeId="400" extStr="java.util.ArrayList"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth5UJPBRZJCJA6FGQR2TGX3YGHSQ" Name="currentValueIsNull" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="currentValueIsNull()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthKP2P6YDDZBG3NJ6F6VNPTZTQWQ" Name="updateValueForItem" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="updateValueForItem(Lcom.trolltech.qt.gui.QTableWidgetItem;Ljava.lang.Object;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="item" Id="mprAH6Y5ISVPFD55F2LEP2H5YWO6M">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QTableWidgetItem"/>
+          </Parameter>
+          <Parameter Name="newValue" Id="mpr73DPJ4MFXFBHNNHLJPE7X3RV3U">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth7DXUSSUHWZFMTJCUVFAZHRHCRA" Name="getValueForItem" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getValueForItem(Lcom.trolltech.qt.gui.QTableWidgetItem;)Ljava.lang.Object;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="item" Id="mprZRGL3EQCQBHTLL2C2CBGWKVFPQ">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QTableWidgetItem"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+      </Method>
+      <Method Id="mthEFZJE7ZJHNHVVBK4NFABYRAMB4" Name="setDelegate" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setDelegate(Lcom.trolltech.qt.gui.QItemDelegate;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="delegate" Id="mprXRXTWHRSARD4RNQ5E7EA4TF6XU">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QItemDelegate"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthE4HXSC54DBBDVHGGQC6XQ3ZFHU" Name="getSelectedValue" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getSelectedValue()Ljava.lang.Object;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+      </Method>
+      <Method Id="mthFKA4PCS25VHF5K3LUCZWHERDRE" Name="isEmpty" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isEmpty()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthZNK3JBKQBZHYNK57TZ45ZZGGQI" Name="setOperationsVisible" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setOperationsVisible(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isVisible" Id="mprXXYEFLN3ZJD4TBSYTT52LQKMQQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth3M6MAPDUKZHGTNQ5FME5SDFNNA" Name="checkForDuplicates" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="checkForDuplicates()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth2IN2ZQFWPFAWNK7SGM6S2NROLY" Name="isItemMandatory" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isItemMandatory()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthBBRQC7XZ7ZGVHKFWRGYXJARTKA" Name="setItemMandatory" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setItemMandatory(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isMandatory" Id="mprVCYAHIDBOZEBXMFTJHFSAOZYGY">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthSR44AB5SYFFRVCOXU64M5HTBYE" Name="closeEditor" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="closeEditor()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthBZRUHFHPXVGCLMQDBZ6FV6B2XA" Name="getNoValueStr" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getNoValueStr()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthTZ7YF7IXSNDWBEU2VFBIADHXEI" Name="getToolButtonForAction" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getToolButtonForAction(Lcom.trolltech.qt.gui.QAction;)Lcom.trolltech.qt.gui.QToolButton;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="action" Id="mprHY3EJU33SBHXPMTKRTFYOKCLLM">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QAction"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QToolButton"/>
+      </Method>
+      <Method Id="mthFOF7N6TBXBCBZNYRBOK7G2ZFE4" Name="insertNewItems" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="insertNewItems(Ljava.util.List&lt;Lcom.trolltech.qt.gui.QTableWidgetItem;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="newItems" Id="mprNRR2JRDDRBDMXD7BCFBN43ZMBA">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="com.trolltech.qt.gui.QTableWidgetItem"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthFZFLR3NHXFEODGTAJ7M72PGU6Q" Name="insertToolButton" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="insertToolButton(Lcom.trolltech.qt.gui.QToolButton;I)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="button" Id="mprJPL4JO7V5ZHJNBNWPQV3J7KUOM">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QToolButton"/>
+          </Parameter>
+          <Parameter Name="index" Id="mprCKFX7NCHF5HGXOR246QCZ2Y23U">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsWebCustomDialogDefinition Id="cdlFKOTINSS65AOJMIHU44ZUFZDPE" Name="DashConfigCreateNewWebDialog">
+    <AccessRules IsPublished="false"/>
+    <ui:ui>
+      <ui:widget name="widget" id="wdgG2KG6KJZABC6FEU6MELHXKUFRI" class="cdlFKOTINSS65AOJMIHU44ZUFZDPE" weight="0.0">
+        <ui:property name="standardButtons">
+          <ui:set>Ok|Cancel</ui:set>
+        </ui:property>
+        <ui:property name="geometry">
+          <ui:rect>
+            <ui:x>0</ui:x>
+            <ui:y>0</ui:y>
+            <ui:width>422</ui:width>
+            <ui:height>109</ui:height>
+          </ui:rect>
+        </ui:property>
+        <ui:property name="windowTitle">
+          <ui:mlstringid>mlsI6G4NNOBDJHKVNLXGB2B3YHJDY</ui:mlstringid>
+        </ui:property>
+        <ui:widget name="widget" id="wdgK56UDDQ2FNBUJG3HBQRHSWHS5A" class="org.radixware.wps.views.editor.PropertiesGrid" weight="0.0">
+          <ui:property name="geometry">
+            <ui:rect>
+              <ui:x>1</ui:x>
+              <ui:y>1</ui:y>
+              <ui:width>420</ui:width>
+              <ui:height>77</ui:height>
+            </ui:rect>
+          </ui:property>
+          <ui:property name="anchor">
+            <ui:anchor>
+              <ui:Top Part="0.0" Offset="1"/>
+              <ui:Left Part="0.0" Offset="1"/>
+              <ui:Bottom Part="1.0" Offset="-1"/>
+              <ui:Right Part="1.0" Offset="-1"/>
+            </ui:anchor>
+          </ui:property>
+          <ui:widget name="titleWidgetEditor" id="wdg2CTKE65YTRCULM7RUT5QXHVFSI" class=" org.radixware.wps.views.editor.property.PropEditor" weight="0.0">
+            <ui:property name="gridColumn">
+              <ui:int>0</ui:int>
+            </ui:property>
+            <ui:property name="gridRow">
+              <ui:int>0</ui:int>
+            </ui:property>
+            <ui:property name="geometry">
+              <ui:rect>
+                <ui:x>95</ui:x>
+                <ui:y>21</ui:y>
+                <ui:width>100</ui:width>
+                <ui:height>20</ui:height>
+              </ui:rect>
+            </ui:property>
+            <ui:property name="property">
+              <ui:propertyRef>prdFYOPTHK2UVFUNNFX6QHDE62YUQ</ui:propertyRef>
+            </ui:property>
+            <ui:property name="objectName">
+              <ui:string>titleWidgetEditor</ui:string>
+            </ui:property>
+          </ui:widget>
+        </ui:widget>
+      </ui:widget>
+    </ui:ui>
+    <EmbeddedModel Id="admFKOTINSS65AOJMIHU44ZUFZDPE" Name="DashConfigCreateNewWebDialog:Model" Type="16">
+      <AccessRules IsPublished="false"/>
+      <Headers>
+        <Src Name="HeaderadmFKOTINSS65AOJMIHU44ZUFZDPE"/>
+      </Headers>
+      <Bodies>
+        <Src Name="BodyadmFKOTINSS65AOJMIHU44ZUFZDPE"/>
+      </Bodies>
+      <MethodGroup Id="cmgX5CEQAIJRRBS5JKV33JOCJGA4Q" Name="Root"/>
+      <PropertyGroup Id="cpgQE5EEOFBWZFXBHRDUHA34ZDFWQ" Name="Root"/>
+      <Properties>
+        <Property Id="prdFYOPTHK2UVFUNNFX6QHDE62YUQ" Name="title" Nature="8" IsConst="false" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="21"/>
+          <EmbeddedClass Id="aetLTPCMCFIHVANRI7K5PTMZRFD4Y" Name="EmbeddedClass" Type="3">
+            <AccessRules IsPublished="false"/>
+            <Headers>
+              <Src Name="HeaderaetLTPCMCFIHVANRI7K5PTMZRFD4Y"/>
+            </Headers>
+            <Bodies>
+              <Src Name="BodyaetLTPCMCFIHVANRI7K5PTMZRFD4Y"/>
+            </Bodies>
+            <MethodGroup Id="cmgREKOHE5KNFGRJID4JJA4EJ7FOA" Name="Root"/>
+            <PropertyGroup Id="cpgTAXKRW2JC5ECTKY7LKAAXIYAGA" Name="Root"/>
+            <Properties/>
+            <Methods>
+              <Method Id="mth7BRYC5UTPVEGXDRZ4QMWVPMRBM" Name="validateValue" Nature="0" IsOverride="true">
+                <AccessRules/>
+                <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.validators.ValidationResult"/>
+                <Sources>
+                  <Src>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="adcT4L4ZJXSNJHK3D5S5JHIZLNURQ"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java> valResult = super.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mth7BRYC5UTPVEGXDRZ4QMWVPMRBM" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>();
+if (</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="cdlFKOTINSS65AOJMIHU44ZUFZDPE admFKOTINSS65AOJMIHU44ZUFZDPE prd4FSZPHFB3RFFXBK47TP4M2P5UY" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java> != null &amp;&amp; valResult.equals(</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="adcT4L4ZJXSNJHK3D5S5JHIZLNURQ"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.ACCEPTABLE)) {
+    for(</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="adcTYM633OEOVHT3JLBLLO635P56I"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java> info : </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="cdlFKOTINSS65AOJMIHU44ZUFZDPE admFKOTINSS65AOJMIHU44ZUFZDPE prd4FSZPHFB3RFFXBK47TP4M2P5UY" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>) {
+        if(info.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adcTYM633OEOVHT3JLBLLO635P56I prdMJWMVHGAQBBIJI2IXHQ5KWPWKU" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.equals(</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="cdlFKOTINSS65AOJMIHU44ZUFZDPE admFKOTINSS65AOJMIHU44ZUFZDPE prdFYOPTHK2UVFUNNFX6QHDE62YUQ" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.Value)) {
+            valResult = </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="adcVVXVIFOIZNAMVAC6PRKJEKSDIQ"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adcVVXVIFOIZNAMVAC6PRKJEKSDIQ mthEJGYHR2OONAB5G7LPAFBYBSJRY" Invoke="true"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:LocalizedString StringId="mlsSZ4UNP2HNFBPTF2DQGZ4BAJMVU"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>);
+            break;
+        }
+    }
+}
+return valResult;</xsc:Java>
+                    </xsc:Item>
+                  </Src>
+                </Sources>
+              </Method>
+            </Methods>
+          </EmbeddedClass>
+          <DependentItems/>
+          <EmbeddedProperty Id="prdFYOPTHK2UVFUNNFX6QHDE62YUQ" Name="title" Nature="2" IsConst="false">
+            <AccessRules IsPublished="false"/>
+            <Type TypeId="21"/>
+            <Presentation TitleId="mlsGBR3Z4QBXZA73BAPVRV7IPC63A" InheritanceMask="4">
+              <Editing IsDuplicatesEnabled="true"/>
+            </Presentation>
+          </EmbeddedProperty>
+        </Property>
+        <Property Id="prd4FSZPHFB3RFFXBK47TP4M2P5UY" Name="configInfos" Nature="2" IsConst="false" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="400" extStr="java.util.List">
+            <xsc:GenericArguments>
+              <xsc:Argument Alias="?">
+                <xsc:Type TypeId="411" Path="adcTYM633OEOVHT3JLBLLO635P56I"/>
+              </xsc:Argument>
+            </xsc:GenericArguments>
+          </Type>
+        </Property>
+      </Properties>
+      <Methods/>
+    </EmbeddedModel>
+  </AdsWebCustomDialogDefinition>
+</AdsDefinition>

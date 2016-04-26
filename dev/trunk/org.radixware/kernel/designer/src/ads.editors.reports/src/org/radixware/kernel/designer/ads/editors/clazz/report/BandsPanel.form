@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="pBandsCount" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="pBandsCount" max="32767" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Container class="javax.swing.JPanel" name="pBandsCount">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+            <TitledBorder title="Used bands">
+              <ResourceString PropertyName="titleX" bundle="org/radixware/kernel/designer/ads/editors/clazz/report/Bundle.properties" key="BandsPanel.pBandsCount.border.title" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+            </TitledBorder>
+          </Border>
+        </Property>
+      </Properties>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="edPageHeader" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="edTitle" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="edColumnsHeader" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="edDetails" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="edSummary" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="edPageFooter" alignment="0" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace min="0" pref="198" max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <Component id="edPageHeader" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="edTitle" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="edColumnsHeader" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="edDetails" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="edSummary" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="edPageFooter" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace pref="130" max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Component class="org.radixware.kernel.designer.ads.editors.clazz.report.BandCountEditor" name="edPageHeader">
+          <Properties>
+            <Property name="bandType" type="org.radixware.kernel.common.enums.EReportBandType" editor="org.netbeans.modules.form.editors.EnumEditor">
+              <Value id="PAGE_HEADER"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="org.radixware.kernel.designer.ads.editors.clazz.report.BandCountEditor" name="edTitle">
+        </Component>
+        <Component class="org.radixware.kernel.designer.ads.editors.clazz.report.BandCountEditor" name="edColumnsHeader">
+          <Properties>
+            <Property name="bandType" type="org.radixware.kernel.common.enums.EReportBandType" editor="org.netbeans.modules.form.editors.EnumEditor">
+              <Value id="COLUMN_HEADER"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="org.radixware.kernel.designer.ads.editors.clazz.report.BandCountEditor" name="edDetails">
+          <Properties>
+            <Property name="bandType" type="org.radixware.kernel.common.enums.EReportBandType" editor="org.netbeans.modules.form.editors.EnumEditor">
+              <Value id="DETAIL"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="org.radixware.kernel.designer.ads.editors.clazz.report.BandCountEditor" name="edSummary">
+          <Properties>
+            <Property name="bandType" type="org.radixware.kernel.common.enums.EReportBandType" editor="org.netbeans.modules.form.editors.EnumEditor">
+              <Value id="SUMMARY"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="org.radixware.kernel.designer.ads.editors.clazz.report.BandCountEditor" name="edPageFooter">
+          <Properties>
+            <Property name="bandType" type="org.radixware.kernel.common.enums.EReportBandType" editor="org.netbeans.modules.form.editors.EnumEditor">
+              <Value id="PAGE_FOOTER"/>
+            </Property>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+  </SubComponents>
+</Form>

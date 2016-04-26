@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="ssc75TEODLUCDORDBJNABIFNQAABA" Name="RegisterLinkStmt" Type="9">
+    <AccessRules IsFinal="true" IsPublished="false">
+      <Transparence Extendable="true" PublishedName="org.radixware.kernel.server.types.Statement"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcRPCAB55AGJGCVFV547WPRNJSZ4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcJ6EX2B3B6ZHRFHBGJ7OCH3YPYA"/>
+    </Bodies>
+    <MethodGroup Id="cmgIPM7TDEZFVHGHMOS2URENQLHMM" Name="Root"/>
+    <PropertyGroup Id="cpg7NPEGZO4GJBA5PJL4XHKVKKD2A" Name="Root"/>
+    <Properties>
+      <Property Id="prmRMGY4YDUCDORDBJNABIFNQAABA" Name="processId" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prm4PME423UCDORDBJNABIFNQAABA" Name="entityGuid" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prm34E5O4LUCDORDBJNABIFNQAABA" Name="objectPid" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmJGEHTY6DOREQ5BKIEYGUR2ERUI" Name="role" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmGDRFRGIQNNBM7A63VOVI4KAVAY" Name="idx" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prm4AE5O4LUCDORDBJNABIFNQAABA" Name="title" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="execute" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="processId" Id="mprRMGY4YDUCDORDBJNABIFNQAABA">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="entityGuid" Id="mpr4PME423UCDORDBJNABIFNQAABA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="objectPid" Id="mpr34E5O4LUCDORDBJNABIFNQAABA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="role" Id="mprJGEHTY6DOREQ5BKIEYGUR2ERUI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="idx" Id="mprGDRFRGIQNNBM7A63VOVI4KAVAY">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="title" Id="mpr4AE5O4LUCDORDBJNABIFNQAABA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth_stmt_sendBatch___________" Name="sendBatch" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+      </Method>
+      <Method Id="mth_stmt_setExecuteBatch_____" Name="setExecuteBatch" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="size" Id="mprSize______________________">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>MERGE INTO </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tbl2XXEGTLFCDORDBJNABIFNQAABA"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> A 
+USING
+(
+   SELECT
+      </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmRMGY4YDUCDORDBJNABIFNQAABA"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> AS processId, 
+      </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prm4PME423UCDORDBJNABIFNQAABA"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> AS entityGuid, 
+      </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prm34E5O4LUCDORDBJNABIFNQAABA"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> AS objectPid,
+      </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmJGEHTY6DOREQ5BKIEYGUR2ERUI"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> AS role,
+      </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmGDRFRGIQNNBM7A63VOVI4KAVAY"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> AS idx,
+      </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prm4AE5O4LUCDORDBJNABIFNQAABA"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> AS title 
+   FROM Dual
+) B 
+ON (A.processId=B.processId AND A.entityGuid=B.entityGuid AND A.objectPid=B.objectPid AND A.role=B.role AND A.idx=B.idx)
+WHEN MATCHED THEN
+   UPDATE SET A.title=B.title
+WHEN NOT MATCHED THEN
+   INSERT (A.Id, A.processId, A.entityGuid, A.objectPid, A.role, A.idx, A.title)
+   VALUES (</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:SequenceDbName SequenceId="sqn4QA2IP7O7FEXLBP6ZXPWIGTO7U" Postfix="NONE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>.NextVal, B.processId, B.entityGuid, B.objectPid, B.role, B.idx, B.title)</xsc:Sql>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tbl2XXEGTLFCDORDBJNABIFNQAABA"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="400" extStr="org.radixware.kernel.server.types.SqlClass"/>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsd2OCIJO6UONEZZAWI3PSCUOW6ZU" Name="CommandsXsd" TargetNamespace="http://schemas.radixware.org/audit-commands.xsd" Environment="common"><ads:AccessRules IsPublished="false"/><xs:schema targetNamespace="http://schemas.radixware.org/audit-commands.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:this="http://schemas.radixware.org/audit-commands.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:t="http://schemas.radixware.org/types.xsd">
+  <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+  <xs:element name="AuditValueList">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Item" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:attribute name="Id" type="t:Str"/>
+            <xs:attribute name="Name" type="t:Str"/>
+            <xs:attribute name="Value" type="t:Str" use="optional"/>
+            <xs:attribute name="Title" type="t:Str" use="optional"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TableList">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Table" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:attribute name="Id" type="t:Str"/>
+            <xs:attribute name="Title" type="t:Str"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="AuditTableItem">
+    <xs:attribute name="StoreData" type="t:Bool"/>
+    <xs:attribute name="StoreDuratation" type="t:Int"/>
+  </xs:complexType>
+  <xs:element name="TableAuditData">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="TableData">
+          <xs:complexType>
+            <xs:attribute name="SchemeId" type="t:Str" use="required"/>
+            <xs:attribute name="TableId" type="t:Str" use="optional"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Insert">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Item" type="this:AuditTableItem" minOccurs="0" maxOccurs="1"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Delete">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Item" type="this:AuditTableItem" minOccurs="0" maxOccurs="1"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Update">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Item" type="this:AuditTableItem" minOccurs="0" maxOccurs="1"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

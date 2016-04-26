@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="accJINTYIFI6ZFEJPJJ7G7SNV2BPM" Name="GetDdsOptionsCursor" Type="4">
+    <AccessRules/>
+    <Headers>
+      <Src Name="HeaderaccJINTYIFI6ZFEJPJJ7G7SNV2BPM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaccJINTYIFI6ZFEJPJJ7G7SNV2BPM"/>
+    </Bodies>
+    <MethodGroup Id="cmg5QWRAE67SVDP5AKNJOS2BBE76E" Name="Root"/>
+    <PropertyGroup Id="cpgCMPKSP3XHZGRFJPUYHHFX7GAEI" Name="Root"/>
+    <Properties>
+      <Property Id="prf76LZ3PX5WVDFDHOOK2WW4S75NE" Name="name" Nature="3" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prfTXFUWQ56PBDZNAFG3FNJADAD6A" Name="value" Nature="3" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="open" Nature="15" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="411" Path="accJINTYIFI6ZFEJPJJ7G7SNV2BPM"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="true">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>Select LAYERURI||'\'||NAME as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accJINTYIFI6ZFEJPJJ7G7SNV2BPM" PropId="prf76LZ3PX5WVDFDHOOK2WW4S75NE" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, VALUE as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accJINTYIFI6ZFEJPJJ7G7SNV2BPM" PropId="prfTXFUWQ56PBDZNAFG3FNJADAD6A" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+from RDX_DDSOPTION</xsc:Sql>
+        </xsc:Item>
+      </Source>
+    </Sql>
+    <Extends TypeId="411" Path="pdcCursor____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

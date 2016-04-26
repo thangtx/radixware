@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcITCGGRJ7FFAGBCKG5AUFHKDDOE" Name="DbLockOwnerInfo" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcITCGGRJ7FFAGBCKG5AUFHKDDOE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcITCGGRJ7FFAGBCKG5AUFHKDDOE"/>
+    </Bodies>
+    <MethodGroup Id="cmg5VI3IB4R4RGHRHSKII3EH4LOCA" Name="Root"/>
+    <PropertyGroup Id="cpgEFPHZESLOZFSFKP3Q76U475WJE" Name="Root"/>
+    <Properties>
+      <Property Id="prdHAFOK6JTT5AX5IDH6LV4W3CI54" Name="sid" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules IsFinal="true"/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prdTBXOWX3DF5DPFDJAARCZPEQ4FE" Name="module" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules IsFinal="true"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prdIH6X2NOO4FE3RILU7U3GE7VVDE" Name="action" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules IsFinal="true"/>
+        <Type TypeId="21"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthV6AZKYJEFZCXLN4Q7S2WCPBD7U" Name="DbLockOwnerInfo" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="sid" Id="mprG2NROCJIJRGYPOUVDSY5LOWNEU">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="module" Id="mprPJX5RASGYJBWVE4DXD3AUVQYKM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="action" Id="mpr3I752WRNR5FUND27OHUZVITSCU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcITCGGRJ7FFAGBCKG5AUFHKDDOE prdHAFOK6JTT5AX5IDH6LV4W3CI54" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = sid;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcITCGGRJ7FFAGBCKG5AUFHKDDOE prdTBXOWX3DF5DPFDJAARCZPEQ4FE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = module;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcITCGGRJ7FFAGBCKG5AUFHKDDOE prdIH6X2NOO4FE3RILU7U3GE7VVDE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = action;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

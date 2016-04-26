@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclDQSKZRRFSJAWTCE3427JXDIIKM" Name="Unit.Channel.Gcm" Type="2">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderaclDQSKZRRFSJAWTCE3427JXDIIKM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaclDQSKZRRFSJAWTCE3427JXDIIKM"/>
+    </Bodies>
+    <MethodGroup Id="cmgKDKC7ILMSNAWDMJ5YOF65LVSWU" Name="Root"/>
+    <PropertyGroup Id="cpg44MYXFC23FH2BBM7QA2C4ZYQYY" Name="Root"/>
+    <Properties>
+      <Property Id="col3BECHZLGR5DPVLXB2HMS2YNWAU" Name="gcmApiKey" Nature="5" IsConst="false" IsOverride="false" OriginalPropertyId="colDHHQU7OBCNCURGLC5CB672NCE4" DetailRefId="refLJSTGVRFVLOBDCLSAALOMT5GDM">
+        <AccessRules/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsTXCVYGW5W5DIBKHE5MAUE4WPJI" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthD77F2HBL2FGSVPJHR3SEAMPWMA" Name="afterInit" Nature="0" IsOverride="true">
+        <AccessRules Access="1" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="src" Id="mprYZM7BYAKUZH4VJIINN7HMCWFVQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
+          </Parameter>
+          <Parameter Name="phase" Id="mprXEM4NGHHZ5F5LMIP3Z7IRJJTL4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EEntityInitializationPhase"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E mthD77F2HBL2FGSVPJHR3SEAMPWMA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(src, phase);
+this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclVCLH3TEDVTOBDCLTAALOMT5GDM col62V3FXUDVTOBDCLTAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsZ5EEISSCVXOBDCLUAALOMT5GDM aci2LCUUG4UXRFOXIBCLCWDDO76R4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E colEWJT6TIHR5VDBNSIAAUMFADAIA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsLSG35D4GIHNRDJIEACQMTAIZT4 aci2RGIQV74LVDE5NOE2WRRFUDOYY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+
+if (src == null) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclVCLH3TEDVTOBDCLTAALOMT5GDM colXJZDYDMEVTOBDCLTAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = "https://gcm-http.googleapis.com/gcm/send";
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclVCLH3TEDVTOBDCLTAALOMT5GDM colXNZDYDMEVTOBDCLTAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclVCLH3TEDVTOBDCLTAALOMT5GDM colXJZDYDMEVTOBDCLTAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+}
+
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E"/>
+    <Presentations ObjectTitleId="mls24UEVD5XEBCRNG4HI2BWBNVYEM">
+      <ClassCatalogs>
+        <ClassCatalog Id="eccKOGFFVPJAHOBDA26AAMPGXSZKU" Name="Default">
+          <ClassRef TopicId="cctIM3THFAESQAFAFLSAAKJIJDWGY" Order="410.0"/>
+        </ClassCatalog>
+      </ClassCatalogs>
+      <EditorPresentations>
+        <EditorPresentation Id="eprH45GGRS3DBCBZCV7CJIIY6HTGQ" Name="Edit" BasePresentationId="eprGVZBTVH6VXOBDCLVAALOMT5GDM" InheritanceMask="36016" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprXCFCDDGTRHNRDB5MAALOMT5GDM" RightsSourceId="eprGVZBTVH6VXOBDCLVAALOMT5GDM" ClientEnvironment="explorer">
+          <AccessRules IsPublished="false"/>
+          <ChildExplorerItems/>
+          <EditorPages>
+            <Page Id="epgRTEJ2K77VXOBDCLVAALOMT5GDM" Name="Channel" TitleId="mls7HURMKRLBZA5JPFA2HVWWYEDBQ" Type="1">
+              <Properties>
+                <Property Id="col62V3FXUDVTOBDCLTAALOMT5GDM" Row="0" Column="0"/>
+                <Property Id="colXVZDYDMEVTOBDCLTAALOMT5GDM" Row="3" Column="0"/>
+                <Property Id="colXBZDYDMEVTOBDCLTAALOMT5GDM" Row="4" Column="0"/>
+                <Property Id="colXJZDYDMEVTOBDCLTAALOMT5GDM" Row="5" Column="0"/>
+                <Property Id="col7HPHZW2DJRHVJEYJSANRF7CASM" Row="1" Column="0"/>
+                <Property Id="col4TIXFUZ7YNDYPDT5MVYA5XWERA" Row="2" Column="0"/>
+                <Property Id="colXRZDYDMEVTOBDCLTAALOMT5GDM" Row="7" Column="0"/>
+                <Property Id="col3BECHZLGR5DPVLXB2HMS2YNWAU" Row="6" Column="0"/>
+              </Properties>
+            </Page>
+            <PageOrder>
+              <Item PageId="epgOCDVZAOTBXOBDNTPAAMPGXSZKU" Level="1"/>
+              <Item PageId="epgRTEJ2K77VXOBDCLVAALOMT5GDM" Level="1"/>
+              <Item PageId="epgUJB2RCH6KZHD5IMTQTE76DQSZA" Level="1"/>
+              <Item PageId="epgJ4BHY7HBLBBBXIIQZEPCKTW2MU" Level="1"/>
+            </PageOrder>
+          </EditorPages>
+          <ObjectTitleFormat Id="etfUIKSI2V6M5HPVP6U454SQQ4LYM"/>
+        </EditorPresentation>
+        <EditorPresentation Id="eprIZSYAFJC2RBJXNETSNXPPX56ZU" Name="Create" BasePresentationId="eprH45GGRS3DBCBZCV7CJIIY6HTGQ" InheritanceMask="40112" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprS6PW3X2EKJFUNPGCXYDBACXY7A" ClientEnvironment="explorer">
+          <AccessRules IsPublished="false"/>
+          <ChildExplorerItems/>
+          <ObjectTitleFormat Id="etfN76QCKK4I5AILORV45ETZZ4KNA"/>
+        </EditorPresentation>
+      </EditorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="aclUSOKQ66VW5AO3GE7FKEPHT6VDY"/>
+  </AdsClassDefinition>
+</AdsDefinition>

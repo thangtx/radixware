@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:this="http://schemas.radixware.org/commondef.xsd" xmlns:types="http://schemas.radixware.org/types.xsd" targetNamespace="http://schemas.radixware.org/commondef.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:complexType name="Definition">
+        <xs:attribute name="Id" type="types:Id" use="required"/>
+        <xs:attribute name="IsOverwrite" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="DefinitionType" use="optional">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EDefType</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:IntEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="CompilerWarnings">
+            <xs:simpleType>
+                <xs:list itemType="xs:int"/>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="NamedDefinition">
+        <xs:complexContent>
+            <xs:extension base="this:Definition">
+                <xs:attribute name="Name" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="DescribedDefinition">
+        <xs:complexContent>
+            <xs:extension base="this:NamedDefinition">
+                <xs:sequence>
+                    <xs:element name="Description" type="xs:string" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="DescriptionId" type="types:Id" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="DefaultValue">
+        <xs:sequence>
+            <xs:element name="Value" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="Type" use="required">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.ERadixDefaultValueChoice</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:StrEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="ProfileInfo">
+        <xs:attribute name="timingSectionId" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="CbInfo">
+        <xs:sequence>
+            <xs:element name="DecoderClass" type="xs:string"/>
+            <xs:element name="DecoderMethod" type="xs:string"/>
+            <xs:element name="DefinitionXmlClass" type="xs:string"/>
+            <xs:element name="Definition"/>
+            <xs:element name="ExtInfo"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="ClipboardInfo" type="this:CbInfo"/>
+    
+    
+</xs:schema>

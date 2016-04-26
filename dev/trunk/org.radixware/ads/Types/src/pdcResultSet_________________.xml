@@ -1,0 +1,703 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="pdcResultSet_________________" Name="SqlResultSet" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcUB2IOO6LWVC5JJPEATFNYS3IWU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc27QMIO5ZSRFYPFHD4LYXKQY2X4"/>
+    </Bodies>
+    <MethodGroup Id="cmgKPS6FKTZBFAOJMRAFOKFOILNC4" Name="Root">
+      <Group Id="cmgMQ2744MH55GZXA3UE4MOAKBR2A" Name="Getters" Members="mthG6DEUVLAYXNRDCKEABIFNQAABA mthSFPSQEDAYXNRDCKEABIFNQAABA mthBDNL4Y3AYXNRDCKEABIFNQAABA mthITT47IK7YXNRDCKEABIFNQAABA mthE7VEQ33AYXNRDCKEABIFNQAABA mthW4FEL3K7YXNRDCKEABIFNQAABA mthWPWF66DAYXNRDCKEABIFNQAABA mthCTI73RS7YXNRDCKEABIFNQAABA mthTHTTBATAYXNRDCKEABIFNQAABA mth2PFQ47S7YXNRDCKEABIFNQAABA mthLRZTLDLAYXNRDCKEABIFNQAABA mthUU5BONC7YXNRDCKEABIFNQAABA mthZ3T77GDAYXNRDCKEABIFNQAABA mthHWB32XK7YXNRDCKEABIFNQAABA mthYYG37JTAYXNRDCKEABIFNQAABA mthM66IMD27YXNRDCKEABIFNQAABA mthSIORZ2ST7VGBJOBBA3F75YS3FY mthVHBLNHHE5ZANBDXAO7UH3E5DXE mthRYAX655YYFEVZGVMJTZPIWDBJA mthMQIKZIIUKJDLXEFOQBKEOWMNSY"/>
+      <Group Id="cmgDLZ7X4A6VVAPVKPEVNWPGWFXV4" Name="Setters" Members="mthNB4H4D3CYXNRDCKEABIFNQAABA mthWLKIFX3BYXNRDCKEABIFNQAABA mth5WCPUF3CYXNRDCKEABIFNQAABA mthXW5KSZLBYXNRDCKEABIFNQAABA mthEUAQWI3CYXNRDCKEABIFNQAABA mthYQRSPSDBYXNRDCKEABIFNQAABA mth5WRT4LDCYXNRDCKEABIFNQAABA mthO7ZJU43BYXNRDCKEABIFNQAABA mthHRUPKNLCYXNRDCKEABIFNQAABA mth7SU7IC3BYXNRDCKEABIFNQAABA mthTJPPT4JMG5A3VLZ55MZUP7WIJY mth6JNWTTVL5JHJHMQYNOMLIHW32A mthXG4P4QDCYXNRDCKEABIFNQAABA mthPYQ3GMTBYXNRDCKEABIFNQAABA mthPBBZGU3CYXNRDCKEABIFNQAABA mth33UKWTLBYXNRDCKEABIFNQAABA mthTINMQYDCYXNRDCKEABIFNQAABA mthBB3TTE3BYXNRDCKEABIFNQAABA mthTMXLAHURVBHJHHWRXFVWVJIG5Y mthSU6GJZXZ4JC5TNB5XUIGFZ4VLE mthOPPWFN5VBRCZDG45IEQ72L7FKA mthVPXXIGWPTBBEZCVUP3FOBKXIEA"/>
+    </MethodGroup>
+    <PropertyGroup Id="cpg3ALPKTUDEBDT7JGPOJBP7GTTDI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth2PFQ47S7YXNRDCKEABIFNQAABA" Name="getDateTime" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="idx" Id="mprHGHHP2QRFJHMJD6ZXJBA4UHLSY">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return super.getTimestamp( idx );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth33UKWTLBYXNRDCKEABIFNQAABA" Name="setNum" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="idx" Id="mprH5TVCEGM2ZFYVHSDJLS3PUGXWA">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="x" Id="mpr6RXA6Z54YJHIXEM5C72TARWVCA">
+            <Type TypeId="11"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.updateBigDecimal( idx, x );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth5WCPUF3CYXNRDCKEABIFNQAABA" Name="setBool" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="name" Id="mpr2HTHZKXHRZHJZFASAUEKXC5RRU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="x" Id="mpr6ES45FANR5A63PTVF7CSYILWGU">
+            <Type TypeId="1"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.updateBoolean( name, x );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth5WRT4LDCYXNRDCKEABIFNQAABA" Name="setChar" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="name" Id="mprMMKQ7K6UABHA3MR65HXGDIAUHU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="x" Id="mprHXAIBLVH45AP5IRHLM5PVGKOVQ">
+            <Type TypeId="3"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.updateChar( name, x );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth7SU7IC3BYXNRDCKEABIFNQAABA" Name="setDateTime" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="idx" Id="mprDVDRV45755BWHCYESQLD4AM5OE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="x" Id="mprFZNE63MCFJHQVHZABENZ67NCPQ">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.updateTimestamp( idx, x );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthBB3TTE3BYXNRDCKEABIFNQAABA" Name="setStr" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="idx" Id="mprFFIBZPDFIRBEDLUGOTDLEFCI5I">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="x" Id="mprGMOXJMHWAJAYJEPGQGGLHETDHE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.updateString( idx, x );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthBDNL4Y3AYXNRDCKEABIFNQAABA" Name="getBool" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="name" Id="mprKDZO5P47SJHPDDLYDCLZVVN4TU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="1"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return super.getBoolean( name );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthCTI73RS7YXNRDCKEABIFNQAABA" Name="getChar" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="idx" Id="mpr6UWIRHUT7JHFTAN45L2EEUEKOU">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="3"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return getChar( idx );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthE7VEQ33AYXNRDCKEABIFNQAABA" Name="getClob" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="name" Id="mprWEIYS7F65RFTFB5XH3D67SNCM4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="27"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return super.getClob( name );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthEUAQWI3CYXNRDCKEABIFNQAABA" Name="setClob" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="name" Id="mprGP6QCYQCNVARXIP6WEP5Z5MVEE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="x" Id="mprXB64MN7NUJCLVIV6BDWYM7FPU4">
+            <Type TypeId="27"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.updateClob( name, x );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthG6DEUVLAYXNRDCKEABIFNQAABA" Name="getBlob" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="name" Id="mprFSLKZ6S4FRGULM3WW7IKVOWXL4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="28"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return super.getBlob( name );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthHRUPKNLCYXNRDCKEABIFNQAABA" Name="setDateTime" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="name" Id="mprINVHRB2UEVCBHL2DF5ENNDXGFM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="x" Id="mprAQSD3JRKI5FPZHM4YPUDHIZJEY">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.updateTimestamp( name, x );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthHWB32XK7YXNRDCKEABIFNQAABA" Name="getNum" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="idx" Id="mpr5YVGRLKHXBFPXH4XKIDXURLPPY">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="11"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return super.getBigDecimal( idx );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthITT47IK7YXNRDCKEABIFNQAABA" Name="getBool" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="idx" Id="mpr3LWYDIB7FJDVTPWFPDB3RQBCXA">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="1"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return super.getBoolean( idx );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthLRZTLDLAYXNRDCKEABIFNQAABA" Name="getInt" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="name" Id="mprWQ7CZRBHZJBWNF7QGJR3EMA32I">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="2"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return super.getLong( name );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthM66IMD27YXNRDCKEABIFNQAABA" Name="getString" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="idx" Id="mprQCF6ZNZNQFAFFP7J5LOVDURL6I">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return super.getString( idx );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthNB4H4D3CYXNRDCKEABIFNQAABA" Name="setBlob" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="name" Id="mprKP2CTFNXHNGXFGETETRLDENMTQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="x" Id="mprNKA24BPKXBBO7HDCUQAOTDHE2Q">
+            <Type TypeId="28"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.updateBlob( name, x );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthO7ZJU43BYXNRDCKEABIFNQAABA" Name="setChar" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="idx" Id="mprQFJYWQMFTZAZDNVSH3DVWCVPYY">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="x" Id="mprM5XYK3IJB5GITATVRE4BUR5CBE">
+            <Type TypeId="3"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.updateChar( idx, x );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthPBBZGU3CYXNRDCKEABIFNQAABA" Name="setNum" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="name" Id="mpr3H42OTBZ7ZEJ3I4HP2FRIFOTIM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="x" Id="mprVZ7P2YMUEJFGZLCMF6FFIIOM4M">
+            <Type TypeId="11"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.updateBigDecimal( name, x );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthPYQ3GMTBYXNRDCKEABIFNQAABA" Name="setInt" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="idx" Id="mprE2PC4JXRXFEX5GJRUNPBEYI64I">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="x" Id="mpr7ALO2KVSWRCKHDZO6ZBXMXL6KY">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.updateLong( idx, x );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthSFPSQEDAYXNRDCKEABIFNQAABA" Name="getBlob" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="idx" Id="mprDKBOO3NKGBEVTGMHGVOXU2TAWQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="28"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return super.getBlob( idx );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthTHTTBATAYXNRDCKEABIFNQAABA" Name="getDateTime" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="name" Id="mpr7VN45ASHARBCVFPQLGAQIECFTM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return super.getTimestamp( name );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthTINMQYDCYXNRDCKEABIFNQAABA" Name="setStr" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="name" Id="mprKWTFMILCVBBVJKLS2FIT6ANXAQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="x" Id="mpr6CTDKGIBLRE6BM5MXBQS6WBFQM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.updateString( name, x );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthUU5BONC7YXNRDCKEABIFNQAABA" Name="getInt" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="idx" Id="mpr4FVLLDMIVFAMPP7P6LNVQQFPHE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="2"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return super.getLong( idx );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthW4FEL3K7YXNRDCKEABIFNQAABA" Name="getClob" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="idx" Id="mprDT2OXQ2ISRCS5DRJSZP7KDRFUE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="27"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return super.getClob( idx );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthWLKIFX3BYXNRDCKEABIFNQAABA" Name="setBlob" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="idx" Id="mprVBY66L75LNDHFH4HKKYAHYITMU">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="x" Id="mpr72ZZSEZFZFAK3M2COHROMTLI4U">
+            <Type TypeId="28"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.updateBlob( idx, x );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthWPWF66DAYXNRDCKEABIFNQAABA" Name="getChar" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="name" Id="mpr74VDBIVXWNFURMBOHNNIAGXJUU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="3"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return getChar( name );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthXG4P4QDCYXNRDCKEABIFNQAABA" Name="setInt" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="name" Id="mprXY4KWK3NZBFGVDKUZQRHMOHHOE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="x" Id="mprYTQZNYTGYFFEREOW57PNKAKEYY">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.updateLong( name, x );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthXW5KSZLBYXNRDCKEABIFNQAABA" Name="setBool" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="idx" Id="mprVHELE6XMSJHQDJAY6QUO7NQPWY">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="x" Id="mprNTMKITJXMNDWXOXOLHFKKKRO7U">
+            <Type TypeId="1"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.updateBoolean( idx, x );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYQRSPSDBYXNRDCKEABIFNQAABA" Name="setClob" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="idx" Id="mpr4TW7NTGCNVBD3CEVZDUWVZR53U">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="x" Id="mprIJUC3XNJBJB3DJT27GPTSWVF2Q">
+            <Type TypeId="27"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.updateClob( idx, x );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYYG37JTAYXNRDCKEABIFNQAABA" Name="getString" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="name" Id="mprYUZ3GPSOLVGOJHLUEC6MSMWEZA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return super.getString( name );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthZ3T77GDAYXNRDCKEABIFNQAABA" Name="getNum" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="name" Id="mprOAIXRA4A6BDYDOWASK2E7IZDAQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="11"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return super.getBigDecimal( name );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthSIORZ2ST7VGBJOBBA3F75YS3FY" Name="getObject" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="name" Id="mprVR2HRR2SB5DLHATFU6U3CZTY4M">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return super.getObject( name );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthVHBLNHHE5ZANBDXAO7UH3E5DXE" Name="getObject" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="idx" Id="mprORZKCNUSMZHC5JVLJIUALNAHQQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return super.getObject( idx );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthTMXLAHURVBHJHHWRXFVWVJIG5Y" Name="setObject" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="idx" Id="mprBPS55J7SKFGABLSN3K2ZUAI6IQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="x" Id="mprEIFP27EJJVBBRPI6HLXC4C6UYY">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.updateObject( idx, x );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthSU6GJZXZ4JC5TNB5XUIGFZ4VLE" Name="setObject" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="name" Id="mprU3EMQ5TMSBAJTPHEYQH3WI6G4A">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="x" Id="mprGMH3M7KNOVBPZKWEIVQJZAPCGY">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.updateObject( name, x );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthRYAX655YYFEVZGVMJTZPIWDBJA" Name="getSqlXml" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="idx" Id="mprC52H4TUSZZALDO364XK7EHAF2A">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.sql.SQLXML"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return super.getSqlXml( idx );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthMQIKZIIUKJDLXEFOQBKEOWMNSY" Name="getSqlXml" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="name" Id="mprC6JOTI6CYRBQZJDOB56BLKCATE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.sql.SQLXML"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return super.getSqlXml( name );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthOPPWFN5VBRCZDG45IEQ72L7FKA" Name="setSqlXml" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="idx" Id="mprGNNUCCF4TJHXTJTAMLTPGN4R7U">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="x" Id="mpr7ASLH35MLBCYRICWAO5CWOISIU">
+            <Type TypeId="400" extStr="java.sql.SQLXML"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.updateSqlXml( idx, x );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthVPXXIGWPTBBEZCVUP3FOBKXIEA" Name="setSqlXml" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="name" Id="mprBRQJ2KKQIZBY3LNMK7D6YM7TSI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="x" Id="mprS2TQGSMUE5AG5NXHLDDZMA25QU">
+            <Type TypeId="400" extStr="java.sql.SQLXML"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.updateSqlXml( name, x );</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="pdcCursor____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

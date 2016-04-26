@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="apaJ6SOXKD3ZHOBDCMTAALOMT5GDM" Name="UserFuncAdapter" Type="20">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderapaBKWGZVUBSVE6FEK67UOJAGG6EI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyapaBKWGZVUBSVE6FEK67UOJAGG6EI"/>
+    </Bodies>
+    <MethodGroup Id="cmg3NW2555RXBH2NNL5ILXOCX4TYY" Name="Root"/>
+    <PropertyGroup Id="cpg6RWXMBOTWRAQVGUXLKQXGRXXKI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthZ4QY527H2FFCVCSSDEH6EXQJAA" Name="isCommandDisabled" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="cmdId" Id="mprYS7MCGZQK5AH5C7Z57GXTHQ2TI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.AppException"/>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if(cmdId==</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM cmdJSJIK2BKOFAP5DOLQIICYERBAQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>){
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="tblW7BRVVQLHBE2FCNK7ZBRMAUJGM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.toString() == this.Entity.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM col7UMAJND3ZHOBDCMTAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+}
+
+return super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI mthZ4QY527H2FFCVCSSDEH6EXQJAA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(cmdId);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthM23NRT7ZAJGWFDZSVWALEMS2QI" Name="calcSelectorRowStyle" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.enums.ESelectorRowStyle"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI mthH3FIFU4J55HFTI553DLPDIWKOM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+if (e.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM prd5HQW5K6ILZEC7LCIL66JEZNP7U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null &amp;&amp; e.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM prd5HQW5K6ILZEC7LCIL66JEZNP7U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.booleanValue()) {
+    return super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI mthM23NRT7ZAJGWFDZSVWALEMS2QI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+} else {
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsB5NBTSFMOFH55KBWCH5UJ7LWXU aciYOAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+}
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="sscHDEDYYBNRRAUNETXZD6P2RQIFA" Name="RegisterProcessType" Type="9">
+    <AccessRules IsFinal="true" IsPublished="false" IsDeprecated="true">
+      <Transparence Extendable="true" PublishedName="org.radixware.kernel.server.types.Statement"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc7OSHG4TQSBE7BFVCWHWKLEBVAY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcJUDDF5OSEVBDXJZTEN6NDMMIMA"/>
+    </Bodies>
+    <MethodGroup Id="cmgO4J5RBHDKRDFBBSVOYENDDED54" Name="Root"/>
+    <PropertyGroup Id="cpgBD24YGU2ORDSNJBJSB7TUDNBBA" Name="Root"/>
+    <Properties>
+      <Property Id="prmDMRQRFINBVBSDF2HBRZMZHHYCY" Name="guid" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmH2SSGUD2YBGG3BAI3GJUADS2C4" Name="classGuid" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prm7V5K5Y6Z3RDWFNCBWU4WPJC5UE" Name="title" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prm7Q6OVPVUSZCZ7PR3VWIFKIZFHA" Name="algoClassGuid" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmYYZGZRU5RVALFLULFGQKOAT6EA" Name="adminRoleGuids" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="27"/>
+      </Property>
+      <Property Id="prmDEA4UOU5T5BEDAS4ZIICC2B5GE" Name="clerkRoleGuids" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="27"/>
+      </Property>
+      <Property Id="prmDVGJ4UY54BCB3LQ666PFT3UGDU" Name="traceProfile" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmZMNM5KNQ4ZEOTFBBABKOLLWLPY" Name="processStoreDays" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prmULRZO473OFDLHNPYKUAGESNM24" Name="Notes" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="execute" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="guid" Id="mprDMRQRFINBVBSDF2HBRZMZHHYCY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="classGuid" Id="mprH2SSGUD2YBGG3BAI3GJUADS2C4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="title" Id="mpr7V5K5Y6Z3RDWFNCBWU4WPJC5UE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="algoClassGuid" Id="mpr7Q6OVPVUSZCZ7PR3VWIFKIZFHA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="adminRoleGuids" Id="mprYYZGZRU5RVALFLULFGQKOAT6EA">
+            <Type TypeId="27"/>
+          </Parameter>
+          <Parameter Name="clerkRoleGuids" Id="mprDEA4UOU5T5BEDAS4ZIICC2B5GE">
+            <Type TypeId="27"/>
+          </Parameter>
+          <Parameter Name="traceProfile" Id="mprDVGJ4UY54BCB3LQ666PFT3UGDU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="processStoreDays" Id="mprZMNM5KNQ4ZEOTFBBABKOLLWLPY">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="Notes" Id="mprULRZO473OFDLHNPYKUAGESNM24">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth_stmt_sendBatch___________" Name="sendBatch" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+      </Method>
+      <Method Id="mth_stmt_setExecuteBatch_____" Name="setExecuteBatch" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="size" Id="mprSize______________________">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>MERGE INTO </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblXI6CAOIGDBAGJEE6JQEGJME43Q"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> A 
+USING
+(
+   SELECT
+      </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmDMRQRFINBVBSDF2HBRZMZHHYCY"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> AS guid,
+      </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmH2SSGUD2YBGG3BAI3GJUADS2C4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> AS classGuid,
+      </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prm7V5K5Y6Z3RDWFNCBWU4WPJC5UE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> AS title, 
+      </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prm7Q6OVPVUSZCZ7PR3VWIFKIZFHA"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> AS algoClassGuid,
+      </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmYYZGZRU5RVALFLULFGQKOAT6EA"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> AS adminRoleGuids,
+      </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmDEA4UOU5T5BEDAS4ZIICC2B5GE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> AS clerkRoleGuids,
+      </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmDVGJ4UY54BCB3LQ666PFT3UGDU"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> AS traceProfile,
+      </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmZMNM5KNQ4ZEOTFBBABKOLLWLPY"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> AS processStoreDays,
+      </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmULRZO473OFDLHNPYKUAGESNM24"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> AS Notes
+   FROM Dual
+) B 
+ON (A.guid = B.guid)
+WHEN MATCHED THEN
+   UPDATE SET A.classGuid = B.classGuid, A.title = B.title, A.algoClassGuid = B.algoClassGuid, A.adminRoleGuids = B.adminRoleGuids, A.clerkRoleGuids = B.clerkRoleGuids, A.traceProfile = B.traceProfile, A.processStoreDays = B.processStoreDays, A.Notes = B.Notes
+WHEN NOT MATCHED THEN
+   INSERT (A.guid, A.classGuid, A.title, A.algoClassGuid, A.adminRoleGuids, A.clerkRoleGuids, A.traceProfile, A.processStoreDays, A.Notes)
+   VALUES (B.guid, B.classGuid, B.title, B.algoClassGuid, B.adminRoleGuids, B.clerkRoleGuids, B.traceProfile, B.processStoreDays, B.Notes)</xsc:Sql>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblXI6CAOIGDBAGJEE6JQEGJME43Q"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="400" extStr="org.radixware.kernel.server.types.SqlClass"/>
+  </AdsClassDefinition>
+</AdsDefinition>

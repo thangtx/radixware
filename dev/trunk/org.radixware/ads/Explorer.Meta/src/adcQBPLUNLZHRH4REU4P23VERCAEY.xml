@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcQBPLUNLZHRH4REU4P23VERCAEY" Name="EditorPresentationDef" Type="3" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.meta.RadEditorPresentationDef"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcR57EMSVLDZDD3GJYAYNMVCETPA"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcL6MGFRSKGZFHHLQTIJRM73DIM4"/>
+    </Bodies>
+    <MethodGroup Id="cmgELHBKUJVFJDY5H3S43M65FX6PI" Name="Root"/>
+    <PropertyGroup Id="cpg4REP3KVWTRB2PDELOXSK2RMT7U" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth2KNH4TH4KFHUPAUPLTWHQSP3SE" Name="createStandardView" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="createStandardView(Lorg.radixware.kernel.common.client.IClientEnvironment;)Lorg.radixware.kernel.common.client.views.IView;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprWD63JST3TZDJDNDU2VOJK4AJ4I">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.views.IView"/>
+      </Method>
+      <Method Id="mthTNJ7RJUFO5BOBFYVARGSOFDMRM" Name="findEditorPageById" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="findEditorPageById(Lorg.radixware.kernel.common.types.Id;)Lorg.radixware.kernel.common.client.meta.editorpages.RadEditorPageDef;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="pageId" Id="mprODL3T37TTNFZNHDZZRYRUOBU2U">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.editorpages.RadEditorPageDef"/>
+      </Method>
+      <Method Id="mthJ62L5PZ3SBGI7P2457F5YC4AQM" Name="getChildrenExplorerItems" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getChildrenExplorerItems()Lorg.radixware.kernel.common.client.meta.explorerItems.RadExplorerItems;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.explorerItems.RadExplorerItems"/>
+      </Method>
+      <Method Id="mthBRUDNBDYXRCYLGLHXRHGBVKCHE" Name="getEditorPages" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getEditorPages()Lorg.radixware.kernel.common.client.meta.editorpages.RadEditorPages;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.editorpages.RadEditorPages"/>
+      </Method>
+      <Method Id="mthDP6JKXJAJNERPBXWUAH5LDNSAM" Name="getPropertyDefById" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getPropertyDefById(Lorg.radixware.kernel.common.types.Id;)Lorg.radixware.kernel.common.client.meta.RadPropertyDef;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="propertyId" Id="mprEUEQL4L2PJAIPJZSLDI6ETOXQ4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.RadPropertyDef"/>
+      </Method>
+      <Method Id="mth5SXMXMO6XRHBBPSTLVUB5E32QA" Name="getPropertyByName" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getPropertyByName(Ljava.lang.String;)Lorg.radixware.kernel.common.client.meta.RadPropertyDef;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="propertyName" Id="mprWJTACZLJT5BDNEZCOKYG2WO7BY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.RadPropertyDef"/>
+      </Method>
+      <Method Id="mthOIOIL7OKQNF6BBQWSL4PABYAQQ" Name="getTitle" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getTitle()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthWVWD7YX2MRDZTD6GJJ3LC3NVEI" Name="isCommandEnabled" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="isCommandEnabled(Lorg.radixware.kernel.common.client.meta.RadPresentationCommandDef;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprCDGQOTVAHRH3HF6XJHXHBYGAVU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.RadPresentationCommandDef"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth7IJ4TFDFENATXMX24QFSIGHQ6M" Name="isPropertyDefExistsById" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isPropertyDefExistsById(Lorg.radixware.kernel.common.types.Id;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="propertyId" Id="mprSKRGHZP2QNBBXJYX4THU7CFOTI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthV2HE6LFMPZABFOWDFWATIB6YAU" Name="isPropertyExistsByName" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isPropertyExistsByName(Ljava.lang.String;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="propertyName" Id="mprXQXHB5KX4ZHDPOPQSJTG4ZQ5XA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth42ODRCGS4ZFN3E4EY2JBDEKC6I" Name="isCommandDefExistsById" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isCommandDefExistsById(Lorg.radixware.kernel.common.types.Id;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="commandId" Id="mprN2EK7GFI4REIXNF3BIAXHT4GO4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthOE37MLXITZAN5KSXW5RVLG5ZKU" Name="createModel" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="createModel(Lorg.radixware.kernel.common.client.models.IContext.Abstract;)Lorg.radixware.kernel.common.client.models.EntityModel;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="context" Id="mprXIAXRUQBUZFOZKGYWMXGNBLWN4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.IContext.Abstract"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

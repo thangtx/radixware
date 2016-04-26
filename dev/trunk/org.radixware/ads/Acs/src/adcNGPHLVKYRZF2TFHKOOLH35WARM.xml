@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcNGPHLVKYRZF2TFHKOOLH35WARM" Name="PasswordRequirements" DescriptionId="mlsK6CY3TUAHVAZ7AAEV47EOXJFA4" Type="3" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.auth.PasswordRequirements"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcNGPHLVKYRZF2TFHKOOLH35WARM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcNGPHLVKYRZF2TFHKOOLH35WARM"/>
+    </Bodies>
+    <MethodGroup Id="cmgRZNQA7M7EFFO5G57CN6ZWMWVIA" Name="Root"/>
+    <PropertyGroup Id="cpgYQHOIA4NZBAI5HXML2R4Z3KDGE" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth265F4XMCQBHL5FJ6GUQAUWSOPE" Name="checkPassword" DescriptionId="mlsL6SRTFJHGRD3DC2AWWRVSAGERY" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="checkPassword(Ljava.lang.String;)Lorg.radixware.kernel.common.auth.AuthUtils.PwdWeakness;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="password" DescriptionId="mlsLZMCLF44RVAZ7AO7JGSQMZEGLU" Id="mpr7PY4UNYMNRBEJJ72FPHOXU2WSY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.auth.AuthUtils.PwdWeakness"/>
+      </Method>
+      <Method Id="mthEON35JH6NZE6VJKJY4ALNBM5VQ" Name="getBlackList" DescriptionId="mls4C2R2Y7JCNBQHAG3JDOMFPX3XY" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getBlackList()Ljava.util.Collection&lt;Ljava.lang.String;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.Collection">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="21"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthOKQYUBBSMZFXLHQNCEB45JGFFE" Name="getDefault" DescriptionId="mlsKHQWTVEDNZAYBKTJNCS7NIRTXE" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getDefault()Lorg.radixware.kernel.common.auth.PasswordRequirements;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.auth.PasswordRequirements"/>
+      </Method>
+      <Method Id="mth4KI6OBWJTNCGRO4BUDMPLE5534" Name="getMinLength" DescriptionId="mlsDMUMVZHPU5HZ3MEJNJNMMPPET4" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getMinLength()J"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="long"/>
+      </Method>
+      <Method Id="mthVSOPQUTPDNHYRDGMRQ6WDBIUGE" Name="mustContainDigit" DescriptionId="mlsC6GGTDAAU5GVDIYCVZX7RR4XUA" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="mustContainDigit()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthHF66TROBAFAOFKZ74XF5RK5XZE" Name="mustContainLetter" DescriptionId="mlsTOKII6BFEZDHLLGLK6CXNHI3OU" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="mustContainLetter()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthSKMUNHYEKRHIDGHTTD7BVLI6VQ" Name="PasswordRequirements" DescriptionId="mls2SDIIVPSEZDABBF3Y3WHVZLQSA" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(JZZ)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="pwdMinLen" DescriptionId="mlsOOFT6ITO25A2PGA2DLHJVIH7PI" Id="mprTJM3Z36OPVAM7FRX43THEWFM4A">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="mustContainLetter" DescriptionId="mlsZFPKOOOPPBDYXAOHHA7C26DY5Y" Id="mprRDLGHIVRSFDZFPBPAD6MB4O4WA">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="mustContainDigit" DescriptionId="mlsYDBDADMNQJCU3K66DTINFTM5XA" Id="mprZJPET2WQERG2NKUDA2RFZBCLEA">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthK6OTZVIIKFDGBO7AQ3V3THRT5E" Name="PasswordRequirements" DescriptionId="mlsVWDHIW5YSRDKTDAI4WVIPCUDCU" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(JZZLjava.util.Collection&lt;Ljava.lang.String;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="pwdMinLen" DescriptionId="mlsJMBLRPVOMNCK5DNXIU3TE3KDS4" Id="mprBP6Z3CRRZJFRZBPG64XVWPLYSA">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="mustContainLetter" DescriptionId="mls7KJ47TDSZFANNBBNYB4ZSHHB54" Id="mprS6PACD3SB5H23NZ3C7DU4F3TT4">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="mustContainDigit" DescriptionId="mls65XASPFWRFGQ5LPY6GLRBCCXKE" Id="mprTVYW2IWUDBABXBXS5VH3K4U45I">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="blackList" DescriptionId="mlsFLNHX7YMWNCVHIGDWT3XMBCJXU" Id="mprUQZWH5V7WVH2LEGGJMN7S45BAU">
+            <Type TypeId="400" extStr="java.util.Collection">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

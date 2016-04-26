@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="axcNCHTB2WP2BCVFLRT36WXFJFDTU" Name="ServiceCallFault" Type="8" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.exceptions.ServiceCallFault"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcAZUGGJEVCRHERKCRM7L4C3WCXU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcPQ6D6CDWW5CMNFHP2W6VDREGS4"/>
+    </Bodies>
+    <MethodGroup Id="cmgWGZXFWCSQVALXM4RKMAIMGFCBU" Name="Root"/>
+    <PropertyGroup Id="cpgQKNZONURX5A6XDUIYROZITW44I" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthEHOLUA342FHMXDTI7GBNSHVMDA" Name="ServiceCallFault" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.String;Ljava.lang.String;Lorg.xmlsoap.schemas.soap.envelope.Detail;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="faultCode" Id="mpr2VTPUQO7IZHJZO2IHG2BA6OC7Q">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="faultString" Id="mprPEOI7UAZWJA3PI2K5SIHTMYPSA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="detail" Id="mprSIM2BDINDZHOLGQ2SULEIVVF7U">
+            <Type TypeId="400" extStr="org.xmlsoap.schemas.soap.envelope.Detail"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthVDLRPO57MBBDTLDCCNFWU7YUZY" Name="getDetail" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getDetail()Lorg.xmlsoap.schemas.soap.envelope.Detail;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.xmlsoap.schemas.soap.envelope.Detail"/>
+      </Method>
+      <Method Id="mthEKE7YWU2RBG75MXL2LVOFK2LMI" Name="getCauseExClass" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getCauseExClass()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthUCUD7GSFMZFF3MK5F53K6VVTNM" Name="getFaultCode" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getFaultCode()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthGBUVAW6DJZA7ND6NHV55WJPMBE" Name="getFaultString" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getFaultString()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

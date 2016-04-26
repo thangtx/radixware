@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcEDCAWL5I2NCQTFEHRO7ZGUHFGQ" Name="ValArrEditor" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.explorer.editors.valeditors.ValArrEditor"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcNKB4VSBCHFB47ECD76H62VRABQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcRJN52FOQHNGKLKPHXO5QPXSBXQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgNAXWC3J6XZHQRJQK25WX5RUW6U" Name="Root"/>
+    <PropertyGroup Id="cpgQYW5N2JZU5EM3FPLYY4YNZXSWY" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth3S2R3E2DKZF4VBDANAJW5LTYGI" Name="ValArrEditor" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.enums.EValType;Ljava.lang.Class&lt;*>;Lcom.trolltech.qt.gui.QWidget;ZZ)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprWXDPC6S275GMJCKABLRJE6CSR4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="valType" Id="mprQ2BMLFMTRVBNFMMAMZV433DBHM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+          </Parameter>
+          <Parameter Name="valClass" Id="mprTJNCMY2NPZAQFGU7Y7H5LS5DUA">
+            <Type TypeId="400" extStr="java.lang.Class">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?"/>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="parentWidget" Id="mprL4WLFKVLXFBIHDBOLBLIFTQMMM">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+          <Parameter Name="isMandatory" Id="mprKA5W3YTFXBE6HKFP6FHVLLDV54">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="isReadOnly" Id="mprKS7DJFDUVFEVBEAKE6FFZTXBME">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthKLIY3QDAPRBGJI3WH4I2FJXKWA" Name="edit" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="edit()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthFQN7DLIM4FG2ZOSAJ3Q5HJYT6Q" Name="ValArrEditor" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.enums.EValType;Ljava.lang.Class&lt;*>;Lcom.trolltech.qt.gui.QWidget;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mpr6EOVC6XUKBCSVGA5SYTCOLV65Y">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="valType" Id="mprEB5JHF23WVGCZHOZTVPCCOPZEU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+          </Parameter>
+          <Parameter Name="valClass" Id="mprZV2TRK4FCVDLRN7J34EWF5MQB4">
+            <Type TypeId="400" extStr="java.lang.Class">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?"/>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="parentWidget" Id="mprDSD6EUEQEVGHRBEXAEL7VGOEZU">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthGJCJIIOQMRH4ZFDLMFODURRT3Q" Name="getPredefinedItemValues" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getPredefinedItemValues()Ljava.util.List&lt;Ljava.lang.Object;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthKHEREDTQIVESFDTNKMGFONPJP4" Name="setPredefinedItemValues" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setPredefinedItemValues(Ljava.util.List&lt;Ljava.lang.Object;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="values" Id="mprNQVS7N364JAY7K6JEAVRGBMR2Y">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth6ZIXSWSCNJAV5G5G66NSZTGC7M" Name="getDialogTitle" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getDialogTitle()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mth6VHR2N5TEND5THDAYWTAIPUKT4" Name="setDialogTitle" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setDialogTitle(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" Id="mpr6BWZDD44XZHIHGHKM5GLBFWDVU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

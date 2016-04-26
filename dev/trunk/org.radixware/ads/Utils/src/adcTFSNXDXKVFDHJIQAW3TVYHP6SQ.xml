@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcTFSNXDXKVFDHJIQAW3TVYHP6SQ" Name="UampReader" Type="3" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.uamp.UampReader"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcI6FEI2TGHBB6PCVLN2J3PP4ML4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcKZLGYC35GZCJJHZ7XSY5B5RV7E"/>
+    </Bodies>
+    <MethodGroup Id="cmgS63O73JM3BGEFI5AWD2IVXOKMI" Name="Root"/>
+    <PropertyGroup Id="cpgDGIOXW5RIFHE7KZ3UC247F2GGU" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthDTQ33KDHYJCRHHXLRW4UQ6DSIM" Name="UampReader" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>([BLjava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="mess" Id="mprLA6JJHNTE5CMZKR5KES3UFCOVY">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="charSetName" Id="mprJNHDKVH2AFGLXHJP6QGLVEZ4Z4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.uamp.UampException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthP3KVKEIRABHR7LBYEMNHX5QK2A" Name="UampReader" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>([B)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="mess" Id="mpr7LAOGYPE2RARPCIH3M5V7EDA2U">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.uamp.UampException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthFPH7JEPY5RDEZGSFNGM7GGSVAA" Name="getArrBigDecimal" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getArrBigDecimal(Ljava.lang.String;)[Ljava.math.BigDecimal;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="name" Id="mpr6Q53U6KS3RGSHKE25UX6LSVAFQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.math.BigDecimal" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.uamp.UampException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthSBLQS7GE7ZCHRDJGZQ7ESJL3P4" Name="getArrBin" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getArrBin(Ljava.lang.String;)[Lorg.radixware.kernel.common.types.Bin;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="name" Id="mprFSBQXGRL3FBHNJ32HNPO5AQF6A">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="22" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.uamp.UampException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthY6EIRUR3D5GCLLKXSFNBBQH75Q" Name="getArrBool" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getArrBool(Ljava.lang.String;)[Ljava.lang.Boolean;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="name" Id="mpr6XB4JSMSAVBRVJGQZHR3LBPTEY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="1" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.uamp.UampException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthNYTXL6WAOZF65G66ILXOYHDURA" Name="getArrDateTime" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getArrDateTime(Ljava.lang.String;)[Ljava.sql.Timestamp;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="name" Id="mprKO2NJGEX2JA23ALXN5KNWV2DZQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.uamp.UampException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthPJQ3EIPF5ZGFJP7GX66NIWKPMM" Name="getArrItemBigDecimal" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getArrItemBigDecimal(Ljava.lang.String;I)Ljava.math.BigDecimal;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="name" Id="mpr5RUINMON7ZAG5LUK2S7Y6BBUAQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="idx" Id="mprOLELYUV6CRHBXPYW5KQS66CILY">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.math.BigDecimal"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.uamp.UampException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthLI67PRTFZRD5NKVIO3TMP4OOL4" Name="getArrItemBin" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getArrItemBin(Ljava.lang.String;I)Lorg.radixware.kernel.common.types.Bin;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="name" Id="mprB2CEOHQUYFCHRCZ3S2FDEE4L5U">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="idx" Id="mprRSHCQ5M3JNHBLD77KLRMGA7G5Y">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="22"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.uamp.UampException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthYDCERI5VA5BNJPV5AYCWVOJJII" Name="getArrItemBool" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getArrItemBool(Ljava.lang.String;I)Ljava.lang.Boolean;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="name" Id="mprIS3X3JCNLFF7VP7Q3PIBCJWMGM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="idx" Id="mprETICWOIGT5A2DOINQ5QAQ35DJ4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.uamp.UampException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth2MCNNW2T2FFM7C5R6BJXRV6CMI" Name="getArrItemCount" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getArrItemCount(Ljava.lang.String;)I"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="name" Id="mprAUZ3I4AD2VEMFIPSFRISN465FA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthSPRUZG2UZRGK3JYXPH2A3JGW6I" Name="getArrItemDateTime" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getArrItemDateTime(Ljava.lang.String;I)Ljava.sql.Timestamp;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="name" Id="mprORROTJJVTRFNHBKR2RNG2U74RI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="idx" Id="mprGA5MV3TYWBCUNOARL5ZGBCVU5Y">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.uamp.UampException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth222GJBENGNDKLFRTBUNXNQDFMI" Name="getArrItemLong" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getArrItemLong(Ljava.lang.String;I)Ljava.lang.Long;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="name" Id="mpr2NHOBF325VCLDB2IY3WH32BTTQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="idx" Id="mprNLYM4NKXBNDXZNP64OWO2WHINA">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="2"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.uamp.UampException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthDMKAFVJ7HNGOJICV5TKNNFUVFI" Name="getArrItemString" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getArrItemString(Ljava.lang.String;I)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="name" Id="mprSKFL5FFVNBHV5NEC42HMROT35E">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="idx" Id="mprS6NHUDRBZBF2VKJMDJRMWZFLRA">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.uamp.UampException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthNJOT3ZHWMBAAVHAZZGI3YQ5TRA" Name="getArrLong" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getArrLong(Ljava.lang.String;)[Ljava.lang.Long;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="name" Id="mpr3BD6ZCWSMJGMZCUGUBRO274HQE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="2" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.uamp.UampException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthBDFDWDRLSZCZLL6G4ZUTSH2ELI" Name="getArrString" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getArrString(Ljava.lang.String;)[Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="name" Id="mprKS7VGBXOKFCDHF22DQPAR63U5E">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.uamp.UampException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth3FVWQ5VMBFGLRK2ZKNG3TPFRIY" Name="getBigDecimal" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getBigDecimal(Ljava.lang.String;)Ljava.math.BigDecimal;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="name" Id="mpr5E4LQTFB2BETJFAE73I3TZTXVA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.math.BigDecimal"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.uamp.UampException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthLB4TMGQHQJB43L33M2AT7SOK2Q" Name="getBin" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getBin(Ljava.lang.String;)Lorg.radixware.kernel.common.types.Bin;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="name" Id="mprAPIQZ45FWZF3PA6QRB73ZXO2OM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="22"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.uamp.UampException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthH4H5DE7YUBHEPB7ZMYGOABRQWY" Name="getBool" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getBool(Ljava.lang.String;)Ljava.lang.Boolean;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="name" Id="mprX6IJJKVBJVBCLJNESNJUBCZ3EY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.uamp.UampException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthSN3WTE4E7NACHIJIT5GOEBC5H4" Name="getDateTime" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getDateTime(Ljava.lang.String;)Ljava.sql.Timestamp;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="name" Id="mpr73QUWUR52RGANIVHME7O45MOEE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.uamp.UampException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth2R5KNJWLHNGNLJGUVCLXEFXCAU" Name="getFieldNames" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getFieldNames()[Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21" Dimension="1"/>
+      </Method>
+      <Method Id="mthVZIGXZ6L7ZG4DNN7F2MJLXKFZ4" Name="getLong" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getLong(Ljava.lang.String;)Ljava.lang.Long;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="name" Id="mprSZKGQ33PTJAKPA5T26JK3TDO3M">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="2"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.uamp.UampException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthPWC3GZNSXBEYTKR57D4TVZ6EGM" Name="getString" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getString(Ljava.lang.String;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="name" Id="mpr4ALBJDGAJRHDZMYSDL7XTH3XXY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.uamp.UampException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthO3B4XRNWWJHSHNTR5N66GIRXW4" Name="isFieldExists" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isFieldExists(Ljava.lang.String;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="fieldName" Id="mprRPNSCY2MONEDZPFSRVVYE72XCM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthC2WUQPGZJVB6RBVDW7K5SK44BI" Name="moveToNext" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="moveToNext()V"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.uamp.UampException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthKMZNDWFHBJCLRCVCVDQPAWR5TQ" Name="notEmpty" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="notEmpty()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthFGMSYDL5ZZFGLNRDWDQ4NAXM6E" Name="parseArray" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="parseArray(Ljava.lang.String;Lorg.radixware.kernel.common.uamp.UampReader.BytesParser;)[Ljava.lang.Object;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="name" Id="mprUT33B6VDI5G6TNNWGQ7FSRNX4E">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="parser" Id="mprRZR4BORYX5BXBNEREOVQVXINTM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.uamp.UampReader.BytesParser"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.uamp.UampException"/>
+        </ThrownExceptions>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

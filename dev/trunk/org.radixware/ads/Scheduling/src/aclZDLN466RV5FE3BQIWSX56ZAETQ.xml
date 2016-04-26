@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclZDLN466RV5FE3BQIWSX56ZAETQ" Name="Task.Atomic" Type="2" ClientEnvironment="explorer">
+    <AccessRules IsAbstract="true"/>
+    <Headers>
+      <Src Name="HeaderaclZDLN466RV5FE3BQIWSX56ZAETQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaclZDLN466RV5FE3BQIWSX56ZAETQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgCXF3YHU5OZGYRIMGFTSZU4YU2M" Name="Root"/>
+    <PropertyGroup Id="cpgSL2WVPLKINEHZJXDKYYEFOUDJQ" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthRM7DUPZ7CFAU7NRFYMBPOXCMSY" Name="isDead" DescriptionId="mls2VWHJ4TAHREOFJXAWOGSZO47BA" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return !</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mth6GQAQXI57FGWZKLGIMQZIVCVTQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth3AJ224J3KFH4PKRZDARTG6KR2M" Name="isRunningOnlyWhenRelatedJobsExist" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return true;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+    <Presentations ObjectTitleId="mls722FSSVJG5C5NJ5I7UOKGGWMEE"/>
+    <Extends TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+  </AdsClassDefinition>
+</AdsDefinition>

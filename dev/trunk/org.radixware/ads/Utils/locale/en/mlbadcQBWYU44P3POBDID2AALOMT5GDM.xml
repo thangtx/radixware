@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsLocalizingBundleDefinition Id="mlbadcQBWYU44P3POBDID2AALOMT5GDM">
+    <String Id="mls2PNUX5ERLVFOZMKXXUXTAMNXWU" SrcKind="3" Creator="dlastochkin" CreationDate="2015-09-21T12:07:18.952" Version="0">
+      <Value Language="en" NeedsCheck="true" LastModified="2015-09-21T12:10:45.230" Author="dlastochkin">Field which contains cached entity.</Value>
+    </String>
+    <String Id="mls3ROH6WRBVBFTPKUDJYK6C4QJ7Q" SrcKind="3" Creator="dlastochkin" CreationDate="2015-09-18T13:05:50.922" Version="0">
+      <Value Language="en" NeedsCheck="false" LastModified="2015-12-21T14:43:29.642" Author="ypaliy">Entity to be cached.</Value>
+    </String>
+    <String Id="mls4RFXLVQ7YBGDPDLVL2TA7XE4FI" SrcKind="3" Creator="dlastochkin" CreationDate="2015-09-18T12:44:45.467" Version="0">
+      <Value Language="en" NeedsCheck="false" LastModified="2015-12-21T14:43:17.708" Author="ypaliy">Interval in seconds after which the entity state is rechecked.</Value>
+    </String>
+    <String Id="mls7O3GAJ7URZFLHLWYD67FYIXALQ" SrcKind="3" Creator="dlastochkin" CreationDate="2015-09-21T11:23:07.518" Version="0">
+      <Value Language="en" NeedsCheck="false" LastModified="2015-12-21T13:55:23.683" Author="ypaliy">Returns &lt;i>true&lt;/i> at the first start and if the entity value in DB is changed. Otherwise, returns &lt;i>false&lt;/i>.</Value>
+    </String>
+    <String Id="mls7RZAJDB7ABEO7DLKEDXFL54AEY" SrcKind="3" Creator="dlastochkin" CreationDate="2015-09-18T12:01:36.934" Version="0">
+      <Value Language="en" NeedsCheck="false" LastModified="2015-12-17T18:14:42.551" Author="ypaliy">Class for caching DB entities.</Value>
+    </String>
+    <String Id="mlsASPKEJM7U5DQBL5ARGZUG2VVCA" SrcKind="3" Creator="dlastochkin" CreationDate="2015-09-18T13:31:53.859" Version="0">
+      <Value Language="en" NeedsCheck="false" LastModified="2015-12-21T14:24:39.397" Author="ypaliy"><![CDATA[Once in <i>recheckPeriod</i> checks whether the entity in DB is changed. At the first start returns <i>true</i> and saves the current time. If the <i>lastUpdateTime</i> value is changed or if the record is not found in DB, rereads the entity object (if the object is deleted, catches the exception), returns <i>true</i>. If the object is reread and then deleted from DB, returns <i>true</i>.]]></Value>
+    </String>
+    <String Id="mlsBP26YWVS7JAD7PDHZOABJZZGJE" SrcKind="3" Creator="dlastochkin" CreationDate="2015-09-21T11:33:46.462" Version="0">
+      <Value Language="en" NeedsCheck="false" LastModified="2015-12-21T14:41:52.839" Author="ypaliy">Object allows to get the time when the DB table is last updated. For details, see Radix::Utils::ILastUpdateTimeGetter.</Value>
+    </String>
+    <String Id="mlsLTPEWNSL4ZALLDMDQ5MEZUIVYQ" SrcKind="3" Creator="dlastochkin" CreationDate="2015-09-18T12:50:03.483" Version="0">
+      <Value Language="en" NeedsCheck="false" LastModified="2015-12-21T14:41:23.633" Author="ypaliy">Interval during which the entity is stored in cache.</Value>
+    </String>
+    <String Id="mlsM3Q5ANI43NGWNMJFXC5IDJW47Q" SrcKind="3" Creator="dlastochkin" CreationDate="2015-09-18T12:37:22.150" Version="0">
+      <Value Language="en" NeedsCheck="false" LastModified="2015-12-17T18:06:11.155" Author="ypaliy">Constructor for the Radix::Utils::Caching class.</Value>
+    </String>
+    <String Id="mlsM4E3UHCXC5ANZLOPUIJYQ2L5HA" SrcKind="3" Creator="dlastochkin" CreationDate="2015-09-21T12:14:50.419" Version="0">
+      <Value Language="en" NeedsCheck="true" LastModified="2015-09-21T12:16:10.969" Author="dlastochkin">Time of the last cache refresh in seconds.</Value>
+    </String>
+    <String Id="mlsN2B7FQXCZFEIZG5L4REM6IFKUA" SrcKind="3" Creator="dlastochkin" CreationDate="2015-09-21T12:23:14.474" Version="0">
+      <Value Language="en" NeedsCheck="true" LastModified="2015-09-21T12:23:33.849" Author="dlastochkin">The time interval in seconds, after which the entity state will be rechecked.</Value>
+    </String>
+    <String Id="mlsNFPDZ3EZKVGGHHDTXODO46KIPY" SrcKind="3" Creator="dlastochkin" CreationDate="2015-09-21T12:11:39.632" Version="0">
+      <Value Language="en" NeedsCheck="true" LastModified="2015-09-21T12:12:15.807" Author="dlastochkin">The time interval during which the entity will be stored in the cache.</Value>
+    </String>
+    <String Id="mlsNH7R4IRXBRA3LLGYK4ZIYPWHOE" SrcKind="3" Creator="dlastochkin" CreationDate="2015-09-18T13:00:09.971" Version="0">
+      <Value Language="en" NeedsCheck="false" LastModified="2015-12-21T14:40:48.187" Author="ypaliy">Constructor for the Radix::Utils::Caching class. The values of the corresponding elements of Radix::Common::CachingPeriod enum are used as the values of the &lt;i>recheckPeriod&lt;/i> and &lt;i>keepPeriod&lt;/i> parameters. </Value>
+    </String>
+    <String Id="mlsUTBHHDGKH5GDTEGGQJGN3KIVXM" SrcKind="3" Creator="dlastochkin" CreationDate="2015-09-21T12:16:44.881" Version="0">
+      <Value Language="en" NeedsCheck="true" LastModified="2015-09-21T12:22:21.915" Author="dlastochkin">Previous time of the cache update.</Value>
+    </String>
+    <String Id="mlsWGZ3GLDIRFH6DIURVBD5VZSCVI" SrcKind="3" Creator="dlastochkin" CreationDate="2015-09-18T12:43:58.737" Version="0">
+      <Value Language="en" NeedsCheck="false" LastModified="2015-12-17T18:05:57.779" Author="ypaliy">Entity to be cached.</Value>
+    </String>
+    <String Id="mlsWW2EO2V25JHLBEMIQZR7SNVRXM" SrcKind="3" Creator="dlastochkin" CreationDate="2015-09-21T11:57:57.762" Version="0">
+      <Value Language="en" NeedsCheck="false" LastModified="2015-12-21T14:38:03.063" Author="ypaliy">Object allows to get the time when the DB table is last updated. For details, see Radix::Utils::ILastUpdateTimeGetter.</Value>
+    </String>
+    <String Id="mlsYAL7N3PREBBJZKDF5PNFOIDJYQ" SrcKind="3" Creator="dlastochkin" CreationDate="2015-09-21T11:58:11.087" Version="0">
+      <Value Language="en" NeedsCheck="false" LastModified="2015-12-21T14:36:46.818" Author="ypaliy"><![CDATA[If this parameter is <i>true</i>, the entity is refreshed immediately. If the parameter is <i>false</i>, the entity was refreshed after <i>recheckPeriod</i>.]]></Value>
+    </String>
+    <String Id="mlsYJBRZNAOGJBEHCFJMPKQIX3D3Q" SrcKind="3" Creator="dlastochkin" CreationDate="2015-09-21T11:57:47.297" Version="0">
+      <Value Language="en" NeedsCheck="false" LastModified="2015-12-21T14:25:53.381" Author="ypaliy">Returns &lt;i>true&lt;/i> at the first start and if the entity in DB is changed. Otherwise, returns &lt;i>false&lt;/i>.</Value>
+    </String>
+    <String Id="mlsZGMOOF2XCRDTNOLATE3K33A454" SrcKind="3" Creator="akrylov" CreationDate="2015-05-05T15:02:32.593" Version="0">
+      <Value Language="en" NeedsCheck="false" LastModified="2015-12-21T14:27:33.011" Author="ypaliy"><![CDATA[Once in <i>recheckPeriod</i> checks whether the entity in DB is changed. At the first start returns <i>true</i> and saves the current time. If the <i>lastUpdateTime</i> value is changed or if the record is not found in DB, rereads the entity object (if the object is deleted, catches the exception), returns <i>true</i>. If the object is reread and then deleted from DB, returns <i>true</i>.]]></Value>
+    </String>
+  </AdsLocalizingBundleDefinition>
+</AdsDefinition>

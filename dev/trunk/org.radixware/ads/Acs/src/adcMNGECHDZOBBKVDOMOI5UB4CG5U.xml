@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcMNGECHDZOBBKVDOMOI5UB4CG5U" Name="AuthUtils" DescriptionId="mlsXJPCFWXNXNGERBG3QATZORNOLI" Type="3" Environment="common">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.auth.AuthUtils"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcKDNBLVHUQZC7THWE5DCWWN6Q44"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcAYX5JES3QBC47BYNRSAT6APZY4"/>
+    </Bodies>
+    <MethodGroup Id="cmgUR3DULB4AFBJHI363DKSFTL6VA" Name="Root"/>
+    <PropertyGroup Id="cpg7IN2ZWMAC5BWJBTETY6Y2U5QNI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth5K62VPCHYRC47EN4UEM4FVPNKU" Name="checkPwdWeakness" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true">
+          <Transparence Extendable="false" PublishedName="checkPwdWeakness(Ljava.lang.String;)Lorg.radixware.kernel.common.auth.AuthUtils.PwdWeakness;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="password" Id="mprDPEDY3GEWZGPNMNGIPYHMRY2M4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.auth.AuthUtils.PwdWeakness"/>
+      </Method>
+      <Method Id="mthR5CHJOJNGNEEREVNKTUKA6YCLA" Name="decryptNewPwdHash" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true">
+          <Transparence Extendable="false" PublishedName="decryptNewPwdHash([B[B)[B"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="newPwdHashCryptogram" Id="mprXY5DAFB6FRE7NNA6OFE22WZA4A">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="oldPwdHash" Id="mprDKJAMB74IJH2ZKU5PICRYKUQSE">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="byte" Dimension="1"/>
+      </Method>
+      <Method Id="mthALOZQP3ERNDNHEZVMMYWLGWHRU" Name="encryptNewPwdHash" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true">
+          <Transparence Extendable="false" PublishedName="encryptNewPwdHash([B[B)[B"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="newPwdHash" Id="mpr6FHIL62ZBRF2RBXFOFAJZ4SA4Q">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="oldPwdHash" Id="mprISFXAHDHJRH5BMQ3DQ4FIWR2SA">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="byte" Dimension="1"/>
+      </Method>
+      <Method Id="mthWHIYGTRMIFACVN2ZJAWEP3JW3I" Name="calcPwdHash" DescriptionId="mlsNPLBYD3BWZFBLEDKV7BAGEJTYY" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true">
+          <Transparence Extendable="false" PublishedName="calcPwdHash(Ljava.lang.String;Ljava.lang.String;)[B"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="userName" Id="mprTNOCJYJPAVCUHKAGSWDGWNX4TE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="password" Id="mprU343BPYFY5FERI2WXNBX6BHXVM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="byte" Dimension="1"/>
+      </Method>
+      <Method Id="mthGPYJM2FPNJBANI5ORE5J2HDQVA" Name="calcPwdToken" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true">
+          <Transparence Extendable="false" PublishedName="calcPwdToken([B[B)[B"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="challenge" Id="mpr3PUJH6AV7JA6TBKGLTXAUWMT7Q">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="pwdHash" Id="mprG6JJUWZ3RJAM5IJ4IDNHBDANNQ">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="byte" Dimension="1"/>
+      </Method>
+      <Method Id="mthC6Q2IWNADZAWPDNSSUOBWRTXPY" Name="checkPwdWeakness" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true">
+          <Transparence Extendable="false" PublishedName="checkPwdWeakness(Ljava.lang.String;Ljava.lang.Long;ZZ)Lorg.radixware.kernel.common.auth.AuthUtils.PwdWeakness;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="password" Id="mpr5CPI2JFKWNDUJBKOELCPNDIJSY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="minLen" Id="mprUTSWYJE37VHYPAF74CWQ72OOZE">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="mustContainAChars" Id="mprAQX4HAHCNFF3XIZZD6HCE4RBNI">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="mustContainNChars" Id="mprLQSRXJNBPNFKPLYK2XDXQ3Z6GU">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.auth.AuthUtils.PwdWeakness"/>
+      </Method>
+      <Method Id="mthXJWOPJZMLNAZHE465DCIVQFDXU" Name="checkPwdWeakness" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true">
+          <Transparence Extendable="false" PublishedName="checkPwdWeakness(Ljava.lang.String;Lorg.radixware.kernel.common.auth.PasswordRequirements;)Lorg.radixware.kernel.common.auth.AuthUtils.PwdWeakness;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="password" Id="mprEAR24D37DBDGDCQGO5NLRUCSWA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="requirements" Id="mprKQE3U6XUTNBDFCVDWYKAUMSGAU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.auth.PasswordRequirements"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.auth.AuthUtils.PwdWeakness"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

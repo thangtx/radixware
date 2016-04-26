@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc24UFWM6B2VDGRCDSIN2BKCHP3Y" Name="ClassLoader" DescriptionId="mlsD2QM7LELOJEIRJUIKMLMR4YGZQ" Type="3" Environment="common">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="java.lang.ClassLoader"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc24UFWM6B2VDGRCDSIN2BKCHP3Y"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc24UFWM6B2VDGRCDSIN2BKCHP3Y"/>
+    </Bodies>
+    <MethodGroup Id="cmgVK6WT2AIHREW7J7BVSUUV4FYFE" Name="Root"/>
+    <PropertyGroup Id="cpgJOZM3CT2NBE25JEXZPGRYPTKYU" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthF4OQYIOGO5HC3GFJ3TFMUHVTYU" Name="loadClass" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="loadClass(Ljava.lang.String;Z)Ljava.lang.Class&lt;*>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprLX2HZL66OBDJXLBFRIJACRHXJI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="arg1" Id="mprBQFWHSGYCFHDPFFAMZO7RKV6BY">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Class">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?"/>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.ClassNotFoundException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthV7CXA75LCRA3FCBFOOHRYPNOPE" Name="findClass" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="findClass(Ljava.lang.String;)Ljava.lang.Class&lt;*>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprIJZLUQE5CJHBVJYSPL3RDVAPE4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Class">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?"/>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.ClassNotFoundException"/>
+        </ThrownExceptions>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

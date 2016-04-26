@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcHKSHRNIAVLOBDCLSAALOMT5GDM" Name="Maintenance" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc4D4ZZBO3VFA3XMPKSIKITWC5NY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcK73TTZT53NAVJK2EZJFNM4V37Q"/>
+    </Bodies>
+    <MethodGroup Id="cmgPYV5OEAGYBCKFP465AYFTGLSLU" Name="Root"/>
+    <PropertyGroup Id="cpgDPM5VY7WXBE77MNRBQGUNULFIA" Name="Root"/>
+    <Properties>
+      <Property Id="prd3PVX2JANVLOBDCLSAALOMT5GDM" Name="continual" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false" IsStatic="true"/>
+        <Type TypeId="400" extStr="java.sql.CallableStatement"/>
+        <InitialValue>
+          <ValAsStr>null</ValAsStr>
+        </InitialValue>
+        <GetterSources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcHKSHRNIAVLOBDCLSAALOMT5GDM prd3PVX2JANVLOBDCLSAALOMT5GDM" Invoke="true" extStr="#STD_PROP_VALUE#"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>==null)
+ try
+ { </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcHKSHRNIAVLOBDCLSAALOMT5GDM prd3PVX2JANVLOBDCLSAALOMT5GDM" Invoke="true" extStr="#STD_PROP_VALUE#"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthPDUPVLPYXTNRDISQAAAAAAAAAA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().prepareCall("begin Maintenance.continualy; end;"); }
+ catch(java.sql.SQLException e)
+ { throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mthHC4GKTKLY5FKHATTJ4SYDRTZ44" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e); }
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcHKSHRNIAVLOBDCLSAALOMT5GDM prd3PVX2JANVLOBDCLSAALOMT5GDM" Invoke="true" extStr="#STD_PROP_VALUE#"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </GetterSources>
+      </Property>
+      <Property Id="prdYTLQDEANVLOBDCLSAALOMT5GDM" Name="daily" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false" IsStatic="true"/>
+        <Type TypeId="400" extStr="java.sql.CallableStatement"/>
+        <InitialValue>
+          <ValAsStr>null</ValAsStr>
+        </InitialValue>
+        <GetterSources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcHKSHRNIAVLOBDCLSAALOMT5GDM prdYTLQDEANVLOBDCLSAALOMT5GDM" Invoke="true" extStr="#STD_PROP_VALUE#"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>==null)
+ try
+ { </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcHKSHRNIAVLOBDCLSAALOMT5GDM prdYTLQDEANVLOBDCLSAALOMT5GDM" Invoke="true" extStr="#STD_PROP_VALUE#"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthPDUPVLPYXTNRDISQAAAAAAAAAA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().prepareCall("begin Maintenance.daily; end;"); }
+ catch(java.sql.SQLException e)
+ { throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mthHC4GKTKLY5FKHATTJ4SYDRTZ44" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e); }
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcHKSHRNIAVLOBDCLSAALOMT5GDM prdYTLQDEANVLOBDCLSAALOMT5GDM" Invoke="true" extStr="#STD_PROP_VALUE#"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </GetterSources>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthNI4TBLYBVLOBDCLSAALOMT5GDM" Name="daily" Nature="0" IsReflectiveCallable="true" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try
+{  </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcHKSHRNIAVLOBDCLSAALOMT5GDM prdYTLQDEANVLOBDCLSAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.execute(); }
+catch(java.sql.SQLException e)
+{ throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mthHC4GKTKLY5FKHATTJ4SYDRTZ44" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e); }</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthPS65LVIAVLOBDCLSAALOMT5GDM" Name="continual" Nature="0" IsReflectiveCallable="true" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try
+{  </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcHKSHRNIAVLOBDCLSAALOMT5GDM prd3PVX2JANVLOBDCLSAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.execute(); }
+catch(java.sql.SQLException e)
+{ throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mthHC4GKTKLY5FKHATTJ4SYDRTZ44" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e); }</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

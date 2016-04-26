@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcV23MO5QJMZA75P5F7YUFWCENOU" Name="ChildItemDecoration" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.explorer.editors.monitoring.tree.ChildItemDecoration"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcV23MO5QJMZA75P5F7YUFWCENOU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcV23MO5QJMZA75P5F7YUFWCENOU"/>
+    </Bodies>
+    <MethodGroup Id="cmgDVYVKFGL4RGFVMVVA6O5WZ6VMY" Name="Root"/>
+    <PropertyGroup Id="cpgGDMRFUVJ7VFTVDDGE3EGI7AZTY" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthILUFRSWCMFD7FMYN66YA75GUIM" Name="getNodeIcon" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getNodeIcon()Lcom.trolltech.qt.gui.QIcon;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QIcon"/>
+      </Method>
+      <Method Id="mthBRYNXDIEQNEWNP7RRUR4AT5NJQ" Name="getNodeTitle" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getNodeTitle()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthJHOBZSUW2JCDJPDGDALG55JGYQ" Name="getNodeTooltip" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getNodeTooltip()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthABGI5D4F7FCC5C4RHLIGFA536U" Name="ChildItemDecoration" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.String;Ljava.lang.String;Lcom.trolltech.qt.gui.QIcon;Ljava.lang.String;Ljava.util.List&lt;Lorg.radixware.kernel.explorer.editors.monitoring.tree.MonitoringTreeItemDecoration;>;Ljava.util.List&lt;Lorg.radixware.kernel.explorer.editors.monitoring.tree.MonitoringTreeItemDecoration;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="uniqueId" Id="mprHLSSBXOTYFHH7AGFIBXZ4FXDOA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="title" Id="mpr42G76V66UZA3JOGYBU3NL7IL5Y">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="icon" Id="mprOFXQ4MQ6LFGMJNEKZOLGLHTZHA">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QIcon"/>
+          </Parameter>
+          <Parameter Name="tooltip" Id="mprU5RZOCIZXZGDBAVGSWQBIAUCSU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="stateDecorations" Id="mprDXZM7VM2ARHR5L372XOCL2PYKQ">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.explorer.editors.monitoring.tree.MonitoringTreeItemDecoration"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="otherDecorations" Id="mprKGFDIUYQYBAD5KUUYY4Y77R3DU">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.explorer.editors.monitoring.tree.MonitoringTreeItemDecoration"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth7NSXBG2KSJHKLPUNWXKJPZGNGI" Name="getOtherDecorations" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getOtherDecorations()Ljava.util.List&lt;Lorg.radixware.kernel.explorer.editors.monitoring.tree.MonitoringTreeItemDecoration;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.explorer.editors.monitoring.tree.MonitoringTreeItemDecoration"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthRGPDWAZSAFB55NZIEEKGI4A5HE" Name="getStateDecorations" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getStateDecorations()Ljava.util.List&lt;Lorg.radixware.kernel.explorer.editors.monitoring.tree.MonitoringTreeItemDecoration;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.explorer.editors.monitoring.tree.MonitoringTreeItemDecoration"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthVQDTAUGR2RFSDIBYR26IBDI7ME" Name="getId" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getId()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

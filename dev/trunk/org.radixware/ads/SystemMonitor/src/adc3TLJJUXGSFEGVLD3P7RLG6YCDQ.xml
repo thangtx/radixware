@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc3TLJJUXGSFEGVLD3P7RLG6YCDQ" Name="MetricRecordWriter" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.server.monitoring.MetricRecordWriter"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc3TLJJUXGSFEGVLD3P7RLG6YCDQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc3TLJJUXGSFEGVLD3P7RLG6YCDQ"/>
+    </Bodies>
+    <MethodGroup Id="cmg2YGYTPYRTVEU7CK5MTTIFAWHW4" Name="Root"/>
+    <PropertyGroup Id="cpgBAEJE6Q4S5H7BKH6BETSLPGVBI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthGXJFUKUMINEFVEK7QK2BK5PDJE" Name="flush" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="flush()V"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.sql.SQLException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthBFSQALAUYNEDDCB3GZLCUGPNIE" Name="writeInstanceEventMetric" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="writeInstanceEventMetric(JLjava.lang.String;JLjava.lang.Double;Ljava.lang.Double;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="instanceId" Id="mprOE3TBEOABNGJREEAVQFVOTMOQQ">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="kind" Id="mprS7TG27MJBRA7VKQ7ZVVDRRXJPI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="timeMillis" Id="mprXEREFLOA6RD4JFEEIFDN5KRO7Y">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="oldValue" Id="mprCVVKP5Z77VAKFPU6J4KTUWKKIU">
+            <Type TypeId="400" extStr="java.lang.Double"/>
+          </Parameter>
+          <Parameter Name="newValue" Id="mprICQZW2X4VFGS3KWO3IOTRIREVI">
+            <Type TypeId="400" extStr="java.lang.Double"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthTOMCWCJO2FBO3BJNN6AJCF2IWU" Name="writeInstanceStatMetric" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="writeInstanceStatMetric(JLjava.lang.String;JJLjava.lang.Double;Ljava.lang.Double;D)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="instanceId" Id="mprQLK6UP4H5VGFLOICIW3X76VRIU">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="kind" Id="mprE3KWBOUUTFGY7P25NHOYOTJKF4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="begTimeMillis" Id="mprMDUYARYD4RGCLEIVGV6DNEGZ5Q">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="endTimeMillis" Id="mprDU6M3I2X25FWPC2Q6BDZSJZX2Y">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="minVal" Id="mpr2VGT522ZARAT3J5OTQMVWOQE7U">
+            <Type TypeId="400" extStr="java.lang.Double"/>
+          </Parameter>
+          <Parameter Name="maxVal" Id="mprKGIXHHKXJFBSTFJDOYSV5HN7UI">
+            <Type TypeId="400" extStr="java.lang.Double"/>
+          </Parameter>
+          <Parameter Name="avgVal" Id="mprC3HTPYCF4JCGNN5W3DA46TTY2A">
+            <Type TypeId="401" extStr="double"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth7KSOOUYSSZC47BWO4RZQX55T6U" Name="writeNetChannelEventMetric" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="writeNetChannelEventMetric(JLjava.lang.String;JLjava.lang.Double;Ljava.lang.Double;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="channelId" Id="mprD6Z5MOVOBJG4BBXYIFE3333ZEA">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="kind" Id="mprS4G566L6B5BVPJE22MNEEWEC4M">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="timeMillis" Id="mprQ5H5D5Z5VFEA3MAW34XK6UM3CM">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="oldVal" Id="mpr5Y43HMSGEFAZVD5UFTP43OJMFQ">
+            <Type TypeId="400" extStr="java.lang.Double"/>
+          </Parameter>
+          <Parameter Name="newVal" Id="mprAZ7SIKWF2VDEZOYP43K7VSZQMA">
+            <Type TypeId="400" extStr="java.lang.Double"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthPCTNAKAT2RER5CJFOISJMF6CLA" Name="writeNetChannelStatMetric" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="writeNetChannelStatMetric(JLjava.lang.String;JJLjava.lang.Double;Ljava.lang.Double;D)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="channelId" Id="mprREUBKU2BZNBMBH3JKBW6JFNE6Y">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="kind" Id="mprMOQW33IBYVDXBOPIKVWZF7E5EA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="begTimeMillis" Id="mprZ3OYGCQZMZGQHLBVXMUU7NYLDA">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="endTimeMillis" Id="mprROQNR2FVKBHKJKDWJV4RVRYBRU">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="minval" Id="mprUBOOD3T3ONEITOAHLRXGABTHNE">
+            <Type TypeId="400" extStr="java.lang.Double"/>
+          </Parameter>
+          <Parameter Name="maxVal" Id="mprCVOFOBZ3CBG6BBX4MYONZFOT3A">
+            <Type TypeId="400" extStr="java.lang.Double"/>
+          </Parameter>
+          <Parameter Name="avgVal" Id="mprMK3Z3XBSIJE7ZH245L66HAMJ6I">
+            <Type TypeId="401" extStr="double"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthBYYBMEIKUNCSHEVI4PKPZ32REM" Name="writeUnitEventMetric" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="writeUnitEventMetric(JLjava.lang.String;JLjava.lang.Double;Ljava.lang.Double;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="unitId" Id="mprHMRKTFROZVAADK4AANLCIYXRFE">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="kind" Id="mpr3MPGYCKVSZBUXCUHSW3LQJZ2EU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="timeMillis" Id="mpr45RMHICORNGCDHHZHVNXHFQOVM">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="oldVal" Id="mpr4KALA7TX2JBBTGREKWZ634TXUU">
+            <Type TypeId="400" extStr="java.lang.Double"/>
+          </Parameter>
+          <Parameter Name="newVal" Id="mprXONNARXOJVCG5L3DLCSYY4Y2JM">
+            <Type TypeId="400" extStr="java.lang.Double"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth534LURTH3REO3O6QIM6URUYPK4" Name="writeUnitStatMetric" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="writeUnitStatMetric(JLjava.lang.String;JJLjava.lang.Double;Ljava.lang.Double;D)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="uniitId" Id="mprBHT6YS25SVAC7AXCP6IXCD22UE">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="kind" Id="mprVLZLR3DL55GHZEFQTMYMFO7JQE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="begTimeMillis" Id="mprO6HKVMMKUVEGLMCEDCHFUXQ72E">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="endTimeMillis" Id="mprEY2BOVOPFNHLLBDOUA3WNQTPQQ">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="minVal" Id="mprIDW3ZEF7F5CWJBBX25KQ7ESYM4">
+            <Type TypeId="400" extStr="java.lang.Double"/>
+          </Parameter>
+          <Parameter Name="maxVal" Id="mprQHEIOIIEA5DQJLETGXAYTRQHQM">
+            <Type TypeId="400" extStr="java.lang.Double"/>
+          </Parameter>
+          <Parameter Name="avgVal" Id="mprFRSNE26GVJEEXCTS4NHM2HHNSE">
+            <Type TypeId="401" extStr="double"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

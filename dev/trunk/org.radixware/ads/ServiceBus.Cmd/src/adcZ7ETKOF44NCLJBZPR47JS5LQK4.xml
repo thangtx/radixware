@@ -1,0 +1,980 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcZ7ETKOF44NCLJBZPR47JS5LQK4" Name="CommandUtil" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcUFOV4BTVYBEBJKQJZB7PL6EMSE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcQ2W3XW4Z6VGBVOGBDWRBGIYFZQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgWLX27AWQENBFHN6LE5QMHONHQU" Name="Root"/>
+    <PropertyGroup Id="cpgG6QDL4LUM5HEXEFF3GZG2HPEZM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthBMP4D3LWG5G6XH52QLWVEV4QNI" Name="deleteNode" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprPY4AISYI5NE7JHGYGJQD7LO23Q">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="nodePid" Id="mprKI23QI77KFCDLFHP34ARSOZDBE">
+            <Type TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeRqDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xIn = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeRqDocument.Factory"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.newInstance();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeRqDocument.NodeRq"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xRq = xIn.addNewNodeRq();
+xRq.EntityId = String.valueOf(nodePid.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc6MUJT675HNGATDJ477ZWLDUOHM mthITRIKIIXTZADLFWTAF4LDJ7ENM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+xRq.EntityPid = String.valueOf(nodePid);
+
+try {
+    userSession.EasSession.executeContextlessCommand(
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="clcH5VSUVT42RH6TME5B53PG2JGIY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, xIn, null
+            );
+} catch (Exception e) {
+    userSession.Tracer.error("Delete node", e);
+    return false;
+}
+
+return true;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthJ7F2Z4JEUFHCFPIYBYALNDNMPE" Name="getNode" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprYQAW3LXMLNCSPJ4NNBY33C3NZ4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="nodePid" Id="mprCMGIXWPGCJFRPE2KZFHRMMFSIM">
+            <Type TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeRsDocument"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeRqDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xIn = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeRqDocument.Factory"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.newInstance();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeRqDocument.NodeRq"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xRq = xIn.addNewNodeRq();
+xRq.EntityId = String.valueOf(nodePid.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc6MUJT675HNGATDJ477ZWLDUOHM mthITRIKIIXTZADLFWTAF4LDJ7ENM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+xRq.EntityPid = String.valueOf(nodePid);
+
+try {
+    return (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeRsDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)userSession.EasSession.executeContextlessCommand(
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="clc2OTUZMDTDVDKHE4377GTYOV2KA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, xIn, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeRsDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.class
+            );
+} catch (Exception e) {
+    userSession.Tracer.error("Get node", e);
+    return null;
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth2THR25SZIBHW7CSZORE6DY2ZBQ" Name="getNodeInfoList" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprY7V4HVJF6JBKTN2KI3QFF53IOY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="pipelineId" Id="mprGM6TGZJQN5A3HF37DMQJQPBPGU">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeInfoListRsDocument"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+    org.apache.xmlbeans.XmlObject request = null;
+    if(pipelineId != null){
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="IntDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xInt = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="IntDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Factory.newInstance();
+        xInt.setInt(pipelineId);
+        request = xInt;
+    }
+    return (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeInfoListRsDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) userSession.EasSession.executeContextlessCommand(
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="clcNPKKOLZYX5BGNG4AT6BBZVNIQU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, request, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeInfoListRsDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.class
+    );
+} catch (Exception e) {
+    userSession.Tracer.error("Get node info list", e);
+//    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthLEP5OWV3LFDULGYALX3KD3GT6A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e);    
+    return null;
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthDDYWAYLWT5HXFD77GVGG6DDFAA" Name="connect" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprNTZVMV45MFDPLC4GMMRNCPBIIA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="outConnectorId" Id="mprHDXIJIF4EFBSZBQCGRVJVITPDU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="inConnectorId" Id="mpr2QETBMNNJBGQDJM35I5EOZEIAI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="ConnectRqDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xIn = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="ConnectRqDocument.Factory"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.newInstance();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="ConnectRqDocument.ConnectRq"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xRq = xIn.addNewConnectRq();
+xRq.OutConnectorId = outConnectorId;
+xRq.InConnectorId = inConnectorId;
+
+try {
+    userSession.EasSession.executeContextlessCommand(
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="clcE7QVPH4K5JDXFLSXZ23Y73PDMA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, xIn, null
+            );
+} catch (Exception e) {
+    userSession.Tracer.error("Connect nodes", e);
+//    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthLEP5OWV3LFDULGYALX3KD3GT6A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e);    
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth2MY5P3CKXRDJXIEXHCXWC7NTCE" Name="getDiagram" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprKDJMPESPYNDQFB2W3EUVOH75WA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="pipelinePid" Id="mpr7PAZZGLLAVDCBE2P5V2PMQR6EQ">
+            <Type TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451" Path="xsdL6YN6OJDTBHMPLJWIV3F6VGQCQ" extStr="DiagramDocument"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="DiagramRqDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xIn = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="DiagramRqDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Factory.newInstance();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="DiagramRqDocument.DiagramRq"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xRq = xIn.addNewDiagramRq();
+xRq.EntityId = String.valueOf(pipelinePid.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc6MUJT675HNGATDJ477ZWLDUOHM mthITRIKIIXTZADLFWTAF4LDJ7ENM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+xRq.EntityPid = String.valueOf(pipelinePid);
+
+try {
+    return (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdL6YN6OJDTBHMPLJWIV3F6VGQCQ" extStr="DiagramDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)userSession.EasSession.executeContextlessCommand(
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="clcYY47JI5FPBGBDDY5GZBITEIFLQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, xIn, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdL6YN6OJDTBHMPLJWIV3F6VGQCQ" extStr="DiagramDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.class
+            );
+} catch (Exception e) {
+    userSession.Tracer.error("Get pipeline", e);
+    return null;
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth6CWTC2UVAFH5ZCWNW3THJIMTFY" Name="setDiagram" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprVPWKW2NEN5DNVFH3S72QXXNDUA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="pipelinePid" Id="mprUAOQGKXXPVH2THDPPM2LHO33ZA">
+            <Type TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+          </Parameter>
+          <Parameter Name="xDoc" Id="mprBOTCP3HLF5HCPA3IAPLHPPDVFQ">
+            <Type TypeId="451" Path="xsdL6YN6OJDTBHMPLJWIV3F6VGQCQ" extStr="DiagramDocument"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="DiagramRqDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xIn = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="DiagramRqDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Factory.newInstance();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="DiagramRqDocument.DiagramRq"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xRq = xIn.addNewDiagramRq();
+xRq.EntityId = String.valueOf(pipelinePid.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc6MUJT675HNGATDJ477ZWLDUOHM mthITRIKIIXTZADLFWTAF4LDJ7ENM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+xRq.EntityPid = String.valueOf(pipelinePid);
+xRq.Diagram = (xDoc != null) ? xDoc.Diagram : null;
+
+try {
+    userSession.EasSession.executeContextlessCommand(
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="clcBSKUX54JJZA3ZEP4U45SY2STBA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, xIn, null
+            );
+} catch (Exception e) {
+    userSession.Tracer.error("Set pipeline", e);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthAOF7DKW4QZC5HOBOCYUU7GVKFM" Name="checkConfig" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mpr6UBJK62AS5ADHKRYMEDEUHNSBU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="pipelinePid" Id="mprEM34ZBGZYBGDVCC2JYESW5PUCI">
+            <Type TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="PipelineCheckRsDocument"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="PipelineRqDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xIn = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="PipelineRqDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Factory.newInstance();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="PipelineRqDocument.PipelineRq"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xRq = xIn.addNewPipelineRq();
+xRq.EntityId = String.valueOf(pipelinePid.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc6MUJT675HNGATDJ477ZWLDUOHM mthITRIKIIXTZADLFWTAF4LDJ7ENM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+xRq.EntityPid = String.valueOf(pipelinePid);
+
+try {
+    return (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="PipelineCheckRsDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)userSession.EasSession.executeContextlessCommand(
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="clcVDVF6AR3JNDF5B2M3DBXBKVMCU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, xIn, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="PipelineCheckRsDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.class
+            );
+} catch (Exception e) {
+    userSession.Tracer.error("Check config", e);
+    return null;
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthGLGWD77TBNG5HMUM6VI2J5HKZQ" Name="getNodeList" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mpr3RSDYTTB5RFV5H24EFSPFB6CMI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="pipelinePid" Id="mprPUN3KUCMFJHXHLC76WEYVWTPB4">
+            <Type TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeListRsDocument"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeListRqDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xIn = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeListRqDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Factory.newInstance();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeListRqDocument.NodeListRq"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xRq = xIn.addNewNodeListRq();
+xRq.PipelineEntityId = String.valueOf(pipelinePid.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc6MUJT675HNGATDJ477ZWLDUOHM mthITRIKIIXTZADLFWTAF4LDJ7ENM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+xRq.PipelineEntityPid = String.valueOf(pipelinePid);
+
+try {
+    return (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeListRsDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)userSession.EasSession.executeContextlessCommand(
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="clcDPEAWUHHERFW3AZGANRCCZFXII"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, xIn, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeListRsDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.class
+            );
+} catch (Exception e) {
+    userSession.Tracer.error("Get node list", e);
+    return null;
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthAO3IFFVHNVE43FVXIUH7U6ELD4" Name="getNodeCopy" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprOFIDQ3CTGNHW7EUXFTPC32KWM4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="nodePid" Id="mprAI3HPCEVUJEE3DSVXQ3ZWWUDQY">
+            <Type TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeRsDocument"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeRqDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xIn = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeRqDocument.Factory"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.newInstance();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeRqDocument.NodeRq"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xRq = xIn.addNewNodeRq();
+xRq.EntityId = String.valueOf(nodePid.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc6MUJT675HNGATDJ477ZWLDUOHM mthITRIKIIXTZADLFWTAF4LDJ7ENM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+xRq.EntityPid = String.valueOf(nodePid);
+
+try {
+    return (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeRsDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)userSession.EasSession.executeContextlessCommand(
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="clc35VBVG3S4NE5HLC665UHFRZBNQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, xIn, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeRsDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.class
+            );
+} catch (Exception e) {
+    userSession.Tracer.error("Get node dup", e);
+    return null;
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth7LBEYHC24FDY3PFDLYKSCIFBC4" Name="canDeleteNode" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprJMUN4BC7Y5CEVLOA5XPGODFW7E">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="nodePid" Id="mprZ222VVQTRZGANI74ADR4ZXBG2I">
+            <Type TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="CanDeleteNodeRsDocument"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeRqDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xIn = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeRqDocument.Factory"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.newInstance();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeRqDocument.NodeRq"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xRq = xIn.addNewNodeRq();
+xRq.EntityId = String.valueOf(nodePid.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc6MUJT675HNGATDJ477ZWLDUOHM mthITRIKIIXTZADLFWTAF4LDJ7ENM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+xRq.EntityPid = String.valueOf(nodePid);
+
+try {
+    return (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="CanDeleteNodeRsDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)userSession.EasSession.executeContextlessCommand(
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="clcRHFGTDNH5RADZG2PE4IWBNX5UU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, xIn, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="CanDeleteNodeRsDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.class
+            );
+} catch (Exception e) {
+    userSession.Tracer.error("Can delete node", e);
+    return null;
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthKGDQNK5HSNDNLNYBMJ5I5HDA74" Name="setXPaths" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprTKKVJZAXZ5CGNMHENTNYI7DBQI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="stageId" Id="mprZM4V2WUTXBAM7CKXZSYZU7ZUTY">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="isRequest" Id="mprTFJZIJQM6VCYFPPP7SJOD6IG2I">
+            <Type TypeId="1"/>
+          </Parameter>
+          <Parameter Name="xpaths" Id="mpr4TMDU2ICJFCPPPOIHILVTK4AKY">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="411" Path="adcDFCILP42DJEQFK6L7CJPXIPLK4"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="XPathRqDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xIn = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="XPathRqDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Factory.newInstance();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="XPathRqDocument.XPathRq"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xRq = xIn.addNewXPathRq();
+xRq.StageId = stageId;
+xRq.IsRequest = isRequest;
+
+for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcDFCILP42DJEQFK6L7CJPXIPLK4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xpath: xpaths) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="XPath"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> x = xRq.addNewXPath();
+    x.SrcXPath = xpath.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDFCILP42DJEQFK6L7CJPXIPLK4 prdAAY3PZBIHBEFZMVD5RZNQZOJOQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+    x.DstXPath = xpath.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDFCILP42DJEQFK6L7CJPXIPLK4 prdAXVR2ZQFYZGXDPDKERITQIOYTM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+}
+
+try {
+    userSession.EasSession.executeContextlessCommand(
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="clcWKVXOSEMZJDG3OZJWRDCESWFLU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, xIn, null
+            );
+} catch (Exception e) {
+    userSession.Tracer.error("Set xpaths", e);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthVJ4RC3NTKVBN3I3GXRLPKU23QU" Name="getXPaths" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprBSQ6FRSSAVESFPQVZB57MZ2QM4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="stageId" Id="mprJZWH6WGBRZBKFO6G3OW5DQJ764">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="isRequest" Id="mprJFHCYPGALJD7DMM7S5A6NQMGRA">
+            <Type TypeId="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="adcDFCILP42DJEQFK6L7CJPXIPLK4"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="XPathRqDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xIn = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="XPathRqDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Factory.newInstance();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="XPathRqDocument.XPathRq"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xRq = xIn.addNewXPathRq();
+xRq.StageId = stageId;
+xRq.IsRequest = isRequest;
+
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="400" extStr="java.util.List">
+                <xsc:GenericArguments>
+                  <xsc:Argument Alias="?">
+                    <xsc:Type TypeId="411" Path="adcDFCILP42DJEQFK6L7CJPXIPLK4"/>
+                  </xsc:Argument>
+                </xsc:GenericArguments>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xpaths = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="400" extStr="java.util.ArrayList">
+                <xsc:GenericArguments>
+                  <xsc:Argument Alias="?">
+                    <xsc:Type TypeId="411" Path="adcDFCILP42DJEQFK6L7CJPXIPLK4"/>
+                  </xsc:Argument>
+                </xsc:GenericArguments>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="XPathRsDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xOut = null;
+try {
+    xOut = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="XPathRsDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)userSession.EasSession.executeContextlessCommand(
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="clcUMDYBQ4N25DSLLNHQGNXK4VQIE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, xIn, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="XPathRsDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.class
+            );
+} catch (Exception e) {
+    userSession.Tracer.error("Set xpaths", e);
+    return xpaths;
+}
+
+for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="XPath"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> x: xOut.XPathRs.XPathList) {
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcDFCILP42DJEQFK6L7CJPXIPLK4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xpath = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDFCILP42DJEQFK6L7CJPXIPLK4 mthPCVCW4YMPBEOJKNSINZRS2JB3Q" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(x.SrcXPath, x.DstXPath);
+    xpaths.add(xpath);
+}
+
+return xpaths;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth6Y6PQBZSDZFGXBFLPJER4RE4YI" Name="getSchemeList" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprCNSZ4Q2IINGI7IX2FYZNFMGM6A">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="includePredefined" Id="mpr465NNTIWEVEVBDCNJH5UCCSDIY">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="SchemeRsDocument"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="SchemeRqDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> rqDoc = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="SchemeRqDocument.Factory"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.newInstance();
+    rqDoc.addNewSchemeRq().setIncludePredefined(includePredefined);
+    return (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="SchemeRsDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)userSession.EasSession.executeContextlessCommand(
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="clcPL6JXTCJB5F25LTTH3OLFKLYYE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, rqDoc, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="SchemeRsDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.class
+            );
+} catch (Exception e) {
+    userSession.Tracer.error("Get scheme list", e);
+    return null;
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" Name="CommandsXsd" TargetNamespace="http://schemas.radixware.org/sb-commands.xsd" Environment="common"><xs:schema targetNamespace="http://schemas.radixware.org/sb-commands.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:sb="http://schemas.radixware.org/sb.xsd" xmlns:com="http://schemas.radixware.org/common.xsd" xmlns:t="http://schemas.radixware.org/types.xsd" xmlns:ie="http://schemas.radixware.org/sb-diagram.xsd" xmlns:this="http://schemas.radixware.org/sb-commands.xsd">
+  <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+  <xs:import namespace="http://schemas.radixware.org/common.xsd" schemaLocation="common.xsd"/>
+  <xs:import namespace="http://schemas.radixware.org/sb-diagram.xsd" schemaLocation="sb-diagram.xsd"/>
+  <xs:import namespace="http://schemas.radixware.org/sb.xsd" schemaLocation="sb.xsd"/>
+  <xs:element name="ConnectRq">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="OutConnectorId" type="t:Str" minOccurs="0"/>
+        <xs:element name="InConnectorId" type="t:Str" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NodeListRq">
+    <xs:complexType>
+      <xs:attribute name="PipelineEntityId" type="t:Str" use="required"/>
+      <xs:attribute name="PipelineEntityPid" type="t:Str" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NodeListRs">
+    <xs:complexType>
+      <xs:sequence minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Node" type="this:Node"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NodeInfoListRs">
+    <xs:complexType>
+      <xs:sequence minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="NodeInfo" type="this:NodeInfo"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NodeRq">
+    <xs:complexType>
+      <xs:attribute name="EntityId" type="t:Str" use="optional"/>
+      <xs:attribute name="EntityPid" type="t:Str" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CanDeleteNodeRs">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Mess" type="t:Str" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="CanDelete" type="t:Bool" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NodeRs" type="this:Node"/>
+  <xs:complexType name="Node">
+    <xs:all>
+      <xs:element name="InRoles">
+        <xs:complexType>
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="Role" type="this:Role"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="OutRoles">
+        <xs:complexType>
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="Role" type="this:Role"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Title" type="t:Str" minOccurs="0"/>
+    </xs:all>
+    <xs:attribute name="EntityId" type="t:Str" use="required"/>
+    <xs:attribute name="EntityPid" type="t:Str" use="required"/>
+    <xs:attribute name="PipelineEntityId" type="t:Str" use="required"/>
+    <xs:attribute name="PipelineEntityPid" type="t:Str" use="required"/>
+    <xs:attribute name="ClassId" type="t:Str" use="optional"/>
+    <xs:attribute name="ClassTitle" type="t:Str" use="optional"/>
+    <xs:attribute name="CreatingPresentationId" type="t:Str" use="optional"/>
+    <xs:attribute name="EditingPresentationId" type="t:Str" use="optional"/>
+    <xs:attribute name="Icon" type="t:Str" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="NodeInfo">
+    <xs:all>
+      <xs:element name="Title" type="t:Str"/>
+    </xs:all>
+    <xs:attribute name="ClassId" type="t:Str" use="required"/>
+    <xs:attribute name="CreatingPresentationId" type="t:Str" use="required"/>
+    <xs:attribute name="EditingPresentationId" type="t:Str" use="required"/>
+    <xs:attribute name="Icon" type="t:Str" use="optional"/>
+    <xs:attribute name="OrderPosX" type="t:Num" use="optional"/>
+    <xs:attribute name="OrderPosY" type="t:Num" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="Role">
+    <xs:all>
+      <xs:element name="Title" type="t:Str" minOccurs="0"/>
+      <xs:element name="ConnectionId" type="t:Str" minOccurs="0"/>
+    </xs:all>
+    <xs:attribute name="Name" type="t:Str" use="required"/>
+    <xs:attribute name="Side" type="t:Str" use="required"/>
+    <xs:attribute name="RqType" type="t:Str" use="optional"/>
+    <xs:attribute name="RsType" type="t:Str" use="optional"/>
+    <xs:attribute name="Icon" type="t:Str" use="optional"/>
+  </xs:complexType>
+  <xs:element name="PipelineRq">
+    <xs:complexType>
+      <xs:attribute name="EntityId" type="t:Str" use="optional"/>
+      <xs:attribute name="EntityPid" type="t:Str" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DiagramRq">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Diagram" type="ie:Diagram" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="EntityId" type="t:Str" use="optional"/>
+      <xs:attribute name="EntityPid" type="t:Str" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PipelineCheckRs">
+    <xs:complexType>
+      <xs:attribute name="Mess" type="t:Str" use="required"/>
+      <xs:attribute name="EntityId" type="t:Str" use="optional"/>
+      <xs:attribute name="EntityPid" type="t:Str" use="optional"/>
+      <xs:attribute name="ConnectionId" type="t:Str" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SchemeRq">
+    <xs:complexType>
+        <xs:attribute name="includePredefined" type="t:Bool" use="required"/>
+    </xs:complexType>
+  </xs:element>    
+  <xs:element name="SchemeRs">
+    <xs:complexType>
+      <xs:all>
+        <xs:element name="UserDefinedSchemes" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="Item" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                          <xs:all>
+                            <xs:element name="Scheme" type="xs:anyType" minOccurs="0"/>
+                          </xs:all>
+                          <xs:attribute name="Namespace" type="t:Str" use="required"/>
+                        <xs:attribute name="SchemeType" type="t:Str" use="required"/>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+        <xs:element name="PredefinedSchemes" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="Item" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:all>
+                          <xs:element name="Scheme" type="xs:anyType" minOccurs="0"/>
+                        </xs:all>                        
+                        <xs:attribute name="Id" type="t:Id" use="required"/>
+                        <xs:attribute name="Namespace" type="t:Str" use="required"/>
+                        <xs:attribute name="SchemeType" type="t:Str" use="required"/>
+                        <xs:attribute name="isTransparent" type="t:Bool" use="required"/>                        
+                    </xs:complexType>
+                  </xs:element>
+                </xs:sequence>  
+            </xs:complexType>          
+        </xs:element>    
+      </xs:all>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="VersionRq">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Notes" type="t:Str" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PipelineMessageRq" type="sb:PipelineMessageRq"/>
+  <xs:element name="PipelineMessageRs" type="sb:PipelineMessageRs"/>
+  <xs:element name="PipelineMessageWithExceptionRs" type="this:PipelineMessageRs"/>
+  <xs:complexType name="PipelineMessageRs">
+    <xs:all>
+      <xs:element name="PipelineMessageRs" type="sb:PipelineMessageRs"/>
+      <xs:element name="ExceptionMess" type="t:Str" minOccurs="0"/>
+    </xs:all>
+  </xs:complexType>
+  <xs:complexType name="XPath">
+    <xs:all>
+      <xs:element name="SrcXPath" type="t:Str" minOccurs="0"/>
+      <xs:element name="DstXPath" type="t:Str" minOccurs="0"/>
+    </xs:all>
+  </xs:complexType>
+  <xs:element name="XPathRq">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="XPath" type="this:XPath" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="StageId" type="t:Int" use="required"/>
+      <xs:attribute name="IsRequest" type="t:Bool" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="XPathRs">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="XPath" type="this:XPath" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

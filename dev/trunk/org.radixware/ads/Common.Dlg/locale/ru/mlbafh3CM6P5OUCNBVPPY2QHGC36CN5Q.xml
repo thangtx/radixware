@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsLocalizingBundleDefinition Id="mlbafh3CM6P5OUCNBVPPY2QHGC36CN5Q">
+    <String Id="mls43LTBU4JMJCELKPKD4GK6JBZB4" SrcKind="3" Version="0">
+      <Value Language="ru" NeedsCheck="false" LastModified="2015-12-21T10:51:01.375" Author="ypaliy">Метод возвращает true если в редакторе объекта сущности была произведена операция применения изменений, в противном случае метод возвращает false.</Value>
+    </String>
+    <String Id="mls57QYUUG6HZFQRD6H4GQZOPKD3Q" SrcKind="1" Version="0">
+      <Value Language="ru" NeedsCheck="false" LastModified="2014-04-28T10:43:42.068" Author="ypaliy">Ошибка при создании объекта сущности</Value>
+    </String>
+    <String Id="mls6RK7GP5FHNDJLAMGCOHDYSJHM4" SrcKind="3" Version="0">
+      <Value Language="ru" NeedsCheck="true" LastModified="2013-12-15T14:57:01.280" Author="yremizov">Форма показа редактора объекта сущности.
+Внешний вид и поведение диалога формы повторяют стандартный модальный диалог редактирования объекта сущности.
+
+В зависимости от значений свойств формы редактор может быть открыт одним из следующих способов.
+
+1) Открытие редактора на основе свойства ссылки. Чтобы использовать этот способ нужно задать значение свойства формы parentRefPropertyId. 
+Идентификатор редактируемого объекта сущности будет взят из значения свойства-ссылки, а набор презентаций редактора из дефиниции свойства.
+Поиск свойства-ссылки, с указанным идентификатором будет производится следующим образом: Если задано значение параметра parentRefPropertyOwnerDefinitionId, то свойство будет взято из модели-владельца, созданной на основе дефиниции идентификатор, которой равен значению этого параметра. Если значение параметра parentRefPropertyOwnerDefinitionId не задано, то поиск свойства-ссылки будет производиться сначала в текущей форме, а затем в модели, из диалога которой была запущена цепочка форм. Если поиск свойства-ссылки завершился неудачей, то при открытии формы будет сгенерировано исключение DefinitionNotFoundError или IllegalArgumentException.
+
+2) Открытие редактора указанного объекта с использованием списка идентификаторов презентаций редактора. Чтобы использовать данный способ открытия нужно задать значения свойствам формы pidAsStr (строковое представление идентификатора редактируемого объекта сущности) и arrEditorPresentationIds (список идентификаторов презентаций редактора), а значение свойства parentRefPropertyId должно быть равно null. При открытии редактора объекта будет использоваться первая презентация редактора из указанного списка, на которую у текущего пользователя есть права.
+
+3) Открытие редактора в режиме создания нового объекта сущности. Чтобы использовать данный способ открытия нужно задать значение свойству формы arrEditorPresentationIds (список идентификаторов презентаций редактора), а значения свойств pidAsStr и parentRefPropertyId должны быть равны null. При открытии редактора объекта будет использоваться первая презентация редактора из указанного списка, на которую у текущего пользователя есть права. Если класс сущности является полиморфным, то в свойстве newEntotyObjectClassId требуется явно задать идентификатор прикладного класса нового объекта сущности, иначе открытие формы приведет к ошибке.
+
+Существует возможность задать дополнительные ограничения редактора объекта сущности. В свойстве modelRestrictions задаются дополнительные ограничения для модели объекта сущности, которые применяются только в редакторе этого объекта. В свойстве editorRestrictions задаются дополнительные ограничения для диалога представления объекта сущности (каскадные ограничения), которые применяются к редактору этого объекта и ко всем поражденным из него диалогам представления других моделей.
+</Value>
+    </String>
+    <String Id="mls6XZWQUCNAFFT5A43LI2NQ2552A" SrcKind="1" Version="0">
+      <Value Language="ru" NeedsCheck="false" LastModified="2014-11-17T12:18:15.525" Author="ypaliy">&amp;Редактор</Value>
+    </String>
+    <String Id="mls74KF5XOY2NHGFC4XYJVDSNFNTM" SrcKind="3" Version="0">
+      <Value Language="ru" NeedsCheck="true" LastModified="2013-12-15T14:57:23.455" Author="yremizov">Массив дополнительных ограничений диалога представления объекта сущности (каскадные ограничения). Ограничения, указанные в этом массиве, будут применены к редактору объекта сущности и будут учитываться этим редактором а также всеми поражденными из него диалогами представления других моделей.</Value>
+    </String>
+    <String Id="mlsBQRSWTLHBFG65H3QLY4CJFF6BE" SrcKind="3" Version="0">
+      <Value Language="ru" NeedsCheck="true" LastModified="2013-12-15T14:59:06.757" Author="yremizov">Идентификатор свойства-ссылки в модели владельца формы, которое будет использоваться для открытия редактора объекта сущности. Идентификатор объекта сущности будет взят из значения свойства-ссылки, а набор презентаций редактора из дефиниции свойства. Если значение свойства-ссылки не задано или не заданы презентации редактора в дефиниции свойства, то при открытии формы будет ошибка. Если значение данного свойство формы не равно null, то значения свойств arrEditorPresentationIds, pidAsStr и newEntotyObjectClassId не учитываются.</Value>
+    </String>
+    <String Id="mlsC5ANVKOAJZBDBIXGVE4QDG55DY" SrcKind="3" Version="0">
+      <Value Language="ru" NeedsCheck="true" LastModified="2013-12-15T14:58:44.802" Author="yremizov">Идентификатор дефиниции, в которой описана дефиниция свойства-ссылки, с идентификатором заданным в свойстве parentRefPropertyId. Если задано значение этого свойства, то свойство-ссылка будет взято из модели-владельца, созданной на основе дефиниции идентификатор, которой равен значению parentRefPropertyId. Если значение этого свойства не задано, то поиск свойства-ссылки будет производиться сначала в текущей форме, а затем в модели, из диалога которой была запущена цепочка форм. Значение данного свойства не учитывается, когда значение свойства parentRefPropertyId равно null.</Value>
+    </String>
+    <String Id="mlsHKTSUOGMDRAWDLCPVCL36YV3IA" SrcKind="3" Version="0">
+      <Value Language="ru" NeedsCheck="true" LastModified="2013-12-15T14:57:55.619" Author="yremizov">Свойство содержит строковое представление идентификатора объекта, редактор которого будет открыт внутри формы. Если задано значение свойства parentRefPropertyId, то при открытии редактора данное свойство использоваться не будет, а идентификатор объекта будет взят из значения свойства-ссылки с идентификатором  parentRefPropertyId у модели-владельца формы. Если значения этого свойства и свойства parentRefPropertyId равны null, но задано свойство arrEditorPresentationIds, то редактор будет открыт в режиме создания нового объекта.</Value>
+    </String>
+    <String Id="mlsIXBTWXR3RZE4ZGUTIRYM65JLIQ" SrcKind="3" Version="0">
+      <Value Language="ru" NeedsCheck="false" LastModified="2015-12-21T10:52:42.822" Author="ypaliy">Метод возвращает интерфейс редактора объекта сущности или null если редактор не был открыт</Value>
+    </String>
+    <String Id="mlsNSSTOFWR2BH37P23QQNTSFDLYI" SrcKind="3" Version="0">
+      <Value Language="ru" NeedsCheck="true" LastModified="2013-12-15T15:12:26.001" Author="yremizov">Получение модели объекта сущности, открытой в редакторе. Метод можно использовать после перехода к следующий форме, но после закрытия цепочки форм результат метода будет null.</Value>
+    </String>
+    <String Id="mlsPD2HDXCTZZHHLOLR5GFPI6FVWM" SrcKind="3" Version="0">
+      <Value Language="ru" NeedsCheck="true" LastModified="2013-12-15T14:58:08.454" Author="yremizov">Массив идентификаторов презентаций редактора (в строковом представлении). 
+Одна из этих презентаций (в зависимости от прав у текущего пользователя) будет выбрана для открытия редактора. Если задано значение свойства parentRefPropertyId, то при открытии редактора данный массив использоваться не будет, а набор презентаций редактора будет взят из дефиниции свойства ссылки с идентификатором parentRefPropertyId у модели формы или у одной из моделей-владельца формы.</Value>
+    </String>
+    <String Id="mlsPI3IPLHJKNGRFFDJ4SFCRVWO6A" SrcKind="1" Version="0">
+      <Value Language="ru" NeedsCheck="true">Недостаточно параметров для открытия редактора объекта сущности</Value>
+    </String>
+    <String Id="mlsPIYNIV6UDVD6TNAOG7DWFZOP3U" SrcKind="3" Version="0">
+      <Value Language="ru" NeedsCheck="true" LastModified="2013-12-15T14:57:45.189" Author="yremizov">Идентификатор класса создаваемого объекта сущности. Значение данного свойства используется когда открытие редактора производится в режиме создания нового объекта (т.е. когда значения свойств parentRefPropertyId и pidAsStr равны null).</Value>
+    </String>
+    <String Id="mlsRJO7UDFMMNCS3G6QSVOIKQEI7M" SrcKind="1" Version="0">
+      <Value Language="ru" NeedsCheck="false" LastModified="2014-11-17T16:09:11.591" Author="ypaliy">Не удается найти модель владельца со свойством #%1s</Value>
+    </String>
+    <String Id="mlsSAARTGKBFVBQTBO52FTBTTI47E" SrcKind="3" Version="0">
+      <Value Language="ru" NeedsCheck="true" LastModified="2013-12-15T14:57:34.278" Author="yremizov">Массив дополнительных ограничений модели объекта сущности. Ограничения, указанные в этом массиве, будут применены к модели объекта сущности после открытия его редактора и будут учитываться только в этом редакторе.</Value>
+    </String>
+    <String Id="mlsSDQRM7ISABDPPJTP6DKSDRIHOU" SrcKind="3" Version="0">
+      <Value Language="ru" NeedsCheck="true" LastModified="2013-12-15T15:10:02.468" Author="yremizov">Обработчик закрытия диалога формы. Используется для сохранения изменений в редакторе объекта сущности. Если данный метод вернет false, то закрытие диалога будет отменено.</Value>
+    </String>
+    <String Id="mlsSMRMLC3X3JFBZEQ5KC7VUSNQ2Y" SrcKind="1" Version="0">
+      <Value Language="ru" NeedsCheck="false" LastModified="2014-04-28T10:43:49.853" Author="ypaliy">Ошибка при применении изменений</Value>
+    </String>
+    <String Id="mlsUI4LH6LAORAIVDD34TNFWEIBKY" SrcKind="1" Version="0">
+      <Value Language="ru" NeedsCheck="false" LastModified="2014-11-17T12:19:23.759" Author="ypaliy">Вы действительно хотите закрыть редактор без сохранения изменений?</Value>
+    </String>
+    <String Id="mlsV4FGT4PQ75F43FXYCTQWZSHL6I" SrcKind="1" Version="0">
+      <Value Language="ru" NeedsCheck="true">Подтвердите закрытие редактора</Value>
+    </String>
+    <String Id="mlsWKV2T4HLDVDCVI44JRE55U7CFI" SrcKind="1" Version="0"/>
+  </AdsLocalizingBundleDefinition>
+</AdsDefinition>

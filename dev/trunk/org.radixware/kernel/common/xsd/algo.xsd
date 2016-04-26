@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:algo="http://schemas.radixware.org/algo.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xscml="http://schemas.radixware.org/xscml.xsd" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:ads="http://schemas.radixware.org/adsdef.xsd" xmlns:common="http://schemas.radixware.org/commondef.xsd" targetNamespace="http://schemas.radixware.org/algo.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:import namespace="http://schemas.radixware.org/xscml.xsd" schemaLocation="xscml.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/adsdef.xsd" schemaLocation="adsdef.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/commondef.xsd" schemaLocation="commondef.xsd"/>    
+    <xs:element name="Viewer">
+        <xs:annotation>
+            <xs:documentation>Algorithm viewer</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="Context" type="xs:base64Binary"/>
+                <xs:element name="AlgoDefs">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="AlgoDef" type="xs:base64Binary" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Context">
+        <xs:annotation>
+            <xs:documentation>Algorithm context</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="Threads">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ThreadItem" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:all>
+                                        <xs:element name="ExceptionStack">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="ExceptionItem" minOccurs="0" maxOccurs="unbounded">
+                                                        <xs:complexType>
+                                                            <xs:simpleContent>
+                                                                <xs:extension base="xs:base64Binary">
+                                                                    <xs:attribute name="Class" type="xs:string" use="optional"/>
+                                                                </xs:extension>
+                                                            </xs:simpleContent>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="AlgoStack">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="AlgoItem" maxOccurs="unbounded">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="MergeStack">
+                                                                    <xs:complexType>
+                                                                        <xs:sequence>
+                                                                            <xs:element name="MergeItem" minOccurs="0" maxOccurs="unbounded">
+                                                                                <xs:complexType>
+                                                                                    <xs:attribute name="Id" type="types:Id" use="required"/>
+                                                                                    <xs:attribute name="Finish" type="xs:boolean" use="required"/>
+                                                                                </xs:complexType>
+                                                                            </xs:element>
+                                                                        </xs:sequence>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                            <xs:attribute name="AlgoId" type="types:Id" use="required"/>
+                                                            <xs:attribute name="BlockId" type="types:Id" use="optional"/>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="Waits">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="WaitItem" maxOccurs="unbounded">
+                                                        <xs:complexType>
+                                                            <xs:attribute name="Id" type="xs:long" use="optional"/>
+                                                            <xs:attribute name="StrobId" type="types:Id" use="optional"/>
+                                                            <xs:attribute name="Time" type="xs:dateTime" use="optional"/>
+                                                            <xs:attribute name="Clear" type="xs:boolean" use="optional"/>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:all>
+                                    <xs:attribute name="State" type="xs:int" use="required"/>
+                                    <xs:attribute name="ScopeId" type="types:Id" use="optional"/>
+                                    <xs:attribute name="BlockId" type="types:Id" use="required"/>
+                                    <xs:attribute name="Input" type="xs:int" use="required"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="Data">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="DataItem" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:simpleContent>
+                                        <xs:extension base="xs:base64Binary">
+                                            <xs:attribute name="Id" type="types:Id" use="required"/>
+                                            <xs:attribute name="Persistent" type="xs:boolean" use="required"/>
+                                            <xs:attribute name="Ref" type="xs:boolean" use="required"/>
+                                            <xs:attribute name="Lost" type="xs:boolean" use="required"/>
+                                            <xs:attribute name="ValType" type="xs:long" use="required"/>
+                                            <xs:attribute name="ValClass" type="xs:string" use="optional"/>
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="Discriminators">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="DiscriminatorItem" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:attribute name="BlockId" type="types:Id" use="required"/>
+                                    <xs:attribute name="Count" type="xs:int" use="required"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="AlgoClasses">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="AlgoClassItem" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:attribute name="ReferencedClass" type="types:Id" use="required"/>
+                                    <xs:attribute name="WorkingClass" type="types:Id" use="required"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:all>
+            <xs:attribute name="LastWaitId" type="xs:long" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="AlgoDef">
+        <xs:annotation>
+            <xs:documentation>Algorithm definition</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="Params">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Param" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:complexContent>
+                                    <xs:extension base="ads:DescribedAdsDefinition">
+                                        <xs:sequence>
+                                            <xs:element name="Direction" type="types:Int"/>
+                                            <xs:element name="Type" type="xscml:TypeDeclaration"/>
+                                        </xs:sequence>
+                                    </xs:extension>
+                                </xs:complexContent>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="InnerDef" type="xscml:JmlType"/>
+            <xs:element name="OuterDef" type="xscml:JmlType"/>
+            <xs:element name="Page" type="algo:ScopeDef"/>
+            <xs:element name="ReplacedId" type="types:Id" minOccurs="0"/>
+            <xs:element name="ReplacementId" type="types:Id" minOccurs="0"/>
+            <xs:element name="ProcessId" type="types:Id" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="ScopeDef">
+        <xs:complexContent>
+            <xs:extension base="ads:DescribedAdsDefinition">
+                <xs:sequence>
+                    <xs:element name="Nodes">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Node" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:complexContent>
+                                            <xs:extension base="ads:DescribedAdsDefinition">
+                                                <xs:sequence>
+                                                    <xs:element name="Text" type="xs:string" minOccurs="0"/>
+                                                    <xs:element name="Type" type="xscml:TypeDeclaration" minOccurs="0"/>
+                                                    <xs:element name="Persistent" type="xs:boolean" minOccurs="0"/>
+                                                    <xs:element name="Value" type="xs:string" minOccurs="0"/>
+                                                    <xs:element name="Source" type="xscml:JmlType" minOccurs="0"/>
+                                                    <xs:element name="PreExecute" type="xscml:JmlType" minOccurs="0"/>
+                                                    <xs:element name="PostExecute" type="xscml:JmlType" minOccurs="0"/>
+                                                    <xs:element name="OnOverdue" type="xscml:JmlType" minOccurs="0"/>
+                                                    <xs:element name="ExceptionId" type="types:Id" minOccurs="0"/>
+                                                    <xs:element name="Parameters" type="xscml:JmlType" minOccurs="0"/>
+                                                    <xs:element name="M" type="xs:int" minOccurs="0"/>
+                                                    <xs:element name="N" type="xs:int" minOccurs="0"/>
+                                                    <xs:element name="AlgoId" type="types:Id" minOccurs="0"/>
+                                                    <xs:element name="Clazz" type="xs:string" minOccurs="0"/>
+                                                    <xs:element name="Props" minOccurs="0">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="Prop" minOccurs="0" maxOccurs="unbounded">
+                                                                    <xs:complexType>
+                                                                        <xs:complexContent>
+                                                                            <xs:extension base="ads:DescribedAdsDefinition">
+                                                                                <xs:sequence>
+                                                                                    <xs:element name="Type" type="xscml:TypeDeclaration"/>
+                                                                                    <xs:element name="Mode" type="xs:int"/>
+                                                                                    <xs:element name="Persistent" type="xs:boolean"/>
+                                                                                    <xs:element name="Value" type="xs:string"/>
+                                                                                </xs:sequence>
+                                                                                <xs:attribute name="SourceId" type="types:Id" use="optional"/>
+                                                                            </xs:extension>
+                                                                        </xs:complexContent>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="Params" minOccurs="0">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="Param" minOccurs="0" maxOccurs="unbounded">
+                                                                    <xs:complexType>
+                                                                        <xs:complexContent>
+                                                                            <xs:extension base="ads:DescribedAdsDefinition">
+                                                                                <xs:sequence>
+                                                                                    <xs:element name="Type" type="xscml:TypeDeclaration"/>
+                                                                                </xs:sequence>
+                                                                                <xs:attribute name="OrigId" type="types:Id" use="required"/>
+                                                                            </xs:extension>
+                                                                        </xs:complexContent>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="Pins">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="Pin" maxOccurs="unbounded">
+                                                                    <xs:complexType>
+                                                                        <xs:complexContent>
+                                                                            <xs:extension base="ads:DescribedAdsDefinition">
+                                                                                <xs:attribute name="OrigId" type="types:Id" use="optional"/>
+                                                                                <xs:attribute name="Icon" type="xs:string" use="optional"/>
+                                                                            </xs:extension>
+                                                                        </xs:complexContent>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="Page" type="algo:ScopeDef" minOccurs="0"/>
+                                                    <xs:element name="ProfileInfo" type="common:ProfileInfo" minOccurs="0"/>
+                                                </xs:sequence>
+                                                <xs:attribute name="Kind" type="xs:int" use="required"/>
+                                                <xs:attribute name="X" type="xs:int" use="required"/>
+                                                <xs:attribute name="Y" type="xs:int" use="required"/>
+                                                <xs:attribute name="Width" type="xs:int" use="required"/>
+                                                <xs:attribute name="Height" type="xs:int" use="required"/>
+                                            </xs:extension>
+                                        </xs:complexContent>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Edges">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Edge" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:complexContent>
+                                            <xs:extension base="ads:DescribedAdsDefinition">
+                                                <xs:sequence>
+                                                    <xs:element name="TraceSeverity" type="types:Int"/>
+                                                    <xs:element name="TraceSource" type="xscml:JmlType"/>
+                                                    <xs:element name="Points">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="Point" maxOccurs="unbounded">
+                                                                    <xs:complexType>
+                                                                        <xs:attribute name="X" type="xs:int" use="required"/>
+                                                                        <xs:attribute name="Y" type="xs:int" use="required"/>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="ProfileInfo" type="common:ProfileInfo" minOccurs="0"/>
+                                                </xs:sequence>
+                                                <xs:attribute name="SourceId" type="types:Id" use="required"/>
+                                                <xs:attribute name="TargetId" type="types:Id" use="required"/>
+                                            </xs:extension>
+                                        </xs:complexContent>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+</xs:schema>

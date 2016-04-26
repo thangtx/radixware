@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcPU3NVQ2HSNFXDBR6UMJU3KLTXY" Name="SqmlParametersBuilder" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcDLKI4BT4BZBDFMLPSVRKUAATFA"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcTQCFRHBAWRE43MD2PGHGRZGKQQ"/>
+    </Bodies>
+    <MethodGroup Id="cmg7LBICY53EZAP7BPZRQNAGYHD6U" Name="Root"/>
+    <PropertyGroup Id="cpgXGAUNO66F5BZPGJ6V2LETZ3IEY" Name="Root"/>
+    <Properties>
+      <Property Id="prdUUPW7EXAENCCBAKRCXVPNTGYT4" Name="parameters" Nature="2" IsConst="true" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="aicIE3EW6PV3NH7VELFM2GPPPFESQ"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </Type>
+        <InitialValue>
+          <ValAsStr>new java.util.ArrayList&lt;org.radixware.kernel.common.client.meta.sqml.ISqmlParameter>()</ValAsStr>
+        </InitialValue>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthO2H7VSGRVZC3PHAOJL7QTZOA6M" Name="SqmlParametersBuilder" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mth655MJI57G5AOLGMCBK7KN5JOEA" Name="addEnumParameter" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="id" Id="mprJM3FIDNL7VEBJGPBZE6WEZYM2U">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="enumDef" Id="mprARDBXXFRYFCYLFYPSL5RHEZG3Q">
+            <Type TypeId="411" Path="adcUTMGTTLFTFBHJMCICCD6GSYFZ4"/>
+          </Parameter>
+          <Parameter Name="name" Id="mprPAS3O5GCLVCOVHPET66PGOKFPA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcNEKZPR2ELVHOZFY3UGGPK4GZ54"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> parameter = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNEKZPR2ELVHOZFY3UGGPK4GZ54 mthWRGY7K2UIFHC7IVTYSMKQPIQXI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(id,enumDef,name);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcPU3NVQ2HSNFXDBR6UMJU3KLTXY prdUUPW7EXAENCCBAKRCXVPNTGYT4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.add(parameter);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth7UNOGZXF5ZDCHCAEYSBJIOVQGU" Name="addSimpleParameter" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="id" Id="mpr322XQTAY4JAJFNUYAZP7OSQGVI">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="valType" Id="mprHWZHVQSSRNH2FKFC2HZ72PEL4Q">
+            <Type TypeId="2" Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4"/>
+          </Parameter>
+          <Parameter Name="name" Id="mprUKPY2Y3ELBCIJCEYPJKGQKXONU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcNEKZPR2ELVHOZFY3UGGPK4GZ54"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> parameter = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNEKZPR2ELVHOZFY3UGGPK4GZ54 mthRW4QRZIQBZHGHM6HOAJ5YIVKCY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(id,valType,name);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcPU3NVQ2HSNFXDBR6UMJU3KLTXY prdUUPW7EXAENCCBAKRCXVPNTGYT4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.add(parameter);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth4ZWJUKAHQFF4TCWY2FQUZUMSXA" Name="addSimpleParameter" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="valType" Id="mprFFQKJFJP25C4ZCGRYXQAABSEXM">
+            <Type TypeId="2" Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4"/>
+          </Parameter>
+          <Parameter Name="name" Id="mprJHSPG3T7F5HEZBF6GMKJT6N3QI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> parameterId = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthRYDSIBOGWFEI7C7Z5R6TIUROUA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsHL2QKDVQX5FARACANDWKNIZ5OU aciOMNNSIKG5NGYHIVDV6JDWUUUXQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcNEKZPR2ELVHOZFY3UGGPK4GZ54"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> parameter = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNEKZPR2ELVHOZFY3UGGPK4GZ54 mthRW4QRZIQBZHGHM6HOAJ5YIVKCY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(parameterId,valType,name);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcPU3NVQ2HSNFXDBR6UMJU3KLTXY prdUUPW7EXAENCCBAKRCXVPNTGYT4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.add(parameter);
+return parameterId;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthDAKNGAXOL5AM5B23N2UARMZTQY" Name="addEnumParameter" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="enumDef" Id="mprFACPAZLMJNAAXAGVMGHT2GBI5U">
+            <Type TypeId="411" Path="adcUTMGTTLFTFBHJMCICCD6GSYFZ4"/>
+          </Parameter>
+          <Parameter Name="name" Id="mprHZ3GIX2TJFFZJOOISVNV5IIFEI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> parameterId = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthRYDSIBOGWFEI7C7Z5R6TIUROUA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsHL2QKDVQX5FARACANDWKNIZ5OU aciOMNNSIKG5NGYHIVDV6JDWUUUXQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcNEKZPR2ELVHOZFY3UGGPK4GZ54"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> parameter = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNEKZPR2ELVHOZFY3UGGPK4GZ54 mthWRGY7K2UIFHC7IVTYSMKQPIQXI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(parameterId,enumDef,name);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcPU3NVQ2HSNFXDBR6UMJU3KLTXY prdUUPW7EXAENCCBAKRCXVPNTGYT4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.add(parameter);
+return parameterId;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthNB2O2YCSYRCL3F2WL2ZQZFKWII" Name="addReferenceParameter" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="paramId" Id="mprUZQRQCPNWFDIJL2FYTCR45GJEY">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="tableId" Id="mpr7PL77TWEUBBKRGGZ5XBUZLBZ4I">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="selPresentationClassId" Id="mprQLAGHP5G3ZHF7IGKBHRS6VLILU">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="selectorPresentationId" Id="mpr6IPWVBYI7ZGYTMWGTDTTPSG4WU">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="name" Id="mprKUKPKDU475DN7HHJOEUFMS5E4U">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> parameter = 
+    new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I mth3JWGWW4WJ5FPXEYDMXRVVJEDHE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(paramId, tableId, selPresentationClassId, selectorPresentationId, name);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcPU3NVQ2HSNFXDBR6UMJU3KLTXY prdUUPW7EXAENCCBAKRCXVPNTGYT4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.add(parameter);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthY3PKEYQTPFCYDOHL55TB55HD2U" Name="addReferenceParameter" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="tableId" Id="mprQ5SACBOWCNFIPIZPAIVVETSEPQ">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="selPresentationClassId" Id="mprTFWKYJFIXVDU7H5L52J2GPXVHA">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="selectorPresentationId" Id="mprHEUDMSERLBETTM73MTWI42R73Q">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="name" Id="mprPHGINCYYW5C23G53ZNHDN5UWOI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> paramId = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthRYDSIBOGWFEI7C7Z5R6TIUROUA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsHL2QKDVQX5FARACANDWKNIZ5OU aciOMNNSIKG5NGYHIVDV6JDWUUUXQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> parameter = 
+    new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I mth3JWGWW4WJ5FPXEYDMXRVVJEDHE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(paramId, tableId, selPresentationClassId, selectorPresentationId, name);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcPU3NVQ2HSNFXDBR6UMJU3KLTXY prdUUPW7EXAENCCBAKRCXVPNTGYT4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.add(parameter);
+return paramId;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthMNESUBDU3BFB5HCQLRZB3SASBI" Name="createParameters" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <ReturnType TypeId="411" Path="aic7OWB7GQDAZAGFGO6XZK2SCXMBQ"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc5RUH3DYFNFABRPWP5KIQ54DCSQ mth4ONADXVN2RBOJDQ33ZFDMFETFE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcPU3NVQ2HSNFXDBR6UMJU3KLTXY prdUUPW7EXAENCCBAKRCXVPNTGYT4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

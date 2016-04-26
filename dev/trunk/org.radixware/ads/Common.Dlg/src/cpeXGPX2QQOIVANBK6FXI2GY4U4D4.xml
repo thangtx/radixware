@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsCustomPropEditorDefinition Id="cpeXGPX2QQOIVANBK6FXI2GY4U4D4" Name="EventCodeArrChoiceDlg">
+    <ui:ui>
+      <ui:widget name="PropEditorDialog" id="wdgXEKJ2JEFTRDUNEZ7MRGPMRUOJU" class="cpeXGPX2QQOIVANBK6FXI2GY4U4D4" weight="0.0">
+        <ui:property name="geometry">
+          <ui:rect>
+            <ui:x>0</ui:x>
+            <ui:y>0</ui:y>
+            <ui:width>400</ui:width>
+            <ui:height>300</ui:height>
+          </ui:rect>
+        </ui:property>
+        <ui:property name="windowTitle">
+          <ui:mlstringid>mlsGRV3CQXXARFLXBBVV2U4WMHPSA</ui:mlstringid>
+        </ui:property>
+        <ui:property name="toolTip">
+          <ui:mlstringid>mlsJHU5MGINVJBS3L73RIJP2SROJQ</ui:mlstringid>
+        </ui:property>
+        <ui:layout class="QVBoxLayout" name="verticalLayout">
+          <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+            <ui:widget name="frame" id="wdg4WQTWPXLABEXFAVBIFKP5ZDGJM" class="QFrame" weight="0.0">
+              <ui:property name="frameShape">
+                <ui:enum>com.trolltech.qt.gui.QFrame.Shape.StyledPanel</ui:enum>
+              </ui:property>
+              <ui:property name="frameShadow">
+                <ui:enum>com.trolltech.qt.gui.QFrame.Shadow.Raised</ui:enum>
+              </ui:property>
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>155</ui:x>
+                  <ui:y>7</ui:y>
+                  <ui:width>120</ui:width>
+                  <ui:height>120</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="sizePolicy">
+                <ui:sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Expanding" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Expanding"/>
+              </ui:property>
+            </ui:widget>
+          </ui:item>
+          <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+            <ui:widget name="buttonBox" id="wdgX7LUE3OXH5CKBCQH4VJKKGBYUM" class="QDialogButtonBox" weight="0.0">
+              <ui:property name="standardButtons">
+                <ui:set>org.radixware.kernel.common.enums.EDialogButtonType.OK | org.radixware.kernel.common.enums.EDialogButtonType.CANCEL</ui:set>
+              </ui:property>
+              <ui:property name="sizePolicy">
+                <ui:sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Expanding" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Maximum"/>
+              </ui:property>
+            </ui:widget>
+          </ui:item>
+        </ui:layout>
+      </ui:widget>
+      <ui:connections>
+        <ui:connection>
+          <ui:sender>wdgX7LUE3OXH5CKBCQH4VJKKGBYUM</ui:sender>
+          <ui:signal>accepted()</ui:signal>
+          <ui:slot>mth4BICNKVH2VC5VJQTJCRBYABJ4Y</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgX7LUE3OXH5CKBCQH4VJKKGBYUM</ui:sender>
+          <ui:signal>rejected()</ui:signal>
+          <ui:slot>mthSQ74YXYQFNFR7F6WIXHHSD7SWA</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgXEKJ2JEFTRDUNEZ7MRGPMRUOJU</ui:sender>
+          <ui:signal>opened(com.trolltech.qt.gui.QWidget widget)</ui:signal>
+          <ui:slot>mthQWPIYZ4NUZHHXBWOYFKROQWXNM</ui:slot>
+        </ui:connection>
+      </ui:connections>
+    </ui:ui>
+    <EmbeddedModel Id="armXGPX2QQOIVANBK6FXI2GY4U4D4" Name="EventCodeArrChoiceDlg:Model" Type="17">
+      <AccessRules/>
+      <Headers>
+        <Src Name="HeaderarmXGPX2QQOIVANBK6FXI2GY4U4D4"/>
+      </Headers>
+      <Bodies>
+        <Src Name="BodyarmXGPX2QQOIVANBK6FXI2GY4U4D4">
+          <xsc:Item>
+            <xsc:Java>private </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="411" Path="adcXBFA2E3VCBGCXHGBM4UNCO7EVQ"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> editor;</xsc:Java>
+          </xsc:Item>
+        </Src>
+      </Bodies>
+      <MethodGroup Id="cmgCUOWUHME2ZEAFDGPFHAZZWJSLY" Name="Root"/>
+      <PropertyGroup Id="cpgJST2I2V3KNBVZASH7N5TI747O4" Name="Root"/>
+      <Properties>
+        <Property Id="prdVU5APASF3ZBSXIVX273IKPD66Y" Name="eventCodes" Nature="2" IsConst="false" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Type TypeId="451" Path="xsdMPH3WOW4SHOBDCKSAALOMT5GDM" extStr="EventCodesRsDocument"/>
+        </Property>
+      </Properties>
+      <Methods>
+        <Method Id="mth4BICNKVH2VC5VJQTJCRBYABJ4Y" Name="buttonBox_accepted" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if(editor != null){
+    editor.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcXBFA2E3VCBGCXHGBM4UNCO7EVQ mthF7EXFOXBVNA6NFRDORHMULOOH4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+}
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeXGPX2QQOIVANBK6FXI2GY4U4D4 wdgXEKJ2JEFTRDUNEZ7MRGPMRUOJU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.accept();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthSQ74YXYQFNFR7F6WIXHHSD7SWA" Name="buttonBox_rejected" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mthYEMLDE62GNCTVNB2L3I2YFWHF4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthQWPIYZ4NUZHHXBWOYFKROQWXNM" Name="PropEditorDialog_opened" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="widget" Id="mprMBZVBEPCSZF6BPFQDNSDAVBVZY">
+              <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthBN46PMVUBFADVFFMPLGSSR7ZRM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="clcNDD5T3NLEJCWNPNZZMBFRJ6XQM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>).execute();
+this.editor= new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcXBFA2E3VCBGCXHGBM4UNCO7EVQ mthY7FLM5Y2SZA2ZCY5TBTTPSHB4E" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(this.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(),</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeXGPX2QQOIVANBK6FXI2GY4U4D4 wdg4WQTWPXLABEXFAVBIFKP5ZDGJM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>,(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcHEXT6TMJ2FAXJGCQHFISLL36AA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>)this.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcIGHXUXORMFFNXGVBAEOQKN3Q6Y mth7UWTWB24FVASZBR3RCXXWXC4PU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(),</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeXGPX2QQOIVANBK6FXI2GY4U4D4 armXGPX2QQOIVANBK6FXI2GY4U4D4 prdVU5APASF3ZBSXIVX273IKPD66Y" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+com.trolltech.qt.gui.QLayout layout = new com.trolltech.qt.gui.QVBoxLayout(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeXGPX2QQOIVANBK6FXI2GY4U4D4 wdg4WQTWPXLABEXFAVBIFKP5ZDGJM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+editor.setSizePolicy(com.trolltech.qt.gui.QSizePolicy.Policy.Expanding,com.trolltech.qt.gui.QSizePolicy.Policy.Expanding);
+layout.addWidget(editor);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthclcNDD5T3NLEJCWNPNZZMBFRJ6XQM" Name="onCommand_GetEventCodesCmd" Nature="1" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="command" Id="mpr7PMVDZHN7NHIND3RFWWIKGKSRM">
+              <Type TypeId="411" Path="clcNDD5T3NLEJCWNPNZZMBFRJ6XQM"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>try{
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdMPH3WOW4SHOBDCKSAALOMT5GDM" extStr="EventCodesRqDocument"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> xIn = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdMPH3WOW4SHOBDCKSAALOMT5GDM" extStr="EventCodesRqDocument"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Factory.newInstance();
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdMPH3WOW4SHOBDCKSAALOMT5GDM" extStr="EventCodesRqDocument.EventCodesRq"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> eventCodeRq= xIn.addNewEventCodesRq();
+    eventCodeRq.IsForRedefine=false;
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeXGPX2QQOIVANBK6FXI2GY4U4D4 armXGPX2QQOIVANBK6FXI2GY4U4D4 prdVU5APASF3ZBSXIVX273IKPD66Y" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = command.send(xIn);
+}catch(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>  e){
+    Environment.processException(e);
+}catch(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="axcWSBFK4LYMVHTXL55MVC44THTGE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>  e){
+    Environment.processException(e);
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+      </Methods>
+    </EmbeddedModel>
+  </AdsCustomPropEditorDefinition>
+</AdsDefinition>

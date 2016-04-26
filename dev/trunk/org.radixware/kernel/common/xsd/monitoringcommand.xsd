@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://schemas.radixware.org/monitoringcommand.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:this="http://schemas.radixware.org/monitoringcommand.xsd" xmlns:eas="http://schemas.radixware.org/eas.xsd" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/eas.xsd" schemaLocation="eas.xsd"/>
+    <xs:import namespace="http://schemas.xmlsoap.org/soap/envelope/" schemaLocation="soap.xsd"/>
+    
+    <xs:complexType name="CustomAttribute">
+        <xs:sequence>
+            <xs:any namespace="##any" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="Name" type="types:Str" use="required"/>
+        <xs:attribute name="Value" type="types:Str" use="optional"/>
+    </xs:complexType>
+    
+    <xs:complexType name="MonitoringTreeItem" abstract="true">
+        <xs:sequence>
+            <xs:element name="CustomAttribute" type="this:CustomAttribute" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="ClassGUID" type="types:Str" use="optional"/>
+        <xs:attribute name="ImageId" type="types:Str" use="optional"/>
+    </xs:complexType>
+    
+    <xs:complexType name="TimePeriod">
+        <xs:choice>
+            <xs:element name="TimeRange">
+                <xs:complexType>
+                    <xs:attribute name="TimeFrom" type="types:DateTime" use="required"/>
+                    <xs:attribute name="TimeTo" type="types:DateTime" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Last">
+                <xs:complexType>
+                    <xs:attribute name="Seconds" type="types:Int" use="required"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+    </xs:complexType>
+    
+    <xs:complexType name="SysMonitoringRq">
+        <xs:sequence>
+            <xs:element name="ExpandedInstances">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Instance" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:attribute name="Id" type="types:Int" use="required"/>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="SysMonitoringRs">
+        <xs:sequence>
+            <xs:element name="Instance" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="this:MonitoringTreeItem">
+                            <xs:attribute name="Id" type="types:Int" use="required"/>
+                            <xs:attribute name="Title" type="types:Str" use="required"/>
+                            <xs:attribute name="Started" type="xs:boolean"/>
+                            <xs:attribute name="Active" type="xs:boolean"/>
+                            <xs:attribute name="MaxArteInstanceCnt" type="types:Int"/>
+                            <xs:attribute name="ArteInstanceCnt" type="types:Int"/>
+                            <xs:attribute name="AvgArteSessionCnt" type="types:Num"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Unit" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="this:MonitoringTreeItem">
+                            <xs:attribute name="Id" type="types:Int" use="required"/>
+                            <xs:attribute name="InstanceId" type="types:Int" use="required"/>
+                            <xs:attribute name="Title" type="types:Str" use="required"/>
+                            <xs:attribute name="Used" type="xs:boolean"/>
+                            <xs:attribute name="Started" type="xs:boolean"/>
+                            <xs:attribute name="Active" type="xs:boolean"/>
+                            <xs:attribute name="MaxArteSessionCnt" type="types:Int"/>
+                            <xs:attribute name="AvgArteSessionCnt" type="types:Num"/>
+                            <xs:attribute name="AvgJobExecCnt" type="types:Num"/>
+                            <xs:attribute name="MaxJobExecCnt" type="types:Int"/>
+                            <xs:attribute name="AvgJobWaitCnt" type="types:Num"/>
+                            <xs:attribute name="UnitType" type="types:Int" use="required"/>
+                            <xs:attribute name="OrderHint" type="types:Int" use="optional"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Channel" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="this:MonitoringTreeItem">
+                            <xs:attribute name="Id" type="types:Int" use="required"/>
+                            <xs:attribute name="Title" type="types:Str" use="required"/>
+                            <xs:attribute name="Listener" type="xs:boolean"/>
+                            <xs:attribute name="CurSessionCount" type="types:Int"/>
+                            <xs:attribute name="MaxSessionCount" type="types:Int"/>
+                            <xs:attribute name="UnitId" type="types:Int"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+
+    
+    <xs:complexType name="TableRq">
+        <xs:sequence>
+            <xs:element name="Filter" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name = "Instances" minOccurs="0" maxOccurs="1">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Id" type="types:Int" minOccurs="0" maxOccurs="unbounded"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name = "Units" minOccurs="0" maxOccurs="1">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Id" type="types:Int" minOccurs="0" maxOccurs="unbounded"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name = "NetChannels" minOccurs="0" maxOccurs="1">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Id" type="types:Int" minOccurs="0" maxOccurs="unbounded"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name = "Services" minOccurs="0" maxOccurs="1">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Uri" type="types:Str" minOccurs="0" maxOccurs="unbounded"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name = "MetricTypes" minOccurs="0" maxOccurs="1">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Id" type="types:Int" minOccurs="0" maxOccurs="unbounded"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="MetricKind" type="types:Str" use="required"/>
+    </xs:complexType>
+    
+    <xs:complexType name="MetricRecord">
+        <xs:attribute name="MinVal" type="types:Num" use="optional"/>
+        <xs:attribute name="MaxVal" type="types:Num" use="optional"/>
+        <xs:attribute name="AvgVal" type="types:Num" use="optional"/>
+        <xs:attribute name="BegVal" type="types:Num" use="optional"/>
+        <xs:attribute name="EndVal" type="types:Num" use="optional"/>
+        <xs:attribute name="BegTime" type="types:DateTime" use="optional"/>
+        <xs:attribute name="EndTime" type="types:DateTime" use="required"/>
+    </xs:complexType>
+    
+    <xs:complexType name="MetricValueRanges">
+        <xs:attribute name="LowErrorVal" type="types:Num" use="optional"/>
+        <xs:attribute name="LowWarnVal" type="types:Num" use="optional"/>
+        <xs:attribute name="HighWarnVal" type="types:Num" use="optional"/>
+        <xs:attribute name="HighErrorVal" type="types:Num" use="optional"/>
+        <xs:attribute name="ControlledValue" type="types:Str" use="optional"/>
+    </xs:complexType>
+    
+    <xs:complexType name="TableRs">
+        <xs:sequence>
+            <xs:element name="TableItem" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="CurrentState" type="this:MetricRecord" minOccurs="1" maxOccurs="1"/>
+                        <xs:element name="ValueRanges" type="this:MetricValueRanges" minOccurs="0" maxOccurs="1"/>
+                    </xs:sequence>    
+                    <xs:attribute name="SensorTitle" type="types:Str" use="required"/>
+                    <xs:attribute name="StateId" type="types:Int" use="required"/>
+                </xs:complexType>
+            </xs:element>       
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="ContainerRq">
+        <xs:sequence>
+            <xs:element name="Item" type="this:DashboardRqItem" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="ContainerRs">
+        <xs:sequence>
+            <xs:element name="Item" type="this:DashboardRsItem" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="DiagramRq">
+        <xs:choice>
+            <xs:element name="HistoryRq">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="TimePeriod" type="this:TimePeriod" minOccurs="1" maxOccurs="1"/>
+                    </xs:sequence>
+                    <xs:attribute name="MetricStateId" type="types:Int" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="CorrellationRq">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="StateId" type="types:Int" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+        
+    </xs:complexType>
+    
+    <xs:complexType name="DiagramRs">
+        <xs:choice>
+            <xs:element name="HistoryRs">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="ValueRanges" type="this:MetricValueRanges" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="PrevRecord" type="this:MetricRecord" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="Records">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Record" type="this:MetricRecord" minOccurs="0" maxOccurs="unbounded"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="TimeFrom" type="types:DateTime" use="required"/>
+                    <xs:attribute name="TimeTo" type="types:DateTime" use="required"/>
+                    <xs:attribute name="MetricKind" type="types:Str" use="required"/>
+                    <xs:attribute name="IsMetricEditAllowed" type="types:Bool" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="CorrellationRs">
+               <xs:complexType>
+                   <xs:sequence>
+                        <xs:element name="CorrRecord" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="CurrentState" type="this:MetricRecord" minOccurs="1" maxOccurs="1"/>
+                                    <xs:element name="ValueRanges" type="this:MetricValueRanges" minOccurs="0" maxOccurs="1"/>
+                                </xs:sequence>
+                                <xs:attribute name="StateId" type="types:Int" use="required"/>
+                            </xs:complexType>                
+                        </xs:element>
+                    </xs:sequence>                  
+               </xs:complexType>                                                 
+            </xs:element>
+        </xs:choice>
+    </xs:complexType>
+    
+    <xs:complexType name="ProblemInfo">
+        <xs:sequence>
+            <xs:element name="Message" type="xs:string" minOccurs="1" maxOccurs="1"/>
+	    <xs:element name="Details" type="soap:detail" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+      
+    <xs:complexType name="TabReference">
+        <xs:attribute name="TabGuid" type="types:Str" use="required"/>
+        <xs:attribute name="DashGuid" type="types:Str" use="required"/>
+    </xs:complexType>
+    
+    <xs:complexType name="DiagramParam">
+        <xs:sequence>
+            <xs:element name="TimePeriod" type="this:TimePeriod" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="SysUnitsParam">
+        <xs:sequence>
+            <xs:element name="SysMonitoringRq" type="this:SysMonitoringRq" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="EventLogParam">
+        <xs:attribute name="LastUpdateTime" type="types:DateTime" use="required"/>
+    </xs:complexType>
+    
+    <xs:complexType name="Parameters">
+        <xs:choice>
+            <xs:element name="DiagramParam" type="this:DiagramParam"/>
+            <xs:element name="SysUnitsParam" type="this:SysUnitsParam"/>
+            <xs:element name="EventLogParam" type="this:EventLogParam"/>
+        </xs:choice>
+    </xs:complexType>
+    
+    <xs:complexType name="ReferenceRq">
+        <xs:sequence>
+            <xs:element name="TabReference" type="this:TabReference" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Parameters" type="this:Parameters" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="DashboardRqItem">
+        <xs:choice>
+            <xs:element name="TableRq" type="this:TableRq"/>
+            <xs:element name="SysMonitoringRq" type="this:SysMonitoringRq"/>
+            <xs:element name="ContainerRq" type="this:ContainerRq"/>
+            <xs:element name="DiagramRq" type="this:DiagramRq"/>
+            <xs:element name="EventLogRq" type="eas:SelectRq"/>
+            <xs:element name="ReferenceRq" type="this:ReferenceRq"/>
+            <xs:element name="ProblemRq" type="this:ProblemInfo"/>
+        </xs:choice>
+        <xs:attribute name="ItemGuid" type="types:Str"/>
+    </xs:complexType>
+    
+    <xs:complexType name="DashboardRsItem">
+        <xs:choice>
+            <xs:element name="TableRs" type="this:TableRs"/>
+            <xs:element name="SysMonitoringRs" type="this:SysMonitoringRs"/>
+            <xs:element name="ContainerRs" type="this:ContainerRs"/>
+            <xs:element name="DiagramRs" type="this:DiagramRs"/>
+            <xs:element name="EventLogRs" type="eas:SelectRs"/>
+            <xs:element name="ProblemRs" type="this:ProblemInfo"/>
+        </xs:choice>
+        <xs:attribute name="ItemGuid" type="types:Str"/>
+    </xs:complexType>
+    
+    <xs:complexType name="DashboardRq">
+        <xs:sequence>
+            <xs:element name="RootRq" type="this:DashboardRqItem" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="DashboardRs">
+        <xs:sequence>
+            <xs:element name="RootRs" type="this:DashboardRsItem" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="CurrentUserRole" type="types:Str" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:element name="DashboardRq" type="this:DashboardRq"/>
+    <xs:element name="DashboardRs" type="this:DashboardRs"/>
+
+    <xs:element name="SysMonitoringRq" type="this:SysMonitoringRq"/>
+    <xs:element name="SysMonitoringRs" type="this:SysMonitoringRs"/>
+</xs:schema>

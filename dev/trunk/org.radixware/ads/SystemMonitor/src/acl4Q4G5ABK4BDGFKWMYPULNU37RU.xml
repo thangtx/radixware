@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="acl4Q4G5ABK4BDGFKWMYPULNU37RU" Name="MetricType.NetChannel.ClientConnectedTimePercent" Type="2" ClientEnvironment="explorer">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="Headeracl4Q4G5ABK4BDGFKWMYPULNU37RU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyacl4Q4G5ABK4BDGFKWMYPULNU37RU"/>
+    </Bodies>
+    <MethodGroup Id="cmgHFZBYH5S6ND2DE3ZNMO7DSICOM" Name="Root"/>
+    <PropertyGroup Id="cpgWLZSS75SXFGIVMWQX2S3VJ45HQ" Name="Root"/>
+    <Properties>
+      <Property Id="colPSRIBABNSJD45B3FB3UDKHACIM" Name="controlledValue" Nature="0" IsConst="false" IsOverride="true">
+        <AccessRules/>
+        <Type TypeId="21" Path="acs3JQBPC2NCJD37LVXZ6FUAXVNZ4"/>
+        <InitialValue>
+          <ValAsStr>AVG</ValAsStr>
+        </InitialValue>
+        <Presentation InheritanceMask="63"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthSK64PGWTZNFZFAJVJ5NHXBAC6M" Name="getKind" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="21" Path="acsF47GG6XUPJH5ZKZFOWDK7GI7LE"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsF47GG6XUPJH5ZKZFOWDK7GI7LE aciN3IBVFTQP5AKLGVKW46JIDZ7WI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthWWMO5AMVONHYFPXVGHKONUKSPY" Name="isControlledValueEditable" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return false;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM"/>
+    <Presentations ObjectTitleId="mlsUYLLI43GERFNVBV7VMVRCZCQMY">
+      <ClassCatalogs>
+        <ClassCatalog Id="eccXISAEUV6HRA7JNQ453IS2OBSFI" Name="Common">
+          <ClassRef Order="145.0"/>
+        </ClassCatalog>
+      </ClassCatalogs>
+      <EditorPresentations>
+        <EditorPresentation Id="eprH44GWC3B5BBA3JLBBZRNS72KFE" Name="Edit" BasePresentationId="epr5NYQFD3TZ5ATJL65ZK542GMR54" InheritanceMask="40112" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="epr5NYQFD3TZ5ATJL65ZK542GMR54" RightsInheritanceMode="0">
+          <AccessRules IsPublished="false"/>
+          <ChildExplorerItems/>
+          <ObjectTitleFormat Id="etfG4NN2PZUTRABFKBO6ELBBL46BM"/>
+        </EditorPresentation>
+      </EditorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="aclK6BVZGULL5E5NPHE42OK6I6NKU"/>
+  </AdsClassDefinition>
+</AdsDefinition>

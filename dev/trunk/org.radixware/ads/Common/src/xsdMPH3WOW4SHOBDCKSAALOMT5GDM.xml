@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdMPH3WOW4SHOBDCKSAALOMT5GDM" Name="CommandsXsd" TargetNamespace="http://schemas.radixware.org/commonCommands.xsd" Environment="common"><xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://schemas.radixware.org/commonCommands.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:com="http://schemas.radixware.org/common.xsd" xmlns:t="http://schemas.radixware.org/types.xsd" xmlns:this="http://schemas.radixware.org/commonCommands.xsd">
+  <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+  <xs:import namespace="http://schemas.radixware.org/common.xsd" schemaLocation="common.xsd"/>
+  <xs:element name="ClassListRq" type="com:ClassRestriction"/>
+  <xs:element name="ClassListRs" type="com:ClassList"/>
+  <xs:simpleType name="EventSource">
+    <xs:annotation>
+      <xs:documentation>Enum EventSource</xs:documentation>
+      <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+        <t:class>acsTNLJBZADHTNRDIPGABQAQNO6EY</t:class>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:restriction base="t:StrEnum"/>
+  </xs:simpleType>
+  <xs:simpleType name="EventSeverity">
+    <xs:annotation>
+      <xs:documentation>Enum EventSeverity</xs:documentation>
+      <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+        <t:class>acsFRO5RTQOG7NRDJH2ACQMTAIZT4</t:class>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:restriction base="t:IntEnum"/>
+  </xs:simpleType>
+  <xs:element name="MethodListRq">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="com:MethodRestriction">
+          <xs:attribute name="ClassGuid" type="t:Str" use="required"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MethodListRs" type="com:MethodList"/>
+  <xs:element name="PropertyListRq">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="com:PropertyRestriction">
+          <xs:attribute name="ClassGuid" type="t:Str" use="required"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PropertyListRs" type="com:PropertyList"/>
+  <xs:element name="FileName">
+    <xs:complexType>
+      <xs:attribute name="Path" type="t:Str" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MoveSeq">
+    <xs:complexType>
+      <xs:attribute name="EntityPid" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="EventCodesRq">
+    <xs:complexType>
+      <xs:attribute name="EventSource" type="this:EventSource" use="optional"/>
+      <xs:attribute name="IsForRedefine" type="xs:boolean" use="optional" default="false"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="EventCodesRs">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="EventCode" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:attribute name="Id" type="t:Str" use="required"/>
+            <xs:attribute name="Source" type="this:EventSource" use="required"/>
+            <xs:attribute name="Severity" type="this:EventSeverity" use="required"/>
+            <xs:attribute name="Title" type="t:Str" use="optional"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

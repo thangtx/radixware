@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions 
+    xmlns="http://schemas.xmlsoap.org/wsdl/" 
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+    xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+    xmlns:mqxsd="http://schemas.radixware.org/messagequeue.xsd" 
+    xmlns:mqwsdl="http://schemas.radixware.org/messagequeue.wsdl" 
+    targetNamespace="http://schemas.radixware.org/messagequeue.wsdl">
+    <types>
+        <xs:schema targetNamespace="http://schemas.radixware.org/messagequeue.wsdl">
+            <xs:import namespace="http://schemas.radixware.org/messagequeue.xsd" schemaLocation="messagequeue.xsd"/>
+            <xs:element name="MqInvoke" type="mqxsd:MqInvoke"/>
+        </xs:schema>
+    </types>
+     
+    <message name="MqInvokeRq">
+        <part name="MqInvokeRq" element="mqwsdl:MqInvoke"/>
+    </message>
+    <message name="MqInvokeRs">
+        <part name="MqInvokeRq" element="mqwsdl:MqInvoke"/>
+    </message>
+    
+    <portType name="MqHandlerPortType">
+        <operation name="MqInvoke">
+            <input message="mqwsdl:MqInvokeRq"/>
+            <output message="mqwsdl:MqInvokeRs"/>
+        </operation>
+    </portType>
+    
+    <binding name="MqHandlerBinding" type="mqwsdl:MqHandlerPortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        
+        <operation name="MqInvoke">
+            <soap:operation soapAction="http://schemas.radixware.org/messagequeue.wsdl#MqInvoke" style="document"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+    
+    <service name="MqHandlerService">
+        <port name="MqHandlerPort" binding="mqwsdl:MqHandlerBinding">
+            <soap:address location="http://"/>
+        </port>
+    </service>
+</definitions>

@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsContextlessCommandDefinition Id="clcRHFGTDNH5RADZG2PE4IWBNX5UU" Name="CanDeleteNodeCmd" CompilerWarnings="16777748" Nature="2" IsVisible="false" IsConfirmationRequired="false">
+    <AccessRules IsPublished="false"/>
+    <InType TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeRqDocument"/>
+    <OutType TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="CanDeleteNodeRsDocument"/>
+    <Source>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="CanDeleteNodeRsDocument"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> xDoc = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="CanDeleteNodeRsDocument.Factory"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.newInstance();
+</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="CanDeleteNodeRsDocument.CanDeleteNodeRs"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> xRs = xDoc.addNewCanDeleteNodeRs();
+xRs.CanDelete = true;
+
+final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="21"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> entityId = input.NodeRq.EntityId;
+final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="21"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> entityPid = input.NodeRq.EntityPid;
+
+final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcPid_______________________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> pid = new </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcPid_______________________ mthKCMJGSZYFREVLCWPBDG5YROTDE" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(), </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(entityId), entityPid);
+final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aicC6PFHABKKZBO3N6RNZ66DMI5O4"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> node = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mth3PA5KC7P3NFQ5L7BQAF4WAVCDY" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(pid);
+if (node instanceof </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>) {
+    final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> unit = (</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>)node;
+    if (unit.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E colIREKNEWHBDWDRD25AAYQQMVFBB" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.booleanValue()) {
+        xRs.CanDelete = false;
+        xRs.Mess = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:LocalizedString StringId="mlsCDYVLKJAVBCJFCT24GPRVFUOWU"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>;
+        return xDoc;
+    }
+}
+
+if (node instanceof </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcEntity____________________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>) {
+    final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>&lt;?> adapter = new </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI mthBKF6OIOD2ZEUJGTMV4243MTEFM" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>&lt;</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcEntity____________________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>>((</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcEntity____________________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>)node);
+    try {     
+        adapter.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI mthIKMSZ5R7KVABPGKIUKL54345ZE" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(false);
+    } catch (</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.server.exceptions.DeleteCascadeConfirmationRequiredException"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> e) {
+        xRs.CanDelete = false;
+        xRs.Mess = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:LocalizedString StringId="mlsNFYX35XBVZGQPJMNJSZYWJWDTE"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>;
+    } catch (</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.server.exceptions.DeleteCascadeRestrictedException"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> e) {
+        xRs.CanDelete = false;
+        xRs.Mess = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="21"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.format(</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:LocalizedString StringId="mls53A43G25DJGSFLFJARRNEEFAS4"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>, adapter.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI mthJDFRZDRQR5GEXNKBCYLPLQ3IMI" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(e.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="axcITDJ3E4HLZAD3O52MGI5XPUXOQ mthRAFCQTXIKFA7RJBESXZFIN64BQ" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>()));
+    }
+}
+
+return xDoc;</xsc:Java>
+      </xsc:Item>
+    </Source>
+  </AdsContextlessCommandDefinition>
+</AdsDefinition>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="accTRGTYWDX6JEWVPCAQXCAMYX374" Name="SelectorAddonsCounter" Type="4">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderadcLSH5FSVU4NBBZBOBIT2G4KEG4U"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcA6LZYE772ZH2ZHTAFTDRSZNRQ4"/>
+    </Bodies>
+    <MethodGroup Id="cmgR34FWOWWK5DN7MXA56VSAU4PBQ" Name="Root"/>
+    <PropertyGroup Id="cpg7W7NY4LUNVACVOT665GVHL4CNI" Name="Root"/>
+    <Properties>
+      <Property Id="prmMCY7YNQN6BEYHD7TYLKEIJJVVQ" Name="parTableGuid" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmGWPS7WQ5ZBE7HCT7QEKA2QAPVE" Name="parClassGuid" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prfO5G2YVTEVZFDLGAZGWKSV5AF24" Name="count" Nature="3" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="open" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="parTableGuid" Id="mprMCY7YNQN6BEYHD7TYLKEIJJVVQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="parClassGuid" Id="mprGWPS7WQ5ZBE7HCT7QEKA2QAPVE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="accTRGTYWDX6JEWVPCAQXCAMYX374"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="true">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>Select count(</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colTOTOEP36JFH35MA7BJYRU67GKU" Owner="TABLE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>) as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accTRGTYWDX6JEWVPCAQXCAMYX374" PropId="prfO5G2YVTEVZFDLGAZGWKSV5AF24" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> 
+from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:TableSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> 
+where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="col36K2MUPKPRGPPAGLVPAUJ52PQE" Owner="TABLE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmGWPS7WQ5ZBE7HCT7QEKA2QAPVE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> and 
+((</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmMCY7YNQN6BEYHD7TYLKEIJJVVQ"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> is null) or </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colDCQEQLHEC5F6VO633LHAE6BDMQ" Owner="TABLE">
+            <xsc:TableAlias>addons</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmMCY7YNQN6BEYHD7TYLKEIJJVVQ"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>)</xsc:Sql>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" Alias="addons"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="411" Path="pdcCursor____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

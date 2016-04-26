@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcABZGWHE72VHXXBKGOLLGOWPGLA" Name="UdsExporter" Type="3" Environment="explorer">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcKCFORHG2PVHO7A75QLPDEVVG5U"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcAGFVOISRTVEGHFITDVZQJW6FFE">
+        <xsc:Item>
+          <xsc:Java>private final </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> contextModel;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmgILC77TH3CZDBZEQERRZHCCKG7E" Name="Root"/>
+    <PropertyGroup Id="cpg7OXWYDC55NECNFBXB3YHZHE6EM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthGPRRFKWFNZHAZH767NZ5RN3WPA" Name="exportToUds" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="model" Id="mprYF35OPNWTVADXG4BUOJMU44RX4">
+            <Type TypeId="400" extStr="java.util.Iterator">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM epr7IKMB24XZHOBDCMTAALOMT5GDM aem7IKMB24XZHOBDCMTAALOMT5GDM"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>String fileName = com.trolltech.qt.gui.QFileDialog.getSaveFileName(
+        null,
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls55E2OD3WKVDU5F54E2CUPHWBFY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+        null,
+        new com.trolltech.qt.gui.QFileDialog.Filter(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsDKAQAOOTRZCHDLCJDHDHGOKRY4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>));
+
+if (fileName != null &amp;&amp; fileName != "") {
+    org.radixware.schemas.udsdef.UdsDefinitionListDocument xDoc = org.radixware.schemas.udsdef.UdsDefinitionListDocument.Factory.newInstance();
+    org.radixware.schemas.udsdef.UdsDefinitionListDocument.UdsDefinitionList xList = xDoc.addNewUdsDefinitionList();
+    int count = 0;
+    while (model.hasNext()) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM epr7IKMB24XZHOBDCMTAALOMT5GDM aem7IKMB24XZHOBDCMTAALOMT5GDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> entity = model.next();
+
+        org.radixware.kernel.common.defs.ads.userfunc.AdsUserFuncDef userFunc = entity.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM epr7IKMB24XZHOBDCMTAALOMT5GDM aem7IKMB24XZHOBDCMTAALOMT5GDM mthAA7X2XH4XJHGDFGTS5CLKWT3D4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(null);
+        if (userFunc == null) {
+            continue;
+        }
+
+
+        org.radixware.schemas.udsdef.UserFunctionDefinition xFunc = xList.addNewUdsDefinition().addNewUserFunc();
+        xFunc.setId(userFunc.getId());
+        xFunc.setName(entity.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM epr7IKMB24XZHOBDCMTAALOMT5GDM aem7IKMB24XZHOBDCMTAALOMT5GDM prd7MTIHMUG5ZHVNKMSTMAZAKOJOQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value + " - " + entity.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM prdQY3XHAZTHZB57GEKAHI6K23SEM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value);
+        if (entity.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM epr7IKMB24XZHOBDCMTAALOMT5GDM aem7IKMB24XZHOBDCMTAALOMT5GDM colEY7LJLL77RDNLLC655BJGHGEL4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value != null) {
+            xFunc.setDescription(entity.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM epr7IKMB24XZHOBDCMTAALOMT5GDM aem7IKMB24XZHOBDCMTAALOMT5GDM colEY7LJLL77RDNLLC655BJGHGEL4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value);
+        }
+        userFunc.Source.appendTo(xFunc.addNewSource(), org.radixware.kernel.common.defs.ads.AdsDefinition.ESaveMode.NORMAL);
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.common.defs.ads.localization.AdsLocalizingBundleDef"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> bundle = userFunc.findExistingLocalizingBundle();
+        if (bundle != null) {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.schemas.adsdef.LocalizingBundleDefinition"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xBundle = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.schemas.adsdef.LocalizingBundleDefinition.Factory"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.newInstance();
+            bundle.appendTo(xBundle, org.radixware.kernel.common.defs.ads.AdsDefinition.ESaveMode.NORMAL);
+            xFunc.Strings = xBundle;
+        }
+        xFunc.setMethodId(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.loadFrom(entity.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM prdKVOQE4YK7FBFTDFG42BCRRSZCI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value));
+        xFunc.setClassId(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.loadFrom(entity.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM col2Q4DNYD3ZHOBDCMTAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value));
+        xFunc.setPropId(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.loadFrom(entity.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM epr7IKMB24XZHOBDCMTAALOMT5GDM aem7IKMB24XZHOBDCMTAALOMT5GDM col7QMAJND3ZHOBDCMTAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value));
+        xFunc.setOwnerClassId(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.loadFrom(entity.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM epr7IKMB24XZHOBDCMTAALOMT5GDM aem7IKMB24XZHOBDCMTAALOMT5GDM prdEDT3H6EV4JF65HJPCQOZLCP2QQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value));
+        count++;
+
+    }
+    try {
+        xDoc.save(new java.io.File(fileName));
+        contextModel.Environment.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthZ7S4BY675BD6BHV4PD4UZFF6HA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsOEMJQ34N4BC5FEYTETB6SHVWQ4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, String.valueOf(count) + " " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsJHTBQZA3W5F35DJKLQVW4VLGZI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+        contextModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthHUS5XHSNB5E3RB6FMGZBODKOSM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsILOREX6MQBAZBISIESHUFLRWYM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, e);
+    }
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYM4NOBZC4BA4NCCDRLQA7O3R5Y" Name="UdsExporter" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="model" Id="mprDXTHVBYFDRD6PMUCAXBKRR56CE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.Model"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this.contextModel = model;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

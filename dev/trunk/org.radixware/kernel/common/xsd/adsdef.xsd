@@ -1,0 +1,2802 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:common="http://schemas.radixware.org/commondef.xsd" xmlns:utils="http://schemas.radixware.org/utils.xsd" xmlns:editmask="http://schemas.radixware.org/editmask.xsd" xmlns:this="http://schemas.radixware.org/adsdef.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" xmlns:xscml="http://schemas.radixware.org/xscml.xsd" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:algo="http://schemas.radixware.org/algo.xsd" xmlns:msdl="http://schemas.radixware.org/msdl.xsd" xmlns:web="http://schemas.radixware.org/web-ui.xsd" targetNamespace="http://schemas.radixware.org/adsdef.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:import namespace="http://schemas.radixware.org/xscml.xsd" schemaLocation="xscml.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/editmask.xsd" schemaLocation="editmask.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/commondef.xsd" schemaLocation="commondef.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/ui.xsd" schemaLocation="ui.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/algo.xsd" schemaLocation="algo.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/msdl.xsd" schemaLocation="msdl.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/utils.xsd" schemaLocation="utils.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/web-ui.xsd" schemaLocation="web-ui.xsd"/>
+    <xs:include schemaLocation="adsdef-min.xsd"/>
+    <xs:annotation>
+        <xs:documentation>--------- Abstract Base Types  ---------</xs:documentation>
+    </xs:annotation>
+    
+    <xs:complexType name="DescribedAdsDefinition">
+        <xs:complexContent>
+            <xs:extension base="common:DescribedDefinition">
+                <xs:sequence>
+                    <xs:element name="AccessRules" type="this:AccessRules" minOccurs="0"/>
+                    <xs:element name="Domains">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Domain" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:attribute name="Path">
+                                            <xs:simpleType>
+                                                <xs:list itemType="types:Id"/>
+                                            </xs:simpleType>
+                                        </xs:attribute>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="IdSrcEnum" type="types:Id" use="optional"/>
+                <xs:attribute name="IdSrcEnumItem" type="types:Id" use="optional"/>
+                <xs:attribute name="APIUsageKind" type="xs:int" use="optional" default="0"/>
+                <xs:attribute name="UploadMode" use="required">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.EDefinitionUploadMode</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:IntEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="TitledAdsDefinition">
+        <xs:complexContent>
+            <xs:extension base="this:DescribedAdsDefinition">
+                <xs:attribute name="TitleId" type="types:Id" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="AccessRules">
+        <xs:sequence>
+            <xs:element name="Transparence" minOccurs="0">
+                <xs:complexType>
+                    <xs:attribute name="PublishedName" type="xs:string"/>
+                    <xs:attribute name="Extendable" type="xs:boolean"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="Access" type="xs:int">
+            <!--			<xs:simpleType>
+                    <xs:annotation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                    <types:class>org.radixware.kernel.common.enums.EAccess</types:class>
+                            </xs:appinfo>
+                    </xs:annotation>
+                    <xs:restriction base="types:IntEnum"/>
+            </xs:simpleType>-->
+        </xs:attribute>
+        <xs:attribute name="IsFinal" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="IsAbstract" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="IsStatic" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="IsPublished" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="IsDeprecated" type="xs:boolean" use="optional" default="false"/>
+    </xs:complexType>
+    <xs:annotation>
+        <xs:documentation>--------- Common Types  ---------</xs:documentation>
+    </xs:annotation>
+    <xs:complexType name="SqmlCondition">
+        <xs:sequence>
+            <xs:element name="ConditionWhere" type="xscml:Sqml"/>
+            <xs:element name="ConditionFrom" type="xscml:Sqml" minOccurs="0"/>
+            <xs:element name="Prop2ValueCondition">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Item" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Value" type="xs:string" minOccurs="0"/>
+                                </xs:sequence>
+                                <xs:attribute name="PropId" type="types:Id"/>
+                            </xs:complexType> 
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ObjectTitleFormatDefinition">
+        <xs:complexContent>
+            <xs:extension base="common:Definition">
+                <xs:sequence>
+                    <xs:element name="TitleItem" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Pattern" type="xs:string" minOccurs="0"/>
+                            </xs:sequence>
+                            <xs:attribute name="PropId" type="types:Id" use="required"/>
+                            <xs:attribute name="PatternId" type="types:Id" use="optional"/>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="NullTitleId" type="types:Id" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ExplorerItemDefinition">
+        <xs:complexContent>
+            <xs:extension base="this:TitledAdsDefinition">
+                <xs:attribute name="InheritanceMask" type="xs:long" use="required"/>
+                <xs:attribute name="ClassId" type="types:Id"/>
+                <xs:attribute name="IsVisibleInTree" type="xs:boolean" default="true"/>
+                <xs:attribute name="Restrictions" type="xs:long" default="0"/>
+                <xs:attribute name="EnabledCommands">
+                    <xs:simpleType>
+                        <xs:list itemType="types:Id"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="ClientEnvironment">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.ERuntimeEnvironmentType</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:StrEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="SelectorExplorerItemDefinition">
+        <xs:complexContent>
+            <xs:extension base="this:ExplorerItemDefinition">
+                <xs:sequence>
+                    <xs:element name="Condition" type="this:SqmlCondition"/>
+                </xs:sequence>
+                <xs:attribute name="SelectorPresentationId" type="types:Id" use="required"/>
+                <xs:attribute name="CreationClassCatalogId" type="types:Id"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ExplorerItemExternalCondition">
+        <xs:sequence>
+            <xs:element name="Item" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Element" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:attribute name="Visible" type="xs:boolean" use="optional"/>
+                                <xs:attribute name="Id" type="types:Id"/>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="TargetId" type="types:Id"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ChildExplorerItems">
+        <xs:sequence>
+            <xs:element name="Order" type="this:ExplorerItemExternalCondition"/>
+            <xs:element name="Visibility" type="this:ExplorerItemExternalCondition"/>
+            <xs:element name="ExplicitlyInherited" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Item" minOccurs="1" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:attribute name="Id" type="types:Id"/>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Item" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:choice>
+                        <xs:element name="ChildRef">
+                            <xs:complexType>
+                                <xs:complexContent>
+                                    <xs:extension base="this:SelectorExplorerItemDefinition">
+                                        <xs:attribute name="ChildReferenceId" type="types:Id"/>
+                                    </xs:extension>
+                                </xs:complexContent>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="ParentRef">
+                            <xs:complexType>
+                                <xs:complexContent>
+                                    <xs:extension base="this:ExplorerItemDefinition">
+                                        <xs:attribute name="ParentReferenceId" type="types:Id"/>
+                                        <xs:attribute name="EditorPresentationIds">
+                                            <xs:simpleType>
+                                                <xs:list itemType="types:Id"/>
+                                            </xs:simpleType>
+                                        </xs:attribute>
+                                    </xs:extension>
+                                </xs:complexContent>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="Entity">
+                            <xs:complexType>
+                                <xs:complexContent>
+                                    <xs:extension base="this:SelectorExplorerItemDefinition"/>
+                                </xs:complexContent>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="Paragraph" type="this:ParagraphDefinition"/>
+                        <xs:element name="ParagraphLink">
+                            <xs:complexType>
+                                <xs:complexContent>
+                                    <xs:extension base="this:TitledAdsDefinition">
+                                        <xs:attribute name="InheritanceMask" type="xs:long" use="required"/>
+                                        <xs:attribute name="ParagraphId" type="types:Id" use="required"/>
+                                    </xs:extension>
+                                </xs:complexContent>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:choice>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ParagraphDefinition">
+        <xs:complexContent>
+            <xs:extension base="this:TitledAdsDefinition">
+                <xs:sequence>
+                    <xs:element name="ChildExplorerItems" type="this:ChildExplorerItems" minOccurs="0"/>
+                    <xs:element name="Model" type="this:ClassDefinition"/>
+                    <xs:element name="View" type="this:AbstractDialogDefinition" minOccurs="0"/>
+                    <xs:element name="WebView" type="this:AbstractDialogDefinition" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="UsedContextlessCommands">
+                    <xs:simpleType>
+                        <xs:list itemType="types:Id"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="IsRoot" type="xs:boolean" default="false"/>
+                <xs:attribute name="IsChildrenInherited" type="xs:boolean" default="true"/>
+                <xs:attribute name="IconId" type="types:Id"/>
+                <xs:attribute name="LogoId" type="types:Id"/>
+                <xs:attribute name="IsHidden" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="UseCustomView" type="xs:boolean"/>
+                <xs:attribute name="ClientEnvironment">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.ERuntimeEnvironmentType</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:StrEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="EditorPage">
+        <xs:complexContent>
+            <xs:extension base="this:TitledAdsDefinition">
+                <xs:sequence>
+                    <xs:element name="View" type="this:AbstractDialogDefinition" minOccurs="0"/>
+                    <xs:element name="WebView" type="this:AbstractDialogDefinition" minOccurs="0"/>
+                    <xs:element name="Properties">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Property" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:attribute name="Id" type="types:Id" use="required"/>
+                                        <xs:attribute name="Row" type="xs:int" use="required"/>
+                                        <xs:attribute name="Column" type="xs:int" use="required"/>
+                                        <xs:attribute name="ColSpan" type="xs:int" use="optional" default="1"/>
+                                        <xs:attribute name="GlutToLeft" type="xs:boolean" use="optional" default="false"/>
+                                        <xs:attribute name="GlutToRight" type="xs:boolean" use="optional" default="false"/>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="Type" use="required">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.EEditorPageType</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:IntEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="IconId" type="types:Id"/>
+                <xs:attribute name="IsVisible" type="xs:boolean" use="optional" default="true"/>
+                <xs:attribute name="CustomEditorId" type="types:Id"/>
+                <xs:attribute name="EmbeddedExplorerItemId" type="types:Id"/>
+                <xs:attribute name="ClientEnvironment">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.ERuntimeEnvironmentType</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:StrEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="SuppressedWarnings" type="utils:SuppressedWarnings" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="EditorPages">
+        <xs:sequence>
+            <xs:element name="Page" type="this:EditorPage" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="PageOrder">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Item" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:attribute name="PageId" type="types:Id" use="required"/>
+                                <xs:attribute name="Level" type="xs:int" use="required"/>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:annotation>
+        <xs:documentation>--------- Class and Class Components  ---------</xs:documentation>
+    </xs:annotation>
+    <xs:complexType name="ParameterDeclaration">
+        <xs:annotation>
+            <xs:documentation> method's parameter</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Type" type="xscml:TypeDeclaration"/>
+            <xs:element name="Description" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute name="Name" type="xs:string" use="required"/>
+        <xs:attribute name="Variable" type="xs:boolean" use="optional"/>
+        <xs:attribute name="DescriptionId" type="types:Id" use="optional"/>
+        <xs:attribute name="Id" type="types:Id" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="AbstractMethodDefinition">
+        <xs:complexContent>
+            <xs:extension base="this:DescribedAdsDefinition">
+                <xs:sequence>
+                    <xs:element name="Parameters" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Parameter" type="this:ParameterDeclaration" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="ReturnType" minOccurs="0">
+                        <xs:complexType>
+                            <xs:complexContent>
+                                <xs:extension base="xscml:TypeDeclaration">
+                                    <xs:sequence>
+                                        <xs:element name="Description" type="xs:string"/>
+                                    </xs:sequence>
+                                    <xs:attribute name="DescriptionId" type="types:Id" use="optional"/>
+                                </xs:extension>
+                            </xs:complexContent>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="ThrownExceptions" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Exception" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:complexContent>
+                                            <xs:extension base="xscml:TypeDeclaration">
+                                                <xs:sequence>
+                                                    <xs:element name="Description" type="xs:string"/>
+                                                </xs:sequence>
+                                                <xs:attribute name="DescriptionId" type="types:Id" use="optional"/>
+                                            </xs:extension>
+                                        </xs:complexContent>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="IsReflectiveCallable" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="Nature" use="required">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.EMethodNature</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:IntEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="IsConstructor" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="rpcCallId" type="types:Id" use="optional"/>
+                <xs:attribute name="Environment">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.ERuntimeEnvironmentType</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:StrEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="MethodDefinition">
+        <xs:complexContent>
+            <xs:extension base="this:AbstractMethodDefinition">
+                <xs:sequence>
+                    <xs:element name="ProfileInfo" type="common:ProfileInfo" minOccurs="0"/>
+                    <xs:element name="Source" type="xscml:JmlType" minOccurs="0"/>
+                    <xs:element name="Sources" type="this:ClassSource" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="IsOverride" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="SuppressedWarnings" type="utils:SuppressedWarnings" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="PropertyPresentation">
+        <xs:complexContent>
+            <xs:extension base="common:Definition">
+                <xs:sequence>
+                    <xs:element name="Editing">
+                        <xs:complexType>
+                            <xs:complexContent>
+                                <xs:extension base="this:EditOptions">
+                                    <xs:attribute name="EditPossibility" type="xs:long" use="optional"/>
+                                    <xs:attribute name="ReadSeparately" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="IsDuplicatesEnabled" type="xs:boolean" use="optional" default="true"/>
+                                    <xs:attribute name="ObjectEditorPresentationId" type="types:Id"/>
+                                    <xs:attribute name="IsArrayElementMandatory" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="NullArrayTitleId" type="types:Id"/>
+                                    <xs:attribute name="ArrayMinSize" type="xs:int" use="optional"/>
+                                    <xs:attribute name="ArrayMaxSize" type="xs:int" use="optional"/>
+                                    <xs:attribute name="ArrayBaseIndex" type="xs:int" use="optional"/>
+                                    
+                                    <xs:attribute name="ObjectEditorPresentationIdList" use="optional">
+                                        <xs:simpleType>
+                                            <xs:list itemType="types:Id"/>
+                                        </xs:simpleType>
+                                    </xs:attribute>
+                                </xs:extension>
+                            </xs:complexContent>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="ParentTitle" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>for ParentRef, ArrRef</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="TitleFormat" type="this:ObjectTitleFormatDefinition" minOccurs="0"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Object" minOccurs="0">
+                        <xs:complexType>
+                            <xs:attribute name="ObjectClassCatalogId" type="xs:string"/>
+                            <xs:attribute name="ObjectCreationPresentationId" type="xs:string">
+                                <xs:annotation>
+                                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                        <types:deprecated/>
+                                    </xs:appinfo>
+                                </xs:annotation>
+                            </xs:attribute>
+                            <xs:attribute name="CreationEditorPresentationIds" use="optional">
+                                <xs:simpleType>
+                                    <xs:list itemType="types:Id"/>
+                                </xs:simpleType>
+                            </xs:attribute>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="ParentSelect" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>for ParentRef, ArrRef</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="ParentSelectCondition" type="this:SqmlCondition" minOccurs="0">
+                                    <xs:annotation>
+                                        <xs:documentation>for ParentRef, ArrRef</xs:documentation>
+                                    </xs:annotation>
+                                </xs:element>
+                            </xs:sequence>
+                            <xs:attribute name="ParentSelectorPresentationId" type="xs:string"/>
+                            <xs:attribute name="ParentSelectorRestrictions" type="xs:long" use="optional"/>
+                            <xs:attribute name="ParentEditorRestrictions" type="xs:long" use="optional"/>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="TitleId" type="types:Id"/>
+                <xs:attribute name="HintId" type="types:Id"/>
+                <xs:attribute name="IsPresentable" type="xs:boolean" use="optional" default="true"/>
+                <xs:attribute name="InheritanceMask" type="xs:long" default="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Mask for attribute inheritance:  CPropAttrInheritanceMask:
+                            - Titles
+                            - Editing
+                            - ParentTitle
+                            - ParentSelector (ParentSelectorPresentationId)
+                            - ParentSelectCondition
+                            Used only in overriding properties
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="AdsValAsStr">
+        <xs:choice>
+            <xs:element name="ValAsStr" type="xs:string"/>
+            <xs:element name="Jml" type="xscml:JmlType"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="AbstractPropertyDefinition">
+        <xs:complexContent>
+            <xs:extension base="this:DescribedAdsDefinition">
+                <xs:sequence>
+                    <xs:element name="Type" type="xscml:TypeDeclaration"/>
+                    <xs:element name="InitialVal" type="xs:string" minOccurs="0"/>
+                    <xs:element name="InitialValue" type="this:AdsValAsStr" minOccurs="0"/>
+                    <xs:element name="Presentation" type="this:PropertyPresentation" minOccurs="0"/>
+                    <xs:element name="EmbeddedClass" type="this:ClassDefinition" minOccurs="0"/>
+                    <xs:element name="DependentItems" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Dependent" type="types:Id" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="EmbeddedProperty" type="this:PropertyDefinition" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="Nature" use="required">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.EPropNature</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:IntEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="IsConst" type="xs:boolean" default="false"/>
+                <xs:attribute name="EventStringId" type="types:Id" default="false"/>
+                <xs:attribute name="DbTypeLength" type="xs:int" default="9"/>
+                <xs:attribute name="DbTypePrecision" type="xs:int" default="0"/>
+                <xs:attribute name="IsInvisibleForArte" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="Environment">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.ERuntimeEnvironmentType</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:StrEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="PropAccessorSources">
+        <xs:complexContent>
+            <xs:extension base="this:ClassSource"/>
+            <!--				<xs:attribute name="Access" use="optional">
+                    <xs:simpleType>
+                            <xs:annotation>
+                                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                            <types:class>org.radixware.kernel.common.enums.EAccess</types:class>
+                                    </xs:appinfo>
+                            </xs:annotation>
+                            <xs:restriction base="types:IntEnum"/>
+                    </xs:simpleType>
+            </xs:attribute>-->
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="PropertyDefinition">
+        <xs:complexContent>
+            <xs:extension base="this:AbstractPropertyDefinition">
+                <xs:sequence>
+                    <xs:element name="ValInheritance" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Pathes" minOccurs="0">
+                                    <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element name="Path" maxOccurs="unbounded">
+                                                <xs:complexType>
+                                                    <xs:attribute name="References">
+                                                        <xs:simpleType>
+                                                            <xs:list itemType="types:Id"/>
+                                                        </xs:simpleType>
+                                                    </xs:attribute>
+                                                    <xs:attribute name="PropertyId" type="types:Id" use="required"/>
+                                                </xs:complexType>
+                                            </xs:element>
+                                        </xs:sequence>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                            <xs:attribute name="MarkVal" type="xs:string" use="required"/>
+                            <xs:attribute name="InitializationPolicy" use="optional">
+                                <xs:simpleType>
+                                    <xs:annotation>
+                                        <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                            <types:class>org.radixware.kernel.common.enums.EPropInitializationPolicy</types:class>
+                                        </xs:appinfo>
+                                    </xs:annotation>
+                                    <xs:restriction base="types:IntEnum"/>
+                                </xs:simpleType>
+                            </xs:attribute>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="GetterProfileInfo" type="common:ProfileInfo" minOccurs="0"/>
+                    <xs:element name="SetterProfileInfo" type="common:ProfileInfo" minOccurs="0"/>
+                    <xs:element name="SetterSource" type="xscml:JmlType" minOccurs="0"/>
+                    <xs:element name="GetterSource" type="xscml:JmlType" minOccurs="0"/>
+                    <xs:element name="SetterSources" type="this:PropAccessorSources" minOccurs="0"/>
+                    <xs:element name="GetterSources" type="this:PropAccessorSources" minOccurs="0"/>
+                    <xs:element name="ParentDeletionOptions" minOccurs="0">
+                        <xs:complexType>
+                            <xs:attribute name="OnParentDeletion" use="required">
+                                <xs:simpleType>
+                                    <xs:annotation>
+                                        <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                            <types:class>org.radixware.kernel.common.enums.EDeleteMode</types:class>
+                                        </xs:appinfo>
+                                        <xs:documentation>For parent ref user properties</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="types:StrEnum"/>
+                                </xs:simpleType>
+                            </xs:attribute>
+                            <xs:attribute name="ConfirmationRequired" type="types:Bool" use="required"/>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="SqmlExpression" type="xscml:Sqml" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>for Nature=Expression</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="FieldToColumnMap" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>for cursor field</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Item" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:attribute name="ColumnId" type="xs:string" use="required"/>
+                                        <xs:attribute name="FieldId" type="xs:string" use="required"/>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="ReadAccess" use="optional">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.EAccess</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:IntEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="WriteAccess" use="optional">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.EAccess</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:IntEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="InitializationPolicy" use="optional">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.EPropInitializationPolicy</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:IntEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="SuppressedWarnings" type="utils:SuppressedWarnings" use="optional"/>
+                <xs:attribute name="IsOverride" type="xs:boolean" default="false"/>
+                <xs:attribute name="isDescriptionInherited" type="xs:boolean" default="false"/>
+                <xs:attribute name="AuditUpdate" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="ParentRefId" type="types:Id">
+                    <xs:annotation>
+                        <xs:documentation>for ParentRef and DetailProp</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="DetailRefId" type="types:Id">
+                    <xs:annotation>
+                        <xs:documentation>for DetailProp - Reference ID from Detail</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="ParentPath">
+                    <xs:simpleType>
+                        <xs:list itemType="types:Id"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="OriginalPropertyId" type="types:Id">
+                    <xs:annotation>
+                        <xs:documentation>for ParentProp, DetailProp</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="DbType" type="xs:string" use="optional">
+                    <xs:annotation>
+                        <xs:documentation>for FieldProp and SqmlProp</xs:documentation>
+                        <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                            <types:deprecated/>
+                        </xs:appinfo>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+            <!--for ParentProp - chain of ParentRef-s-->
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="CommandDefinition">
+        <xs:complexContent>
+            <xs:extension base="this:TitledAdsDefinition">
+                <xs:sequence>
+                    <xs:element name="InType" type="xscml:TypeDeclaration" minOccurs="0"/>
+                    <xs:element name="OutType" type="xscml:TypeDeclaration" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="Nature">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.ECommandNature</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:IntEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="IsReadOnlyCommand" type="xs:boolean" default="false"/>
+                <xs:attribute name="IsVisible" type="xs:boolean" default="false"/>
+                <xs:attribute name="IconId" type="xs:string" use="optional"/>
+                <xs:attribute name="IsDeprecated" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="IsConfirmationRequired" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="MethodId" type="types:Id" use="optional"/>
+                <xs:attribute name="ClientEnvironment" use="optional">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.ERuntimeEnvironmentType</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:StrEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="MemberGroup">
+        <xs:complexContent>
+            <xs:extension base="this:DescribedAdsDefinition">
+                <xs:sequence>
+                    <xs:element name="Group" type="this:MemberGroup" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attribute name="Members">
+                    <xs:simpleType>
+                        <xs:list itemType="types:Id"/>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="EditOptions">
+        <xs:sequence>
+            <xs:element name="EditMask" type="editmask:EditMask" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="IsMemo" type="xs:boolean" default="false"/>
+        <xs:attribute name="NotNull" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="ShowDialogButton" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="CustomDialogId" type="types:Id"/>
+        <xs:attribute name="WebCustomDialogId" type="types:Id"/>
+        <xs:attribute name="CustomEditOnly" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="NullValTitleId" type="types:Id"/>
+        <xs:attribute name="EmptyValTitleId" type="types:Id"/>
+        <xs:attribute name="StoreEditHistory" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="EditEnvironment" use="optional">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.ERuntimeEnvironmentType</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:StrEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="ValueStorePossibility">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EPropertyValueStorePossibility</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:IntEnum"/>
+            </xs:simpleType>                                        
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="ClassDefinition">
+        <xs:complexContent>
+            <xs:extension base="this:TitledAdsDefinition">
+                <xs:sequence>
+                    <xs:element name="TypeArguments" type="xscml:TypeArguments" minOccurs="0"/>
+                    <xs:element name="Header" type="xscml:JmlType" minOccurs="0"/>
+                    <xs:element name="Headers" type="this:ClassSource" minOccurs="0"/>
+                    <xs:element name="Body" type="xscml:JmlType" minOccurs="0"/>
+                    <xs:element name="Bodies" type="this:ClassSource" minOccurs="0"/>
+                    <xs:element name="MethodGroup" type="this:MemberGroup" minOccurs="0"/>
+                    <xs:element name="PropertyGroup" type="this:MemberGroup" minOccurs="0"/>
+                    <xs:element name="Properties" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Property" type="this:PropertyDefinition" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Methods" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Method" type="this:MethodDefinition" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="InnerClasses" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Clazz" type="this:ClassDefinition" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Resources">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Resource" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element name="Data" type="xs:string"/>
+                                        </xs:sequence>
+                                        <xs:attribute name="Name" type="xs:string"/>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:choice>
+                        <xs:element name="Algorithm" type="algo:AlgoDef" minOccurs="0"/>
+                        <xs:element name="Entity" minOccurs="0">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="AccessAreas" minOccurs="0">
+                                        <xs:complexType>
+                                            <xs:sequence>
+                                                <xs:element name="AccessArea" minOccurs="0" maxOccurs="unbounded">
+                                                    <xs:complexType>
+                                                        <xs:sequence>
+                                                            <xs:element name="Partition" minOccurs="0" maxOccurs="unbounded">
+                                                                <xs:complexType>
+                                                                    <xs:attribute name="FamilyId" type="types:Id"/>
+                                                                    <xs:attribute name="RefIds">
+                                                                        <xs:simpleType>
+                                                                            <xs:list itemType="types:Id"/>
+                                                                        </xs:simpleType>
+                                                                    </xs:attribute>
+                                                                    <xs:attribute name="PropId" type="types:Id"/>
+                                                                </xs:complexType>
+                                                            </xs:element>
+                                                        </xs:sequence>
+                                                        <xs:attribute name="Name" type="xs:string"/>
+                                                    </xs:complexType>
+                                                </xs:element>
+                                            </xs:sequence>
+                                            <xs:attribute name="Type">
+                                                <xs:simpleType>
+                                                    <xs:restriction base="xs:string">
+                                                        <xs:enumeration value="Inherited"/>
+                                                        <xs:enumeration value="None"/>
+                                                        <xs:enumeration value="NotOverriden"/>
+                                                        <xs:enumeration value="Own"/>
+                                                    </xs:restriction>
+                                                </xs:simpleType>
+                                            </xs:attribute>
+                                            <xs:attribute name="InheritReferenceId" type="types:Id"/>
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:sequence>
+                                <xs:attribute name="EntityId" type="types:Id"/>
+                                <xs:attribute name="AllowedDetailReferences">
+                                    <xs:simpleType>
+                                        <xs:list itemType="types:Id"/>
+                                    </xs:simpleType>
+                                </xs:attribute>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="Sql" type="this:SqlStatement" minOccurs="0"/>
+                        <xs:element name="Report" type="this:Report" minOccurs="0"/>
+                    </xs:choice>
+                    <xs:element name="Presentations" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Form" type="this:Form" minOccurs="0"/>
+                                <xs:element name="ObjectTitleFormat" type="this:ObjectTitleFormatDefinition" minOccurs="0"/>
+                                <xs:element name="Sortings" minOccurs="0">
+                                    <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element name="Sorting" maxOccurs="unbounded">
+                                                <xs:complexType>
+                                                    <xs:complexContent>
+                                                        <xs:extension base="this:TitledAdsDefinition">
+                                                            <xs:sequence>
+                                                                <xs:element name="OrderBy" minOccurs="0" maxOccurs="unbounded">
+                                                                    <xs:complexType>
+                                                                        <xs:attribute name="PropId" type="types:Id" use="required"/>
+                                                                        <xs:attribute name="Desc" type="xs:boolean" use="optional" default="false"/>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                                <xs:element name="Hint" type="xscml:Sqml" minOccurs="0"/>
+                                                            </xs:sequence>
+                                                        </xs:extension>
+                                                    </xs:complexContent>
+                                                </xs:complexType>
+                                            </xs:element>
+                                        </xs:sequence>
+                                    </xs:complexType>
+                                </xs:element>
+                                <xs:element name="Filters" minOccurs="0">
+                                    <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element name="Filter" maxOccurs="unbounded">
+                                                <xs:complexType>
+                                                    <xs:complexContent>
+                                                        <xs:extension base="this:TitledAdsDefinition">
+                                                            <xs:sequence>
+                                                                <xs:element name="Condition" type="xscml:Sqml" minOccurs="0"/>
+                                                                <xs:element name="Hint" type="xscml:Sqml" minOccurs="0"/>
+                                                                <xs:element name="EditorPages" type="this:EditorPages" minOccurs="0"/>
+                                                                <xs:element name="Model" type="this:ClassDefinition" minOccurs="0"/>
+                                                                <xs:element name="View" type="this:AbstractDialogDefinition" minOccurs="0"/>
+                                                                <xs:element name="WebView" type="this:AbstractDialogDefinition" minOccurs="0"/>
+                                                                <xs:element name="EnabledSorting" minOccurs="0" maxOccurs="unbounded">
+                                                                    <xs:complexType>
+                                                                        <xs:sequence>
+                                                                            <xs:element name="Hint" type="xscml:Sqml" minOccurs="0"/>
+                                                                        </xs:sequence>
+                                                                        <xs:attribute name="SortingId" type="types:Id" use="required"/>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                                <xs:element name="Parameters" minOccurs="0">
+                                                                    <xs:complexType>
+                                                                        <xs:sequence>
+                                                                            <xs:element name="Parameter" minOccurs="0" maxOccurs="unbounded">
+                                                                                <xs:complexType>
+                                                                                    <xs:complexContent>
+                                                                                        <xs:extension base="this:TitledAdsDefinition">
+                                                                                            <xs:sequence>
+                                                                                                <xs:element name="Type" type="xscml:TypeDeclaration"/>
+                                                                                                <xs:element name="DefaultVal" type="xs:string" minOccurs="0"/>
+                                                                                                <xs:element name="InitialValue" type="this:AdsValAsStr" minOccurs="0"/>
+                                                                                                <xs:element name="Editing">
+                                                                                                    <xs:complexType>
+                                                                                                        <xs:complexContent>
+                                                                                                            <xs:extension base="this:EditOptions">
+                                                                                                                <xs:attribute name="ParentSelectorPresentationId" type="types:Id"/>
+                                                                                                            </xs:extension>
+                                                                                                        </xs:complexContent>
+                                                                                                    </xs:complexType>
+                                                                                                </xs:element>
+                                                                                            </xs:sequence>
+                                                                                        </xs:extension>
+                                                                                    </xs:complexContent>
+                                                                                </xs:complexType>
+                                                                            </xs:element>
+                                                                        </xs:sequence>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                            <xs:attribute name="AnyBaseSortingEnabled" type="xs:boolean" default="true"/>
+                                                            <xs:attribute name="CustomSortingEnabled" type="xs:boolean" default="true"/>
+                                                            <xs:attribute name="DefaultSortingId" type="types:Id"/>
+                                                            <xs:attribute name="SuppressedWarnings" type="utils:SuppressedWarnings" use="optional"/>
+                                                            <xs:attribute name="UsedContextlessCommands">
+                                                                <xs:simpleType>
+                                                                    <xs:list itemType="types:Id"/>
+                                                                </xs:simpleType>
+                                                            </xs:attribute>
+                                                            <xs:attribute name="ClientEnvironment" use="optional">
+                                                                <!--default environment - common-->
+                                                                <xs:simpleType>
+                                                                    <xs:annotation>
+                                                                        <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                                            <types:class>org.radixware.kernel.common.enums.ERuntimeEnvironmentType</types:class>
+                                                                        </xs:appinfo>
+                                                                    </xs:annotation>
+                                                                    <xs:restriction base="types:StrEnum"/>
+                                                                </xs:simpleType>
+                                                            </xs:attribute>
+                                                        </xs:extension>
+                                                    </xs:complexContent>
+                                                </xs:complexType>
+                                            </xs:element>
+                                        </xs:sequence>
+                                    </xs:complexType>
+                                </xs:element>
+                                <xs:element name="ColorSchemes" minOccurs="0">
+                                    <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element name="ColorScheme" maxOccurs="unbounded">
+                                                <xs:complexType>
+                                                    <xs:complexContent>
+                                                        <xs:extension base="this:TitledAdsDefinition">
+                                                            <xs:sequence>
+                                                                <xs:element name="Subset" minOccurs="0" maxOccurs="unbounded">
+                                                                    <xs:complexType>
+                                                                        <xs:sequence>
+                                                                            <xs:element name="Condition" type="xscml:Sqml"/>
+                                                                        </xs:sequence>
+                                                                        <xs:attribute name="Name" type="xs:string" use="required"/>
+                                                                        <xs:attribute name="Style" use="required">
+                                                                            <xs:simpleType>
+                                                                                <xs:annotation>
+                                                                                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                                                        <types:class>org.radixware.kernel.common.enums.ESelectorRowStyle</types:class>
+                                                                                    </xs:appinfo>
+                                                                                </xs:annotation>
+                                                                                <xs:restriction base="types:StrEnum"/>
+                                                                            </xs:simpleType>
+                                                                        </xs:attribute>
+                                                                        <xs:attribute name="IsEnabled" type="xs:boolean" use="optional" default="true"/>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:extension>
+                                                    </xs:complexContent>
+                                                </xs:complexType>
+                                            </xs:element>
+                                        </xs:sequence>
+                                    </xs:complexType>
+                                </xs:element>
+                                <xs:element name="Commands" minOccurs="0">
+                                    <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element name="Command" maxOccurs="unbounded">
+                                                <xs:complexType>
+                                                    <xs:complexContent>
+                                                        <xs:extension base="this:CommandDefinition">
+                                                            <xs:attribute name="Scope" use="required">
+                                                                <xs:simpleType>
+                                                                    <xs:annotation>
+                                                                        <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                                            <types:class>org.radixware.kernel.common.enums.ECommandScope</types:class>
+                                                                        </xs:appinfo>
+                                                                    </xs:annotation>
+                                                                    <xs:restriction base="types:IntEnum"/>
+                                                                </xs:simpleType>
+                                                            </xs:attribute>
+                                                            <xs:attribute name="Accessibility" use="required">
+                                                                <xs:simpleType>
+                                                                    <xs:annotation>
+                                                                        <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                                            <types:class>org.radixware.kernel.common.enums.ECommandAccessibility</types:class>
+                                                                        </xs:appinfo>
+                                                                    </xs:annotation>
+                                                                    <xs:restriction base="types:IntEnum"/>
+                                                                </xs:simpleType>
+                                                            </xs:attribute>
+                                                            <xs:attribute name="PropIds">
+                                                                <xs:simpleType>
+                                                                    <xs:list itemType="types:Id"/>
+                                                                </xs:simpleType>
+                                                            </xs:attribute>
+                                                        </xs:extension>
+                                                    </xs:complexContent>
+                                                </xs:complexType>
+                                            </xs:element>
+                                        </xs:sequence>
+                                    </xs:complexType>
+                                </xs:element>
+                                <xs:element name="ClassCatalogs" minOccurs="0">
+                                    <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element name="ClassCatalog" maxOccurs="unbounded">
+                                                <xs:complexType>
+                                                    <xs:complexContent>
+                                                        <xs:extension base="this:DescribedAdsDefinition">
+                                                            <xs:sequence>
+                                                                <xs:element name="Topic" minOccurs="0" maxOccurs="unbounded">
+                                                                    <xs:complexType>
+                                                                        <xs:complexContent>
+                                                                            <xs:extension base="this:TitledAdsDefinition">
+                                                                                <xs:attribute name="ParentTopicId" type="types:Id"/>
+                                                                                <xs:attribute name="Order" type="xs:double"/>
+                                                                            </xs:extension>
+                                                                        </xs:complexContent>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                                <xs:element name="ClassRef" minOccurs="0" maxOccurs="unbounded">
+                                                                    <xs:complexType>
+                                                                        <xs:attribute name="ClassId" type="types:Id"/>
+                                                                        <xs:attribute name="TitleId" type="types:Id"/>
+                                                                        <xs:attribute name="TopicId" type="types:Id"/>
+                                                                        <xs:attribute name="Order" type="xs:double"/>
+                                                                        <xs:attribute name="InheritTitle" type="xs:boolean"/>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:extension>
+                                                    </xs:complexContent>
+                                                </xs:complexType>
+                                            </xs:element>
+                                        </xs:sequence>
+                                    </xs:complexType>
+                                </xs:element>
+                                <xs:element name="EditorPresentations" minOccurs="0">
+                                    <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element name="EditorPresentation" type="this:EditorPresentationDefinition" minOccurs="0" maxOccurs="unbounded"/>
+                                        </xs:sequence>
+                                    </xs:complexType>
+                                </xs:element>
+                                <xs:element name="SelectorPresentations" minOccurs="0">
+                                    <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element name="SelectorPresentation" type="this:SelectorPresentationDefinition" minOccurs="0" maxOccurs="unbounded"/>
+                                        </xs:sequence>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                            <xs:attribute name="ObjectTitleId" type="xs:string"/>
+                            <xs:attribute name="EntityTitleId" type="xs:string"/>
+                            <xs:attribute name="IconId" type="xs:string"/>
+                            <xs:attribute name="DefaultSelectorPresentationId" type="xs:string"/>
+                            <xs:attribute name="Restrictions" type="xs:long" use="optional" default="0"/>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Extends" type="xscml:TypeDeclaration"/>
+                    <xs:element name="Implements">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Interface" type="xscml:TypeDeclaration" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="EnumClassFields">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Field" type="this:EnumClassFieldDefinition" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="EnumClassFieldStruct">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Parameter" type="this:EnumClassFieldParamDefinition" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="PropIds">
+                        <xs:simpleType>
+                            <xs:list itemType="types:Id"/>
+                        </xs:simpleType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="SuppressedWarnings" type="utils:SuppressedWarnings" use="optional"/>
+                <xs:attribute name="Type" use="required">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.EClassType</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:IntEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="IsDual" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="Environment" use="optional">
+                    <!--default environment - common-->
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.ERuntimeEnvironmentType</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:StrEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="ClientEnvironment" use="optional">
+                    <!--default environment - common-->
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.ERuntimeEnvironmentType</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:StrEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:annotation>
+        <xs:documentation>------------------------ enum class ----------------------</xs:documentation>
+    </xs:annotation>
+    <xs:complexType name="EnumClassFieldDefinition">
+        <xs:complexContent>
+            <xs:extension base="this:DescribedAdsDefinition">
+                <xs:sequence>
+                    <xs:element name="Values" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Value" type="this:EnumClassFieldValue" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="EmbeddedClass" type="this:ClassDefinition" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="EnumClassFieldValue">
+        <xs:annotation>
+            <xs:documentation> enum class field's value </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Value" type="this:AdsValAsStr" minOccurs="0"/>
+            <!--            <xs:element name="ValAsStr" type="xs:string"/>-->
+        </xs:sequence>
+        <xs:attribute name="ParamId" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="EnumClassFieldParamDefinition">
+        <xs:annotation>
+            <xs:documentation> enum class structure parameter's value </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="this:DescribedAdsDefinition">
+                <xs:sequence>
+                    <xs:element name="InitialValue" type="this:AdsValAsStr" minOccurs="0"/>
+                    <!--                    <xs:element name="InitialValue" type="xs:string"/>-->
+                    <xs:element name="Type" type="xscml:TypeDeclaration"/>
+                    <xs:element name="InitialValueAllowed" type="xs:boolean"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:annotation>
+        <xs:documentation>------------------------ sql class structures ----------------------</xs:documentation>
+    </xs:annotation>
+    <xs:complexType name="SqlStatement">
+        <xs:sequence>
+            <xs:element name="Source" type="xscml:Sqml"/>
+            <xs:element name="UsedTables" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="UsedTable" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:attribute name="TableId" type="types:Id" use="required"/>
+                                <xs:attribute name="Alias" type="xs:string" use="optional"/>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="CacheSize" type="xs:int" default="10"/>
+        <xs:attribute name="IsUniDirect" type="xs:boolean" default="true"/>
+        <xs:attribute name="IsReadOnly" type="xs:boolean" default="true"/>
+        <xs:attribute name="NoTest" type="xs:boolean" default="false"/>
+    </xs:complexType>
+    <xs:annotation>
+        <xs:documentation>------------------------ report structure ----------------------</xs:documentation>
+    </xs:annotation>
+    <xs:complexType name="ReportFont">
+        <xs:attribute name="Name" type="xs:string" use="required"/>
+        <xs:attribute name="Size" type="xs:double" use="required"/>
+        <xs:attribute name="Bold" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="Italic" type="xs:boolean" use="optional" default="false"/>
+    </xs:complexType>
+    <xs:complexType name="ReportBorder">
+        <xs:attribute name="Color" type="xs:string" use="required"/>
+        <xs:attribute name="Thickness" type="xs:double" use="required"/>
+        <xs:attribute name="Style" use="required">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EReportBorderStyle</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:StrEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Left" type="xs:boolean" use="required"/>
+        <xs:attribute name="Right" type="xs:boolean" use="required"/>
+        <xs:attribute name="Top" type="xs:boolean" use="required"/>
+        <xs:attribute name="Bottom" type="xs:boolean" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="ReportBand">
+        <xs:sequence>
+            <xs:element name="Font" type="this:ReportFont"/>
+            <xs:element name="Border" type="this:ReportBorder" minOccurs="0"/>
+            <xs:element name="ReportWidgetContainer" type="this:ReportWidgetContainer"/>
+            <xs:element name="Cells" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Cell" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:complexContent >
+                                    <xs:extension base="this:ReportCell"/>
+                                </xs:complexContent>
+                            </xs:complexType>                           
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OnAdding" type="xscml:JmlType" minOccurs="0"/>
+            <xs:element name="PreReports" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="SubReport" type="this:SubReport" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="PostReports" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="SubReport" type="this:SubReport" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="Height" type="xs:double" use="required"/>
+        <xs:attribute name="HeightRows" type="xs:int" use="required"/>
+        <xs:attribute name="AutoHeight" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="LastOnPage" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="MultiPage" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="WrapCells" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="NewPage" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="BgColor" type="xs:string" use="optional"/>
+        <xs:attribute name="FgColor" type="xs:string" use="optional"/>
+        <xs:attribute name="ZebraColor" type="xs:string" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="ReportWidgetContainer">
+        <xs:sequence>
+            <xs:element name="Cells" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Cell" type="this:ReportCell" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="Layout" use="required">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EReportLayout</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:StrEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="ReportCell">
+        <xs:sequence>
+            <xs:element name="Format" type="this:CellFormat" minOccurs="0"/>
+            <xs:element name="OnAdding" type="xscml:JmlType" minOccurs="0"/>
+            <xs:element name="Border" type="this:ReportBorder" minOccurs="0"/>
+            <xs:element name="Font" minOccurs="0">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="this:ReportFont"/>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="ReportWidgetContainer" type="this:ReportWidgetContainer" minOccurs="0"/>
+            <xs:element name="Expression" type="xscml:JmlType" minOccurs="0"/>
+            <xs:element name="ChartSeries" type="this:ChartSeries" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="ChartDomainAxis" type="this:ChartAxis" maxOccurs="unbounded"/>
+            <xs:element name="ChartRangeAxis" type="this:ChartAxis" maxOccurs="unbounded"/>
+            <xs:element name="ChartTitleFont" type="this:ReportFont" minOccurs="0"/>
+            <xs:element name="ChartAxisFont" type="this:ReportFont" minOccurs="0"/>
+            <xs:element name="ChartLegendFont" type="this:ReportFont" minOccurs="0"/>            
+            <xs:element name="MinPlotSize" type="this:MinPlotSize" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="Name" type="xs:string" use="optional"/>
+        <xs:attribute name="Type" use="required">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EReportCellType</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:StrEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="TextId" type="types:Id" use="optional"/>
+        <xs:attribute name="PropId" type="types:Id" use="optional"/>
+        <xs:attribute name="SpecialType">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EReportSpecialCellType</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:StrEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="ImageScaleType">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EImageScaleType</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:IntEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+        
+        <xs:attribute name="SummaryType">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EReportSummaryCellType</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:StrEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="ChartType">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EReportChartCellType</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:StrEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="ChartLegendPosition">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EReportChartLegendPosition</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:StrEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="ImageId" type="types:Id" use="optional"/>
+        <xs:attribute name="ImageDataPropId" type="types:Id" use="optional"/>
+        <xs:attribute name="ImageMimeTypePropId" type="types:Id" use="optional"/>
+        <xs:attribute name="SummaryGroupNum" type="xs:int"/>
+        <xs:attribute name="BgColor" type="xs:string" use="optional"/>
+        <xs:attribute name="FgColor" type="xs:string" use="optional"/>
+        <xs:attribute name="IgnoreParentZebra" type="xs:boolean" use="optional"/>
+        <xs:attribute name="HorzAlign" use="required">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EReportCellHAlign</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:StrEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="VertAlign" use="required">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EReportCellVAlign</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:StrEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Margin" type="xs:double" use="optional" default="1"/>
+        <xs:attribute name="MarginTxt" type="xs:int" use="optional" default="1"/>
+        <xs:attribute name="TopMargin" type="xs:double" use="optional" default="1"/>
+        <xs:attribute name="RightMargin" type="xs:double" use="optional" default="1"/>
+        <xs:attribute name="LeftMargin" type="xs:double" use="optional" default="1"/>
+        <xs:attribute name="BottomMargin" type="xs:double" use="optional" default="1"/>
+
+        <xs:attribute name="TopMarginRows" type="xs:int" use="optional" default="1"/>
+        <xs:attribute name="RightMarginCols" type="xs:int" use="optional" default="1"/>
+        <xs:attribute name="LeftMarginCols" type="xs:int" use="optional" default="1"/>
+        <xs:attribute name="BottomMarginRows" type="xs:int" use="optional" default="1"/>
+
+        <xs:attribute name="ClipContent" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="WordWrap" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="LineSpacing" type="xs:double" use="optional" default="1"/>
+        <xs:attribute name="SnapTopEdge" type="xs:boolean" use="optional"/>
+        <xs:attribute name="SnapBottomEdge" type="xs:boolean" use="optional"/>
+        <xs:attribute name="AdjustHeight" type="xs:boolean" use="optional"/>
+        <xs:attribute name="AdjustWidth" type="xs:boolean" use="optional"/>
+        <xs:attribute name="NullTitleId" type="types:Id" use="optional"/>
+        <xs:attribute name="X_AxisGrid" type="xs:boolean" use="optional" default="true"/>
+        <xs:attribute name="Y_AxisGrid" type="xs:boolean" use="optional" default="true"/>
+        <xs:attribute name="HorizontalOrientation" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="AutoAxisSpace" type="xs:boolean" use="optional" default="true"/>
+        <xs:attribute name="TopAxisSpace" type="xs:int" use="optional" default="0"/>
+        <xs:attribute name="BottomAxisSpace" type="xs:int" use="optional" default="0"/>
+        <xs:attribute name="LeftAxisSpace" type="xs:int" use="optional" default="0"/>
+        <xs:attribute name="RightAxisSpace" type="xs:int" use="optional" default="0"/>
+        <xs:attribute name="ForegroundAlpha" type="xs:double" use="optional" default="1"/>
+        <xs:attribute name="Left" type="xs:double" use="required"/>
+        <xs:attribute name="Top" type="xs:double" use="required"/>
+        <xs:attribute name="Width" type="xs:double" use="required"/>
+        <xs:attribute name="Height" type="xs:double" use="required"/>
+        <xs:attribute name="LeftColumn" type="xs:int" use="optional"/>
+        <xs:attribute name="TopRow" type="xs:int" use="optional"/>
+        <xs:attribute name="WidthColumns" type="xs:int" use="optional"/>
+        <xs:attribute name="HeightRows" type="xs:int" use="optional"/>
+        <xs:attribute name="Column" type="xs:int" use="optional"/>
+        <xs:attribute name="Row" type="xs:int" use="optional"/>
+        <xs:attribute name="ColumnSpan" type="xs:int" use="optional" default="1"/>
+        <xs:attribute name="RowSpan" type="xs:int" use="optional" default="1"/>
+        <xs:attribute name="Mode" type="xs:string" use="optional" default="1"/>
+    </xs:complexType>
+    <xs:complexType name="ChartSeries">
+        <xs:sequence>
+            <xs:element name="SeriesDataInfo" type="this:ChartDataInfo" minOccurs="0"/>
+            <xs:element name="CategoryDataInfo" type="this:ChartDataInfo" minOccurs="0"/>
+            <xs:element name="ValueDataInfo" type="this:ChartDataInfo" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="IsShowItemLabel" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="TitleId" type="types:Id" use="optional"/>
+        <xs:attribute name="Name" type="xs:string" use="required"/>
+        <xs:attribute name="GroupIndex" type="xs:int" use="required"/>
+        <xs:attribute name="SeriesType" use="required">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EReportChartSeriesType</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:StrEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="ChartDataInfo">
+        <xs:attribute name="PropId" type="types:Id" use="required"/>
+        <xs:attribute name="AxisIndex" type="xs:int"/>
+    </xs:complexType>
+    <xs:complexType name="ChartAxis">
+        <xs:sequence>
+            <xs:element name="Format" type="this:CellFormat" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="Name" type="xs:string" use="required"/>
+        <xs:attribute name="TitleId" type="types:Id" use="optional"/>
+        <xs:attribute name="AutoRangeIncludeZero" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="RightOrTop" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="DateAxis" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="Visible" type="xs:boolean" use="optional" default="true"/>
+        <xs:attribute name="AxisLabelPosition">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EReportChartAxisLabelPositions</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:StrEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="MinPlotSize">
+        <xs:attribute name="MinPlotHeight" type="xs:double"/>
+        <xs:attribute name="MinPlotWidth" type="xs:double"/>
+    </xs:complexType>
+    <xs:complexType name="CellFormat">
+        <xs:attribute name="UseDefaultFormat" type="xs:boolean" default="true"/>
+        <xs:attribute name="Pattern" type="xs:string" use="optional"/>
+        <xs:attribute name="Precission" type="xs:int" use="optional"/>
+        <xs:attribute name="TriadDelimeter" type="xs:string" use="optional"/>
+        <xs:attribute name="GroupSeparator" type="xs:string" use="optional"/>
+        <xs:attribute name="DecimalDelimiter" type="xs:string" use="optional"/>
+        <xs:attribute name="IgnoreParentZebra" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="TriadDelimeterType">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.ETriadDelimeterType</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:IntEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="DateStyle">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EDateTimeStyle</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:IntEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="TimeStyle">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EDateTimeStyle</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:IntEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="SubReport">
+        <xs:sequence>
+            <xs:element name="Association" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:attribute name="PropertyId" type="types:Id" use="required"/>
+                    <xs:attribute name="ParameterId" type="types:Id" use="required"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="ReportId" type="types:Id" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="ReportParam">
+        <xs:attribute name="Name" type="xs:string" use="required"/>
+        <xs:attribute name="Id" type="types:Id" use="required"/>
+        <xs:attribute name="IsMulty" type="xs:boolean" use="optional" default="false"/>
+    </xs:complexType>
+    <xs:complexType name="ReportValueParam">
+        <xs:complexContent>
+            <xs:extension base="this:ReportParam">
+                <xs:attribute name="ValType" use="required">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:documentation>Enum EValType</xs:documentation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.EValType</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:IntEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Report">
+        <xs:complexContent>
+            <xs:extension base="this:SqlStatement">
+                <xs:sequence>
+                    <xs:element name="Form">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="PageHeader" type="this:ReportBand" minOccurs="0"/>
+                                <xs:element name="Title" type="this:ReportBand" minOccurs="0"/>
+                                <xs:element name="ColumnsHeaders" type="this:ReportBand" minOccurs="0"/>
+                                <xs:element name="Details" type="this:ReportBand" minOccurs="0"/>
+                                <xs:element name="Summary" type="this:ReportBand" minOccurs="0"/>
+                                <xs:element name="PageFooter" type="this:ReportBand" minOccurs="0"/>
+                                <xs:element name="Bands" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element name="Band" type="this:ReportBand" minOccurs="1" maxOccurs="unbounded"/>
+                                        </xs:sequence>
+                                        <xs:attribute name="Type" use="required">                                            
+                                            <xs:simpleType>
+                                                <xs:annotation>
+                                                    <xs:documentation>Enum EReportBandType</xs:documentation>
+                                                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                        <types:class>org.radixware.kernel.common.enums.EReportBandType</types:class>
+                                                    </xs:appinfo>
+                                                </xs:annotation>
+                                                <xs:restriction base="types:StrEnum"/>
+                                            </xs:simpleType>
+                                        </xs:attribute>
+                                    </xs:complexType>
+                                </xs:element>
+                                
+                                <xs:element name="Groups" minOccurs="0">
+                                    <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element name="Group" maxOccurs="unbounded">
+                                                <xs:complexType>
+                                                    <xs:sequence>
+                                                        <xs:element name="Header" type="this:ReportBand" minOccurs="0"/>
+                                                        <xs:element name="Footer" type="this:ReportBand" minOccurs="0"/>
+                                                        <xs:element name="Condition" type="xscml:JmlType"/>
+                                                    </xs:sequence>
+                                                    <xs:attribute name="Name" type="xs:string" use="required"/>
+                                                </xs:complexType>
+                                            </xs:element>
+                                        </xs:sequence>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                            <xs:attribute name="TextModeAccepted" type="xs:boolean" use="optional"/>
+                            <xs:attribute name="BgColor" type="xs:string" use="required"/>
+                            <xs:attribute name="FgColor" type="xs:string" use="required"/>
+                            <xs:attribute name="LeftMargin" type="xs:double" use="required"/>
+                            <xs:attribute name="RightMargin" type="xs:double" use="required"/>
+                            <xs:attribute name="TopMargin" type="xs:double" use="required"/>
+                            <xs:attribute name="BottomMargin" type="xs:double" use="required"/>
+                            <xs:attribute name="ColumnsHeadersInGroups" type="xs:boolean" use="required"/>
+                            <xs:attribute name="Width" type="xs:int" use="required"/>
+                            <xs:attribute name="Height" type="xs:int" use="required"/>
+                            <xs:attribute name="WidthCols" type="xs:int" use="optional" default="80"/>
+                            <xs:attribute name="HeightRows" type="xs:int" use="optional" default="40"/>
+                            <xs:attribute name="MultifileGroupLevel" type="xs:int" use="optional"/>                            
+                            <xs:attribute name="RepeatGroupHeadersOnNewPage" type="xs:boolean" use="optional" default="false"/>   
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="ExportReportToCsvInfo" type="this:ExportReportToCsvInfo" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="ContextParameterId" type="types:Id" use="optional"/>
+                <xs:attribute name="IsSubreport" type="xs:boolean" use="optional" default="false"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ExportReportToCsvInfo">
+        <xs:sequence>
+            <xs:element name="isRowVisible" type="xscml:JmlType" minOccurs="0"/>
+            <xs:element name="ExportCsvColumn" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Format" type="this:CellFormat" minOccurs="0"/>
+                    </xs:sequence>
+                    <xs:attribute name="ExtName" type="xs:string" use="optional"/>
+                    <xs:attribute name="Id" type="types:Id" use="required"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="Delimiter" type="xs:string" use="optional"/>
+        <xs:attribute name="IsExportColumnNames" type="xs:boolean" use="optional" default="true"/>
+    </xs:complexType>
+    <xs:annotation>
+        <xs:documentation>------------------------ form definition ----------------------</xs:documentation>
+    </xs:annotation>
+    <xs:complexType name="Form">
+        <xs:sequence>
+            <xs:element name="Model" type="this:ClassDefinition"/>
+            <xs:element name="EditorPages" type="this:EditorPages" minOccurs="0"/>
+            <xs:element name="Commands" minOccurs="0">
+                <xs:simpleType>
+                    <xs:list itemType="xs:string"/>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="View" type="this:AbstractDialogDefinition" minOccurs="0"/>
+            <xs:element name="WebView" type="this:AbstractDialogDefinition" minOccurs="0"/>
+            <xs:element name="DialogSize" type="this:Size" minOccurs="0"/>
+            <xs:element name="WebDialogSize" type="this:Size" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="InheritanceMask" type="xs:long"/>
+    </xs:complexType>
+    <xs:annotation>
+        <xs:documentation>------------------------ class presentations ----------------------</xs:documentation>
+    </xs:annotation>
+    <xs:complexType name="ClassSource">
+        <xs:sequence>
+            <xs:element name="Src" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="xscml:JmlType">
+                            <xs:attribute name="Environment">
+                                <xs:simpleType>
+                                    <xs:annotation>
+                                        <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                            <types:class>org.radixware.kernel.common.enums.ERuntimeEnvironmentType</types:class>
+                                        </xs:appinfo>
+                                    </xs:annotation>
+                                    <xs:restriction base="types:StrEnum"/>
+                                </xs:simpleType>
+                            </xs:attribute>
+                            <xs:attribute name="Name" type="xs:string"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="Size">
+        <xs:attribute name="Width" type="xs:int" use="optional" default="0"/>
+        <xs:attribute name="Height" type="xs:int" use="optional" default="0"/>
+    </xs:complexType>
+    <xs:complexType name="AbstractPresentationDefinition">
+        <xs:complexContent>
+            <xs:extension base="this:TitledAdsDefinition">
+                <xs:sequence>
+                    <xs:element name="Model" type="this:ClassDefinition"/>
+                    <xs:element name="View" type="this:AbstractDialogDefinition" minOccurs="0"/>
+                    <xs:element name="WebView" type="this:AbstractDialogDefinition" minOccurs="0"/>
+                    <xs:element name="DialogSize" type="this:Size" minOccurs="0"/>
+                    <xs:element name="WebDialogSize" type="this:Size" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="UsedContextlessCommands">
+                    <xs:simpleType>
+                        <xs:list itemType="types:Id"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="BasePresentationId" type="types:Id"/>
+                <xs:attribute name="InheritanceMask" type="xs:long"/>
+                <xs:attribute name="IconId" type="types:Id"/>
+                <xs:attribute name="SuppressedWarnings" type="utils:SuppressedWarnings" use="optional"/>
+                <xs:attribute name="EnabledCommandIds">
+                    <xs:simpleType>
+                        <xs:list itemType="types:Id"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="Restrictions" type="xs:long"/>
+                <xs:attribute name="UseCustomView" type="xs:boolean"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="EditorPresentationDefinition">
+        <xs:complexContent>
+            <xs:extension base="this:AbstractPresentationDefinition">
+                <xs:sequence>
+                    <xs:element name="ChildExplorerItems" type="this:ChildExplorerItems" minOccurs="0"/>
+                    <xs:element name="ChildExplorerItemsOrder" minOccurs="0">
+                        <xs:complexType>
+                            <xs:attribute name="Ids">
+                                <xs:simpleType>
+                                    <xs:list itemType="types:Id"/>
+                                </xs:simpleType>
+                            </xs:attribute>
+                            <xs:attribute name="Use" type="xs:boolean" use="optional" default="false"/>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="EditorPages" type="this:EditorPages" minOccurs="0"/>
+                    <xs:element name="ObjectTitleFormat" type="this:ObjectTitleFormatDefinition" minOccurs="0"/>
+                    <xs:element name="RestrictedProperties" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="PropertyAttributes" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:attribute name="PropertyId" type="types:Id"/>
+                                        <xs:attribute name="TitleId" type="types:Id"/>
+                                        <xs:attribute name="Presentable" type="xs:boolean" use="optional"/>
+                                        <xs:attribute name="Mandatory" type="xs:boolean" use="optional"/>
+                                        <xs:attribute name="EditPossibility">
+                                            <xs:simpleType>
+                                                <xs:annotation>
+                                                    <xs:documentation>Enum EEditPossibility</xs:documentation>
+                                                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                        <types:class>
+                                                            org.radixware.kernel.common.enums.EEditPossibility
+                                                        </types:class>
+                                                    </xs:appinfo>
+                                                </xs:annotation>
+                                                <xs:restriction base="types:IntEnum"/>
+                                            </xs:simpleType>
+                                        </xs:attribute>
+                                        <xs:attribute name="Visibility">
+                                            <xs:simpleType>
+                                                <xs:annotation>
+                                                    <xs:documentation>Enum EPropertyVisibility</xs:documentation>
+                                                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                        <types:class>
+                                                            org.radixware.kernel.common.enums.EPropertyVisibility
+                                                        </types:class>
+                                                    </xs:appinfo>
+                                                </xs:annotation>
+                                                <xs:restriction base="types:IntEnum"/>
+                                            </xs:simpleType>
+                                        </xs:attribute>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="ReplacedPresentationId" type="types:Id"/>
+                <xs:attribute name="RightsSourceId" type="types:Id"/>
+                <xs:attribute name="RightsInheritanceMode">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:documentation>Enum EValType</xs:documentation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.EEditorPresentationRightsInheritanceMode</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:IntEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="ClientEnvironment">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:documentation>Enum ERuntimeEnvironmentType</xs:documentation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.ERuntimeEnvironmentType</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:StrEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="ForbiddenPropIds">
+                    <xs:simpleType>
+                        <xs:list itemType="types:Id"/>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="SelectorPresentationDefinition">
+        <xs:complexContent>
+            <xs:extension base="this:AbstractPresentationDefinition">
+                <xs:sequence>
+                    <xs:element name="Condition" minOccurs="0">
+                        <xs:complexType>
+                            <xs:complexContent>
+                                <xs:extension base="this:SqmlCondition"/>
+                            </xs:complexContent>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Addons">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="DefaultHint" type="xscml:Sqml" minOccurs="0"/>
+                            </xs:sequence>
+                            <xs:attribute name="EnabledSortingIds">
+                                <xs:simpleType>
+                                    <xs:list itemType="types:Id"/>
+                                </xs:simpleType>
+                            </xs:attribute>
+                            <xs:attribute name="AnyBaseSortingEnabled" type="xs:boolean" default="true"/>
+                            <xs:attribute name="EnabledFilterIds">
+                                <xs:simpleType>
+                                    <xs:list itemType="types:Id"/>
+                                </xs:simpleType>
+                            </xs:attribute>
+                            <xs:attribute name="AnyBaseFilterEnabled" type="xs:boolean" default="true"/>
+                            <xs:attribute name="CustomSortingEnabled" type="xs:boolean" default="true"/>
+                            <xs:attribute name="FilterIsObligatory" type="xs:boolean" default="true"/>
+                            <xs:attribute name="CustomFilterEnabled" type="xs:boolean" default="true"/>
+                            <xs:attribute name="AutoExpand" type="xs:boolean" default="false">
+                                <xs:annotation>
+                                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                        <types:deprecated/>
+                                    </xs:appinfo>
+                                </xs:annotation>
+                            </xs:attribute>
+                            <xs:attribute name="DefaultSortingId" type="types:Id"/>
+                            <xs:attribute name="DefaultFilterId" type="types:Id"/>
+                            <xs:attribute name="DefaultColorSchemeId" type="types:Id"/>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="SelectorColumns" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Column" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:attribute name="PropId" type="types:Id" use="required"/>
+                                        <xs:attribute name="Visibility" use="required">
+                                            <xs:simpleType>
+                                                <xs:annotation>
+                                                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                        <types:class>org.radixware.kernel.common.enums.ESelectorColumnVisibility</types:class>
+                                                    </xs:appinfo>
+                                                </xs:annotation>
+                                                <xs:restriction base="types:IntEnum"/>
+                                            </xs:simpleType>
+                                        </xs:attribute>
+                                        <xs:attribute name="SizePolicy" use="optional">
+                                            <xs:simpleType>
+                                                <xs:annotation>
+                                                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                        <types:class>org.radixware.kernel.common.enums.ESelectorColumnSizePolicy</types:class>
+                                                    </xs:appinfo>
+                                                </xs:annotation>
+                                                <xs:restriction base="types:IntEnum"/>
+                                            </xs:simpleType>
+                                        </xs:attribute>
+                                        <xs:attribute name="Align" use="required">
+                                            <xs:simpleType>
+                                                <xs:annotation>
+                                                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                        <types:class>org.radixware.kernel.common.enums.ESelectorColumnAlign</types:class>
+                                                    </xs:appinfo>
+                                                </xs:annotation>
+                                                <xs:restriction base="types:IntEnum"/>
+                                            </xs:simpleType>
+                                        </xs:attribute>
+                                        <xs:attribute name="TitleId" type="types:Id" use="optional"/>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="ClientEnvironment">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:documentation>Enum ERuntimeEnvironmentType</xs:documentation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.ERuntimeEnvironmentType</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:StrEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="EditorPresentationIds">
+                    <xs:simpleType>
+                        <xs:list itemType="types:Id"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="CreationEditorPresentationId" type="types:Id">
+                    <xs:annotation>
+                        <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                            <types:deprecated/>
+                        </xs:appinfo>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="CreationEditorPresentationIds" use="optional">
+                    <xs:simpleType>
+                        <xs:list itemType="types:Id"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="TransferSelectorPresentationId" type="types:Id"/>
+                <xs:attribute name="CreationClassCatalogId" type="types:Id"/>
+                <xs:attribute name="AutoExpand" type="xs:boolean" default="false"/>
+                <xs:attribute name="RestorePosition" type="xs:boolean" default="false"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:annotation>
+        <xs:documentation>------------------ Dialogs ----------------------</xs:documentation>
+    </xs:annotation>
+    <xs:complexType name="AbstractDialogDefinition">
+        <xs:complexContent>
+            <xs:extension base="this:DescribedAdsDefinition">
+                <xs:sequence>
+                    <xs:annotation>
+                        <xs:documentation>!!! рефакторинг ui</xs:documentation>
+                    </xs:annotation>
+                    <!--xs:choice-->
+                    <xs:element ref="ui:ui"/>
+                    <!--xs:element name="WebUi" type="web:WebUI"/>
+                    </xs:choice-->
+                    <xs:element name="EmbeddedModel" type="this:ClassDefinition" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="isDeprecated" type="xs:boolean" use="optional" default="false"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!--xs:complexType name="AbstractWebDialogDefinition">
+        <xs:complexContent>
+            <xs:extension base="this:DescribedAdsDefinition">
+                <xs:sequence>
+                    <xs:annotation>
+                        <xs:documentation>!!! рефакторинг ui</xs:documentation>
+                    </xs:annotation>
+                    <xs:element name="Ui" type="web:WebUI"/>
+                    <xs:element name="EmbeddedModel" type="this:ClassDefinition" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="isDeprecated" type="xs:boolean" use="optional" default="false"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType-->
+    <xs:annotation>
+        <xs:documentation>------------------ Contextless Commands ----------------------</xs:documentation>
+    </xs:annotation>
+    <xs:complexType name="ContextlessCommandDefinition">
+        <xs:complexContent>
+            <xs:extension base="this:CommandDefinition">
+                <xs:sequence>
+                    <xs:element name="Source" type="xscml:JmlType"/>
+                    <xs:element name="ProfileInfo" type="common:ProfileInfo" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:annotation>
+        <xs:documentation>------------------ Enums ----------------------</xs:documentation>
+    </xs:annotation>
+    <xs:complexType name="EnumItemDefinition">
+        <xs:complexContent>
+            <xs:extension base="this:TitledAdsDefinition">
+                <xs:sequence>
+                    <xs:element name="Value" type="xs:string"/>
+                </xs:sequence>
+                <xs:attribute name="IconId" type="xs:string"/>
+                <xs:attribute name="IsDeprecated" type="xs:boolean"/>
+                <xs:attribute name="IsVirtual" type="xs:boolean"/>
+                <xs:attribute name="PublishedName" type="xs:string"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="CbStringList">
+        <xs:sequence>
+            <xs:element name="String" type="this:LocalizedString" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="CbScml">
+        <xs:sequence>
+            <xs:choice>
+                <xs:element name="Jml" type="xscml:JmlType"/>
+                <xs:element name="Sqml" type="xscml:Sqml"/>
+            </xs:choice>
+            <xs:element name="Strings" type="this:CbStringList"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="EnumDefinition">
+        <xs:complexContent>
+            <xs:extension base="this:TitledAdsDefinition">
+                <xs:sequence>
+                    <xs:element name="Items">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                                    <xs:element name="Item" type="this:EnumItemDefinition"/>
+                                </xs:choice>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="ValueRanges">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Range" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element name="From" type="xs:string"/>
+                                            <xs:element name="To" type="xs:string"/>
+                                        </xs:sequence>
+                                    </xs:complexType>
+                                </xs:element>
+                                <xs:element name="Pattern" type="xs:string" minOccurs="0"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Publishing" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="PlatformEnum" type="xs:string"/>
+                            </xs:sequence>
+                            <xs:attribute name="IsExtendable" type="xs:boolean"/>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="ValType" type="xs:long" use="required"/>
+                <xs:attribute name="IsIdEnum" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="IsDeprecated" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="SuppressedWarnings" type="utils:SuppressedWarnings" use="optional"/>
+                <xs:attribute name="ViewOrder">
+                    <xs:simpleType>
+                        <xs:list itemType="xs:string"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="ItemsViewFormat" use="optional">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.EEnumDefinitionItemViewFormat</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:IntEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:extension>
+            <!--IsIdEnum attribute should be only used in string enums as element data restriction factor-->
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:annotation>
+        <xs:documentation>------------------ Roles ----------------------</xs:documentation>
+    </xs:annotation>
+    <xs:element name="RoleList">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Role" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:attribute name="Id" type="types:Id"/>
+                        <xs:attribute name="Name" type="xs:string"/>
+                        <xs:attribute name="IsApplicationRole" type="types:Bool" use="optional"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="RoleID">
+        <xs:complexType>
+            <xs:attribute name="Id" type="types:Id"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="APFamilies">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Id" type="types:Id" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="RoleDefinition">
+        <xs:complexContent>
+            <xs:extension base="this:TitledAdsDefinition">
+                <xs:sequence>
+                    <xs:element name="Ancestors">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Id" type="types:Id" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="ApFamilies">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Id" type="types:Id" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Resources">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Resource" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element name="EnabledCommands" minOccurs="0">
+                                                <xs:complexType>
+                                                    <xs:sequence>
+                                                        <xs:element name="Id" type="types:Id" minOccurs="0" maxOccurs="unbounded"/>
+                                                    </xs:sequence>
+                                                </xs:complexType>
+                                            </xs:element>
+                                            <xs:element name="EnabledChildren" minOccurs="0">
+                                                <xs:complexType>
+                                                    <xs:sequence>
+                                                        <xs:element name="Id" type="types:Id" minOccurs="0" maxOccurs="unbounded"/>
+                                                    </xs:sequence>
+                                                </xs:complexType>
+                                            </xs:element>
+                                            <xs:element name="EnabledPages" minOccurs="0">
+                                                <xs:complexType>
+                                                    <xs:sequence>
+                                                        <xs:element name="Id" type="types:Id" minOccurs="0" maxOccurs="unbounded"/>
+                                                    </xs:sequence>
+                                                </xs:complexType>
+                                            </xs:element>
+                                        </xs:sequence>
+                                        <xs:attribute name="Type">
+                                            <xs:simpleType>
+                                                <xs:restriction base="xs:long">
+                                                    <xs:enumeration value="1">
+                                                        <xs:annotation>
+                                                            <xs:documentation>ServerResource</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                    <xs:enumeration value="2">
+                                                        <xs:annotation>
+                                                            <xs:documentation>ExplorerRootItem</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                    <xs:enumeration value="3">
+                                                        <xs:annotation>
+                                                            <xs:documentation>EditorPresentation</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                    <xs:enumeration value="4">
+                                                        <xs:annotation>
+                                                            <xs:documentation>ClassInstantiator</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                    <xs:enumeration value="5">
+                                                        <xs:annotation>
+                                                            <xs:documentation>ContextlessCommand</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:attribute>
+                                        <xs:attribute name="DefId" type="types:Id"/>
+                                        <xs:attribute name="SubDefId" type="types:Id"/>
+                                        <xs:attribute name="Restrictions" type="xs:long" default="0"/>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="Abstract" type="types:Bool"/>
+                <xs:attribute name="Deprecated" type="types:Bool"/>
+                <xs:attribute name="Temporary" type="xs:boolean"/>
+                <xs:attribute name="SuppressedWarnings" type="utils:SuppressedWarnings" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:annotation>
+        <xs:documentation>------------------ Segment definition ----------------------</xs:documentation>
+    </xs:annotation>
+    <xs:complexType name="DataSegmentDefinition">
+        <xs:complexContent>
+            <xs:extension base="this:TitledAdsDefinition">
+                <xs:sequence>
+                    <xs:element name="MasterTable" type="this:DataTable" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="Deprecated" type="types:Bool"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="DataTable">
+        <xs:sequence>
+            <xs:element name="IncomingRef" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Table" type="this:DataTable" minOccurs="0"/>
+                    </xs:sequence>
+                    <xs:attribute name="Id" type="types:Id" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OutgoingRef" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="CorrelatedProp" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:attribute name="Id" type="types:Id" use="required"/>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="Table" type="this:DataTable" minOccurs="0"/>
+                    </xs:sequence>
+                    <xs:attribute name="Id" type="types:Id" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="CorrelatedProp" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:attribute name="Id" type="types:Id" use="required"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="Id" type="types:Id" use="required"/>
+    </xs:complexType>
+    <xs:element name="DataSegmentList">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="DataSegment" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:attribute name="Id" type="types:Id" use="required"/>
+                        <xs:attribute name="Name" type="xs:string"/>
+                        <xs:attribute name="Description" type="xs:string"/>
+                        <xs:attribute name="TableId" type="types:Id"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:annotation>
+        <xs:documentation>------------------ Localization ----------------------</xs:documentation>
+    </xs:annotation>
+	
+    <xs:complexType name="MsdlDefinition">
+        <xs:complexContent>
+            <xs:extension base="this:DescribedAdsDefinition">
+                <xs:sequence>
+                    <xs:choice>
+                        <xs:element name="MessageElement" type="msdl:Message"/>
+                        <xs:element name="TypeList" type="this:XmlTypeList" minOccurs="0"/>
+                    </xs:choice>
+                </xs:sequence>
+                <xs:attribute name="IsDeprecated" type="xs:boolean" use="optional" default="false"/> 
+                <xs:attribute name="TargetNamespace" type="xs:string"/> 
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="XsltDefinition">
+        <xs:complexContent>
+            <xs:extension base="this:DescribedAdsDefinition">
+                <xs:sequence>
+                    <xs:element name="Xslt" type="xs:string"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="XmlDefinition">
+        <xs:complexContent>
+            <xs:extension base="this:DescribedAdsDefinition">
+                <xs:sequence>
+                    <xs:choice>
+                        <xs:element name="publishedUri">
+                            <xs:complexType>
+                                <xs:simpleContent>
+                                    <xs:extension base="xs:string">
+                                        <xs:attribute name="locationHint" type="xs:string" use = "optional"/>
+                                    </xs:extension>
+                                </xs:simpleContent>
+                            </xs:complexType>
+                        </xs:element>                                                
+                        <!--xs:element ref="xs:schema"/>
+                        <xs:element ref="wsdl:definitions"/-->
+                        <xs:element name="TypeList" type="this:XmlTypeList" minOccurs="0"/>
+                        <xs:any namespace="#any"/>
+                    </xs:choice>
+                </xs:sequence>
+                <xs:attribute name="IsDeprecated" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="Environment" use="optional">
+                    <!--default environment - common-->
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.ERuntimeEnvironmentType</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:StrEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="TargetNamespace" type="xs:string"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="DomainDefinition">
+        <xs:complexContent>
+            <xs:extension base="this:TitledAdsDefinition">
+                <xs:sequence>
+                    <xs:element name="Domain" type="this:DomainDefinition" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attribute name="IsDeprecated" type="xs:boolean" use="optional" default="false"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ImageDefinition">
+        <xs:complexContent>
+            <xs:extension base="common:DescribedDefinition">
+                <xs:sequence>
+                    <xs:element name="Format" type="xs:string"/>
+                    <xs:element name="KeyWords">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="KeyWord" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="UserFuncProfile">
+        <xs:sequence>
+            <xs:element name="Parameters" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Parameter" type="this:ParameterDeclaration" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="ReturnType" minOccurs="0">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="xscml:TypeDeclaration">
+                            <xs:sequence>
+                                <xs:element name="Description" type="xs:string"/>
+                            </xs:sequence>
+                            <xs:attribute name="DescriptionId" type="types:Id" use="optional"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="ThrownExceptions" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Exception" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:complexContent>
+                                    <xs:extension base="xscml:TypeDeclaration">
+                                        <xs:sequence>
+                                            <xs:element name="Description" type="xs:string"/>
+                                        </xs:sequence>
+                                        <xs:attribute name="DescriptionId" type="types:Id" use="optional"/>
+                                    </xs:extension>
+                                </xs:complexContent>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>                                                            
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="MethodName" type="xs:string" use="required"/>
+        <xs:attribute name="LibName" type="xs:string" use="required"/>
+    </xs:complexType>     
+    <xs:element name="AdsUserFuncDefinition">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="this:DescribedAdsDefinition">
+                    <xs:sequence>
+                        <xs:element name="UserFuncProfile" minOccurs="0" type="this:UserFuncProfile"/>                            
+                        <xs:element name="Source" type="xscml:JmlType" minOccurs="0"/>
+                        <xs:element ref="this:Usages" minOccurs="0"/>
+                        <xs:element name="Strings" type="this:LocalizingBundleDefinition" minOccurs="0"/>
+                    </xs:sequence>
+                    <xs:attribute name="OwnerClassId" type="types:Id"/>
+                    <xs:attribute name="ClassId" type="types:Id"/>
+                    <xs:attribute name="PropId" type="types:Id"/>
+                    <xs:attribute name="MethodId" type="types:Id"/>                                        
+                    <xs:attribute name="OwnerTitle" type="xs:string"/>
+                    <xs:attribute name="LastUpdateUserName" type="xs:string"/>
+                    <xs:attribute name="LastUpdateTime" type="xs:dateTime"/>
+                    <xs:attribute name="SuppressedWarnings" type="utils:SuppressedWarnings" use="optional"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="UserFuncSourceVersions">
+        <xs:sequence>
+            <xs:element name="SourceVersion" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="xscml:JmlType">
+                            <xs:attribute name="Name" type="xs:string"/>
+                            <xs:attribute name="LastUpdateUserName" type="xs:string"/>
+                            <xs:attribute name="LastUpdateTime" type="xs:dateTime"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="XmlTypeList">
+        <xs:sequence>
+            <xs:element name="Interface" type="this:XmlInterfaceType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="InterfacePackageName" type="xs:string"/>
+        <xs:attribute name="ImplementationPackageName" type="xs:string"/>
+    </xs:complexType>
+    <xs:complexType name="XmlInterfaceType">
+        <xs:sequence>
+            <xs:element name="Factory" minOccurs="0">
+                <xs:complexType>
+                    <xs:attribute name="Name" type="xs:string"/>
+                    <xs:attribute name="IsFull" type="xs:boolean" use="optional" default="true"/>
+                    <xs:attribute name="IsAbstractTypeFactory" type="xs:boolean" use="optional" default="false"/>
+                    <xs:attribute name="IsSimpleTypeFactory" type="xs:boolean" use="optional" default="false"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Interface" type="this:XmlInterfaceType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:choice>
+                <xs:element name="Enumeration">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="IndexField" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+                            <xs:element name="EnumField" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="Value" type="xs:string"/>
+                                    </xs:sequence>
+                                    <xs:attribute name="Name" type="xs:string"/>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="EnumElement" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="Value" type="xs:string"/>
+                                    </xs:sequence>
+                                    <xs:attribute name="Name" type="xs:string"/>
+                                    <xs:attribute name="IntValue" type="xs:int"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="EnumClassName" type="xs:string"/>
+                        <xs:attribute name="TableDefined" type="xs:boolean" use="optional" default="false"/>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="Properties">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="Property" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:attribute name="Name" type="xs:string" use="required"/>
+                                    <xs:attribute name="Type" type="xs:string" use="required"/>
+                                    <xs:attribute name="XmlType" type="xs:string" use="required"/>
+                                    <xs:attribute name="IsDeprecated" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="IsAttr" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="SinGet" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="SinSet" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="SinSetXml" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="SinGetXml" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="SinNullCheck" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="SinNew" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="SinUnset" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="OptUnset" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="OptExistCheck" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="SevPropListGet" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="SevPropListGetType" type="xs:string" use="optional" default="false"/>
+                                    <xs:attribute name="SevPropListSet" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="SevPropListAssing" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="SevPropArrGet" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="SevPropArrSet" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="SevPropArrItemGet" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="SevPropArrItemSet" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="SevPropArrItemSetNull" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="SevPropListXmlGet" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="SevPropArrXmlGet" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="SevPropArrXmlSet" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="SevPropArrItemXmlGet" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="SevPropArrItemXmlSet" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="SevPropArrItemIns" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="SevPropArrItemAdd" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="SevPropArrNewItemIns" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="SevPropArrNewItemAdd" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="SevPropArrItemDel" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="SevPropNullCheck" type="xs:boolean" use="optional" default="false"/>
+                                    <xs:attribute name="SevPropSize" type="xs:boolean" use="optional" default="false"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:choice>
+        </xs:sequence>
+        <xs:attribute name="Name" type="xs:string" use="required"/>
+        <xs:attribute name="BaseInterface" type="xs:string" use="optional"/>
+        <xs:attribute name="IsDocument" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="OtherInterfaces" use="optional">
+            <xs:simpleType>
+                <xs:list itemType="xs:string"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="IsDeprecated" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="DecimalAccType" type="xs:int" use="optional"/>
+        <xs:attribute name="HasObjectAccessor" type="xs:boolean" use="optional"/>
+        <xs:attribute name="ListAccessorWildcard" type="xs:string" use="optional"/>
+    </xs:complexType>
+    <xs:annotation>
+        <xs:documentation>========================== Elements ========================</xs:documentation>
+    </xs:annotation>
+    <xs:complexType name="UserReportDefinitionType">        
+        <xs:sequence>
+            <xs:element name="Report" type="this:ClassDefinition"/>
+            <xs:element name="Strings" type="this:LocalizingBundleDefinition"/>
+        </xs:sequence>       
+    </xs:complexType>
+    <xs:element name="AdsUserReportDefinition" type= "this:UserReportDefinitionType"/>
+    
+    <xs:complexType name="UserReportExchangeType">        
+        <xs:sequence>
+            <xs:element name="Description" type="xs:string"/>
+            <xs:element name="AdsUserReportDefinition" type="this:UserReportDefinitionType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="Images" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute name="Name" type="xs:string"/>
+        <xs:attribute name="Id" type="types:Id"/>        
+        <xs:attribute name="ModuleName" type="xs:string"/>
+        <xs:attribute name="ModuleId" type="types:Id"/>        
+    </xs:complexType>
+    
+    <xs:element name="AdsUserReportExchange" type="this:UserReportExchangeType"/>        
+    
+    <xs:element name="AdsUserReportsExchange">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Item" type="this:UserReportExchangeType" minOccurs="0" maxOccurs="unbounded"/>                
+            </xs:sequence>            
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="AdsImageDefinition" type="this:ImageDefinition"/>
+    <xs:complexType name="AdsDefinitionElementType">
+        <xs:choice>
+            <xs:element name="AdsClassDefinition" type="this:ClassDefinition"/>
+            <xs:element name="AdsEnumDefinition" type="this:EnumDefinition"/>
+            <xs:element name="AdsParagraphDefinition" type="this:ParagraphDefinition"/>
+            <xs:element name="AdsCustomDialogDefinition" type="this:AbstractDialogDefinition"/>
+            <xs:element name="AdsCustomPropEditorDefinition" type="this:AbstractDialogDefinition"/>
+            <xs:element name="AdsCustomWidgetDefinition" type="this:AbstractDialogDefinition"/>
+            <xs:element name="AdsWebCustomDialogDefinition" type="this:AbstractDialogDefinition"/>
+            <xs:element name="AdsWebCustomWidgetDefinition" type="this:AbstractDialogDefinition"/>
+            <xs:element name="AdsWebCustomPropEditorDefinition" type="this:AbstractDialogDefinition"/>
+            <xs:element name="AdsContextlessCommandDefinition" type="this:ContextlessCommandDefinition"/>
+            <xs:element name="AdsLocalizingBundleDefinition" type="this:LocalizingBundleDefinition"/>
+            <xs:element name="AdsRoleDefinition" type="this:RoleDefinition"/>
+            <xs:element name="AdsXmlSchemeDefinition" type="this:XmlDefinition"/>
+            <xs:element name="AdsMsdlSchemeDefinition" type="this:MsdlDefinition"/>
+            <xs:element name="AdsXsltSchemeDefinition" type="this:XsltDefinition"/>
+            <xs:element name="AdsDomainDefinition" type="this:DomainDefinition"/>
+            <xs:element name="AdsPhraseBookDefinition" type="this:PhraseBookDefinition"/>
+            <xs:element name="AdsDataSegmentDefinition" type="this:DataSegmentDefinition"/>
+        </xs:choice>
+        <xs:attribute name="FormatVersion" type="xs:long" use="optional" default="0"/>
+    </xs:complexType>
+    <xs:element name="CbDefinition" type="this:CbScml"/>
+    <xs:element name="AdsDefinition" type="this:AdsDefinitionElementType"/>
+    <xs:element name="AdsDefinitionList">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Definition" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:complexContent>
+                            <xs:extension base="this:AdsDefinitionElementType">
+                                <xs:sequence>
+                                    <xs:element name="Name" type="xs:string"/>
+                                    <xs:element name="Description" type="xs:string"/>
+                                    <xs:element name="ReadOnly" type="xs:boolean"/>
+                                </xs:sequence>
+                                <xs:attribute name="Id" type="types:Id"/>
+                            </xs:extension>
+                        </xs:complexContent>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="PhraseBookDefinition">
+        <xs:complexContent>
+            <xs:extension base="this:DescribedAdsDefinition">
+                <xs:attribute name="ExtendsId" type="types:Id"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="API">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Definition" type="this:AdsDefinitionElementType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="Ids">
+                <xs:simpleType>
+                    <xs:list itemType="xs:string"/>
+                </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="Version" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Usages">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Layer" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="Module" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="Usage" type="this:UsageDescription" minOccurs="0" maxOccurs="unbounded"/>
+                                    </xs:sequence>
+                                    <xs:attribute name="Name" type="xs:string"/>
+                                    <xs:attribute name="Id" type="types:Id"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Name" type="xs:string"/>
+                        <xs:attribute name="URI" type="xs:string"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="UsageDescription">
+        <xs:choice>
+            <xs:element name="Method" type="this:AbstractMethodDefinition"/>
+            <xs:element name="Property" type="this:AbstractPropertyDefinition"/>
+            <xs:element name="EnumItem" type="this:EnumItemDefinition"/>
+        </xs:choice>
+        <xs:attribute name="QName" type="xs:string" use="required"/>
+        <xs:attribute name="IsExtension" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="Path" use="required">
+            <xs:simpleType>
+                <xs:list itemType="types:Id"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="DefinitionType" use="required">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EDefType</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:IntEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="ClassType" use="optional">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EClassType</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:IntEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="ValueType" use="optional">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EValType</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:IntEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+</xs:schema>

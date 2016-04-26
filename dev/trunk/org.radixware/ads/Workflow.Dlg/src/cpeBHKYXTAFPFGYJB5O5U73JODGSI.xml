@@ -1,0 +1,801 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsCustomPropEditorDefinition Id="cpeBHKYXTAFPFGYJB5O5U73JODGSI" Name="AlgoChoiceDlg">
+    <AccessRules IsPublished="false"/>
+    <ui:ui>
+      <ui:widget name="PropEditorDialog" id="wdg6FC37LNNZNC5VLG2XUQXTNTPTQ" class="cpeBHKYXTAFPFGYJB5O5U73JODGSI" weight="0.0">
+        <ui:property name="geometry">
+          <ui:rect>
+            <ui:x>0</ui:x>
+            <ui:y>0</ui:y>
+            <ui:width>455</ui:width>
+            <ui:height>293</ui:height>
+          </ui:rect>
+        </ui:property>
+        <ui:property name="windowTitle">
+          <ui:mlstringid>mlsKFZLKG3D3ZAVHJ4TOIB6DLRLJ4</ui:mlstringid>
+        </ui:property>
+        <ui:layout class="QVBoxLayout" name="verticalLayout">
+          <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+            <ui:widget name="treeWidget" id="wdg5IKP4BLBPZBKVLDCEP7HUJQQAY" class="QTreeWidget" weight="0.0">
+              <ui:column>
+                <ui:property name="text">
+                  <ui:mlstringid>mlsEOJPIHECTNCQ5OY3DDZ2SNTJ2M</ui:mlstringid>
+                </ui:property>
+              </ui:column>
+            </ui:widget>
+          </ui:item>
+          <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+            <ui:widget name="buttonBox" id="wdgJMZFS4VED5C43K6JBD6A26GZZE" class="QDialogButtonBox" weight="0.0">
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>296</ui:x>
+                  <ui:y>293</ui:y>
+                  <ui:width>156</ui:width>
+                  <ui:height>23</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="standardButtons">
+                <ui:set>com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Ok | com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Cancel</ui:set>
+              </ui:property>
+            </ui:widget>
+          </ui:item>
+        </ui:layout>
+      </ui:widget>
+      <ui:connections>
+        <ui:connection>
+          <ui:sender>wdg6FC37LNNZNC5VLG2XUQXTNTPTQ</ui:sender>
+          <ui:signal>opened(com.trolltech.qt.gui.QWidget widget)</ui:signal>
+          <ui:slot>mthPIP2WW7U7BBABB2Y7GDB4YJUDE</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgJMZFS4VED5C43K6JBD6A26GZZE</ui:sender>
+          <ui:signal>accepted()</ui:signal>
+          <ui:slot>mthEQCUI55LG5B5DFTGGTDWYYEZ5M</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgJMZFS4VED5C43K6JBD6A26GZZE</ui:sender>
+          <ui:signal>rejected()</ui:signal>
+          <ui:slot>mthB2AQ47ELWBGILDZ3CXWWP4GBWE</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdg5IKP4BLBPZBKVLDCEP7HUJQQAY</ui:sender>
+          <ui:signal>itemDoubleClicked(com.trolltech.qt.gui.QTreeWidgetItem item,java.lang.Integer column)</ui:signal>
+          <ui:slot>mthYMI4RMSTKVDJJJ3A7CDIBTAFR4</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdg5IKP4BLBPZBKVLDCEP7HUJQQAY</ui:sender>
+          <ui:signal>currentItemChanged(com.trolltech.qt.gui.QTreeWidgetItem current,com.trolltech.qt.gui.QTreeWidgetItem previous)</ui:signal>
+          <ui:slot>mth7GGHH5QKQRG3RAVVZRS2YWGPIQ</ui:slot>
+        </ui:connection>
+      </ui:connections>
+    </ui:ui>
+    <EmbeddedModel Id="armBHKYXTAFPFGYJB5O5U73JODGSI" Name="AlgoChoiceDlg:Model" Type="17">
+      <AccessRules IsPublished="false"/>
+      <Headers>
+        <Src Name="HeaderadcP62P6SZTVRCTFATZMGAVQ3XPYM" Environment="explorer">
+          <xsc:Item>
+            <xsc:Java>import com.trolltech.qt.gui.QTreeWidgetItem;
+import com.trolltech.qt.gui.QTreeWidget;
+import com.trolltech.qt.core.Qt;
+import java.util.*;</xsc:Java>
+          </xsc:Item>
+        </Src>
+      </Headers>
+      <Bodies>
+        <Src Name="Bodyadc7736V3GEWNFHBBZOEERPJWS4EE" Environment="explorer">
+          <xsc:Item>
+            <xsc:Java>static public enum OpenMode {
+    Classes,
+    Methods,
+    Properties;
+}
+
+static private enum BranchType {
+    Class,
+    ClassGroup;
+}
+
+private class QMyTreeWidgetItem extends QTreeWidgetItem {
+    
+    public QMyTreeWidgetItem(QTreeWidgetItem parent, QTreeWidgetItem insertAfter){
+        super(parent, insertAfter);
+    }
+    
+    public QMyTreeWidgetItem(QTreeWidget owner, QTreeWidgetItem insertAfter) {
+        super(owner, insertAfter);
+    }
+    
+    public BranchType branchType;
+}
+
+private static final Map&lt;</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>, </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="451" Path="xsdXBC3TNLZQ3NRDCINABIFNQAABA" extStr="ClassList"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>> restr2Classes = 
+    new HashMap&lt;</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>, </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="451" Path="xsdXBC3TNLZQ3NRDCINABIFNQAABA" extStr="ClassList"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>>();</xsc:Java>
+          </xsc:Item>
+        </Src>
+      </Bodies>
+      <MethodGroup Id="cmgBAGA352XJRF4TBKI66QOAODQGM" Name="Root">
+        <Group Id="cmgBR2R7I4JRRCKHNGYFOSN55SXHE" Name="Events" Members="mthPIP2WW7U7BBABB2Y7GDB4YJUDE mthEQCUI55LG5B5DFTGGTDWYYEZ5M mthB2AQ47ELWBGILDZ3CXWWP4GBWE mthYMI4RMSTKVDJJJ3A7CDIBTAFR4 mth7GGHH5QKQRG3RAVVZRS2YWGPIQ"/>
+        <Group Id="cmgML5KG7CX5NC4PN5ANPVOIUUFYI" Name="Methods" Members="mthMV3PHU7KTNF5PJISTXPWIHB3DA mthRZPI2WLQONF35DSLQGCXCDWXNY mthZO6B4664JRFNZHKYC2C2NYQ4JM mth3QQOJQIVBJAWNP7MEY2PDM2MQA mthFPTASSW6LZD7RAXHYROIEPF52Q mth7JD7IVDJQRH3HLNSQL3JODKQYM mthBCBLVPX3RNFTZLROAW3J2CQQAA"/>
+        <Group Id="cmgNEYPP62YBZEMHDLTMNWK77R364" Name="Commands" Members="mthclcLC2MVXVVQ3OBDCKEAALOMT5GDM"/>
+      </MethodGroup>
+      <PropertyGroup Id="cpgENGVT4ASLJCM7LPOCTG7C2VKFI" Name="Root">
+        <Group Id="cpg2IIR5NUXZRCGFDG2H4WGUXZXJM" Name="Properties" Members="prpHBCEPF47EJFQRJY5S647BROUWM"/>
+      </PropertyGroup>
+      <Properties>
+        <Property Id="prpHBCEPF47EJFQRJY5S647BROUWM" Name="classRestriction" Nature="2" IsConst="false" Environment="explorer" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules/>
+          <Type TypeId="451" Path="xsdXBC3TNLZQ3NRDCINABIFNQAABA" extStr="ClassRestriction"/>
+        </Property>
+      </Properties>
+      <Methods>
+        <Method Id="mthPIP2WW7U7BBABB2Y7GDB4YJUDE" Name="PropEditorDialog_opened" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules/>
+          <Parameters>
+            <Parameter Name="param1" Id="mprU6PDIHKMVNCAJOXD6JHDH3UFHM">
+              <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeBHKYXTAFPFGYJB5O5U73JODGSI wdg5IKP4BLBPZBKVLDCEP7HUJQQAY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.header().setVisible(false);
+getCommand(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="clcLC2MVXVVQ3OBDCKEAALOMT5GDM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>).execute();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthMV3PHU7KTNF5PJISTXPWIHB3DA" Name="arrangeTree" Nature="0" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeBHKYXTAFPFGYJB5O5U73JODGSI wdg5IKP4BLBPZBKVLDCEP7HUJQQAY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.sortItems(0, Qt.SortOrder.AscendingOrder);
+for(int i=0; i&lt;</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeBHKYXTAFPFGYJB5O5U73JODGSI wdg5IKP4BLBPZBKVLDCEP7HUJQQAY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.topLevelItemCount(); i++)
+	</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeBHKYXTAFPFGYJB5O5U73JODGSI armBHKYXTAFPFGYJB5O5U73JODGSI mth3QQOJQIVBJAWNP7MEY2PDM2MQA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeBHKYXTAFPFGYJB5O5U73JODGSI wdg5IKP4BLBPZBKVLDCEP7HUJQQAY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.topLevelItem(i));</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthRZPI2WLQONF35DSLQGCXCDWXNY" Name="addBranch" Nature="0" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="parent" Id="mprH7X2NIY47NCTPKH3LDMNLFV7FA">
+              <Type TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+            </Parameter>
+            <Parameter Name="title" Id="mprQ6DQRDN33NGMLCV4R5P4WEY3KA">
+              <Type TypeId="21"/>
+            </Parameter>
+            <Parameter Name="userData" Id="mprB55ZQMYVNVDZ5DCXUUTXYYD57Y">
+              <Type TypeId="400" extStr="java.lang.Object"/>
+            </Parameter>
+            <Parameter Name="type" Id="mprWJEHQD7UANAQBN6W2AZCKZANOM">
+              <Type TypeId="400" extStr="BranchType"/>
+            </Parameter>
+            <Parameter Name="icon" Id="mpr5FP7GQNG3FAF3FXNUYISNLFDZE">
+              <Type TypeId="400" extStr="com.trolltech.qt.gui.QIcon"/>
+            </Parameter>
+          </Parameters>
+          <ReturnType TypeId="400" extStr="QMyTreeWidgetItem"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>QMyTreeWidgetItem branch =
+    parent == null ? 
+        new QMyTreeWidgetItem(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeBHKYXTAFPFGYJB5O5U73JODGSI wdg5IKP4BLBPZBKVLDCEP7HUJQQAY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, (QTreeWidgetItem)null) :
+        new QMyTreeWidgetItem(parent, (QTreeWidgetItem)null);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeBHKYXTAFPFGYJB5O5U73JODGSI armBHKYXTAFPFGYJB5O5U73JODGSI mth7JD7IVDJQRH3HLNSQL3JODKQYM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(branch, type, title, userData, icon);
+return branch;
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthZO6B4664JRFNZHKYC2C2NYQ4JM" Name="addClassBranch" Nature="0" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="parent" Id="mpr364SYYJMVRG47GVBE3VPHFYNFY">
+              <Type TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+            </Parameter>
+            <Parameter Name="title" Id="mpr5D4NXWF53FGTFFTQXITD6ED5C4">
+              <Type TypeId="21"/>
+            </Parameter>
+            <Parameter Name="classInfo" Id="mpr43BKIGBD55HRRITZ6BWNCFV55U">
+              <Type TypeId="451" Path="xsdXBC3TNLZQ3NRDCINABIFNQAABA" extStr="ClassInfo"/>
+            </Parameter>
+          </Parameters>
+          <ReturnType TypeId="400" extStr="QMyTreeWidgetItem"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeBHKYXTAFPFGYJB5O5U73JODGSI armBHKYXTAFPFGYJB5O5U73JODGSI mthRZPI2WLQONF35DSLQGCXCDWXNY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(parent, title, new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc3W4UX3G555HXHOUN2Z4RQAWNYQ mth7LQ4KLOBSFGN5LGX45CLKOAWFI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(classInfo), BranchType.Class, null);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth3QQOJQIVBJAWNP7MEY2PDM2MQA" Name="arrangeBranch" Nature="0" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="branch" Id="mprPVQUXYGCGJGRBF3IM4GJWOFWMA">
+              <Type TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>branch.sortChildren(0, Qt.SortOrder.AscendingOrder);
+for(int i=0; i&lt;branch.childCount(); i++)
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeBHKYXTAFPFGYJB5O5U73JODGSI armBHKYXTAFPFGYJB5O5U73JODGSI mth3QQOJQIVBJAWNP7MEY2PDM2MQA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(branch.child(i));
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthFPTASSW6LZD7RAXHYROIEPF52Q" Name="addGroupBranch" Nature="0" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="parent" Id="mprD54QHDRDNZGKFAUYL3KYMETS2M">
+              <Type TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+            </Parameter>
+            <Parameter Name="type" Id="mpr73WAWOIGF5CIPIHEYCGH6QJV7U">
+              <Type TypeId="400" extStr="BranchType"/>
+            </Parameter>
+            <Parameter Name="title" Id="mprTVWIIDHLLNH7ZMIUF4KIOMHEDA">
+              <Type TypeId="21"/>
+            </Parameter>
+          </Parameters>
+          <ReturnType TypeId="400" extStr="QMyTreeWidgetItem"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeBHKYXTAFPFGYJB5O5U73JODGSI armBHKYXTAFPFGYJB5O5U73JODGSI mthRZPI2WLQONF35DSLQGCXCDWXNY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(parent, title, null, type, null);
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth7JD7IVDJQRH3HLNSQL3JODKQYM" Name="setBranchData" Nature="0" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="branch" Id="mprBMGH2SHPJBADBGPDCNJF6DR3W4">
+              <Type TypeId="400" extStr="QMyTreeWidgetItem"/>
+            </Parameter>
+            <Parameter Name="type" Id="mprLHAZDGDDZRBONKS2EDPKFSLKXQ">
+              <Type TypeId="400" extStr="BranchType"/>
+            </Parameter>
+            <Parameter Name="title" Id="mprJBYVR7TCZBDZ7GXX26IXBLJOQM">
+              <Type TypeId="21"/>
+            </Parameter>
+            <Parameter Name="userData" Id="mprTZ5YPQ54YFBV7DFVNJCA3QGROA">
+              <Type TypeId="400" extStr="java.lang.Object"/>
+            </Parameter>
+            <Parameter Name="icon" Id="mpr7P2E2MY6NJATNH6SL7PTJXZ43Q">
+              <Type TypeId="400" extStr="com.trolltech.qt.gui.QIcon"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>branch.branchType = type;
+if (title != null)
+    branch.setData(0, Qt.ItemDataRole.DisplayRole, title);
+if (userData != null)
+    branch.setData(0, Qt.ItemDataRole.UserRole, userData);
+branch.setIcon(0, icon);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthclcLC2MVXVVQ3OBDCKEAALOMT5GDM" Name="GetClassListCmd" Nature="1" Environment="explorer" IsOverride="false">
+          <AccessRules/>
+          <Parameters>
+            <Parameter Name="command" Id="mprMGXQHRNVARDUDHOQPZSAJ3XXTM">
+              <Type TypeId="411" Path="clcLC2MVXVVQ3OBDCKEAALOMT5GDM"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdXBC3TNLZQ3NRDCINABIFNQAABA" extStr="ClassList"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> xClassList = restr2Classes.get(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeBHKYXTAFPFGYJB5O5U73JODGSI armBHKYXTAFPFGYJB5O5U73JODGSI prpHBCEPF47EJFQRJY5S647BROUWM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.SuperClass.DacId);
+if (xClassList == null) {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdMPH3WOW4SHOBDCKSAALOMT5GDM" extStr="ClassListRsDocument"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> output = null;
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdMPH3WOW4SHOBDCKSAALOMT5GDM" extStr="ClassListRqDocument"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> input = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdMPH3WOW4SHOBDCKSAALOMT5GDM" extStr="ClassListRqDocument"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Factory.newInstance();
+    input.addNewClassListRq().set(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeBHKYXTAFPFGYJB5O5U73JODGSI armBHKYXTAFPFGYJB5O5U73JODGSI prpHBCEPF47EJFQRJY5S647BROUWM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+    try {
+        output = command.send(input);
+    } catch(org.radixware.kernel.common.exceptions.ServiceClientException e) {
+        showException(e);
+    } catch(InterruptedException e) {
+        showException(e);
+    }
+
+    if (output == null)
+        return;
+    
+    xClassList = output.ClassListRs;
+    if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeBHKYXTAFPFGYJB5O5U73JODGSI armBHKYXTAFPFGYJB5O5U73JODGSI prpHBCEPF47EJFQRJY5S647BROUWM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.SuperClass.DacId != null)
+        restr2Classes.put(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeBHKYXTAFPFGYJB5O5U73JODGSI armBHKYXTAFPFGYJB5O5U73JODGSI prpHBCEPF47EJFQRJY5S647BROUWM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.SuperClass.DacId, xClassList);
+}
+
+if (xClassList.ClassInfoList != null) {
+    final java.util.TreeMap&lt;</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, QMyTreeWidgetItem> nameToTreeItem = new java.util.TreeMap&lt;</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, QMyTreeWidgetItem>();
+    for(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdXBC3TNLZQ3NRDCINABIFNQAABA" extStr="ClassInfo"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> classInfo : xClassList.ClassInfoList) {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> subName = null;
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> name = classInfo.Name;
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> title = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcFTLY2XIEXLOBDA6IAAMPGXSZKU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcFTLY2XIEXLOBDA6IAAMPGXSZKU mthE3AHJYYEXLOBDA6IAAMPGXSZKU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(classInfo.Title, classInfo.Name);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>[] splittedName = name.split("\\.|::");
+        QMyTreeWidgetItem parent = null, branch = null;
+        for(int i=0; i&lt;splittedName.length; i++) {
+            subName = (subName == null) ? splittedName[i] : subName + "." + splittedName[i];
+            branch = nameToTreeItem.get(subName);
+            if (branch == null) {
+                if (i == splittedName.length - 1)
+                    branch = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeBHKYXTAFPFGYJB5O5U73JODGSI armBHKYXTAFPFGYJB5O5U73JODGSI mthZO6B4664JRFNZHKYC2C2NYQ4JM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(parent, title, classInfo);
+                else
+                    branch = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeBHKYXTAFPFGYJB5O5U73JODGSI armBHKYXTAFPFGYJB5O5U73JODGSI mthFPTASSW6LZD7RAXHYROIEPF52Q" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(parent, BranchType.ClassGroup, splittedName[i]);
+                nameToTreeItem.put(subName, branch);
+            } else
+                if (i == splittedName.length - 1) {
+                    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeBHKYXTAFPFGYJB5O5U73JODGSI armBHKYXTAFPFGYJB5O5U73JODGSI mth7JD7IVDJQRH3HLNSQL3JODKQYM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(branch, BranchType.Class, null, new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc3W4UX3G555HXHOUN2Z4RQAWNYQ mth7LQ4KLOBSFGN5LGX45CLKOAWFI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(classInfo), null);
+                }
+            parent = branch;
+        }
+    }
+}
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeBHKYXTAFPFGYJB5O5U73JODGSI armBHKYXTAFPFGYJB5O5U73JODGSI mthMV3PHU7KTNF5PJISTXPWIHB3DA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeBHKYXTAFPFGYJB5O5U73JODGSI armBHKYXTAFPFGYJB5O5U73JODGSI mthBCBLVPX3RNFTZLROAW3J2CQQAA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthEQCUI55LG5B5DFTGGTDWYYEZ5M" Name="buttonBox_accepted" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>QMyTreeWidgetItem curItem = (QMyTreeWidgetItem)</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeBHKYXTAFPFGYJB5O5U73JODGSI wdg5IKP4BLBPZBKVLDCEP7HUJQQAY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.currentItem();
+if (getPropEditorContext().property != null &amp;&amp; curItem != null) {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc3W4UX3G555HXHOUN2Z4RQAWNYQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> classData = (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc3W4UX3G555HXHOUN2Z4RQAWNYQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>)curItem.data(0, Qt.ItemDataRole.UserRole);
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> id = ((</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdXBC3TNLZQ3NRDCINABIFNQAABA" extStr="ClassInfo"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>)classData.get()).Id;
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> title = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcFTLY2XIEXLOBDA6IAAMPGXSZKU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcFTLY2XIEXLOBDA6IAAMPGXSZKU mthE3AHJYYEXLOBDA6IAAMPGXSZKU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(((</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdXBC3TNLZQ3NRDCINABIFNQAABA" extStr="ClassInfo"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>)classData.get()).Title, ((</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdXBC3TNLZQ3NRDCINABIFNQAABA" extStr="ClassInfo"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>)classData.get()).Name);
+    
+    getPropEditorContext().getHolderModel().getProperty(getPropEditorContext().property.Id).setValueObject(title);
+    if (getPropEditorContext().getHolderModel() instanceof </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="picDE777BVXDFBOZCQLA6O44ABWI4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {    
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="picDE777BVXDFBOZCQLA6O44ABWI4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> algoHolder = (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="picDE777BVXDFBOZCQLA6O44ABWI4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>)this.getPropEditorContext().getHolderModel();
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcG4LPCCZWKFAYDPURZEU7GOHAWY"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> algoPropId = 
+                algoHolder.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="picDE777BVXDFBOZCQLA6O44ABWI4 mthIXUM6UCKDZGBRA3BSEIVHJVGO4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(getPropEditorContext().property.Id);
+        algoPropId.setValueObject(String.valueOf(id));
+    } else {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.messageError("Error", "Current entity model not implemented interface AlgoHolder");    
+        return;
+    }    
+    
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeBHKYXTAFPFGYJB5O5U73JODGSI wdg6FC37LNNZNC5VLG2XUQXTNTPTQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.accept();
+}
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthB2AQ47ELWBGILDZ3CXWWP4GBWE" Name="buttonBox_rejected" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeBHKYXTAFPFGYJB5O5U73JODGSI wdg6FC37LNNZNC5VLG2XUQXTNTPTQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.reject();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthYMI4RMSTKVDJJJ3A7CDIBTAFR4" Name="treeWidget_itemDoubleClicked" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="item" Id="mprV44ROI7RKNFN3ORCWOVFJYOOLM">
+              <Type TypeId="400" extStr="com.trolltech.qt.gui.QTreeWidgetItem"/>
+            </Parameter>
+            <Parameter Name="column" Id="mpr6BVTPTXRGZB4XGC5JYMK6QJ3TU">
+              <Type TypeId="400" extStr="java.lang.Integer"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeBHKYXTAFPFGYJB5O5U73JODGSI armBHKYXTAFPFGYJB5O5U73JODGSI mthEQCUI55LG5B5DFTGGTDWYYEZ5M" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthBCBLVPX3RNFTZLROAW3J2CQQAA" Name="updateState" Nature="0" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>final QMyTreeWidgetItem curItem = (QMyTreeWidgetItem)</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeBHKYXTAFPFGYJB5O5U73JODGSI wdg5IKP4BLBPZBKVLDCEP7HUJQQAY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.currentItem();
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeBHKYXTAFPFGYJB5O5U73JODGSI wdgJMZFS4VED5C43K6JBD6A26GZZE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.button(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QDialogButtonBox.StandardButton"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Ok).</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthKMCJWBHQAVHLBJFVFE6KREGTQU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(curItem != null);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth7GGHH5QKQRG3RAVVZRS2YWGPIQ" Name="treeWidget_currentItemChanged" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="current" Id="mprJ7VH4OXVZFHJFIQZ37FTCEX6XA">
+              <Type TypeId="400" extStr="com.trolltech.qt.gui.QTreeWidgetItem"/>
+            </Parameter>
+            <Parameter Name="previous" Id="mprZCGH235PEFBXHKBHRNP2MY5WDI">
+              <Type TypeId="400" extStr="com.trolltech.qt.gui.QTreeWidgetItem"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeBHKYXTAFPFGYJB5O5U73JODGSI armBHKYXTAFPFGYJB5O5U73JODGSI mthBCBLVPX3RNFTZLROAW3J2CQQAA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+      </Methods>
+    </EmbeddedModel>
+  </AdsCustomPropEditorDefinition>
+</AdsDefinition>

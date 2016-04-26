@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclRCZ3BOA62NETVG6EJ4DTULLG54" Name="UserFuncLibParamStr" Type="2">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderaclRCZ3BOA62NETVG6EJ4DTULLG54"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaclRCZ3BOA62NETVG6EJ4DTULLG54"/>
+    </Bodies>
+    <MethodGroup Id="cmg6BGJKEQSZFCF7GD3ZVV6KFSO4U" Name="Root"/>
+    <PropertyGroup Id="cpg7M5KPZ3HKBDELOX57L3EBLE2H4" Name="Root"/>
+    <Properties>
+      <Property Id="colJHKQCQ3XHJFN7JDKOEKCQOC4RA" Name="strValue" Nature="0" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsEYSTMTR66NC2DPXRFFMNUZWX6M" InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthXIHSVQWG3NBQJAI4GJPYOG3N7I" Name="getDisplayValue" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclRCZ3BOA62NETVG6EJ4DTULLG54 colJHKQCQ3XHJFN7JDKOEKCQOC4RA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthCGTSEM5XUJCEJDVZ27LNUVZPDE" Name="getStrValue" Nature="0" IsOverride="true">
+        <AccessRules IsPublished="false"/>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclRCZ3BOA62NETVG6EJ4DTULLG54 colJHKQCQ3XHJFN7JDKOEKCQOC4RA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthZQ2LV3ICBVA6RKBWBFLLG3KJ7Q" Name="getValueGroup" Nature="0" IsOverride="true" SuppressedWarnings="3001">
+        <AccessRules Access="1" IsPublished="false"/>
+        <ReturnType TypeId="451" Path="xsdLL3UFHA3MBDWJBXUX6GNNLJH7Q" extStr="ValueGroup"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdLL3UFHA3MBDWJBXUX6GNNLJH7Q" extStr="ValueGroup"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> item = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdLL3UFHA3MBDWJBXUX6GNNLJH7Q" extStr="ValueGroup.Factory"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.newInstance();
+item.StrValue=this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclRCZ3BOA62NETVG6EJ4DTULLG54 colJHKQCQ3XHJFN7JDKOEKCQOC4RA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+return item;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthU5UW5AF4AZBTHFH3PUFDVOSLB4" Name="setValue" Nature="0" IsOverride="true" SuppressedWarnings="3001">
+        <AccessRules Access="1" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="paramGroup" Id="mprH6ZJC5UN5BEIZO4O7MA6QEL7AU">
+            <Type TypeId="451" Path="xsdLL3UFHA3MBDWJBXUX6GNNLJH7Q" extStr="ValueGroup"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="aclRCZ3BOA62NETVG6EJ4DTULLG54 colJHKQCQ3XHJFN7JDKOEKCQOC4RA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = paramGroup.StrValue;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tbl6GD2KMGAFZFNBLR7WK4T45VLOQ"/>
+    <Presentations ObjectTitleId="mls67DG2R2HABH7VFCFJJAPNFMPGU">
+      <ClassCatalogs>
+        <ClassCatalog Id="eccG3BUEOQWRZFXFCHANXK2D32YD4" Name="Params">
+          <AccessRules IsPublished="false"/>
+          <ClassRef Order="37.5"/>
+        </ClassCatalog>
+      </ClassCatalogs>
+      <EditorPresentations>
+        <EditorPresentation Id="eprB2JSENJCB5B3VBZ3W2XU2HVBWY" Name="General" BasePresentationId="eprZZ52DBSE65EJXC2CAQEBRZVCKI" IconId="imgMFQGM2H4GU5QV7C7EM5XNBGL5M4UMBGE" InheritanceMask="36002" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprZZ52DBSE65EJXC2CAQEBRZVCKI">
+          <AccessRules IsPublished="false"/>
+          <ChildExplorerItems/>
+          <EditorPages>
+            <Page Id="epgJDA4WN3XHBAELNY7JSCT44NYLM" Name="Main" Type="1">
+              <AccessRules IsPublished="false"/>
+              <Properties>
+                <Property Id="colSSOTVEHQERHMTABMXKJ4FI3JAY" Row="0" Column="0"/>
+                <Property Id="colJHKQCQ3XHJFN7JDKOEKCQOC4RA" Row="1" Column="0"/>
+              </Properties>
+            </Page>
+            <PageOrder>
+              <Item PageId="epgJDA4WN3XHBAELNY7JSCT44NYLM" Level="1"/>
+            </PageOrder>
+          </EditorPages>
+          <ObjectTitleFormat Id="etfYEU4HFZLI5AYJGREXVLAPK6TXM"/>
+        </EditorPresentation>
+      </EditorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="aec6GD2KMGAFZFNBLR7WK4T45VLOQ"/>
+  </AdsClassDefinition>
+</AdsDefinition>

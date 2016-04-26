@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="spc7JJ2P4HLWHOBDCLYAALOMT5GDM" Name="GetEventContextStrStmt" Type="10">
+    <AccessRules IsFinal="true" IsPublished="false">
+      <Transparence Extendable="true" PublishedName="org.radixware.kernel.server.types.SqlClass"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcB4K3YTZDFRGPVFSHCDETGBEGEU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc3SU27J2ZCRELJALESXEOLWI5EQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgJOVOVPTHOBFUZEG6PITEOEZN2I" Name="Root"/>
+    <PropertyGroup Id="cpgLPFNV3HNO5DQPFQFMTSDN3ZVJI" Name="Root"/>
+    <Properties>
+      <Property Id="prmKBFEVKTNQNAUTM5L27CWX7TAIM" Name="raiseTime" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="12"/>
+      </Property>
+      <Property Id="prmF36ACAPMWHOBDCLYAALOMT5GDM" Name="eventId" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prmORYNCCPMWHOBDCLYAALOMT5GDM" Name="contextsStr" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="execute" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="raiseTime" Id="mprKBFEVKTNQNAUTM5L27CWX7TAIM">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="eventId" Id="mprF36ACAPMWHOBDCLYAALOMT5GDM">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="spc7JJ2P4HLWHOBDCLYAALOMT5GDM"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>declare
+  result varchar(4000);
+  Cursor c_Contexts (pRaiseTime timestamp, pEventId int) IS
+      Select </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblJABJB4OAP3NRDAQSABIFNQAAAE" PropId="colT67W77OAP3NRDAQSABIFNQAAAE" Owner="NONE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblJABJB4OAP3NRDAQSABIFNQAAAE" PropId="colHIPN4HGBP3NRDAQSABIFNQAAAE" Owner="NONE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblJABJB4OAP3NRDAQSABIFNQAAAE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblJABJB4OAP3NRDAQSABIFNQAAAE" PropId="colOSK5SVWBP3NRDAQSABIFNQAAAE" Owner="NONE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>=pRaiseTime and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblJABJB4OAP3NRDAQSABIFNQAAAE" PropId="colXHA62NOBP3NRDAQSABIFNQAAAE" Owner="NONE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>=pEventId;
+begin
+  for v_Contexts IN c_Contexts(</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmKBFEVKTNQNAUTM5L27CWX7TAIM"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmF36ACAPMWHOBDCLYAALOMT5GDM"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>) LOOP
+    if result is not null then
+        result := result || '; ';
+    end if; 
+    result := result || v_Contexts.</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblJABJB4OAP3NRDAQSABIFNQAAAE" PropId="colT67W77OAP3NRDAQSABIFNQAAAE" Owner="NONE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> || '=' || v_Contexts.</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblJABJB4OAP3NRDAQSABIFNQAAAE" PropId="colHIPN4HGBP3NRDAQSABIFNQAAAE" Owner="NONE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>;
+  end loop;
+  </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmORYNCCPMWHOBDCLYAALOMT5GDM" Direction="1"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> := result; 
+end;</xsc:Sql>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblJABJB4OAP3NRDAQSABIFNQAAAE"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="400" extStr="org.radixware.kernel.server.types.SqlClass"/>
+  </AdsClassDefinition>
+</AdsDefinition>

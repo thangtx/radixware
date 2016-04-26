@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="accXKPWRNPADRBUXEZOAHVFFK66GI" Name="GetMetricStatementIdByMetricTypeId" Type="4">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderaccXKPWRNPADRBUXEZOAHVFFK66GI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaccXKPWRNPADRBUXEZOAHVFFK66GI"/>
+    </Bodies>
+    <MethodGroup Id="cmg54IKTT3EPFED7IGXPMWQO5MNYQ" Name="Root"/>
+    <PropertyGroup Id="cpgO7HMFRAMVZAUBGL267N42H2FAQ" Name="Root"/>
+    <Properties>
+      <Property Id="prmFJPBJPOU4FAX3FFIWB4HHQ277E" Name="pMetricTypeId" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prfELFXKLLAYRHY3PCS6MDBKGSVVQ" Name="id" Nature="3" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="open" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="pMetricTypeId" Id="mprFJPBJPOU4FAX3FFIWB4HHQ277E">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="accXKPWRNPADRBUXEZOAHVFFK66GI"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>select </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="colAJKGMNFACVDP3NKSFE74FBBJWI" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accXKPWRNPADRBUXEZOAHVFFK66GI" PropId="prfELFXKLLAYRHY3PCS6MDBKGSVVQ" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="colFEAY3AHK6NBWFIEFHY5HMNRCSI" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmFJPBJPOU4FAX3FFIWB4HHQ277E"/>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="411" Path="pdcCursor____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

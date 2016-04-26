@@ -1,0 +1,1621 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" xmlns:com="http://schemas.radixware.org/commondef.xsd" FormatVersion="0">
+  <AdsCustomDialogDefinition Id="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A" Name="ChooseReportClassDialog">
+    <ui:ui>
+      <ui:widget name="mainWindow" id="wdgMB46LKA2PZD37JTBXZSTTSNZQM" class="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A" weight="0.0">
+        <ui:property name="geometry">
+          <ui:rect>
+            <ui:x>0</ui:x>
+            <ui:y>0</ui:y>
+            <ui:width>531</ui:width>
+            <ui:height>504</ui:height>
+          </ui:rect>
+        </ui:property>
+        <ui:property name="objectName">
+          <ui:string>mainWindow</ui:string>
+        </ui:property>
+        <ui:property name="objectName">
+          <ui:string>MainWindow_1</ui:string>
+        </ui:property>
+        <ui:layout class="QVBoxLayout" name="verticalLayout">
+          <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+            <ui:widget name="object" id="wdgNPI6YIMO65GI5AT347KIPNHTVI" class="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI" weight="0.0"/>
+          </ui:item>
+          <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+            <ui:widget name="treeWidget" id="wdgKNXVCMOSIZDXJOWLO5M3O5XVAE" class="QTreeWidget" weight="0.0">
+              <ui:property name="allColumnsShowFocus">
+                <ui:bool>false</ui:bool>
+              </ui:property>
+              <ui:property name="columnCount">
+                <ui:int>1</ui:int>
+              </ui:property>
+              <ui:property name="rootIsDecorated">
+                <ui:bool>true</ui:bool>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>treeWidget</ui:string>
+              </ui:property>
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>9</ui:x>
+                  <ui:y>9</ui:y>
+                  <ui:width>513</ui:width>
+                  <ui:height>457</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:column>
+                <ui:property name="text">
+                  <ui:mlstringid>mlsQLOBA76MUNAWTOBFDEOIBDTY44</ui:mlstringid>
+                </ui:property>
+              </ui:column>
+            </ui:widget>
+          </ui:item>
+          <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+            <ui:widget name="buttonBox" id="wdgANYQUZTJVBESLF6P2ESHM3MU4U" class="QDialogButtonBox" weight="0.0">
+              <ui:property name="standardButtons">
+                <ui:set>com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Ok | com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Cancel</ui:set>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>buttonBox</ui:string>
+              </ui:property>
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>9</ui:x>
+                  <ui:y>472</ui:y>
+                  <ui:width>513</ui:width>
+                  <ui:height>23</ui:height>
+                </ui:rect>
+              </ui:property>
+            </ui:widget>
+          </ui:item>
+        </ui:layout>
+      </ui:widget>
+      <ui:connections>
+        <ui:connection>
+          <ui:sender>wdgMB46LKA2PZD37JTBXZSTTSNZQM</ui:sender>
+          <ui:signal>opened(com.trolltech.qt.gui.QWidget widget)</ui:signal>
+          <ui:slot>mth6ZAGY3XPTJHSVDCHI3HUNKP3D4_opened</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgANYQUZTJVBESLF6P2ESHM3MU4U</ui:sender>
+          <ui:signal>accepted()</ui:signal>
+          <ui:slot>mthEPXMISF4UJH6PBBUASMZ7CD7LI_accepted</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgANYQUZTJVBESLF6P2ESHM3MU4U</ui:sender>
+          <ui:signal>rejected()</ui:signal>
+          <ui:slot>mthEPXMISF4UJH6PBBUASMZ7CD7LI_rejected</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgKNXVCMOSIZDXJOWLO5M3O5XVAE</ui:sender>
+          <ui:signal>currentItemChanged(com.trolltech.qt.gui.QTreeWidgetItem current,com.trolltech.qt.gui.QTreeWidgetItem previous)</ui:signal>
+          <ui:slot>mthLMQCISHJYBCNPLMV374OU6QGEY</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgKNXVCMOSIZDXJOWLO5M3O5XVAE</ui:sender>
+          <ui:signal>itemDoubleClicked(com.trolltech.qt.gui.QTreeWidgetItem item,java.lang.Integer column)</ui:signal>
+          <ui:slot>mthLXRG4G3ZFBDW3PTIIZSCPYWJ4E</ui:slot>
+        </ui:connection>
+      </ui:connections>
+    </ui:ui>
+    <EmbeddedModel Id="admJQK3OCMG4ZF6RDBYAN2UISDK4A" Name="ChooseReportClassDialog:Model" Type="16">
+      <AccessRules/>
+      <Headers>
+        <Src Name="HeaderadcNIQS525ZRZF4XGEHONIOOIJL5Q" Environment="explorer">
+          <xsc:Item>
+            <xsc:Java>import com.trolltech.qt.core.*;
+import com.trolltech.qt.gui.*;
+import org.radixware.kernel.common.repository.*;
+import org.radixware.kernel.common.defs.ads.*;
+import org.radixware.kernel.common.defs.RadixObjectIcon;
+</xsc:Java>
+          </xsc:Item>
+        </Src>
+      </Headers>
+      <Bodies>
+        <Src Name="BodyadcBNQXTJBZBFERLJH6YRAPFP32DM" Environment="explorer">
+          <xsc:Item>
+            <xsc:Java>boolean searchStarted = false;
+
+</xsc:Java>
+          </xsc:Item>
+        </Src>
+      </Bodies>
+      <MethodGroup Id="cmgKOKB3ZMC2BG4DMJOWFR5YTDYLA" Name="Root">
+        <Group Id="cmgB4UUBS2X25D4PL2I4DFPENMGHM" Name="Slots" Members="mthEPXMISF4UJH6PBBUASMZ7CD7LI_accepted mthEPXMISF4UJH6PBBUASMZ7CD7LI_rejected mth6ZAGY3XPTJHSVDCHI3HUNKP3D4_opened mthLMQCISHJYBCNPLMV374OU6QGEY mthLXRG4G3ZFBDW3PTIIZSCPYWJ4E mthSHLENWUILFAWFKTK3TKBNVXN3I"/>
+        <Group Id="cmgONAFIYAUCZFJVJNIOXDKXV5JGM" Name="Tree" Members="mthH75KVXAJ3RES7N6WKNNZ63P57M mthBJLJU5Q7QVG4ZI6IWY4HOR2TTM mthP623JGF6BBFA7BJAJWUTEY5IYQ mth6EYB6AOC3RAOFLK4XXZCHIFVMQ mthclcKSO5V2NYCBG5ZHN7OVM6K77PY4 mthWQE67YYLBJEXBDHDGTWRFGMVTI mth3ECLXO4ALJFNBBHK7ASUTOJDJA"/>
+      </MethodGroup>
+      <PropertyGroup Id="cpgU45EUDMNZZEVHNEMBY6SJZHFCQ" Name="Root">
+        <Group Id="cpg6KWOV2SQQ5E2BP6JFX6IL6GB7M" Name="Parameters" Members="prp4S2YH454GBHZDF4BCHG3QNLDEE prpJPDWJ2B4GFEVDBUMQZZKWNUCQE prdSAAVM7VSONBNVBTSB6WSFM4LIU prd3DYCTTNX6FARPPEZQ5MYAEK26M prdGMVKY6E7DJBJROIA3PBKLYSWDI prdEWLQAFQUYREQBCP7OQR7B7ZS7A"/>
+      </PropertyGroup>
+      <Properties>
+        <Property Id="prp4S2YH454GBHZDF4BCHG3QNLDEE" Name="selectedClassId" Nature="2" IsConst="false" Environment="explorer" IsOverride="false">
+          <com:Description>Выходной параметр - идентификатор выбранного класса отчета.</com:Description>
+          <AccessRules/>
+          <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        </Property>
+        <Property Id="prpJPDWJ2B4GFEVDBUMQZZKWNUCQE" Name="selectedClassTitle" Nature="2" IsConst="false" Environment="explorer" IsOverride="false">
+          <com:Description>Выходной параметр - заголовок выбранного класса отчета.</com:Description>
+          <AccessRules/>
+          <Type TypeId="21"/>
+        </Property>
+        <Property Id="prdSAAVM7VSONBNVBTSB6WSFM4LIU" Name="contextObjectClassId" Nature="2" IsConst="false" Environment="explorer" IsOverride="false">
+          <AccessRules/>
+          <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        </Property>
+        <Property Id="prd3DYCTTNX6FARPPEZQ5MYAEK26M" Name="baseClassId" Nature="2" IsConst="false" Environment="explorer" IsOverride="false">
+          <com:Description>Входной параметр - идентификатор базового класса для отчета.
+Если задан, то отчет будет проверяться на isClassExtends(report, baseClassId)
+</com:Description>
+          <AccessRules/>
+          <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        </Property>
+        <Property Id="prdGMVKY6E7DJBJROIA3PBKLYSWDI" Name="checkContextClassId" Nature="2" IsConst="false" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="401" extStr="boolean"/>
+          <InitialValue>
+            <ValAsStr>false</ValAsStr>
+          </InitialValue>
+        </Property>
+        <Property Id="prdEWLQAFQUYREQBCP7OQR7B7ZS7A" Name="selectedClassFullName" Nature="2" IsConst="false" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="21"/>
+        </Property>
+      </Properties>
+      <Methods>
+        <Method Id="mthEPXMISF4UJH6PBBUASMZ7CD7LI_accepted" Name="buttonBox_accepted" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A admJQK3OCMG4ZF6RDBYAN2UISDK4A mthSHLENWUILFAWFKTK3TKBNVXN3I" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(true);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthEPXMISF4UJH6PBBUASMZ7CD7LI_rejected" Name="buttonBox_rejected" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A admJQK3OCMG4ZF6RDBYAN2UISDK4A mthSHLENWUILFAWFKTK3TKBNVXN3I" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(false);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth6ZAGY3XPTJHSVDCHI3HUNKP3D4_opened" Name="mainWindow_opened" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="window" Id="mprXFA4WS3V7VF77APXIZ5G7X6URA">
+              <Type TypeId="411" Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc3AEWZU624BBLRHNBGYE5ZAE5MI"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc3AEWZU624BBLRHNBGYE5ZAE5MI mth2RMLHFLLF5GPDGDBJ3WQOIBEDA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(this, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsNKU75FPYGFDQVPZCR3K3CCQVY4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc3AEWZU624BBLRHNBGYE5ZAE5MI"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc3AEWZU624BBLRHNBGYE5ZAE5MI mthYO32URILHZHVDMOKL64WSRSGBQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(getEnvironment(),</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A wdgKNXVCMOSIZDXJOWLO5M3O5XVAE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsSTLVWSCR2BBDLKR4RA47WMPL3M"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A admJQK3OCMG4ZF6RDBYAN2UISDK4A mthH75KVXAJ3RES7N6WKNNZ63P57M" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A admJQK3OCMG4ZF6RDBYAN2UISDK4A mthBJLJU5Q7QVG4ZI6IWY4HOR2TTM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthLMQCISHJYBCNPLMV374OU6QGEY" Name="treeWidget_currentItemChanged" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="current" Id="mprS4S7OXHHUJBT3I5GMNCBVZVSVM">
+              <Type TypeId="400" extStr="com.trolltech.qt.gui.QTreeWidgetItem"/>
+            </Parameter>
+            <Parameter Name="previous" Id="mprHMLUB2KDG5FDNH2C5FSDPETUEU">
+              <Type TypeId="400" extStr="com.trolltech.qt.gui.QTreeWidgetItem"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A admJQK3OCMG4ZF6RDBYAN2UISDK4A mthH75KVXAJ3RES7N6WKNNZ63P57M" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthLXRG4G3ZFBDW3PTIIZSCPYWJ4E" Name="treeWidget_itemDoubleClicked" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="item" Id="mprIAYFHDCMTFFVFINEVI3ZXGKLBU">
+              <Type TypeId="400" extStr="com.trolltech.qt.gui.QTreeWidgetItem"/>
+            </Parameter>
+            <Parameter Name="column" Id="mprFK375G6N6VCPRM7NVQ5AYXUIFA">
+              <Type TypeId="400" extStr="java.lang.Integer"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A admJQK3OCMG4ZF6RDBYAN2UISDK4A mthSHLENWUILFAWFKTK3TKBNVXN3I" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(true);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthH75KVXAJ3RES7N6WKNNZ63P57M" Name="updateButtonsState" Nature="0" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>final boolean okEnabled;
+
+final QTreeWidgetItem current = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A wdgKNXVCMOSIZDXJOWLO5M3O5XVAE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.currentItem();
+if (current!=null &amp;&amp; !current.isHidden()){
+    final Object dataObject = current.data(0, Qt.ItemDataRole.UserRole);
+    okEnabled = (dataObject!=null);
+}else {
+    okEnabled = false;
+}
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A wdgANYQUZTJVBESLF6P2ESHM3MU4U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.button(com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Ok).</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthKMCJWBHQAVHLBJFVFE6KREGTQU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(okEnabled);
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthBJLJU5Q7QVG4ZI6IWY4HOR2TTM" Name="fillTree" Nature="0" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="aic4WFQODRGC5ARVIB7KGSPFA6QHA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> handle = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthHA2XTRPS35GI3L226FEBKVL2LA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicFRNI5IGDIVBJXHC7ZVM6H7Q24I mthAJIMRWOBHBFGNCOEGY2ELYCFJE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+try {
+    handle.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aic4WFQODRGC5ARVIB7KGSPFA6QHA mthNKYETRRC5FCHXMDWLA74M4G3CA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsTQL4VVP5G5FXPGDV2ETX2LF4LM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, false);
+    final java.util.Map&lt;String, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>> layerName2Node = new java.util.HashMap&lt;>();
+    final java.util.Map&lt;String, java.util.Map&lt;String, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>>> layerName2ModuleNodesMap = new java.util.HashMap&lt;>();
+
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> selectedItem = null;
+
+    for (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> reportClassId : </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthRFQCEXJDNJDINHW32QFZAVEBV4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc53GYAPZQEBEQLNPUG64TNAO5F4 mthX72O2UVMSFEIPNP3ZQWECR3EFM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().getExecutableClassIds()) {
+        if (reportClassId.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcELH54EKVCJAATNTLFHHCSVHPZU mthC7F2QKANMFBQTB24S6XOYKQHEY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>() != </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsHL2QKDVQX5FARACANDWKNIZ5OU aciAAIHRJYC4BBPNHSMQR5Z3WQEGI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>)
+            continue;
+        if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A admJQK3OCMG4ZF6RDBYAN2UISDK4A prd3DYCTTNX6FARPPEZQ5MYAEK26M" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> != null &amp;&amp; !</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcFFMRZLRJFRDNHIDYGFCTMWRJ4Y"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcFFMRZLRJFRDNHIDYGFCTMWRJ4Y mthTCPIBFN5C5EF3KBJ2BBLUCCMLA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(Environment, reportClassId, this.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A admJQK3OCMG4ZF6RDBYAN2UISDK4A prd3DYCTTNX6FARPPEZQ5MYAEK26M" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>)) {
+            continue;
+        }
+
+        final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcCFM24KCJCNE4RE3FNXNFWR5NJU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> reportPresentationDef;
+
+        try {
+            reportPresentationDef = Environment.DefManager.getReportPresentationDef(reportClassId);
+        } catch (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> ex) {
+            final String error = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthBXQY2BN2DVEUNP7D645ZOVXZM4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(ex);
+            Environment.Tracer.error(error);
+            continue;
+        }
+
+        if (reportPresentationDef.getIsSubreport()) {
+            continue;
+        }
+
+        if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A admJQK3OCMG4ZF6RDBYAN2UISDK4A prdGMVKY6E7DJBJROIA3PBKLYSWDI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+            final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> reportContextObjectClassId = reportPresentationDef.getContextClassId();
+            final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> contextObjectClassId = this.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A admJQK3OCMG4ZF6RDBYAN2UISDK4A prdSAAVM7VSONBNVBTSB6WSFM4LIU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>; // for debug
+            if (contextObjectClassId != null &amp;&amp; reportContextObjectClassId != null) {
+                if (contextObjectClassId != reportContextObjectClassId) {
+                    if (!</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcFFMRZLRJFRDNHIDYGFCTMWRJ4Y"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcFFMRZLRJFRDNHIDYGFCTMWRJ4Y mthTCPIBFN5C5EF3KBJ2BBLUCCMLA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(), reportContextObjectClassId, contextObjectClassId)) {
+                        if (!</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcFFMRZLRJFRDNHIDYGFCTMWRJ4Y"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcFFMRZLRJFRDNHIDYGFCTMWRJ4Y mthTCPIBFN5C5EF3KBJ2BBLUCCMLA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(), contextObjectClassId, reportContextObjectClassId)) { // TWRBS-1816
+                            continue;
+                        }
+                    }
+                }
+            } else if (contextObjectClassId != null || reportContextObjectClassId != null) {
+                // RADIX-4811: disable contextless reports in context and vice versa
+                continue;
+            }
+        }
+
+        String layerName = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthRFQCEXJDNJDINHW32QFZAVEBV4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc53GYAPZQEBEQLNPUG64TNAO5F4 mthX72O2UVMSFEIPNP3ZQWECR3EFM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().getLayerNameByClassId(reportClassId);
+
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> layerItem = layerName2Node.get(layerName);
+        if (layerItem == null) {
+            layerItem = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A admJQK3OCMG4ZF6RDBYAN2UISDK4A mth3ECLXO4ALJFNBBHK7ASUTOJDJA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(null, layerName, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="imgKQVD5GKQIZA3LLZBU3B3A33E7I"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+            layerName2Node.put(layerName, layerItem);
+        }
+
+        java.util.Map&lt;String, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>> layerModules = layerName2ModuleNodesMap.get(layerName);
+        if (layerModules == null) {
+            layerModules = new java.util.HashMap&lt;String, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>>();
+            layerName2ModuleNodesMap.put(layerName, layerModules);
+        }
+
+        String moduleName = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthRFQCEXJDNJDINHW32QFZAVEBV4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc53GYAPZQEBEQLNPUG64TNAO5F4 mthX72O2UVMSFEIPNP3ZQWECR3EFM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().getModuleNameByClassId(reportClassId);
+
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> moduleItem = layerModules.get(moduleName);
+        if (moduleItem == null) {
+            moduleItem = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A admJQK3OCMG4ZF6RDBYAN2UISDK4A mth3ECLXO4ALJFNBBHK7ASUTOJDJA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(layerItem, moduleName, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="imgKQVD5GKQIZA3LLZBU3B3A33E7I"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+            layerModules.put(moduleName, moduleItem);
+        }
+        final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> reportItem = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A admJQK3OCMG4ZF6RDBYAN2UISDK4A mth6EYB6AOC3RAOFLK4XXZCHIFVMQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(moduleItem, reportPresentationDef);
+
+        if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A admJQK3OCMG4ZF6RDBYAN2UISDK4A prp4S2YH454GBHZDF4BCHG3QNLDEE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> == reportClassId) {
+            selectedItem = reportItem;
+        }
+    }
+
+    for (java.util.Map.Entry&lt;String, java.util.Map&lt;String, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>>> map : layerName2ModuleNodesMap.entrySet()) {
+        if (map == null) {
+            continue;
+        }
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> layerNode = layerName2Node.get(map.Key);
+        if (layerNode != null) {
+            layerNode.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthQJWB2D3MJ5DYLEI3BSCBWNI53A" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(0, Qt.SortOrder.AscendingOrder);
+        }
+        if (map.Value != null) {
+            for (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> node : map.Value.values()) {
+                if (node != null) {
+                    node.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthQJWB2D3MJ5DYLEI3BSCBWNI53A" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(0, Qt.SortOrder.AscendingOrder);
+                }
+            }
+        }
+    }
+
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A wdgKNXVCMOSIZDXJOWLO5M3O5XVAE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcZSKMPF5G3VD63BMVKNKCVGNL3A mthALAGDYABPVDRDBECDFN726LNEM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(0, Qt.SortOrder.AscendingOrder);
+
+    handle.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aic4WFQODRGC5ARVIB7KGSPFA6QHA mthD5TJ4ULPJND33NTEL36MFZR6LA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mls5JO6DIFBDNDJ7BQBN5GSPKOKYQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthBN46PMVUBFADVFFMPLGSSR7ZRM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="clcKSO5V2NYCBG5ZHN7OVM6K77PY4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>).execute();
+
+    if (selectedItem != null) {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A wdgKNXVCMOSIZDXJOWLO5M3O5XVAE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setCurrentItem(selectedItem);
+    }
+
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A admJQK3OCMG4ZF6RDBYAN2UISDK4A mthH75KVXAJ3RES7N6WKNNZ63P57M" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+} finally {
+    handle.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aic4WFQODRGC5ARVIB7KGSPFA6QHA mthLFENE4FE65GLZE7HCKQ5SQTC34" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+}
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthP623JGF6BBFA7BJAJWUTEY5IYQ" Name="addRadixObject" Nature="0" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="parent" Id="mprYORVNVTHZVDEFCIO3RNHJ7DKL4">
+              <Type TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+            </Parameter>
+            <Parameter Name="radixObject" Id="mprIKO74A5ZUVEPFMV27HN252ABCY">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.defs.RadixObject"/>
+            </Parameter>
+          </Parameters>
+          <ReturnType TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>final QTreeWidgetItem item;
+
+if(parent == null) {
+    item = new QTreeWidgetItem(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A wdgKNXVCMOSIZDXJOWLO5M3O5XVAE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, (QTreeWidgetItem)null);   //insert as first root
+} else {
+    item = new QTreeWidgetItem(parent, (QTreeWidgetItem)null);       //insert as first child
+}
+
+String title = null;
+if (radixObject instanceof Layer){
+    title = ((Layer)radixObject).getTitle();
+}else if (radixObject instanceof AdsTitledDefinition) {
+    final AdsTitledDefinition titledDef = (AdsTitledDefinition)radixObject;
+    title = titledDef.getTitle(getEnvironment().getLanguage());
+}
+if (title==null || title.isEmpty())
+    title = radixObject.getName();
+
+item.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthUN4636AGPNAPPLWJLBVY2O2EBA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(0, title);
+//item.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthJOOM4H55GNHRJKSOD3MRWUQL2M" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(0, Qt.ItemDataRole.ToolTipRole, radixObject.getToolTip());
+//item.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthJOOM4H55GNHRJKSOD3MRWUQL2M" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(0, Qt.ItemDataRole.UserRole, radixObject);
+item.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthX5GNWR7SOJAJDH2UTXHKEMPMMQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(true);
+
+final String resourceUri = radixObject.getIcon().getResourceUri();
+QIcon icon = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthOORBDFLM2BCCPAVWE72KPYEEFM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(resourceUri);
+item.setIcon(0, icon);
+
+return item;
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthSHLENWUILFAWFKTK3TKBNVXN3I" Name="close" Nature="0" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="accept" Id="mpr6HG5TJCFHBCZ5AYW2PXL2FMUIM">
+              <Type TypeId="401" extStr="boolean"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if (accept) {
+    final QTreeWidgetItem current = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A wdgKNXVCMOSIZDXJOWLO5M3O5XVAE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.currentItem();
+    if (current != null &amp;&amp; !current.isHidden()) {
+        final Object obj = current.data(0, Qt.ItemDataRole.UserRole);
+        if (obj instanceof </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcCFM24KCJCNE4RE3FNXNFWR5NJU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+            final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcCFM24KCJCNE4RE3FNXNFWR5NJU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> reportPresentationDef = (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcCFM24KCJCNE4RE3FNXNFWR5NJU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) obj;
+            this.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A admJQK3OCMG4ZF6RDBYAN2UISDK4A prp4S2YH454GBHZDF4BCHG3QNLDEE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = reportPresentationDef.getId();
+            this.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A admJQK3OCMG4ZF6RDBYAN2UISDK4A prpJPDWJ2B4GFEVDBUMQZZKWNUCQE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = current.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthGD5G2BPFSJHWFORBGS2FBQY7F4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(0);
+            String fullName = reportPresentationDef.Name;
+            QTreeWidgetItem parent = current.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthOEZT776TTBELNNYPQPLU3VPFFY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+            while (parent != null) {
+                fullName = parent.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthGD5G2BPFSJHWFORBGS2FBQY7F4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(0) + "::" + fullName;
+                parent = parent.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthOEZT776TTBELNNYPQPLU3VPFFY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+            }
+            this.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A admJQK3OCMG4ZF6RDBYAN2UISDK4A prdEWLQAFQUYREQBCP7OQR7B7ZS7A" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = fullName;
+            this.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mthKFPFBBN2DBA73E6LCUFCLDLB6Q" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().acceptDialog();
+        } else if (obj instanceof </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+            this.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A admJQK3OCMG4ZF6RDBYAN2UISDK4A prp4S2YH454GBHZDF4BCHG3QNLDEE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) obj;
+            this.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A admJQK3OCMG4ZF6RDBYAN2UISDK4A prpJPDWJ2B4GFEVDBUMQZZKWNUCQE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = current.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthGD5G2BPFSJHWFORBGS2FBQY7F4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(0);
+            String fullName = current.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthGD5G2BPFSJHWFORBGS2FBQY7F4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(0);
+            QTreeWidgetItem parent = current.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthOEZT776TTBELNNYPQPLU3VPFFY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+            while (parent != null) {
+                fullName = parent.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthGD5G2BPFSJHWFORBGS2FBQY7F4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(0) + "::" + fullName;
+                parent = parent.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthOEZT776TTBELNNYPQPLU3VPFFY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+            }
+            this.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A admJQK3OCMG4ZF6RDBYAN2UISDK4A prdEWLQAFQUYREQBCP7OQR7B7ZS7A" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = fullName;
+            this.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mthKFPFBBN2DBA73E6LCUFCLDLB6Q" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().acceptDialog();
+        }
+    }
+} else {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mthKFPFBBN2DBA73E6LCUFCLDLB6Q" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().rejectDialog();
+}
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth6EYB6AOC3RAOFLK4XXZCHIFVMQ" Name="addReportPresentationDef" Nature="0" Environment="explorer" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="parent" Id="mprRPI7DNA35VBK7KPHZWMPW4TDUU">
+              <Type TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+            </Parameter>
+            <Parameter Name="reportPresentationDef" Id="mpr4XEHB5XZWZDB7JCBSI3RIBUZXA">
+              <Type TypeId="411" Path="adcCFM24KCJCNE4RE3FNXNFWR5NJU"/>
+            </Parameter>
+          </Parameters>
+          <ReturnType TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java><![CDATA[final QTreeWidgetItem item = new QTreeWidgetItem(parent, (QTreeWidgetItem) null);       //insert as first child
+
+String title = reportPresentationDef.Title;
+if (title == null || title.isEmpty()) {
+    title = reportPresentationDef.Name;
+}
+
+String tooltip = "<html><b>" + reportPresentationDef.Name + "</b>";
+final String description = reportPresentationDef.Description;
+if (description != null && !description.isEmpty()) {
+    tooltip += "<hr>" + description + "</html>";
+}
+
+item.]]></xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthUN4636AGPNAPPLWJLBVY2O2EBA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(0, title);
+item.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthJOOM4H55GNHRJKSOD3MRWUQL2M" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(0, Qt.ItemDataRole.ToolTipRole, tooltip);
+item.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthJOOM4H55GNHRJKSOD3MRWUQL2M" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(0, Qt.ItemDataRole.UserRole, reportPresentationDef);
+item.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthX5GNWR7SOJAJDH2UTXHKEMPMMQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(true);
+
+final String resourceUri = org.radixware.kernel.common.defs.ads.AdsDefinitionIcon.CLASS_REPORT.getResourceUri();
+QIcon icon = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthOORBDFLM2BCCPAVWE72KPYEEFM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(resourceUri);
+item.setIcon(0, icon);
+
+return item;
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthclcKSO5V2NYCBG5ZHN7OVM6K77PY4" Name="onCommand_ListUserReportsCmd" Nature="1" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="command" Id="mprQUORAVTOEFGQVLH2MPZNC2JOTY">
+              <Type TypeId="411" Path="clcKSO5V2NYCBG5ZHN7OVM6K77PY4"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>
+try {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="UserReportHeaderListRsDocument"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> xOut = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>command.send(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="UserReportHeaderListRs"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> xRs = xOut.UserReportHeaderListRs;
+    if (xRs != null &amp;&amp; xRs.ModuleList != null &amp;&amp; !xRs.ModuleList.isEmpty()) {
+        QTreeWidgetItem layerNode = null;
+        for (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="UserReportHeaderListRs"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Module xModule : xRs.ModuleList) {
+
+            QTreeWidgetItem moduleNode = null;
+            for (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="UserReportHeaderListRs"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Module.Report xReport : xModule.ReportList) {
+                final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> reportClassId = xReport.Id;
+                if (reportClassId == null) {
+                    continue;
+                }
+                if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A admJQK3OCMG4ZF6RDBYAN2UISDK4A prd3DYCTTNX6FARPPEZQ5MYAEK26M" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> != null) {
+                    if (xReport.SuperInterfaces == null || xReport.SuperInterfaces.isEmpty()) {
+                        continue;
+                    } else {
+                        if (!xReport.SuperInterfaces.contains(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A admJQK3OCMG4ZF6RDBYAN2UISDK4A prd3DYCTTNX6FARPPEZQ5MYAEK26M" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>)) {
+                            continue;
+                        }
+                    }
+                }
+
+                if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A admJQK3OCMG4ZF6RDBYAN2UISDK4A prdGMVKY6E7DJBJROIA3PBKLYSWDI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+                    final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> reportContextObjectClassId = xReport.ContextClassId;
+                    final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> contextObjectClassId = this.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A admJQK3OCMG4ZF6RDBYAN2UISDK4A prdSAAVM7VSONBNVBTSB6WSFM4LIU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>; // for debug
+                    if (contextObjectClassId != null &amp;&amp; reportContextObjectClassId != null) {
+                        if (contextObjectClassId != reportContextObjectClassId) {
+                            if (!</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcFFMRZLRJFRDNHIDYGFCTMWRJ4Y"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcFFMRZLRJFRDNHIDYGFCTMWRJ4Y mthTCPIBFN5C5EF3KBJ2BBLUCCMLA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(), reportContextObjectClassId, contextObjectClassId)) {
+                                if (!</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcFFMRZLRJFRDNHIDYGFCTMWRJ4Y"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcFFMRZLRJFRDNHIDYGFCTMWRJ4Y mthTCPIBFN5C5EF3KBJ2BBLUCCMLA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(), contextObjectClassId, reportContextObjectClassId)) { // TWRBS-1816
+                                    continue;
+                                }
+                            }
+                        }
+                    } else if (contextObjectClassId != null || reportContextObjectClassId != null) {
+                        // RADIX-4811: disable contextless reports in context and vice versa
+                        continue;
+                    }
+                }
+                if (moduleNode == null) {
+                    if (layerNode == null) {
+                        layerNode = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A admJQK3OCMG4ZF6RDBYAN2UISDK4A mthWQE67YYLBJEXBDHDGTWRFGMVTI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(null, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsRPU4TU4EPRDWTCFXGWF6OD4PZM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, null);
+                    }
+                    moduleNode = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A admJQK3OCMG4ZF6RDBYAN2UISDK4A mthWQE67YYLBJEXBDHDGTWRFGMVTI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(layerNode, xModule.Title, null);
+                }
+
+                </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A admJQK3OCMG4ZF6RDBYAN2UISDK4A mthWQE67YYLBJEXBDHDGTWRFGMVTI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(moduleNode, xReport.Title, reportClassId);
+            }
+        }
+    }
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>} catch (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> e) {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthDJZSTHREHVDTFB323J3RXPJYNY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(e);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>} catch (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="axcWSBFK4LYMVHTXL55MVC44THTGE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> e) {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthDJZSTHREHVDTFB323J3RXPJYNY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(e);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthWQE67YYLBJEXBDHDGTWRFGMVTI" Name="addUserReportNode" Nature="0" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="parent" Id="mprMBFZSEDOGBF7HFK56RYHQJKBIQ">
+              <Type TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+            </Parameter>
+            <Parameter Name="title" Id="mprSEIYFGBQ4FEINGEDR6JS5E7YAU">
+              <Type TypeId="21"/>
+            </Parameter>
+            <Parameter Name="id" Id="mprD4DXCVEMI5A6FNYYW7DZKWYIBU">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+            </Parameter>
+          </Parameters>
+          <ReturnType TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>final QTreeWidgetItem item;
+
+if (parent == null) {
+    item = new QTreeWidgetItem(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A wdgKNXVCMOSIZDXJOWLO5M3O5XVAE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, (QTreeWidgetItem) null);   //insert as first root
+} else {
+    item = new QTreeWidgetItem(parent, (QTreeWidgetItem) null);       //insert as first child
+}
+
+
+item.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthUN4636AGPNAPPLWJLBVY2O2EBA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(0, title);
+//TODO:!!item.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthJOOM4H55GNHRJKSOD3MRWUQL2M" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(0, Qt.ItemDataRole.ToolTipRole, radixObject.getToolTip());
+item.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthJOOM4H55GNHRJKSOD3MRWUQL2M" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(0, Qt.ItemDataRole.UserRole, id);
+item.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthX5GNWR7SOJAJDH2UTXHKEMPMMQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(true);
+
+final String resourceUri;
+if (parent == null) {
+    resourceUri = RadixObjectIcon.LAYER.getResourceUri();
+} else {
+    if (id == null) {
+        resourceUri = AdsDefinitionIcon.MODULE.getResourceUri();
+    } else {
+        resourceUri = AdsDefinitionIcon.CLASS_REPORT.getResourceUri();
+    }
+}
+QIcon icon = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthOORBDFLM2BCCPAVWE72KPYEEFM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(resourceUri);
+item.setIcon(0, icon);
+
+return item;
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth3ECLXO4ALJFNBBHK7ASUTOJDJA" Name="addTopic" Nature="0" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="parent" Id="mprYORVNVTHZVDEFCIO3RNHJ7DKL4">
+              <Type TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+            </Parameter>
+            <Parameter Name="title" Id="mprIKO74A5ZUVEPFMV27HN252ABCY">
+              <Type TypeId="21"/>
+            </Parameter>
+            <Parameter Name="iconId" Id="mprZW2NFU7MNNFANN7223CHO5VITQ">
+              <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </Parameter>
+          </Parameters>
+          <ReturnType TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>final QTreeWidgetItem item;
+
+if (parent == null) {
+    item = new QTreeWidgetItem(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJQK3OCMG4ZF6RDBYAN2UISDK4A wdgKNXVCMOSIZDXJOWLO5M3O5XVAE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, (QTreeWidgetItem) null);   //insert as first root
+} else {
+    item = new QTreeWidgetItem(parent, (QTreeWidgetItem) null);       //insert as first child
+}
+
+item.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthUN4636AGPNAPPLWJLBVY2O2EBA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(0, title);
+//item.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthJOOM4H55GNHRJKSOD3MRWUQL2M" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(0, Qt.ItemDataRole.ToolTipRole, radixObject.getToolTip());
+//item.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthJOOM4H55GNHRJKSOD3MRWUQL2M" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(0, Qt.ItemDataRole.UserRole, radixObject);
+item.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthX5GNWR7SOJAJDH2UTXHKEMPMMQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(true);
+
+if (iconId != null) {
+
+    com.trolltech.qt.gui.QIcon icon = (com.trolltech.qt.gui.QIcon) </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthRFQCEXJDNJDINHW32QFZAVEBV4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc53GYAPZQEBEQLNPUG64TNAO5F4 mthZIKIJPZTQFHYXCEWHV6RNLN4CQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(iconId);
+    item.setIcon(0, icon);
+}
+return item;
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+      </Methods>
+    </EmbeddedModel>
+  </AdsCustomDialogDefinition>
+</AdsDefinition>

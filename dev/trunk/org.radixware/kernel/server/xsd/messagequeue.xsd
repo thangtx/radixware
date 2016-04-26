@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<xs:schema version="1.0"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           xmlns:mq="http://schemas.radixware.org/messagequeue.xsd"
+           xmlns:t="http://schemas.radixware.org/types.xsd"
+           targetNamespace="http://schemas.radixware.org/messagequeue.xsd">
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:complexType name="MqMessageMeta">
+        <xs:sequence>
+            <xs:element name="DebugKey" type="t:Str" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="QueueName" type="t:Str" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Encoding" type="t:Str" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="MessageId" type="t:Str" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="TimeToLiveSec" type="t:Int" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Priority" type="t:Int" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Properties" type="t:MapStrStr" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="JmsSpecific">
+                <xs:complexType>
+                    <xs:sequence>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="KafkaSpecific">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Partition" type="t:Int" minOccurs="1" maxOccurs="1"/>
+                        <xs:element name="Offset" type="t:Int" minOccurs="1" maxOccurs="1"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="AmqpSpecific">
+                <xs:complexType>
+                    <xs:sequence>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="MqMessageBody">
+        <xs:sequence>
+            <xs:element name="StrBody" type="t:Str" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ByteBody" type="t:BinBase64" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="MqMessage">
+        <xs:sequence>
+            <xs:element name="Meta" type="mq:MqMessageMeta" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Body" type="mq:MqMessageBody" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="MqProcessRq">
+        <xs:sequence>
+            <xs:element name="Message" type="mq:MqMessage" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="MqProcessRs">
+    </xs:complexType>
+    <xs:complexType name="MqInvokeRq">
+        <xs:sequence>
+            <xs:element name="PostMessage" type="mq:MqMessage" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="MqInvokeRs">
+    </xs:complexType>
+    <xs:complexType name="MqInvoke">
+        <xs:choice>
+            <xs:element name="MqInvokeRq" type="mq:MqInvokeRq"/>
+            <xs:element name="MqInvokeRs" type="mq:MqInvokeRs"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:element name="MqProcessRq" type="mq:MqProcessRq"/>
+    <xs:element name="MqProcessRs" type="mq:MqProcessRs"/>
+</xs:schema>

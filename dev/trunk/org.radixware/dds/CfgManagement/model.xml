@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Model xmlns="http://schemas.radixware.org/ddsdef.xsd" xmlns:com="http://schemas.radixware.org/commondef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" Id="prjMYJ6VIFA3BCMLFDDCZH36MAYBM" DbNamePrefix="RDX_CM">
+  <Tables>
+    <Table Id="tblWMN3P5J5ONCFPLJVGBFAKZXZXU" Name="Packet" DbName="RDX_CM_PACKET" UserExtMask="65536">
+      <Columns>
+        <Column Id="colDZOPCTNIURBCBPLCP75JMZCFYM" Name="id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID" SequenceId="sqnUFUQBGFKCREMRNFAA26TUULPGE"/>
+        <Column Id="colKE4YQ3Y2LNEDBGUI6I3B4TBM7E" Name="classGuid" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="true" DbName="CLASSGUID"/>
+        <Column Id="colT6AXXF6DBVAQDFOGFG4QARZYJU" Name="title" ValType="21" Length="200" DbType="VARCHAR2(200 char)" NotNull="false" DbName="TITLE"/>
+        <Column Id="colCQOZYZGSGZBLNNG6KX255SLN5Q" Name="notes" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="NOTES"/>
+        <Column Id="colAJ6PVNFK3FBIVPACM2HG6NHSMU" Name="srcDbUrl" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="SRCDBURL"/>
+        <Column Id="colCY7ILVPBW5FCRBUUHJPC7LRBJY" Name="srcPacketId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="SRCPACKETID"/>
+        <Column Id="colNLZ5BGYZ7BGVRCQYC6WJWZIBM4" Name="srcAppVer" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="SRCAPPVER"/>
+        <Column Id="col6GQBFOYQYFCABDAMANXVXFGU3Q" Name="srcExpUser" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="false" DbName="SRCEXPUSER"/>
+        <Column Id="colLQHEBRDALNHZHNCQB76A3BEP6U" Name="srcExpTime" ValType="12" Length="0" DbType="DATE" NotNull="false" DbName="SRCEXPTIME"/>
+        <Column Id="colMCRBKZP4GNADJJLP2J7ITEGELY" Name="lastModifyTime" ValType="12" Length="0" DbType="DATE" NotNull="true" DbName="LASTMODIFYTIME"/>
+        <Column Id="col4ESP7TDW4JGG7FZ4PMVZ4IUO74" Name="lastModifyUser" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="true" DbName="LASTMODIFYUSER"/>
+        <Column Id="colEF5WPJPV7JBATHO6TXOMAGWJEI" Name="acceptTime" ValType="12" Length="0" DbType="DATE" NotNull="false" DbName="ACCEPTTIME"/>
+        <Column Id="colLMJ5EPIAOVAPHJFUNG2BTNME6A" Name="acceptUser" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="false" DbName="ACCEPTUSER"/>
+      </Columns>
+      <PrimaryKey Id="idx3CSJO5DQY5GWVGODOJXDQ2XSMA" Name="PrimaryKey" DbName="PK_RDX_CM_PACKET" Unique="true">
+        <Columns>
+          <Column ColumnId="colDZOPCTNIURBCBPLCP75JMZCFYM" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqSCSGDHN25ZGZZPMEYOVC7NJXVY" DbName="PK_RDX_CM_PACKET" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="795" PosY="240"/>
+    </Table>
+    <Table Id="tblJ4WZRLJ23BGMBKQ2JBSOBEGBP4" Name="Item" DbName="RDX_CM_ITEM" UserExtMask="65568">
+      <Columns>
+        <Column Id="colIUQVQZZKPFBRLG7DTABUYGLYBQ" Name="id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID" SequenceId="sqnAHQ7HLPRCZF6XJRUXNI4G655ZU"/>
+        <Column Id="colJQK7LYSZW5FS7NYEXFUKCIR4O4" Name="classGuid" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="true" DbName="CLASSGUID"/>
+        <Column Id="colTUL7C3425VCCNC5ELKDFZBWJOY" Name="packetId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="PACKETID"/>
+        <Column Id="colJ5L5OI3X4BHYBPJFGAWUO4MKZM" Name="parentId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="PARENTID"/>
+        <Column Id="col3DNFCTYB3ZDJZCRY4OGG7I66YA" Name="srcObjectPid" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="SRCOBJECTPID"/>
+        <Column Id="colHQUFLZVQBNDCHMCVIG7RQM7NDQ" Name="srcObjectRid" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="SRCOBJECTRID"/>
+        <Column Id="colHUYIZ7QPTBE7FAGC4FA76QNHPY" Name="srcObjectTitle" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="SRCOBJECTTITLE"/>
+        <Column Id="colJGXEDVUL4JA5JAKSJCAVSU2BSU" Name="skip" ValType="1" Length="1" DbType="NUMBER(1,0)" NotNull="true" DbName="SKIP">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>0</com:Value>
+          </DefaultVal>
+        </Column>
+        <Column Id="colOY3R4QKX2NEEHMDIS6QV4FMDQE" Name="objState" ValType="21" Length="20" DbType="VARCHAR2(20 char)" NotNull="false" DbName="OBJSTATE"/>
+        <Column Id="colW3X3MBNTEBADJKAZZQ4QEOMSKY" Name="allRefsState" ValType="21" Length="20" DbType="VARCHAR2(20 char)" NotNull="false" DbName="ALLREFSSTATE"/>
+        <Column Id="colJHVNNS3BSZCDHPM5MZET64JSGU" Name="data" ValType="27" Length="0" DbType="CLOB" NotNull="false" DbName="DATA"/>
+        <Column Id="colKLNALIUEZJGQHKSQ22KH6YAQAI" Name="notes" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="NOTES"/>
+      </Columns>
+      <PrimaryKey Id="idx62G6IIOXTVHIRG7FVPW446UKHE" Name="PrimaryKey" DbName="PK_RDX_CM_ITEM" Unique="true">
+        <Columns>
+          <Column ColumnId="colIUQVQZZKPFBRLG7DTABUYGLYBQ" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqSZVRJW3455C4RACPXPO26I3C7I" DbName="PK_RDX_CM_ITEM" Rely="true"/>
+      </PrimaryKey>
+      <Indices>
+        <Index Id="idxDIUU2QVCEFEF5NFMTRYUDHDZJU" Name="Packet" DbName="IDX_RDX_CM_ITEM_PACKET">
+          <Columns>
+            <Column ColumnId="colTUL7C3425VCCNC5ELKDFZBWJOY" Order="Asc"/>
+            <Column ColumnId="colIUQVQZZKPFBRLG7DTABUYGLYBQ" Order="Asc"/>
+          </Columns>
+        </Index>
+        <Index Id="idxAK2IO5ZB6RG4XBZOAR5BPB5L24" Name="Parent" DbName="IDX_RDX_CM_ITEM_PARENT">
+          <Columns>
+            <Column ColumnId="colJ5L5OI3X4BHYBPJFGAWUO4MKZM" Order="Asc"/>
+            <Column ColumnId="colIUQVQZZKPFBRLG7DTABUYGLYBQ" Order="Asc"/>
+          </Columns>
+        </Index>
+        <Index Id="idx6RREDSOIUBDNNNAJLQYA4ZS5HE" Name="Src" DbName="IDX_RDX_CM_ITEM_SRC">
+          <Columns>
+            <Column ColumnId="colTUL7C3425VCCNC5ELKDFZBWJOY" Order="Asc"/>
+            <Column ColumnId="colJQK7LYSZW5FS7NYEXFUKCIR4O4" Order="Asc"/>
+            <Column ColumnId="col3DNFCTYB3ZDJZCRY4OGG7I66YA" Order="Asc"/>
+          </Columns>
+        </Index>
+      </Indices>
+      <Triggers>
+        <Trigger Id="trgF6DNUTKICZBXPCYQ3APRV33LPM" Name="UserPropOwn" DbName="UPO_J4WZRLJ23BGMBKQ2JBSOBEGBP4" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+   RDX_ENTITY.UserPropOnDelOwner('tblJ4WZRLJ23BGMBKQ2JBSOBEGBP4', :old.ID);
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+      </Triggers>
+      <Placement PosX="608" PosY="381"/>
+    </Table>
+    <Table Id="tblXWLPEIJAGRAXJG7SHDM4DH4X6I" Name="ItemRef" DbName="RDX_CM_ITEMREF" UserExtMask="65572">
+      <Columns>
+        <Column Id="colV5EZXMQFDFDBLO7M53XCUCWJ4A" Name="upDefId" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="UPDEFID"/>
+        <Column Id="colTHM4RNL4JNBMZMT33HAY33ZU5U" Name="upOwnerEntityId" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="UPOWNERENTITYID"/>
+        <Column Id="colGNVHWA56DJBFXOLL7VL7I4THUY" Name="upOwnerPid" ValType="21" Length="200" DbType="VARCHAR2(200 char)" NotNull="true" DbName="UPOWNERPID"/>
+        <Column Id="colYHOK2V3JZNGZVDAU2FSYF5VEBM" Name="classGuid" ValType="21" Length="29" DbType="VARCHAR2(29 char)" NotNull="true" DbName="CLASSGUID"/>
+        <Column Id="colZIH6VRMCKRGOPLH3PC6KFWCQDE" Name="isNilable" ValType="1" Length="1" DbType="NUMBER(1,0)" NotNull="true" DbName="ISNILABLE">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>0</com:Value>
+          </DefaultVal>
+        </Column>
+        <Column Id="colIVUOAZCZTBFLBIGCFCP7XUTUWY" Name="isInheritable" ValType="1" Length="1" DbType="NUMBER(1,0)" NotNull="true" DbName="ISINHERITABLE">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>0</com:Value>
+          </DefaultVal>
+        </Column>
+        <Column Id="colMBDYSK4BYVCBHNDH537HYAYXRM" Name="extClassGuid" ValType="21" Length="29" DbType="VARCHAR2(29 char)" NotNull="false" DbName="EXTCLASSGUID"/>
+        <Column Id="colUAKFIHEYFFDSLFY4FFSYQN747Y" Name="intClassGuid" ValType="21" Length="29" DbType="VARCHAR2(29 char)" NotNull="false" DbName="INTCLASSGUID"/>
+        <Column Id="colKOXIJGBJTJGYJAAVR2ASCGVMDI" Name="srcPid" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="SRCPID"/>
+        <Column Id="colNKM5TQLE5RHEZFGFLZYM7HRH3A" Name="srcInherited" ValType="1" Length="1" DbType="NUMBER(1,0)" NotNull="true" DbName="SRCINHERITED">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>0</com:Value>
+          </DefaultVal>
+        </Column>
+        <Column Id="colOBNSAADYD5CKFFOIDSKQI7TGLQ" Name="type" ValType="21" Length="20" DbType="VARCHAR2(20 char)" NotNull="false" DbName="TYPE"/>
+        <Column Id="colAP5NJI3EIRE6PEUIUEQF5SLZZI" Name="intRef" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="INTREF"/>
+        <Column Id="colBISYSN4WJ5AKXBKVP34WGF5EE4" Name="extRef" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="EXTREF"/>
+        <Column Id="colBIPNKBLZUVATBPJTKZWEHGDGZE" Name="state" ValType="21" Length="20" DbType="VARCHAR2(20 char)" NotNull="false" DbName="STATE"/>
+      </Columns>
+      <PrimaryKey Id="idxXWLPEIJAGRAXJG7SHDM4DH4X6I" Name="PrimaryKey" DbName="PK_RDX_CM_ITEMREF" Unique="true">
+        <Columns>
+          <Column ColumnId="colV5EZXMQFDFDBLO7M53XCUCWJ4A" Order="Asc"/>
+          <Column ColumnId="colTHM4RNL4JNBMZMT33HAY33ZU5U" Order="Asc"/>
+          <Column ColumnId="colGNVHWA56DJBFXOLL7VL7I4THUY" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqXWLPEIJAGRAXJG7SHDM4DH4X6I" DbName="PK_RDX_CM_ITEMREF" Rely="true"/>
+      </PrimaryKey>
+      <Triggers>
+        <Trigger Id="trgSOGG3KVXIVGXHHH3OZ5TAF57A4" Name="UserPropOwnSched" DbName="UPS_XWLPEIJAGRAXJG7SHDM4DH4X6I" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+   RDX_ENTITY.ScheduleUserPropOnDelOwner('tblXWLPEIJAGRAXJG7SHDM4DH4X6I', RDX_ENTITY.PackPIDStr(:old.UPDEFID)||'~'||RDX_ENTITY.PackPIDStr(:old.UPOWNERENTITYID)||'~'||RDX_ENTITY.PackPIDStr(:old.UPOWNERPID));
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+        <Trigger Id="trg33PH2V53QRFULAB5X3CFNT7SE4" Name="UserPropOwnFlush" DbName="UPF_XWLPEIJAGRAXJG7SHDM4DH4X6I" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1" ForEachRow="false">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+   RDX_ENTITY.flushUserPropOnDelOwner('tblXWLPEIJAGRAXJG7SHDM4DH4X6I');
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+      </Triggers>
+      <Placement PosX="340" PosY="399"/>
+    </Table>
+  </Tables>
+  <ExtTables>
+    <ExtTable Id="tbeSUFWESEHL5GKLDPOCKL2X5ZEY4" TableId="tblZVJUSFASRDNBDCBEABIFNQAABA">
+      <Placement PosX="189" PosY="464"/>
+    </ExtTable>
+  </ExtTables>
+  <References>
+    <Reference Id="refF34ZWBF4TBBCHIUDOFBRI67OVY" DbName="FK_RDX_CM_ITEM_PACKET" Type="LINK" ChildTableId="tblJ4WZRLJ23BGMBKQ2JBSOBEGBP4" ParentTableId="tblWMN3P5J5ONCFPLJVGBFAKZXZXU" ConfirmDelete="false" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqSCSGDHN25ZGZZPMEYOVC7NJXVY">
+      <Columns>
+        <Item ChildColumnId="colTUL7C3425VCCNC5ELKDFZBWJOY" ParentColumnId="colDZOPCTNIURBCBPLCP75JMZCFYM"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refSAINKHTF3ZBCZGDGBCAMV4P76E" DbName="FK_RDX_CM_ITEM_ITEM" Type="LINK" ChildTableId="tblJ4WZRLJ23BGMBKQ2JBSOBEGBP4" ParentTableId="tblJ4WZRLJ23BGMBKQ2JBSOBEGBP4" ConfirmDelete="false" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqSZVRJW3455C4RACPXPO26I3C7I">
+      <Columns>
+        <Item ChildColumnId="colJ5L5OI3X4BHYBPJFGAWUO4MKZM" ParentColumnId="colIUQVQZZKPFBRLG7DTABUYGLYBQ"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refBTXNQ3WNBRH65CF3ZPZBGEO56Q" DbName="FK_RDX_CM_ITEMREF_ITEM" Rely="true" Disable="true" Novalidate="true" Type="LINK" ChildTableId="tblXWLPEIJAGRAXJG7SHDM4DH4X6I" ParentTableId="tblJ4WZRLJ23BGMBKQ2JBSOBEGBP4" ConfirmDelete="false" DeleteMode="NONE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqSZVRJW3455C4RACPXPO26I3C7I">
+      <Columns>
+        <Item ChildColumnId="colAP5NJI3EIRE6PEUIUEQF5SLZZI" ParentColumnId="colIUQVQZZKPFBRLG7DTABUYGLYBQ"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refCJQCEOCYFVHAFCQ2B3E6V3F4BM" DbName="FK_RDX_CM_ITEMREF_UPVALREF" Type="LINK" ChildTableId="tblXWLPEIJAGRAXJG7SHDM4DH4X6I" ParentTableId="tblZVJUSFASRDNBDCBEABIFNQAABA" ExtParentTableId="tbeSUFWESEHL5GKLDPOCKL2X5ZEY4" ConfirmDelete="false" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqZVJUSFASRDNBDCBEABIFNQAABA">
+      <Columns>
+        <Item ChildColumnId="colV5EZXMQFDFDBLO7M53XCUCWJ4A" ParentColumnId="col2BJUSFASRDNBDCBEABIFNQAABA"/>
+        <Item ChildColumnId="colTHM4RNL4JNBMZMT33HAY33ZU5U" ParentColumnId="col2FJUSFASRDNBDCBEABIFNQAABA"/>
+        <Item ChildColumnId="colGNVHWA56DJBFXOLL7VL7I4THUY" ParentColumnId="col2JJUSFASRDNBDCBEABIFNQAABA"/>
+      </Columns>
+    </Reference>
+  </References>
+  <Sequences>
+    <Sequence Id="sqnUFUQBGFKCREMRNFAA26TUULPGE" Name="PacketId" DbName="SQN_RDX_CM_PACKETID" StartWith="1" IncrementBy="1" Cycle="false" MinValue="1" Order="true" Cache="20">
+      <Placement PosX="921" PosY="246"/>
+    </Sequence>
+    <Sequence Id="sqnAHQ7HLPRCZF6XJRUXNI4G655ZU" Name="ItemId" DbName="SQN_RDX_CM_ITEMID" StartWith="1" IncrementBy="1" Cycle="false" MinValue="1" Order="true" Cache="20">
+      <Placement PosX="525" PosY="384"/>
+    </Sequence>
+  </Sequences>
+</Model>

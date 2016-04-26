@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicCCRFXRRQRBG2NJNLMNDQTKDY6Y" Name="UploadCompleteListener" Type="5" Environment="web">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.wps.rwt.uploading.FileUploader.UploadCompleteListener"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderaicCCRFXRRQRBG2NJNLMNDQTKDY6Y"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaicCCRFXRRQRBG2NJNLMNDQTKDY6Y"/>
+    </Bodies>
+    <MethodGroup Id="cmg6HSLVBVIBVFFXADRYZTADOURKY" Name="Root"/>
+    <PropertyGroup Id="cpgHMMRXGOW4BEZBLAMSCYLI2KDCM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthAWSRSZ5DDFGDLASZYSF26M6AOA" Name="afterUploadingComplete" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="afterUploadingComplete(Ljava.lang.String;JLorg.radixware.wps.rwt.uploading.IUploadedDataReader;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="fileName" Id="mprCWXBK2I5HJHZTO3RA3YS3ZFVT4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="fileSize" Id="mpr4Z27USSYWVFOJIGLV6HTGIYHBA">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="reader" Id="mprTS22XDFI7ZF5FJKCY3EG43UARE">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.uploading.IUploadedDataReader"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

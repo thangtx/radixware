@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcGTLFYYO3E5ENDGCLXSUUSR6MWA" Name="HttpFormatter" Type="3" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.utils.HttpFormatter"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcX4WVUDDFFRFDXGMP7UO7HLIYCY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcD77GSQBWJNE27HMCAP2NDZYGKI"/>
+    </Bodies>
+    <MethodGroup Id="cmgD6UX2VJUTFG3HL4HIERYQSXAUE" Name="Root"/>
+    <PropertyGroup Id="cpgR2EFPPI3QRBIBPDXW3L3AXTQG4" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthKFE4E25HVZBE5HR3J64TEGSXRM" Name="HttpFormatter" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthP7ZTDH2S65EV7EZAXKSMKX2RTQ" Name="readHeader" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="readHeader(Ljava.io.InputStream;Ljava.util.Map&lt;Ljava.lang.String;Ljava.lang.String;>;)I"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="in" Id="mpr6BBRF5TP2REB3FKJQBJRW3R2B4">
+            <Type TypeId="400" extStr="java.io.InputStream"/>
+          </Parameter>
+          <Parameter Name="headerAttrs" Id="mpr6SKSKOBZ3FAO3EZ4ZNGZ5VO2XQ">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.io.IOException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth4VQJK5K6GJFNNB5X2BWYLLYC6U" Name="getKeepConnectionAlive" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getKeepConnectionAlive(Ljava.util.Map&lt;Ljava.lang.String;Ljava.lang.String;>;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="headerAttrs" Id="mpr4WXJL4PCGNAYPI6Z6W5XN7ECJY">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthOWFPF5K7HRGB3GDMTX26KHLSEU" Name="readMessage" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="readMessage(Ljava.io.InputStream;Ljava.util.Map&lt;Ljava.lang.String;Ljava.lang.String;>;)[B"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="in" Id="mprGBQJET5PFVE77AA7V25LTYATKU">
+            <Type TypeId="400" extStr="java.io.InputStream"/>
+          </Parameter>
+          <Parameter Name="headerAttrs" Id="mpr7KQ27QQZ65HDBPFPK7WFSEXKLA">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="byte" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.io.IOException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthXNW2M3CLQREDPMXJQ6BBJUXODM" Name="readHeader" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="readHeader(Ljava.io.InputStream;Ljava.util.Map&lt;Ljava.lang.String;Ljava.lang.String;>;Ljava.util.List&lt;Ljava.lang.String;>;Lorg.radixware.kernel.common.trace.LocalTracer;)I"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="in" Id="mprVJG27DFQNFG67MOBU5V5JV4R7Q">
+            <Type TypeId="400" extStr="java.io.InputStream"/>
+          </Parameter>
+          <Parameter Name="headerAttrs" Id="mpr76MR3UD35BCLJIQERKWO5PM7FU">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="statusLineItems" Id="mprOGPMX3PBWRAGZIMEOELOM5TVY4">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="tracer" Id="mprYF2X2TLPJRAP3LGAM7DMKVDUVY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.trace.LocalTracer"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.io.IOException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth6XVRFERTYRDRZKCQEHGVYNU4YM" Name="readMessage" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="readMessage(Ljava.io.InputStream;Ljava.util.Map&lt;Ljava.lang.String;Ljava.lang.String;>;Ljava.util.List&lt;Ljava.lang.String;>;Lorg.radixware.kernel.common.trace.LocalTracer;)[B"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="in" Id="mprAZX53UP4A5DTPIBK2TS3K2DAHA">
+            <Type TypeId="400" extStr="java.io.InputStream"/>
+          </Parameter>
+          <Parameter Name="headerAttrs" Id="mprRA6A6NEDHFBNDM5T6ADWZVRYLE">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="statusLineItems" Id="mpr7IGTS5CJARBBZOIBDSBCTPX6BI">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="tracer" Id="mprZQ4T7XH6SJH5NBICKRJ2BTLMAQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.trace.LocalTracer"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="byte" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.io.IOException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthCBRHYEAH7JDOXG2PPW4CK3TV7Y" Name="prepareRequestHeader" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="prepareRequestHeader(Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;ZLjava.util.Map&lt;Ljava.lang.String;Ljava.lang.String;>;ILjava.lang.String;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="method" Id="mprB2DOYD33MNCPTAUKHRG4NXYPPU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="path" Id="mprPNNIZHCWOVGABMTR6GOL4327KE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="host" Id="mprVE3JWBTBUJC25NC7HCEHHH6KWE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="keepConnect" Id="mprVQDGLGSLIVHXDOQ4ADBB4UTODY">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="headerAttrs" Id="mprGPXOXKPMGREAXPYXQIAXL5S46U">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="contentLen" Id="mprGZ33PWELDZFXBMEFZIUTTVRCJU">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="contentCharSet" Id="mprMN2VFQ7LGJGM5OCORJCJXTHEVI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthIQJ2ZDPTDBG6FMO5MDV5KZ2MV4" Name="prepareRequestHeader" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="prepareRequestHeader(Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;ZLjava.util.Map&lt;Ljava.lang.String;Ljava.lang.String;>;I)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="method" Id="mpr37RVXAL37VGBVPDUYKOB2IDMHA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="path" Id="mprUWD2W76UXBDHVN4NRIS2NWYSUQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="host" Id="mprT42DZ7PRXRFOVEF4V2MDGMCL6Q">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="keepConnect" Id="mpr325XTX7QFVBF5I2SS7ISHL57WM">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="headerAttrs" Id="mpr4QL2CI73KJGUHALH7ZBSKWYOKA">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="contentLen" Id="mprOQI36FE3OVFHRDTRUV36HZTYWU">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthM3IEJIN2JNASTONNXMMQ7VFMAE" Name="prepareResponseHeader" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="prepareResponseHeader(Ljava.lang.String;ZLjava.util.Map&lt;Ljava.lang.String;Ljava.lang.String;>;ILjava.lang.String;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="responseCodeStr" Id="mprYDZTNBV7AZHONOSPTEHL44DZKQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="keepConnect" Id="mpr2ER5LL6GAJEEBASWZ2T6P43BWU">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="headerAttrs" Id="mprW7VUXPKS3ZDJNFNJ7BIHDSEOMM">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="contentLen" Id="mprJL3WGU3QTZDQFGKGAT7NQSYW7M">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="contentCharSet" Id="mpr6G5DA7FGGZB3LFUQTDDJ7XBZS4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthWLCXQRRH7VHVBIR33NYYO2DGAE" Name="prepareResponseHeader" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="prepareResponseHeader(Ljava.lang.String;ZLjava.util.Map&lt;Ljava.lang.String;Ljava.lang.String;>;I)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="responseCodeStr" Id="mprKHLNWUIPWFFBXP2NQKQLXEDYGA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="keepConnect" Id="mprCOHAW5RBRJCBRB2V4MB4S4TDKY">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="headerAttrs" Id="mpr2YNQKYVVMFDVTFFC5H4SJF76AA">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="contentLen" Id="mprXEKRC4JZ6JHYVGQYTPLJSEFHLM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthOQZ7LFCOM5EVZJKRQ76JDW4YJQ" Name="prepareSoapFaultHeader" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="prepareSoapFaultHeader(Ljava.util.Map&lt;Ljava.lang.String;Ljava.lang.String;>;I)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="headerAttrs" Id="mprEJN44JI5AZDSDPWYUQQD4VTFRA">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="contentLen" Id="mprK3MWMOZG3JGPRKYTQXLTDAYTQE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthPL4YSBQHBVBEZJMEM7SGIWTTIM" Name="prepareSoapRequestHeader" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="prepareSoapRequestHeader(Ljava.lang.String;ZLjava.lang.String;Ljava.util.Map&lt;Ljava.lang.String;Ljava.lang.String;>;I)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="host" Id="mprLCU7LHTD3ZDIXFKOA6UJQEOSFA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="keepConnect" Id="mprQDPPYKWCJRCC7C7ZXYABGKO3R4">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="soapAction" Id="mpr7W3QWE57GRABZBWO22VA37HBKI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="headerAttrs" Id="mpr5FQ3XCZBPBCL5OKC4LGOIJ2E2E">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="contentLen" Id="mprI4RRKPJNWBCXNLH4AJD2TCEIAM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthBTRYAIUFURBLHOPIRPK454ELOE" Name="prepareSoapResponseHeader" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="prepareSoapResponseHeader(ZLjava.lang.String;Ljava.util.Map&lt;Ljava.lang.String;Ljava.lang.String;>;I)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="keepConnect" Id="mprSYXSYNS6ONFJPPJAMZKKECF4EY">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="soapAction" Id="mprV5743BZMCRGEPDT7NTAO23D2RE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="headerAttrs" Id="mpr2LCTSWBPHNEVVFA4Z33UVEH7RQ">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="contentLen" Id="mpr77DAJQNC5VFRNPQDAIOK6IPE34">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

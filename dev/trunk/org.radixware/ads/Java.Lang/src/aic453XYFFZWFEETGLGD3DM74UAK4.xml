@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aic453XYFFZWFEETGLGD3DM74UAK4" Name="Iterable" Type="5" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="java.lang.Iterable"/>
+    </AccessRules>
+    <TypeArguments>
+      <xsc:Argument DerivationRule="extends" Alias="T">
+        <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+      </xsc:Argument>
+    </TypeArguments>
+    <Headers>
+      <Src Name="HeaderadcRBYQFXPX2RA7XCCQG3HDUOBFYE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc7V2XR52NUNEEXJKS6OTDCWAR7Y"/>
+    </Bodies>
+    <MethodGroup Id="cmg5NEPRL4X6FCF3JF5PIGIA4P42E" Name="Root"/>
+    <PropertyGroup Id="cpg3W66OC6HF5AK7GGJZKLMF3HLJI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth2HN6KBMCUFDR7HZ3YMJ2TXAC5A" Name="iterator" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="iterator()Ljava.util.Iterator&lt;TT;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.Iterator">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="T" IsArgumentType="true"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

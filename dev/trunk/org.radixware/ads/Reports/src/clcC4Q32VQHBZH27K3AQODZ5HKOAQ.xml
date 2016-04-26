@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsContextlessCommandDefinition Id="clcC4Q32VQHBZH27K3AQODZ5HKOAQ" Name="GetReportPubTreeCmd" Nature="2" IsVisible="true" IsConfirmationRequired="true">
+    <InType TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="GetReportPubTreeRqDocument"/>
+    <OutType TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="GetReportPubTreeRpDocument"/>
+    <Source>
+      <xsc:Item>
+        <xsc:Java>final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="GetReportPubTreeRqDocument.GetReportPubTreeRq"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> xRequest = input.GetReportPubTreeRq;
+final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="GetReportPubTreeRpDocument"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> replyDoc = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="GetReportPubTreeRpDocument.Factory"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.newInstance();
+final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportPubTopic"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> xRootTopic = replyDoc.addNewGetReportPubTreeRp();
+if (xRequest.ForInheritance) {
+    </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M mth3YNHIP3HD5DERDDVXDIYPE6FNY" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(xRequest.PubListClassId, xRequest.Context, xRootTopic);
+} else {
+    </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M mthU2HIXEWPGZC4ZCHRHUJPO6KYTA" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(xRequest.PubListClassId, xRequest.Context, xRootTopic);
+}
+return replyDoc;
+</xsc:Java>
+      </xsc:Item>
+    </Source>
+  </AdsContextlessCommandDefinition>
+</AdsDefinition>

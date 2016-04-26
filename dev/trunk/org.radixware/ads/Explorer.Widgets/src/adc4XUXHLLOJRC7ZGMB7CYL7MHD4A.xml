@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc4XUXHLLOJRC7ZGMB7CYL7MHD4A" Name="PropEditor" Type="3" Environment="explorer">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.explorer.widgets.propeditors.PropEditor"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcPDGYAUVEA5DCTE7LBQBCKEYVQI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcYVW2OLGJ7NBJZI65WLRH3KCN7U"/>
+    </Bodies>
+    <MethodGroup Id="cmg25VNW77XVBB47CAHQDNB7YO4UE" Name="Root"/>
+    <PropertyGroup Id="cpgZSV6TBXVLBAAVGDTBMHUFC7ZVQ" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthFRETBYEQZZFFDI2VC2W5WFBCAM" Name="changeStateForGrid" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="changeStateForGrid()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthYCXTQR53YFCRRAWENQ445VU3VU" Name="getLayout" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getLayout()Lcom.trolltech.qt.gui.QHBoxLayout;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QHBoxLayout"/>
+      </Method>
+      <Method Id="mthOCG5YHYEVZDOBJZ5VGB5LMTCFE" Name="getValEditor" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getValEditor()Lorg.radixware.kernel.explorer.editors.valeditors.ValEditor;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.editors.valeditors.ValEditor"/>
+      </Method>
+      <Method Id="mth52WLBLY23RD4FIJCDIU3OYTLDM" Name="selectAll" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="selectAll()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthYYCPWSQ7H5AP7LZN4XK64PDEPA" Name="addButton" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="addButton(Ljava.lang.String;Lcom.trolltech.qt.gui.QAction;)Lcom.trolltech.qt.gui.QToolButton;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="text" Id="mprKT5U24PUJVC4LIBCMCJAQBHW2E">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="action" Id="mprDWUHFOWTZVA4BK5IMLTWH6EEM4">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QAction"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QToolButton"/>
+      </Method>
+      <Method Id="mth3JZ22RCRBZBVLO3ZCDUZTJME4A" Name="addButton" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="addButton(Lcom.trolltech.qt.gui.QToolButton;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="button" Id="mprSRKP7FFAWBCQVPPORUKXYQEH7M">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QToolButton"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth3XD7BS3WZNDNZLTDCHB6RS2QFA" Name="setPropertyProxy" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setPropertyProxy(Lorg.radixware.kernel.common.client.editors.property.PropertyProxy;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="proxy" Id="mprUBE6BZ2CCBBG5KO43KUZ4EBNUE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.editors.property.PropertyProxy"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthQQDROHZJKRFZDL6TAKZBZ66UDI" Name="PropEditor" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.models.items.properties.Property;Lorg.radixware.kernel.explorer.editors.valeditors.ValEditorFactory;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="property" Id="mprCDYNKKS3XBB4XJSSRNAYQCJLGY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
+          </Parameter>
+          <Parameter Name="valEditorFactory" Id="mprONWAURDNS5GHBA73UOSJKLLWEE">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.editors.valeditors.ValEditorFactory"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

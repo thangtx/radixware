@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcRECPYB24ARDXZNMT7TUWV53ZRI" Name="SortingDef" Type="3" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.meta.RadSortingDef"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcQYHEECUXUNH3VANA6VPGP2FRN4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcES47XSOPVNHJBJDMTWJPAZZ5FU"/>
+    </Bodies>
+    <MethodGroup Id="cmg7BZ7CIPAKZBIDA4MQTOTPG3SVA" Name="Root"/>
+    <PropertyGroup Id="cpgJOKEVHRGDJAZPANYEUVOXFTUNU" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthKH34OSPAHJGYDGIXKWR2AH6JFQ" Name="isValid" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isValid()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthZOR4LXK3MZEWHK645L6AYL7LWM" Name="getIcon" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getIcon()Lorg.radixware.kernel.common.client.types.Icon;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.types.Icon"/>
+      </Method>
+      <Method Id="mthWY42DNHUZJFZRALLP7IZOXKM6M" Name="getSortingColumns" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getSortingColumns()Ljava.util.List&lt;Lorg.radixware.kernel.common.client.meta.RadSortingDef.SortingItem;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.RadSortingDef.SortingItem"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthFWCPO2XU6RFHPIXJH6E5JZQNHA" Name="isUserDefined" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isUserDefined()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthX6BIZQFNONEGPGGZJJRLOEDAQA" Name="openEditor" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="openEditor(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.client.widgets.IWidget;Ljava.util.Collection&lt;Ljava.lang.String;>;Z)Lorg.radixware.kernel.common.client.views.IDialog.DialogResult;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprBCQVPYSYIBBVRIW452MZV53QUU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parent" Id="mprH4A5KAVQ3BHWXO7MCGVY6BKBSU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IWidget"/>
+          </Parameter>
+          <Parameter Name="restrictedNames" Id="mprM4NZT2PSPZGURP3RR6OSOT2UUY">
+            <Type TypeId="400" extStr="java.util.Collection">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="showApplyButton" Id="mprBWDYJL55BVAKFIPI7GVN7ZETD4">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.views.IDialog.DialogResult"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

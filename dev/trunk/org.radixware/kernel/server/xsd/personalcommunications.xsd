@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 sp2 U (http://www.altova.com) by pc (pc) -->
+<xs:schema xmlns:dpc="http://schemas.radixware.org/personalcommunications.xsd" 
+           xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           xmlns:t="http://schemas.radixware.org/types.xsd" 
+           targetNamespace="http://schemas.radixware.org/personalcommunications.xsd" 
+           elementFormDefault="qualified" 
+           attributeFormDefault="qualified">
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:complexType name="Attachment">
+        <xs:sequence>
+            <xs:element name="Data" type="t:BinBase64"/>
+        </xs:sequence>
+        <xs:attribute name="MimeType" type="t:Str" use="required"/>
+        <xs:attribute name="Seq" type="t:Int" use="required"/>
+        <xs:attribute name="Title" type="t:Str"/>
+    </xs:complexType>
+    <xs:complexType name="MessageType">
+        <xs:annotation>
+            <xs:documentation>Тип сообщения</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="AddressTo" type="t:Str" minOccurs="0"/>
+            <xs:element name="AddressFrom" type="t:Str" minOccurs="0"/>
+            <xs:element name="Subject" type="t:Str" minOccurs="0"/>
+            <xs:element name="Body" type="t:Str"/>
+            <xs:element name="SMPPEncoding" type="t:Str" minOccurs="0"/>
+            <xs:element name="Attachments" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Attachment" type="dpc:Attachment" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="Importance" type="t:Int"/>
+        <xs:attribute name="SentTime" type="t:DateTime"/>
+    </xs:complexType>
+    <xs:element name="Message" type="dpc:MessageType">
+        <xs:annotation>
+            <xs:documentation>Сообщение</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:complexType name="PushNotificationAddress">
+        <xs:sequence>
+            <xs:element name="ReceiverId" type="t:Str" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="IsGroup" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="AppName" type="t:Str" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="AdditionalReceivers" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="ReceiverId" type="t:Str" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="PushNotificationMessage">
+        <xs:sequence> 
+            <xs:element name="Title" type="t:Str" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Body" type="t:Str" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Icon" type="t:Str" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Tag" type="t:Str" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ClickAction" type="t:Str" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="TimeToLiveSec" type="t:Int" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Color" type="t:Str" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>In format #rrggbb</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="CollapseKey" type="t:Str" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Sound" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="DelayWhileIdle" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Data" type="t:MapStrStr" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="PushNotificationMessage" type="dpc:PushNotificationMessage"/>
+    <xs:element name="PushNotificationAddress" type="dpc:PushNotificationAddress"/>
+    <xs:complexType name="MessageStatistics">
+        <xs:annotation>
+            <xs:documentation>Статистика работы сообщения</xs:documentation>
+        </xs:annotation>
+        <xs:choice> 
+            <xs:element name="Fake">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="ChannelKind" type="t:Str" maxOccurs="1"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SMPP">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="StatSmppSizeInBytes" type="t:Int" minOccurs="1" maxOccurs="1"/>
+                        <xs:element name="StatSmppSizeInChars" type="t:Int" minOccurs="1" maxOccurs="1"/>
+                        <xs:element name="StatSmppPartCount" type="t:Int" minOccurs="1" maxOccurs="1"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice> 
+    </xs:complexType>
+    
+</xs:schema>

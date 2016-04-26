@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="afhAG4V3SEU2RGVHJNFQ4QUFYQJHI" Name="BaseCalcForm" TitleId="mlsVDGM4UFFE5D35OKFSQ2KF5OOHM" Type="19" SuppressedWarnings="1004">
+    <AccessRules IsPublished="false" IsAbstract="true"/>
+    <Headers>
+      <Src Name="HeaderadcFWQDBTJATVGTHKYVVCYIZG7YUA">
+        <xsc:Item>
+          <xsc:Java>import java.text.DateFormat;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcU6AVNLI65BFKPAQSY3SKDFOPGI">
+        <xsc:Item>
+          <xsc:Java>DateFormat dateFormat = new java.text.SimpleDateFormat("d MMM yyyy z");
+</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmg2LRVQBFTMJA73DOLOQMK5ZOCHI" Name="Root">
+      <Group Id="cmgQ52ONYU7SNAGRBEQ7EUMRAYWXY" Name="Methods" Members="mthTYWXJRLODNAT7LXOISEO5SFPZU mthRH2XJ43XKBFHZH6DRXVBJJXXBU mthIDO24PY4XJAJDNOQG7BE2CJK5I"/>
+    </MethodGroup>
+    <PropertyGroup Id="cpgX5MBKWX7SBD4PPNM3TWVUX7T3M" Name="Root">
+      <Group Id="cpgN72T74AIB5BWVLRBAMWUQBMWYM" Name="Props" Members="pfm3PDQXHHBCFEXTPVXQV25BLP32M pfmDVXILSH3SVGLFKCEQLBMSPYX2I pfmLNZYZWDAEVBWTMIMICUFRBGOSY"/>
+    </PropertyGroup>
+    <Properties>
+      <Property Id="pfm3PDQXHHBCFEXTPVXQV25BLP32M" Name="from" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="4" IsPublished="false"/>
+        <Type TypeId="12"/>
+        <Presentation TitleId="mlsIW3VDVQFSBG5PGPSHCGSWGMQUU" InheritanceMask="0">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="pfmDVXILSH3SVGLFKCEQLBMSPYX2I" Name="res" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="4" IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation InheritanceMask="0">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="pfmLNZYZWDAEVBWTMIMICUFRBGOSY" Name="to" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="4" IsPublished="false"/>
+        <Type TypeId="12"/>
+        <Presentation TitleId="mls2MJNM33AHVA5LBCHVDJF63EECU" InheritanceMask="0">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthRH2XJ43XKBFHZH6DRXVBJJXXBU" Name="BaseCalcForm" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules Access="4" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="prevForm" Id="mpr22KQRJOROZHO5FBYSYUQQE4XMU">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.FormHandler"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(prevForm);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthTYWXJRLODNAT7LXOISEO5SFPZU" Name="onSubmit" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="context" Id="mprLLHPCCUOFFCGTOUYKEOPVZJSLY">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.FormHandler.Context"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.types.FormHandler.NextDialogsRequest"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="afhAG4V3SEU2RGVHJNFQ4QUFYQJHI pfmDVXILSH3SVGLFKCEQLBMSPYX2I" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhAG4V3SEU2RGVHJNFQ4QUFYQJHI mthIDO24PY4XJAJDNOQG7BE2CJK5I" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(context.entity, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhAG4V3SEU2RGVHJNFQ4QUFYQJHI pfm3PDQXHHBCFEXTPVXQV25BLP32M" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhAG4V3SEU2RGVHJNFQ4QUFYQJHI pfmLNZYZWDAEVBWTMIMICUFRBGOSY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+
+return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLK6F6YWZHFHXFBOCHN7F3YTZPA mthWX4RH72LYZFKBHU3I76PFR6XPM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(null, this);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthIDO24PY4XJAJDNOQG7BE2CJK5I" Name="getResult" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsAbstract="true"/>
+        <Parameters>
+          <Parameter Name="entity" Id="mprGGCDVSXTLFALJMGC6Y4FCLLIYU">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
+          </Parameter>
+          <Parameter Name="from" Id="mprY6T44B5YLJAOROA3XWUIYGW2NQ">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="to" Id="mprNVWO3SYILVHAPJ4E5BGMZXTSXA">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+    </Methods>
+    <Presentations>
+      <Form InheritanceMask="0">
+        <Model Id="afmAG4V3SEU2RGVHJNFQ4QUFYQJHI" Name="BaseCalcForm:Model" Type="18">
+          <AccessRules IsPublished="false"/>
+          <Headers>
+            <Src Name="HeaderadcPXHIZSN37RGC5DTBQ66LILTJJ4"/>
+          </Headers>
+          <Bodies>
+            <Src Name="BodyadcU6WDQBKDZNARLDDP5Y65ZX3IL4"/>
+          </Bodies>
+          <MethodGroup Id="cmgZQUJAW5QPBD3XHSJPTJDWE6OA4" Name="Root">
+            <Group Id="cmgEEBLLFAJQNCKPBXOLLGFFDVA6A" Name="Methods" Members="mth7IFL2N2GE5HXLOO56OPAYV2A7E_opened mthJUOOE4P76ZEAJIITPAXNUN6VI4_clicked mthI7AMI62N4JHHLNBH2MNXZRVICQ mthXBCAAGA4RZFC7PR5PSLQD7PJ4U"/>
+          </MethodGroup>
+          <PropertyGroup Id="cpgDA7JNQS5ANGOVB3WKGENYQ6VKM" Name="Root">
+            <Group Id="cpgBRZ6Y5LH7JBV5LP4XRDO6JADYU" Name="Props" Members="pfm3PDQXHHBCFEXTPVXQV25BLP32M pfmLNZYZWDAEVBWTMIMICUFRBGOSY"/>
+          </PropertyGroup>
+          <Properties>
+            <Property Id="pfm3PDQXHHBCFEXTPVXQV25BLP32M" Name="from" Nature="8" IsConst="false" Environment="explorer" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules Access="2" IsPublished="false"/>
+              <Type TypeId="12"/>
+              <DependentItems/>
+              <SetterSources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhAG4V3SEU2RGVHJNFQ4QUFYQJHI afmAG4V3SEU2RGVHJNFQ4QUFYQJHI pfm3PDQXHHBCFEXTPVXQV25BLP32M" Invoke="true" extStr="#STD_PROP_VALUE#"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> = val;
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhAG4V3SEU2RGVHJNFQ4QUFYQJHI afmAG4V3SEU2RGVHJNFQ4QUFYQJHI mthXBCAAGA4RZFC7PR5PSLQD7PJ4U" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>();</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </SetterSources>
+            </Property>
+            <Property Id="pfmLNZYZWDAEVBWTMIMICUFRBGOSY" Name="to" Nature="8" IsConst="false" Environment="explorer" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules Access="2" IsPublished="false"/>
+              <Type TypeId="12"/>
+              <DependentItems/>
+              <SetterSources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhAG4V3SEU2RGVHJNFQ4QUFYQJHI afmAG4V3SEU2RGVHJNFQ4QUFYQJHI pfmLNZYZWDAEVBWTMIMICUFRBGOSY" Invoke="true" extStr="#STD_PROP_VALUE#"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> = val;
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhAG4V3SEU2RGVHJNFQ4QUFYQJHI afmAG4V3SEU2RGVHJNFQ4QUFYQJHI mthXBCAAGA4RZFC7PR5PSLQD7PJ4U" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>();</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </SetterSources>
+            </Property>
+          </Properties>
+          <Methods>
+            <Method Id="mth7IFL2N2GE5HXLOO56OPAYV2A7E_opened" Name="MainWindow_1_opened" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+              <AccessRules Access="4" IsPublished="false"/>
+              <Parameters>
+                <Parameter Name="arg1" Id="mprMIX25U7MBRAWVAUAX3VFN3B4JY">
+                  <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+                </Parameter>
+              </Parameters>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhAG4V3SEU2RGVHJNFQ4QUFYQJHI cfdAG4V3SEU2RGVHJNFQ4QUFYQJHI wdgNRDR3YOVR5DFNDWL3ACZTGJ6EE" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.setText(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhAG4V3SEU2RGVHJNFQ4QUFYQJHI afmAG4V3SEU2RGVHJNFQ4QUFYQJHI pfmDVXILSH3SVGLFKCEQLBMSPYX2I" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value);
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhAG4V3SEU2RGVHJNFQ4QUFYQJHI afmAG4V3SEU2RGVHJNFQ4QUFYQJHI mthXBCAAGA4RZFC7PR5PSLQD7PJ4U" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>();</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+            <Method Id="mthJUOOE4P76ZEAJIITPAXNUN6VI4_clicked" Name="pbCalc_clicked" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+              <AccessRules Access="4" IsPublished="false"/>
+              <Parameters>
+                <Parameter Name="arg1" Id="mpr2DYW2ABYINBO5EVXXZZM6QWA7Q">
+                  <Type TypeId="400" extStr="java.lang.Boolean"/>
+                </Parameter>
+              </Parameters>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:Java>getFormView().submit();</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+            <Method Id="mthI7AMI62N4JHHLNBH2MNXZRVICQ" Name="pbClose_clicked" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+              <AccessRules Access="4" IsPublished="false"/>
+              <Parameters>
+                <Parameter Name="checked" Id="mprN74PABET5RD7PMAPH5KSMBH25Q">
+                  <Type TypeId="1"/>
+                </Parameter>
+              </Parameters>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:Java>close();</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+            <Method Id="mthXBCAAGA4RZFC7PR5PSLQD7PJ4U" Name="calcEnabling" Nature="0" Environment="explorer" IsOverride="false">
+              <AccessRules Access="2" IsPublished="false"/>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:Java>if(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthTTUQQ3QNAVENTCMAW45HZ7Q4UE" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>() != null)
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhAG4V3SEU2RGVHJNFQ4QUFYQJHI cfdAG4V3SEU2RGVHJNFQ4QUFYQJHI wdgJUOOE4P76ZEAJIITPAXNUN6VI4" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthKMCJWBHQAVHLBJFVFE6KREGTQU" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhAG4V3SEU2RGVHJNFQ4QUFYQJHI afmAG4V3SEU2RGVHJNFQ4QUFYQJHI pfm3PDQXHHBCFEXTPVXQV25BLP32M" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value != null &amp;&amp; </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhAG4V3SEU2RGVHJNFQ4QUFYQJHI afmAG4V3SEU2RGVHJNFQ4QUFYQJHI pfmLNZYZWDAEVBWTMIMICUFRBGOSY" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value != null);</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+          </Methods>
+        </Model>
+        <EditorPages>
+          <Page Id="epgAMLDG5PSDJEFZKJKLWEIO7TCJE" Name="Main" Type="1">
+            <Properties>
+              <Property Id="pfm3PDQXHHBCFEXTPVXQV25BLP32M" Row="0" Column="0"/>
+              <Property Id="pfmLNZYZWDAEVBWTMIMICUFRBGOSY" Row="1" Column="0"/>
+            </Properties>
+          </Page>
+          <PageOrder>
+            <Item PageId="epgAMLDG5PSDJEFZKJKLWEIO7TCJE" Level="1"/>
+          </PageOrder>
+        </EditorPages>
+        <View Id="cfdAG4V3SEU2RGVHJNFQ4QUFYQJHI" Name="View">
+          <ui:ui>
+            <ui:widget name="MainWindow_1" id="wdg7IFL2N2GE5HXLOO56OPAYV2A7E" class="cfdAG4V3SEU2RGVHJNFQ4QUFYQJHI" weight="0.0">
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>0</ui:x>
+                  <ui:y>0</ui:y>
+                  <ui:width>429</ui:width>
+                  <ui:height>395</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>MainWindow_1</ui:string>
+              </ui:property>
+              <ui:property name="sizePolicy">
+                <ui:sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred"/>
+              </ui:property>
+              <ui:layout class="QVBoxLayout" name="verticalLayout">
+                <ui:property name="layoutLeftMargin">
+                  <ui:int>4</ui:int>
+                </ui:property>
+                <ui:property name="layoutTopMargin">
+                  <ui:int>4</ui:int>
+                </ui:property>
+                <ui:property name="layoutRightMargin">
+                  <ui:int>4</ui:int>
+                </ui:property>
+                <ui:property name="layoutBottomMargin">
+                  <ui:int>4</ui:int>
+                </ui:property>
+                <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                  <ui:widget name="page" id="wdgQVN6RYOR7FBXNLEADFCEBMTSB4" class="org.radixware.kernel.explorer.widgets.EditorPage" weight="0.0">
+                    <ui:property name="editorPageRef">
+                      <ui:editorPageRef>epgAMLDG5PSDJEFZKJKLWEIO7TCJE</ui:editorPageRef>
+                    </ui:property>
+                    <ui:property name="objectName">
+                      <ui:string>page</ui:string>
+                    </ui:property>
+                    <ui:property name="objectName">
+                      <ui:string>page</ui:string>
+                    </ui:property>
+                    <ui:property name="editorPage">
+                      <ui:editorPageRef>epgAMLDG5PSDJEFZKJKLWEIO7TCJE</ui:editorPageRef>
+                    </ui:property>
+                    <ui:property name="sizePolicy">
+                      <ui:sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Fixed"/>
+                    </ui:property>
+                  </ui:widget>
+                </ui:item>
+                <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                  <ui:widget name="groupBox" id="wdgGUFR4YTGJBDUXNHLDWVTVS3FQQ" class="QGroupBox" weight="0.0">
+                    <ui:property name="title">
+                      <ui:mlstringid>mlsG5OQHQUX2FBLRPB45YMVFWFETI</ui:mlstringid>
+                    </ui:property>
+                    <ui:property name="objectName">
+                      <ui:string>groupBox</ui:string>
+                    </ui:property>
+                    <ui:property name="sizePolicy">
+                      <ui:sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred"/>
+                    </ui:property>
+                    <ui:layout class="QVBoxLayout" name="verticalLayout">
+                      <ui:property name="layoutLeftMargin">
+                        <ui:int>4</ui:int>
+                      </ui:property>
+                      <ui:property name="layoutTopMargin">
+                        <ui:int>4</ui:int>
+                      </ui:property>
+                      <ui:property name="layoutBottomMargin">
+                        <ui:int>4</ui:int>
+                      </ui:property>
+                      <ui:property name="layoutRightMargin">
+                        <ui:int>4</ui:int>
+                      </ui:property>
+                      <ui:property name="layoutSpacing">
+                        <ui:int>4</ui:int>
+                      </ui:property>
+                      <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                        <ui:widget name="textEdit" id="wdgNRDR3YOVR5DFNDWL3ACZTGJ6EE" class="QTextEdit" weight="0.0">
+                          <ui:property name="readOnly">
+                            <ui:bool>true</ui:bool>
+                          </ui:property>
+                          <ui:property name="objectName">
+                            <ui:string>textEdit</ui:string>
+                          </ui:property>
+                        </ui:widget>
+                      </ui:item>
+                    </ui:layout>
+                  </ui:widget>
+                </ui:item>
+                <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                  <ui:layout class="QHBoxLayout" name="horizontalLayout">
+                    <ui:property name="margin">
+                      <ui:int>0</ui:int>
+                    </ui:property>
+                    <ui:property name="spacing">
+                      <ui:int>4</ui:int>
+                    </ui:property>
+                    <ui:property name="layoutLeftMargin">
+                      <ui:int>4</ui:int>
+                    </ui:property>
+                    <ui:property name="layoutTopMargin">
+                      <ui:int>4</ui:int>
+                    </ui:property>
+                    <ui:property name="layoutRightMargin">
+                      <ui:int>4</ui:int>
+                    </ui:property>
+                    <ui:property name="layoutBottomMargin">
+                      <ui:int>4</ui:int>
+                    </ui:property>
+                    <ui:property name="layoutSpacing">
+                      <ui:int>4</ui:int>
+                    </ui:property>
+                    <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                      <ui:spacer name="spacer">
+                        <ui:property name="orientation">
+                          <ui:enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</ui:enum>
+                        </ui:property>
+                        <ui:property name="sizeHint">
+                          <ui:size>
+                            <ui:width>40</ui:width>
+                            <ui:height>20</ui:height>
+                          </ui:size>
+                        </ui:property>
+                      </ui:spacer>
+                    </ui:item>
+                    <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                      <ui:widget name="pbCalc" id="wdgJUOOE4P76ZEAJIITPAXNUN6VI4" class="QPushButton" weight="0.0">
+                        <ui:property name="icon">
+                          <ui:imageRef>imgKNNPRFVPT5ZUBCLMIQZXIIA2KL6DGGUU</ui:imageRef>
+                        </ui:property>
+                        <ui:property name="objectName">
+                          <ui:string>pbCalc</ui:string>
+                        </ui:property>
+                        <ui:property name="text">
+                          <ui:mlstringid>mlsSKC3UNEJOVAPLADE4665FYXXMA</ui:mlstringid>
+                        </ui:property>
+                        <ui:property name="objectName">
+                          <ui:string>pbCalc</ui:string>
+                        </ui:property>
+                        <ui:property name="geometry">
+                          <ui:rect>
+                            <ui:x>135</ui:x>
+                            <ui:y>51</ui:y>
+                            <ui:width>77</ui:width>
+                            <ui:height>23</ui:height>
+                          </ui:rect>
+                        </ui:property>
+                      </ui:widget>
+                    </ui:item>
+                    <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                      <ui:widget name="pbClose" id="wdgXRC7BSEYFRBBRCIDTDYXGT7PDE" class="QPushButton" weight="0.0">
+                        <ui:property name="icon">
+                          <ui:imageRef>imgGJOSI6WPNFKD7EER34X6EDCRG47OHHUV</ui:imageRef>
+                        </ui:property>
+                        <ui:property name="objectName">
+                          <ui:string>pbClose</ui:string>
+                        </ui:property>
+                        <ui:property name="text">
+                          <ui:mlstringid>mlsQGADF73HWRDCTIVMAR7AWD6M4M</ui:mlstringid>
+                        </ui:property>
+                        <ui:property name="objectName">
+                          <ui:string>pbClose</ui:string>
+                        </ui:property>
+                      </ui:widget>
+                    </ui:item>
+                    <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                      <ui:spacer name="spacer">
+                        <ui:property name="orientation">
+                          <ui:enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</ui:enum>
+                        </ui:property>
+                        <ui:property name="sizeHint">
+                          <ui:size>
+                            <ui:width>40</ui:width>
+                            <ui:height>20</ui:height>
+                          </ui:size>
+                        </ui:property>
+                      </ui:spacer>
+                    </ui:item>
+                  </ui:layout>
+                </ui:item>
+              </ui:layout>
+            </ui:widget>
+            <ui:connections>
+              <ui:connection>
+                <ui:sender>wdg7IFL2N2GE5HXLOO56OPAYV2A7E</ui:sender>
+                <ui:signal>opened(com.trolltech.qt.gui.QWidget widget)</ui:signal>
+                <ui:slot>mth7IFL2N2GE5HXLOO56OPAYV2A7E_opened</ui:slot>
+              </ui:connection>
+              <ui:connection>
+                <ui:sender>wdgJUOOE4P76ZEAJIITPAXNUN6VI4</ui:sender>
+                <ui:signal>clicked(Bool checked)</ui:signal>
+                <ui:slot>mthJUOOE4P76ZEAJIITPAXNUN6VI4_clicked</ui:slot>
+              </ui:connection>
+              <ui:connection>
+                <ui:sender>wdgXRC7BSEYFRBBRCIDTDYXGT7PDE</ui:sender>
+                <ui:signal>clicked(Bool checked)</ui:signal>
+                <ui:slot>mthI7AMI62N4JHHLNBH2MNXZRVICQ</ui:slot>
+              </ui:connection>
+            </ui:connections>
+          </ui:ui>
+        </View>
+      </Form>
+    </Presentations>
+    <Extends TypeId="411" Path="adcJJJGZQRERVCAPNT2A3LNCCWYPI"/>
+  </AdsClassDefinition>
+</AdsDefinition>

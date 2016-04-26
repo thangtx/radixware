@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsCustomDialogDefinition Id="cdl3HP42YWJKVBGRK6Z3ZK6VM33SQ" Name="CommentDlg">
+    <AccessRules IsPublished="false"/>
+    <ui:ui>
+      <ui:widget name="Dialog" id="wdgN23GLEG6UFHZ3H3OIXGCZB5BFY" class="cdl3HP42YWJKVBGRK6Z3ZK6VM33SQ" weight="0.0">
+        <ui:property name="geometry">
+          <ui:rect>
+            <ui:x>0</ui:x>
+            <ui:y>0</ui:y>
+            <ui:width>324</ui:width>
+            <ui:height>180</ui:height>
+          </ui:rect>
+        </ui:property>
+        <ui:property name="styleSheet">
+          <ui:string/>
+        </ui:property>
+        <ui:property name="sizePolicy">
+          <ui:sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Fixed" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Fixed"/>
+        </ui:property>
+        <ui:property name="maximumSize">
+          <ui:size>
+            <ui:width>9999</ui:width>
+            <ui:height>9999</ui:height>
+          </ui:size>
+        </ui:property>
+        <ui:property name="minimumSize">
+          <ui:size>
+            <ui:width>300</ui:width>
+            <ui:height>180</ui:height>
+          </ui:size>
+        </ui:property>
+        <ui:property name="windowTitle">
+          <ui:mlstringid>mlsI3Y4BRM355BY7M2KGLSL4Y67N4</ui:mlstringid>
+        </ui:property>
+        <ui:property name="windowIcon">
+          <ui:imageRef>imgFYK5B56ESRHGFFN546MVKLS7BI</ui:imageRef>
+        </ui:property>
+        <ui:layout class="QVBoxLayout" name="verticalLayout">
+          <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+            <ui:widget name="textEdit" id="wdgGRKPHHHN5BCRHM4EY757IQ2YLA" class="QTextEdit" weight="0.0">
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>131</ui:x>
+                  <ui:y>78</ui:y>
+                  <ui:width>104</ui:width>
+                  <ui:height>71</ui:height>
+                </ui:rect>
+              </ui:property>
+            </ui:widget>
+          </ui:item>
+          <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+            <ui:widget name="buttonBox" id="wdgUXDH3GDVYFCLDC2KBYEEBWLQEM" class="QDialogButtonBox" weight="0.0">
+              <ui:property name="standardButtons">
+                <ui:set>com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Ok | com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Cancel</ui:set>
+              </ui:property>
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>193</ui:x>
+                  <ui:y>126</ui:y>
+                  <ui:width>156</ui:width>
+                  <ui:height>23</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="centerButtons">
+                <ui:bool>true</ui:bool>
+              </ui:property>
+            </ui:widget>
+          </ui:item>
+        </ui:layout>
+      </ui:widget>
+      <ui:connections>
+        <ui:connection>
+          <ui:sender>wdgN23GLEG6UFHZ3H3OIXGCZB5BFY</ui:sender>
+          <ui:signal>opened(com.trolltech.qt.gui.QWidget widget)</ui:signal>
+          <ui:slot>mth7VFTZU3XXNEFLIUFGSR2R7XK3Q</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgUXDH3GDVYFCLDC2KBYEEBWLQEM</ui:sender>
+          <ui:signal>accepted()</ui:signal>
+          <ui:slot>mthXFX6MXJO7VBBXPQJHXPDP6KGVM</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgUXDH3GDVYFCLDC2KBYEEBWLQEM</ui:sender>
+          <ui:signal>rejected()</ui:signal>
+          <ui:slot>mthDEZ3RZRRIVDO3LVO3FHZ6CVWWQ</ui:slot>
+        </ui:connection>
+      </ui:connections>
+    </ui:ui>
+    <EmbeddedModel Id="adm3HP42YWJKVBGRK6Z3ZK6VM33SQ" Name="CommentDlg:Model" Type="16">
+      <AccessRules IsPublished="false"/>
+      <Headers>
+        <Src Name="HeaderadcBOKVO3P4ZFDV3PPHWCAIZPUZTU"/>
+      </Headers>
+      <Bodies>
+        <Src Name="BodyadcUMNCA5V3PNCPRE7JABTYI7Z2I4"/>
+      </Bodies>
+      <MethodGroup Id="cmgL3IAOVBCWJDDLPFMNZB3BZ6OMY" Name="Root">
+        <Group Id="cmgTXSTMVKHRBG2DEO4SE7FMYAUMA" Name="Events" Members="mth7VFTZU3XXNEFLIUFGSR2R7XK3Q mthXFX6MXJO7VBBXPQJHXPDP6KGVM mthDEZ3RZRRIVDO3LVO3FHZ6CVWWQ"/>
+      </MethodGroup>
+      <PropertyGroup Id="cpg66V5G76PPJFSXDFY64GEWBZ54E" Name="Root">
+        <Group Id="cpg4SHORDJANJHWDAZPYGI7O3CAY4" Name="Properties" Members="prdALSEPL4BPBEXDPOBM5V46EUGQQ"/>
+      </PropertyGroup>
+      <Properties>
+        <Property Id="prdALSEPL4BPBEXDPOBM5V46EUGQQ" Name="comment" Nature="2" IsConst="false" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="21"/>
+        </Property>
+      </Properties>
+      <Methods>
+        <Method Id="mth7VFTZU3XXNEFLIUFGSR2R7XK3Q" Name="Dialog_opened" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules/>
+          <Parameters>
+            <Parameter Name="widget" Id="mprORTVYCAFB5B4VFMKUYQERWIOAM">
+              <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src/>
+          </Sources>
+        </Method>
+        <Method Id="mthXFX6MXJO7VBBXPQJHXPDP6KGVM" Name="buttonBox_accepted" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl3HP42YWJKVBGRK6Z3ZK6VM33SQ adm3HP42YWJKVBGRK6Z3ZK6VM33SQ prdALSEPL4BPBEXDPOBM5V46EUGQQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl3HP42YWJKVBGRK6Z3ZK6VM33SQ wdgGRKPHHHN5BCRHM4EY757IQ2YLA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.toPlainText();
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl3HP42YWJKVBGRK6Z3ZK6VM33SQ wdgN23GLEG6UFHZ3H3OIXGCZB5BFY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.accept();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthDEZ3RZRRIVDO3LVO3FHZ6CVWWQ" Name="buttonBox_rejected" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl3HP42YWJKVBGRK6Z3ZK6VM33SQ wdgN23GLEG6UFHZ3H3OIXGCZB5BFY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.reject();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+      </Methods>
+    </EmbeddedModel>
+  </AdsCustomDialogDefinition>
+</AdsDefinition>

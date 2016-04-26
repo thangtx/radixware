@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcWQJL7TZPERD3HD7TNV3YUZOZUY" Name="UploadHandler" Type="3" Environment="web">
+    <AccessRules IsFinal="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.wps.rwt.uploading.UploadHandler"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcWQJL7TZPERD3HD7TNV3YUZOZUY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcWQJL7TZPERD3HD7TNV3YUZOZUY"/>
+    </Bodies>
+    <MethodGroup Id="cmgVGMMSCYRBJHMPAZ3GLPDTOM3HE" Name="Root"/>
+    <PropertyGroup Id="cpgWUU5IEBA3RDVRG5662XYDE3B34" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthYXPDORSO4ZEC3HL2IPHGUZLC3A" Name="getFileSize" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getFileSize()J"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="long"/>
+      </Method>
+      <Method Id="mthJZYELBED35DEPHKXSJWTZIVOYQ" Name="getId" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getId()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthXVZFKCVNJVGOTJREQ32674LE4Q" Name="readWhenReady" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="readWhenReady(Lorg.radixware.wps.rwt.uploading.IUploadedDataReader;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="reader" Id="mprK5EF3QKYHJHJVHK7JAAR6ZUFYA">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.uploading.IUploadedDataReader"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth5352LXD4CZGBDECPGQ3IGGHAQI" Name="release" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="release()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthSGIVQGSW2FHM5JWU7INBLHXSSU" Name="waitForReadyAndRead" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="waitForReadyAndRead(Lorg.radixware.wps.rwt.uploading.IUploadedDataReader;Z)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="reader" Id="mpr5VDMFIBE3BBSDL5OS6IWMAA4NU">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.uploading.IUploadedDataReader"/>
+          </Parameter>
+          <Parameter Name="cancellable" Id="mpr7AZU2NKYQ5G6VGXEAB4L5E7VUU">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+          <Exception TypeId="400" extStr="java.io.IOException"/>
+        </ThrownExceptions>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

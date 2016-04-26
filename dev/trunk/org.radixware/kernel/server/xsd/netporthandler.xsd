@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           xmlns:types="http://schemas.radixware.org/types.xsd" 
+           xmlns:inst="http://schemas.radixware.org/systeminstancecontrol.xsd" 
+           xmlns:mess="http://schemas.radixware.org/netporthandler.xsd" 
+           targetNamespace="http://schemas.radixware.org/netporthandler.xsd" 
+           elementFormDefault="qualified" 
+           attributeFormDefault="unqualified">
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/systeminstancecontrol.xsd" schemaLocation="systeminstancecontrol.xsd"/>
+    
+    <xs:simpleType name="ExceptionEnum">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="FormatError"/>
+            <xs:enumeration value="InvalidRequest"/>
+            <xs:enumeration value="ServerException"/>
+            <xs:enumeration value="ApplicationError"/>
+            <xs:enumeration value="SeanceNotFound"/>
+            <xs:enumeration value="SeanceBusy"/>
+            <xs:enumeration value="ReceiveTimeout"/>
+            <xs:enumeration value="ConnectTimeout"/>
+            <xs:enumeration value="ChannelNotFound"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="OnConnectRs">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="SendPacket" type="types:BinBase64" minOccurs="0"/>
+                <xs:element name="SendPackedHeaders" type="types:MapStrStr" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="CloseDelay" type="types:Int"/>
+            <xs:attribute name="CallbackPid" type="types:Str" use="required"/>
+            <xs:attribute name="CallbackWid" type="types:Str" use="required"/>
+            <xs:attribute name="RecvTimeout" type="types:Int"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="OnRecvRs">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="SendPacket" type="types:BinBase64" minOccurs="0"/>
+                <xs:element name="SendPackedHeaders" type="types:MapStrStr" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="Undelivered" type="types:Bool"/>
+            <xs:attribute name="CloseDelay" type="types:Int"/>
+            <xs:attribute name="CallbackPid" type="types:Str"/>
+            <xs:attribute name="CallbackWid" type="types:Str"/>
+            <xs:attribute name="RecvTimeout" type="types:Int"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="OnRecvTimeoutRs">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="SendPacket" type="types:BinBase64" minOccurs="0"/>
+                <xs:element name="SendPackedHeaders" type="types:MapStrStr" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="CloseDelay" type="types:Int"/>
+            <xs:attribute name="CallbackPid" type="types:Str"/>
+            <xs:attribute name="CallbackWid" type="types:Str"/>
+            <xs:attribute name="RecvTimeout" type="types:Int"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="OnConnectTimeoutRs">
+        <xs:complexType>
+            <xs:attribute name="ConnectTimeout" type="types:Int"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="ProcessRq">
+        <xs:sequence>
+            <xs:element name="SendPacket" type="types:BinBase64" minOccurs="0"/>
+            <xs:element name="SendPackedHeaders" type="types:MapStrStr" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="SID" type="types:Str" use="required"/>
+        <xs:attribute name="CloseDelay" type="types:Int"/>
+        <xs:attribute name="CallbackPid" type="types:Str" use="required"/>
+        <xs:attribute name="CallbackWid" type="types:Str" use="required"/>
+        <xs:attribute name="RecvTimeout" type="types:Int"/>
+        <xs:attribute name="IsRecvSync" type="types:Bool"/>
+    </xs:complexType>
+    <xs:complexType name="ProcessRs">
+        <xs:sequence>
+            <xs:element name="UndeliveredPacket" type="types:BinBase64" minOccurs="0"/>
+            <xs:element name="ReceivedPacket" type="types:BinBase64" minOccurs="0"/>
+            <xs:element name="ReceivedPackedHeaders" type="types:MapStrStr" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ConnectRq">
+        <xs:sequence>
+            <xs:element name="SendPacket" type="types:BinBase64" minOccurs="0"/>
+            <xs:element name="SendPackedHeaders" type="types:MapStrStr" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="ClientId" type="types:Int" use="required"/>
+        <xs:attribute name="CloseDelay" type="types:Int"/>
+        <xs:attribute name="CallbackPid" type="types:Str" use="required"/>
+        <xs:attribute name="CallbackWid" type="types:Str" use="required"/>
+        <xs:attribute name="RecvTimeout" type="types:Int"/>
+        <xs:attribute name="IsRecvSync" type="types:Bool"/>
+        <xs:attribute name="ConnectTimeout" type="types:Int"/>
+        <xs:attribute name="IsConnectSync" type="types:Bool"/>
+        <xs:attribute name="LocalAddress" type="types:Str"/>
+        <xs:attribute name="RemoteAddress" type="types:Str"/>
+    </xs:complexType>
+    <xs:complexType name="ConnectRs">
+        <xs:sequence>
+            <xs:element name="ReceivedPacket" type="types:BinBase64" minOccurs="0"/>
+            <xs:element name="ReceivedPackedHeaders" type="types:MapStrStr" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="SID" type="types:Str" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="CloseRq">
+        <xs:attribute name="SID" type="types:Str" use="required"/>
+        <xs:attribute name="CloseDelay" type="types:Int"/>
+    </xs:complexType>
+    <xs:complexType name="CloseRs"/>
+    <xs:complexType name="ApplySettingsRq"/>
+    <xs:complexType name="ApplySettingsRs"/>
+    
+    
+    <xs:complexType name="ChannelRequest" abstract="true">
+        <xs:sequence>
+            <xs:element name="ChannelId" type="types:Int" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ChannelControlRq">
+        <xs:choice>
+            <xs:element name="Start">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="mess:ChannelRequest">
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Stop">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="mess:ChannelRequest">
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="ChannelControlRs">
+        <xs:sequence>
+            <xs:element name="Result" type="inst:ActionStateEnum" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="ResultComment" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ProcessMess">
+        <xs:choice>
+            <xs:element name="ProcessRq" type="mess:ProcessRq"/>
+            <xs:element name="ProcessRs" type="mess:ProcessRs"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="ConnectMess">
+        <xs:choice>
+            <xs:element name="ConnectRq" type="mess:ConnectRq"/>
+            <xs:element name="ConnectRs" type="mess:ConnectRs"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="CloseMess">
+        <xs:choice>
+            <xs:element name="CloseRq" type="mess:CloseRq"/>
+            <xs:element name="CloseRs" type="mess:CloseRs"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="ApplySettingsMess">
+        <xs:choice>
+            <xs:element name="ApplySettingsRq" type="mess:ApplySettingsRq"/>
+            <xs:element name="ApplySettingsRs" type="mess:ApplySettingsRs"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="ChannelControlMess">
+        <xs:choice>
+            <xs:element name="ChannelControlRq" type="mess:ChannelControlRq"/>
+            <xs:element name="ChannelControlRs" type="mess:ChannelControlRs"/>
+        </xs:choice>
+    </xs:complexType>
+</xs:schema>

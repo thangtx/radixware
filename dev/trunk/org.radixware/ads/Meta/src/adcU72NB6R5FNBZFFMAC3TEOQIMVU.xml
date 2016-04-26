@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcU72NB6R5FNBZFFMAC3TEOQIMVU" Name="EditorPresentationDef" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.server.meta.presentations.RadEditorPresentationDef"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcRHTUWQY52NB6DOHIJCGA5MTRYU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcAF6FOK4KB5DSXNDHMOCEWOLKJI"/>
+    </Bodies>
+    <MethodGroup Id="cmgM6E4KA7IZNFZXGJ2M2VSGVJ6KA" Name="Root"/>
+    <PropertyGroup Id="cpgNTWFDSCFHJDILN52FUCA7HT5KY" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthRZIDIRTPABEGJPJSDHQLQZYXTM" Name="findChildExplorerItemById" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="findChildExplorerItemById(Lorg.radixware.kernel.common.types.Id;)Lorg.radixware.kernel.server.meta.presentations.RadExplorerItemDef;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="eiId" Id="mprUT3CESM7TJETFEEK2FAXFFMFKA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.meta.presentations.RadExplorerItemDef"/>
+      </Method>
+      <Method Id="mthWSM7BH4K4VG6TJO7CEZVKKSPUI" Name="getRuntimeEnvironmentType" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getRuntimeEnvironmentType()Lorg.radixware.kernel.common.enums.ERuntimeEnvironmentType;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.enums.ERuntimeEnvironmentType"/>
+      </Method>
+      <Method Id="mthCKN7QZKXBBDU7HBPO2EGS6D63U" Name="hasCompatibleClientRuntimeEnvironmentType" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="hasCompatibleClientRuntimeEnvironmentType(Lorg.radixware.kernel.common.enums.ERuntimeEnvironmentType;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="clientEnvType" Id="mpr2L6RWQJPENG2PNUUL4XWVNNT5Y">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.ERuntimeEnvironmentType"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

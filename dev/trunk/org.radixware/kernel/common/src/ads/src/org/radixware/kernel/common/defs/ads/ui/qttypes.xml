@@ -1,0 +1,2392 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<QtTypes xmlns="http://schemas.radixware.org/ui.xsd">
+
+    <widget name="org.radixware.kernel.explorer.views.EditorPageView" extends="QWidget">
+        <property name="objectName">
+            <string>EditorPageView</string>
+        </property>
+        <connection>
+            <signal>opened(com.trolltech.qt.gui.QWidget widget)</signal>
+        </connection>
+        <connection>
+            <signal>closed()</signal>
+        </connection>
+    </widget>
+
+    <widget name="org.radixware.kernel.explorer.views.ParagraphEditor" extends="QWidget">
+        <property name="objectName">
+            <string>ParagEditor</string>
+        </property>
+        <connection>
+            <signal>opened(com.trolltech.qt.gui.QWidget widget)</signal>
+        </connection>
+        <connection>
+            <signal>closed()</signal>
+        </connection>
+    </widget>
+
+    <widget name="org.radixware.kernel.explorer.views.Form" extends="QDialog">
+        <property name="objectName">
+            <string>Form</string>
+        </property>
+    </widget>
+
+    <widget name="org.radixware.kernel.explorer.views.ReportParamDialogView" extends="QDialog">
+        <property name="objectName">
+            <string>ReportForm</string>
+        </property>
+    </widget>
+
+    <widget name="org.radixware.kernel.explorer.views.FilterParameters" extends="QDialog">
+        <property name="objectName">
+            <string>FilterForm</string>
+        </property>
+    </widget>
+
+
+    <widget name="org.radixware.kernel.explorer.views.Dialog" extends="QDialog">
+        <property name="objectName">
+            <string>Dialog</string>
+        </property>
+    </widget>
+
+    <widget name="org.radixware.kernel.explorer.views.PropEditorDialog" extends="QDialog">
+        <property name="objectName">
+            <string>PropEditorDialog</string>
+        </property>
+    </widget>
+
+    <widget name="org.radixware.kernel.explorer.views.CustomWidget" extends="QWidget">
+        <property name="objectName">
+            <string>Widget</string>
+        </property>
+        <connection>
+            <signal>opened(com.trolltech.qt.gui.QWidget widget)</signal>
+        </connection>
+    </widget>
+
+    <widget name="org.radixware.kernel.explorer.views.selector.Selector" extends="QWidget">
+        <property name="commandBarHidden">
+            <bool>false</bool>
+        </property>
+        <property name="toolBarHidden">
+            <bool>false</bool>
+        </property>
+        <property name="objectName">
+            <string>Selector</string>
+        </property>
+        <connection>
+            <signal>opened(com.trolltech.qt.gui.QWidget widget)</signal>
+        </connection>
+        <connection>
+            <signal>closed()</signal>
+        </connection>
+        <connection>
+            <signal>onLeaveCurrentEntity()</signal>
+        </connection>
+        <connection>
+            <signal>onSetCurrentEntity(org.radixware.kernel.common.client.models.EntityModel model)</signal>
+        </connection>
+        <connection>
+            <signal>afterReread()</signal>
+        </connection>
+        <connection>
+            <signal>entitiesCreated(java.util.List&lt;org.radixware.kernel.common.client.models.EntityModel&gt; model)</signal>
+        </connection>
+        <connection>
+            <signal>entityUpdated()</signal>
+        </connection>
+        <connection>
+            <signal>entityRemoved()</signal>
+        </connection>
+        <connection>
+            <signal>insertedIntoTree(org.radixware.kernel.common.client.tree.ExplorerItemView itemView)</signal>
+        </connection>
+        <connection>
+            <signal>entityActivated(org.radixware.kernel.common.client.models.EntityModel model)</signal>
+        </connection>
+    </widget>
+
+    <widget name="org.radixware.kernel.explorer.views.Editor" extends="QWidget">
+        <property name="commandBarHidden">
+            <bool>false</bool>
+        </property>
+        <property name="toolBarHidden">
+            <bool>false</bool>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>800</width>
+                <height>600</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred">
+                <horStretch>0</horStretch>
+                <verStretch>0</verStretch>
+            </sizePolicy>
+        </property>
+        <property name="objectName">
+            <string>Editor</string>
+        </property>
+        <connection>
+            <signal>opened(com.trolltech.qt.gui.QWidget widget)</signal>
+        </connection>
+        <connection>
+            <signal>closed()</signal>
+        </connection>
+        <connection>
+            <signal>entityUpdated()</signal>
+        </connection>
+        <connection>
+            <signal>entityRemoved()</signal>
+        </connection>
+    </widget>
+
+    <widget name="org.radixware.kernel.explorer.widgets.PropLabel" extends="QWidget">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>120</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred">
+                <horStretch>0</horStretch>
+                <verStretch>0</verStretch>
+            </sizePolicy>
+        </property>
+        <property name="objectName">
+            <string>propTitle</string>
+        </property>
+
+        <property name="property">
+            <propertyRef></propertyRef>
+        </property>
+    </widget>
+
+    <widget name="org.radixware.kernel.explorer.widgets.propeditors.PropEditor" extends="QWidget">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>100</width>
+                <height>25</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred">
+                <horStretch>0</horStretch>
+                <verStretch>0</verStretch>
+            </sizePolicy>
+        </property>
+        <property name="objectName">
+            <string>propEditor</string>
+        </property>
+
+        <property name="property">
+            <propertyRef></propertyRef>
+        </property>
+        <connection>
+            <signal>edited(java.lang.Object value)</signal>
+        </connection>
+    </widget>
+
+    <widget name="org.radixware.kernel.explorer.widgets.commands.CommandPushButton" extends="QAbstractButton">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>135</width>
+                <height>25</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Minimum" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Fixed">
+                <horStretch>0</horStretch>
+                <verStretch>0</verStretch>
+            </sizePolicy>
+        </property>
+        <property name="objectName">
+            <string>commandButton</string>
+        </property>
+
+        <property name="command">
+            <commandRef></commandRef>
+        </property>
+        <!--
+                <property name="inheritCommandTitle">
+                    <bool>false</bool>
+                </property>
+        -->
+    </widget>
+
+    <widget name="org.radixware.kernel.explorer.widgets.EmbeddedEditor" extends="QWidget">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>200</width>
+                <height>200</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred">
+                <horStretch>0</horStretch>
+                <verStretch>0</verStretch>
+            </sizePolicy>
+        </property>
+        <property name="objectName">
+            <string>embeddedEditor</string>
+        </property>
+        <property name="synchronizedWithParentView">
+            <bool>false</bool>
+        </property>
+        <property name="openParams">
+            <embeddedEditorOpenParams/>
+        </property>
+        <property name="readOnly">
+            <bool>false</bool>
+        </property>
+        <connection>
+            <signal>opened(com.trolltech.qt.gui.QWidget widget)</signal>
+        </connection>
+        <connection>
+            <signal>closed()</signal>
+        </connection>
+        <connection>
+            <signal>entityUpdated()</signal>
+        </connection>
+        <connection>
+            <signal>entityRemoved()</signal>
+        </connection>
+    </widget>
+
+    <widget name="org.radixware.kernel.explorer.widgets.EmbeddedSelector" extends="QWidget">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>200</width>
+                <height>200</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred">
+                <horStretch>0</horStretch>
+                <verStretch>0</verStretch>
+            </sizePolicy>
+        </property>
+        <property name="objectName">
+            <string>embeddedSelector</string>
+        </property>
+        <property name="openParams">
+            <embeddedSelectorOpenParams/>
+        </property>
+        <property name="synchronizedWithParentView">
+            <bool>false</bool>
+        </property>
+        <property name="readOnly">
+            <bool>false</bool>
+        </property>
+        <connection>
+            <signal>opened(com.trolltech.qt.gui.QWidget widget)</signal>
+        </connection>
+        <connection>
+            <signal>closed()</signal>
+        </connection>
+        <connection>
+            <signal>entityUpdated()</signal>
+        </connection>
+        <connection>
+            <signal>entityRemoved()</signal>
+        </connection>
+        <connection>
+            <signal>entitiesCreated(java.util.List&lt;org.radixware.kernel.common.client.models.EntityModel&gt; model)</signal>
+        </connection>
+        <connection>
+            <signal>entityTransferred(org.radixware.kernel.common.client.types.Pid pid)</signal>
+        </connection>
+        <connection>
+            <signal>insertedIntoTree(org.radixware.kernel.common.client.tree.ExplorerItemView itemView)</signal>
+        </connection>
+        <connection>
+            <signal>onLeaveCurrentEntity()</signal>
+        </connection>
+        <connection>
+            <signal>onSetCurrentEntity(org.radixware.kernel.common.client.models.EntityModel model)</signal>
+        </connection>
+    </widget>
+
+    <widget name="org.radixware.kernel.explorer.widgets.EditorPage" extends="QWidget">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>200</width>
+                <height>200</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred">
+                <horStretch>0</horStretch>
+                <verStretch>0</verStretch>
+            </sizePolicy>
+        </property>
+        <property name="objectName">
+            <string>editorPage</string>
+        </property>
+
+        <property name="editorPage">
+            <editorPageRef/>
+        </property>
+    </widget>
+
+    <widget name="QSpacerItem">
+        <property name="spacerName">
+            <string>spacer</string>
+        </property>
+        <property name="orientation">
+            <enum>Horizontal</enum>
+        </property>
+        <property name="sizeType">
+            <enum>com.trolltech.qt.gui.QSizePolicy.Policy.Expanding</enum>
+        </property>
+        <property name="sizeHint">
+            <size>
+                <width>40</width>
+                <height>20</height>
+            </size>
+        </property>
+    </widget>
+
+    <widget name="QLayout">
+        <property name="layoutLeftMargin">
+            <int>9</int>
+        </property>
+        <property name="layoutTopMargin">
+            <int>9</int>
+        </property>
+        <property name="layoutRightMargin">
+            <int>9</int>
+        </property>
+        <property name="layoutBottomMargin">
+            <int>9</int>
+        </property>
+        <property name="layoutSizeConstraint">
+            <enum>com.trolltech.qt.gui.QLayout.SizeConstraint.SetDefaultConstraint</enum>
+        </property>
+    </widget>
+
+    <widget name="QHBoxLayout" extends="QLayout">
+        <property name="layoutName">
+            <string>horizontalLayout</string>
+        </property>
+        <property name="layoutSpacing">
+            <int>6</int>
+        </property>
+    </widget>
+
+    <widget name="QVBoxLayout" extends="QLayout">
+        <property name="layoutName">
+            <string>verticalLayout</string>
+        </property>
+        <property name="layoutSpacing">
+            <int>6</int>
+        </property>
+    </widget>
+
+    <widget name="QGridLayout" extends="QLayout">
+        <property name="layoutName">
+            <string>gridLayout</string>
+        </property>
+        <property name="layoutHorizontalSpacing">
+            <int>6</int>
+        </property>
+        <property name="layoutVerticalSpacing">
+            <int>6</int>
+        </property>
+    </widget>
+
+    <widget name="QDialog" extends="QWidget">
+        <property name="sizeGripEnabled">
+            <bool>false</bool>
+        </property>
+        <property name="modal">
+            <bool>false</bool>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>400</width>
+                <height>300</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred">
+                <horStretch>0</horStretch>
+                <verStretch>0</verStretch>
+            </sizePolicy>
+        </property>
+        <property name="objectName">
+            <string>Dialog</string>
+        </property>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>opened(com.trolltech.qt.gui.QWidget widget)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>closed()</signal>
+            <slot></slot>
+        </connection>
+    </widget>
+
+    <widget name="QPushButton" extends="QAbstractButton">
+        <property name="autoDefault">
+            <bool>true</bool>
+        </property>
+        <property name="default">
+            <bool>false</bool>
+        </property>
+        <property name="flat">
+            <bool>false</bool>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>75</width>
+                <height>23</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Minimum" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Fixed">
+                <horStretch>0</horStretch>
+                <verStretch>0</verStretch>
+            </sizePolicy>
+        </property>
+        <property name="objectName">
+            <string>pushButton</string>
+        </property>
+    </widget>
+
+    <widget name="QToolButton" extends="QAbstractButton">
+        <property name="arrowType">
+            <enum>com.trolltech.qt.core.Qt.ArrowType.NoArrow</enum>
+        </property>
+        <property name="autoRaise">
+            <bool>false</bool>
+        </property>
+        <property name="popupMode">
+            <enum>com.trolltech.qt.gui.QToolButton.ToolButtonPopupMode.DelayedPopup</enum>
+        </property>
+        <property name="toolButtonStyle">
+            <enum>com.trolltech.qt.core.Qt.ToolButtonStyle.ToolButtonTextOnly</enum>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>25</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Fixed" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Fixed">
+                <horStretch>0</horStretch>
+                <verStretch>0</verStretch>
+            </sizePolicy>
+        </property>
+        <property name="objectName">
+            <string>toolButton</string>
+        </property>
+
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>triggered(com.trolltech.qt.gui.QAction)</signal>
+            <slot></slot>
+        </connection>
+    </widget>
+
+    <widget name="QRadioButton" extends="QAbstractButton">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>84</width>
+                <height>18</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Minimum" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Fixed">
+                <horStretch>0</horStretch>
+                <verStretch>0</verStretch>
+            </sizePolicy>
+        </property>
+        <property name="objectName">
+            <string>radioButton</string>
+        </property>
+    </widget>
+
+    <widget name="QCheckBox" extends="QAbstractButton">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>72</width>
+                <height>18</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Minimum" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Fixed">
+                <horStretch>0</horStretch>
+                <verStretch>0</verStretch>
+            </sizePolicy>
+        </property>
+        <property name="objectName">
+            <string>checkBox</string>
+        </property>
+    </widget>
+
+    <widget name="QDialogButtonBox" extends="QWidget">
+        <property name="centerButtons">
+            <bool>false</bool>
+        </property>
+        <property name="orientation">
+            <enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</enum>
+        </property>
+        <property name="standardButtons">
+            <set>org.radixware.kernel.common.enums.EDialogButtonType.OK | org.radixware.kernel.common.enums.EDialogButtonType.CANCEL</set>
+        </property>
+
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>156</width>
+                <height>23</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Expanding" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Fixed">
+                <horStretch>0</horStretch>
+                <verStretch>0</verStretch>
+            </sizePolicy>
+        </property>
+        <property name="objectName">
+            <string>buttonBox</string>
+        </property>
+        <property name="autoConnectAcceptSignal">
+            <bool>false</bool>
+        </property>
+        <property name="autoConnectRejectSignal">
+            <bool>false</bool>
+        </property>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>clicked(com.trolltech.qt.gui.QAbstractButton button)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>accepted()</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>helpRequested()</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>rejected()</signal>
+            <slot></slot>
+        </connection>
+    </widget>
+
+    <!--    <widget name="org.radixware.kernel.explorer.widgets.ExplorerDialogButtonBox" extends="QDialogButtonBox">
+        <property name="objectName">
+            <string>explorerButtonBox</string>
+        </property>
+        <property name="autoConnectAcceptSignal">
+            <bool>false</bool>
+        </property>
+        <property name="autoConnectRejectSignal">
+            <bool>false</bool>
+        </property>
+    </widget>-->
+
+    <widget name="QGroupBox" extends="QWidget">
+        <property name="alignment">
+            <set>com.trolltech.qt.core.Qt.AlignmentFlag.AlignLeft | com.trolltech.qt.core.Qt.AlignmentFlag.AlignTop</set>
+        </property>
+        <property name="title">
+            <mlstringid/>
+        </property>
+        <property name="flat">
+            <bool>false</bool>
+        </property>
+        <property name="checkable">
+            <bool>false</bool>
+        </property>
+        <property name="checked">
+            <bool>false</bool>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>120</width>
+                <height>80</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred">
+                <horStretch>0</horStretch>
+                <verStretch>0</verStretch>
+            </sizePolicy>
+        </property>
+        <property name="objectName">
+            <string>groupBox</string>
+        </property>
+
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>clicked(Bool checked)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>toggled(Bool on)</signal>
+            <slot></slot>
+        </connection>
+
+    </widget>
+
+    <widget name="QTabWidget" extends="QWidget">
+        <property name="tabPosition">
+            <enum>com.trolltech.qt.gui.QTabWidget.TabPosition.North</enum>
+        </property>
+        <property name="tabShape">
+            <enum>com.trolltech.qt.gui.QTabWidget.TabShape.Rounded</enum>
+        </property>
+        <property name="currentIndex">
+            <int>0</int>
+        </property>
+        <property name="iconSize">
+            <size>
+                <width>16</width>
+                <height>16</height>
+            </size>
+        </property>
+        <property name="elideMode">
+            <enum>com.trolltech.qt.core.Qt.TextElideMode.ElideNone</enum>
+        </property>
+        <property name="usesScrollButtons">
+            <bool>true</bool>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>127</width>
+                <height>80</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Expanding" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Expanding">
+                <horStretch>0</horStretch>
+                <verStretch>0</verStretch>
+            </sizePolicy>
+        </property>
+        <property name="objectName">
+            <string>tabWidget</string>
+        </property>
+
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>currentChanged(java.lang.Integer index)</signal>
+            <slot></slot>
+        </connection>
+
+    </widget>
+
+
+    <widget name="QSplitter" extends="QWidget">
+        <property name="handleWidth">
+            <int>5</int>
+        </property>
+        <property name="opaqueResize">
+            <bool>true</bool>
+        </property>
+        <property name="orientation">
+            <enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</enum>
+        </property>
+
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>100</width>
+                <height>35</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred">
+                <horStretch>0</horStretch>
+                <verStretch>0</verStretch>
+            </sizePolicy>
+        </property>
+        <property name="objectName">
+            <string>splitter</string>
+        </property>
+
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>splitterMoved(java.lang.Integer pos, java.lang.Integer index)</signal>
+            <slot></slot>
+        </connection>
+    </widget>
+
+
+    <widget name="org.radixware.kernel.explorer.views.Splitter" extends="QSplitter">
+        <property name="objectName">
+            <string>advanceSplitter</string>
+        </property>
+    </widget>
+
+    <widget name="QFrame" extends="QWidget">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>120</width>
+                <height>120</height>
+            </rect>
+        </property>
+
+        <property name="objectName">
+            <string>frame</string>
+        </property>
+        <property name="frameShape">
+            <enum>com.trolltech.qt.gui.QFrame.Shape.StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+            <enum>com.trolltech.qt.gui.QFrame.Shadow.Raised</enum>
+        </property>
+        <property name="lineWidth">
+            <int>1</int>
+        </property>
+        <property name="midLineWidth">
+            <int>0</int>
+        </property>
+    </widget>
+
+    <widget name="QStackedWidget" extends="QFrame">
+        <property name="objectName">
+            <string>stackedWidget</string>
+        </property>
+        <property name="currentIndex">
+            <int>0</int>
+        </property>
+        <property name="currentPageName">
+            <string>page</string>
+        </property>
+
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>currentChanged(Int page)</signal>
+            <slot></slot>
+        </connection>
+
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>widgetRemoved(Int page)</signal>
+            <slot></slot>
+        </connection>
+    </widget>
+
+    <widget name="QAbstractScrollArea" extends="QFrame">
+        <property name="verticalScrollBarPolicy">
+            <enum>com.trolltech.qt.core.Qt.ScrollBarPolicy.ScrollBarAsNeeded</enum>
+        </property>
+        <property name="horizontalScrollBarPolicy">
+            <enum>com.trolltech.qt.core.Qt.ScrollBarPolicy.ScrollBarAsNeeded</enum>
+        </property>
+    </widget>
+
+    <widget name="QScrollArea" extends="QAbstractScrollArea">
+        <property name="objectName">
+            <string>scrollArea</string>
+        </property>
+        <property name="widgetResizable">
+            <bool>true</bool>
+        </property>
+        <property name="alignment">
+            <set>com.trolltech.qt.core.Qt.AlignmentFlag.AlignLeft | com.trolltech.qt.core.Qt.AlignmentFlag.AlignVCenter</set>
+        </property>
+    </widget>
+
+    <widget name="QToolBar" extends="QWidget">
+        <property name="objectName">
+            <string>toolBar</string>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>100</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="orientation">
+            <enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</enum>
+        </property>
+        <property name="actions">
+            <idList/>
+        </property>
+    </widget>
+
+    <widget name="QAction" extends="QObject">
+        <property name="objectName">
+            <string>action</string>
+        </property>
+        <property name="text">
+            <mlstringid/>
+        </property>
+        <property name="toolTip">
+            <mlstringid/>
+        </property>
+        <property name="icon">
+            <imageRef/>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>30</width>
+                <height>30</height>
+            </rect>
+        </property>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>changed()</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>hovered()</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>toggled(Bool)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>triggered(Bool)</signal>
+            <slot></slot>
+        </connection>
+        <!--        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>triggered(Bool bool)</signal>
+            <slot></slot>
+        </connection>-->
+    </widget>
+
+    <widget name="org.radixware.kernel.explorer.widgets.commands.CommandToolButton" extends="QToolButton">
+        <property name="objectName">
+            <string>commandToolButton</string>
+        </property>
+        <property name="command">
+            <commandRef></commandRef>
+        </property>
+    </widget>
+
+
+    <widget name="org.radixware.kernel.explorer.editors.valeditors.ValEditor" extends="QFrame">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>150</width>
+                <height>25</height>
+            </rect>
+        </property>
+
+        <property name="notNull">
+            <bool>false</bool>
+        </property>
+
+        <property name="readOnly">
+            <bool>false</bool>
+        </property>
+
+        <property name="frame">
+            <bool>true</bool>
+        </property>
+
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>valueChanged(java.lang.Object value)</signal>
+            <slot></slot>
+        </connection>
+
+        <property name="autoValidation">
+            <bool>false</bool>
+        </property>
+
+        <property name="reactionToIntermediateInput">
+            <enum>org.radixware.kernel.explorer.editors.valeditors.ValEditor.EReactionToIntermediateInput.SHOW_WARNING</enum>
+        </property>
+    </widget>
+
+    <widget name="org.radixware.kernel.explorer.editors.valeditors.ValBinEditor" extends="org.radixware.kernel.explorer.editors.valeditors.ValEditor">
+        <property name="objectName">
+            <string>valBinEditor</string>
+        </property>
+    </widget>
+
+    <widget name="org.radixware.kernel.explorer.editors.valeditors.ValBoolEditor" extends="org.radixware.kernel.explorer.editors.valeditors.ValEditor">
+        <property name="objectName">
+            <string>valBoolEditor</string>
+        </property>
+
+        <property name="value">
+            <boolValue>null</boolValue>
+        </property>
+    </widget>
+
+    <widget name="org.radixware.kernel.explorer.editors.valeditors.ValCharEditor" extends="org.radixware.kernel.explorer.editors.valeditors.ValEditor">
+        <property name="objectName">
+            <string>valCharEditor</string>
+        </property>
+
+        <!--        <property name="value">
+            <char></char>
+        </property>-->
+
+        <!--        <property name="editMaskStr">
+            <string></string>
+        </property>-->
+    </widget>
+
+    <widget name="org.radixware.kernel.explorer.editors.valeditors.ValConstSetEditor" extends="org.radixware.kernel.explorer.editors.valeditors.ValEditor">
+        <property name="objectName">
+            <string>valConstSetEditor</string>
+        </property>
+
+        <property name="enumRef">
+            <enumRef>0</enumRef>
+        </property>
+    </widget>
+
+    <widget name="org.radixware.kernel.explorer.editors.valeditors.ValDateTimeEditor" extends="org.radixware.kernel.explorer.editors.valeditors.ValEditor">
+        <property name="objectName">
+            <string>valDateTimeEditor</string>
+        </property>
+    </widget>
+
+    <widget name="org.radixware.kernel.explorer.editors.valeditors.ValIntEditor" extends="org.radixware.kernel.explorer.editors.valeditors.ValEditor">
+        <property name="objectName">
+            <string>valIntEditor</string>
+        </property>
+
+        <property name="value">
+            <long>0</long>
+        </property>
+    </widget>
+
+    <widget name="org.radixware.kernel.explorer.editors.valeditors.ValListEditor" extends="org.radixware.kernel.explorer.editors.valeditors.ValEditor">
+        <property name="objectName">
+            <string>valListEditor</string>
+        </property>
+    </widget>
+
+    <widget name="org.radixware.kernel.explorer.editors.valeditors.ValNumEditor" extends="org.radixware.kernel.explorer.editors.valeditors.ValEditor">
+        <property name="objectName">
+            <string>valNumEditor</string>
+        </property>
+    </widget>
+
+    <widget name="org.radixware.kernel.explorer.editors.valeditors.ValStrEditor" extends="org.radixware.kernel.explorer.editors.valeditors.ValEditor">
+        <property name="objectName">
+            <string>valStrEditor</string>
+        </property>
+
+        <property name="value">
+            <string></string>
+        </property>
+    </widget>
+    
+    <widget name="org.radixware.kernel.explorer.editors.valeditors.ValFilePathEditor" extends="org.radixware.kernel.explorer.editors.valeditors.ValEditor">
+        <property name="objectName">
+            <string>valFilePathEditor</string>
+        </property>
+
+        <property name="value">
+            <string></string>
+        </property>
+    </widget>
+
+    <widget name="org.radixware.kernel.explorer.editors.valeditors.ValTimeIntervalEditor" extends="org.radixware.kernel.explorer.editors.valeditors.ValEditor">
+        <property name="objectName">
+            <string>valTimeIntervalEditor</string>
+        </property>
+
+    </widget>
+
+
+    <widget name="org.radixware.kernel.explorer.editors.valeditors.ValRefEditor" extends="org.radixware.kernel.explorer.editors.valeditors.ValEditor">
+        <property name="objectName">
+            <string>valRefEditor</string>
+        </property>
+    </widget>
+
+    <widget name="QLabel" extends="QFrame">
+        <property name="text">
+            <mlstringid/>
+        </property>
+        <property name="alignment">
+            <set>com.trolltech.qt.core.Qt.AlignmentFlag.AlignLeft | com.trolltech.qt.core.Qt.AlignmentFlag.AlignVCenter</set>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>46</width>
+                <height>14</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred">
+                <horStretch>0</horStretch>
+                <verStretch>0</verStretch>
+            </sizePolicy>
+        </property>
+        <property name="objectName">
+            <string>label</string>
+        </property>
+        <property name="buddy">
+            <string></string>
+        </property>
+
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>linkActivated(Str link)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>linkHovered(Str link)</signal>
+            <slot></slot>
+        </connection>
+    </widget>
+
+    <widget name="QProgressBar" extends="QWidget">
+        <property name="minimum">
+            <int>0</int>
+        </property>
+        <property name="maximum">
+            <int>100</int>
+        </property>
+        <property name="value">
+            <int>24</int>
+        </property>
+        <property name="alignment">
+            <set>com.trolltech.qt.core.Qt.AlignmentFlag.AlignLeft | com.trolltech.qt.core.Qt.AlignmentFlag.AlignVCenter</set>
+        </property>
+        <property name="textVisible">
+            <bool>true</bool>
+        </property>
+        <property name="orientation">
+            <enum>Horizontal</enum>
+        </property>
+
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>118</width>
+                <height>23</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Expanding" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Fixed">
+                <horStretch>0</horStretch>
+                <verStretch>0</verStretch>
+            </sizePolicy>
+        </property>
+        <property name="objectName">
+            <string>progressBar</string>
+        </property>
+
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>valueChanged(java.lang.Integer index)</signal>
+            <slot></slot>
+        </connection>
+    </widget>
+
+    <widget name="QComboBox" extends="QWidget">
+        <property name="editable">
+            <bool>false</bool>
+        </property>
+        <property name="currentIndex">
+            <int>-1</int>
+        </property>
+        <property name="maxVisibleItems">
+            <int>100</int>
+        </property>
+        <property name="maxCount">
+            <int>2147483647</int>
+        </property>
+        <property name="iconSize">
+            <size>
+                <width>16</width>
+                <height>16</height>
+            </size>
+        </property>
+        <property name="frame">
+            <bool>false</bool>
+        </property>
+
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>69</width>
+                <height>22</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Fixed">
+                <horStretch>0</horStretch>
+                <verStretch>0</verStretch>
+            </sizePolicy>
+        </property>
+        <property name="objectName">
+            <string>comboBox</string>
+        </property>
+
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>activated(Str index)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>activatedIndex(java.lang.Integer index)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>currentStringChanged(Str arg__1)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>currentIndexChanged(java.lang.Integer index)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>editTextChanged(Str text)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>highlighted(Str index)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>highlightedIndex(java.lang.Integer index)</signal>
+            <slot></slot>
+        </connection>
+
+    </widget>
+
+    <widget name="QLineEdit" extends="QWidget">
+        <property name="inputMask">
+            <mlstringid/>
+        </property>
+        <property name="text">
+            <string/>
+        </property>
+        <property name="maxLength">
+            <int>32767</int>
+        </property>
+        <property name="frame">
+            <bool>true</bool>
+        </property>
+        <property name="cursorPosition">
+            <int>0</int>
+        </property>
+        <property name="alignment">
+            <set>com.trolltech.qt.core.Qt.AlignmentFlag.AlignLeft | com.trolltech.qt.core.Qt.AlignmentFlag.AlignVCenter</set>
+        </property>
+        <property name="dragEnabled">
+            <bool>false</bool>
+        </property>
+        <property name="readOnly">
+            <bool>false</bool>
+        </property>
+
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>113</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Expanding" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Fixed">
+                <horStretch>0</horStretch>
+                <verStretch>0</verStretch>
+            </sizePolicy>
+        </property>
+        <property name="objectName">
+            <string>lineEdit</string>
+        </property>
+
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>cursorPositionChanged(java.lang.Integer oldPos,java.lang.Integer newPos)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>editingFinished()</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>returnPressed()</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>selectionChanged()</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>textChanged(Str)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>textEdited(Str)</signal>
+            <slot></slot>
+        </connection>
+
+    </widget>
+
+    <widget name="QTextEdit" extends="QWidget">
+        <property name="tabChangesFocus">
+            <bool>false</bool>
+        </property>
+        <property name="undoRedoEnabled">
+            <bool>true</bool>
+        </property>
+        <property name="readOnly">
+            <bool>false</bool>
+        </property>
+        <property name="html">
+            <string></string>
+        </property>
+        <property name="overwriteMode">
+            <bool>false</bool>
+        </property>
+        <property name="tabStopWidth">
+            <int>80</int>
+        </property>
+        <property name="acceptRichText">
+            <bool>true</bool>
+        </property>
+        <property name="cursorWidth">
+            <int>1</int>
+        </property>
+
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>104</width>
+                <height>71</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Expanding" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Expanding">
+                <horStretch>0</horStretch>
+                <verStretch>0</verStretch>
+            </sizePolicy>
+        </property>
+        <property name="objectName">
+            <string>textEdit</string>
+        </property>
+
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>copyAvailable(Bool yes)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>currentCharFormatChanged(com.trolltech.qt.gui.QTextCharFormat f)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>cursorPositionChanged()</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>redoAvailable(Bool available)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>selectionChanged()</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>textChanged()</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>undoAvailable(Bool available)</signal>
+            <slot></slot>
+        </connection>
+
+    </widget>
+
+    <widget name="QAbstractSpinBox" extends="QWidget">
+        <property name="wrapping">
+            <bool>false</bool>
+        </property>
+        <property name="frame">
+            <bool>true</bool>
+        </property>
+        <property name="alignment">
+            <set>com.trolltech.qt.core.Qt.AlignmentFlag.AlignLeft | com.trolltech.qt.core.Qt.AlignmentFlag.AlignVCenter</set>
+        </property>
+        <property name="readOnly">
+            <bool>false</bool>
+        </property>
+        <property name="specialValueText">
+            <mlstringid/>
+        </property>
+        <property name="accelerated">
+            <bool>false</bool>
+        </property>
+        <property name="keyboardTracking">
+            <bool>true</bool>
+        </property>
+
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>editingFinished()</signal>
+            <slot></slot>
+        </connection>
+
+    </widget>
+
+    <widget name="QSpinBox" extends="QAbstractSpinBox">
+        <property name="suffix">
+            <mlstringid/>
+        </property>
+        <property name="prefix">
+            <mlstringid/>
+        </property>
+        <property name="minimum">
+            <int>0</int>
+        </property>
+        <property name="maximum">
+            <int>99</int>
+        </property>
+        <property name="singleStep">
+            <int>1</int>
+        </property>
+        <property name="value">
+            <int>0</int>
+        </property>
+
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>42</width>
+                <height>22</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Minimum" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Fixed">
+                <horStretch>0</horStretch>
+                <verStretch>0</verStretch>
+            </sizePolicy>
+        </property>
+        <property name="objectName">
+            <string>spinBox</string>
+        </property>
+
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>valueChanged(java.lang.Integer i)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>valueStringChanged(Str arg__1)</signal>
+            <slot></slot>
+        </connection>
+
+    </widget>
+
+    <widget name="QDoubleSpinBox" extends="QAbstractSpinBox">
+        <property name="suffix">
+            <mlstringid/>
+        </property>
+        <property name="prefix">
+            <mlstringid/>
+        </property>
+        <property name="decimals">
+            <int>2</int>
+        </property>
+        <property name="minimum">
+            <double>0.00</double>
+        </property>
+        <property name="maximum">
+            <double>99.99</double>
+        </property>
+        <property name="singleStep">
+            <double>1.00</double>
+        </property>
+        <property name="value">
+            <double>0.00</double>
+        </property>
+
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>62</width>
+                <height>22</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Minimum" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Fixed">
+                <horStretch>0</horStretch>
+                <verStretch>0</verStretch>
+            </sizePolicy>
+        </property>
+        <property name="objectName">
+            <string>doubleSpinBox</string>
+        </property>
+
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>valueChanged(java.lang.Double d)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>valueStringChanged(Str arg__1)</signal>
+            <slot></slot>
+        </connection>
+
+    </widget>
+
+    <widget name="QDateTimeEdit" extends="QAbstractSpinBox">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>194</width>
+                <height>22</height>
+            </rect>
+        </property>
+        <property name="objectName">
+            <string>dateTimeEdit</string>
+        </property>
+
+        <property name="dateTime">
+            <dateTime>
+                <hour>12</hour>
+                <minute>0</minute>
+                <second>0</second>
+                <year>2000</year>
+                <month>1</month>
+                <day>1</day>
+            </dateTime>
+        </property>
+        <property name="date">
+            <date>
+                <year>2000</year>
+                <month>1</month>
+                <day>1</day>
+            </date>
+        </property>
+        <property name="time">
+            <time>
+                <hour>12</hour>
+                <minute>0</minute>
+                <second>0</second>
+            </time>
+        </property>
+        <property name="maximumDateTime">
+            <dateTime>
+                <hour>12</hour>
+                <minute>0</minute>
+                <second>0</second>
+                <year>2000</year>
+                <month>1</month>
+                <day>1</day>
+            </dateTime>
+        </property>
+        <property name="minimumDateTime">
+            <dateTime>
+                <hour>12</hour>
+                <minute>0</minute>
+                <second>0</second>
+                <year>2000</year>
+                <month>1</month>
+                <day>1</day>
+            </dateTime>
+        </property>
+        <property name="maximumDate">
+            <date>
+                <year>2000</year>
+                <month>1</month>
+                <day>1</day>
+            </date>
+        </property>
+        <property name="minimumDate">
+            <date>
+                <year>2000</year>
+                <month>1</month>
+                <day>1</day>
+            </date>
+        </property>
+        <property name="maximumTime">
+            <time>
+                <hour>12</hour>
+                <minute>0</minute>
+                <second>0</second>
+            </time>
+        </property>
+        <property name="minimumTime">
+            <time>
+                <hour>12</hour>
+                <minute>0</minute>
+                <second>0</second>
+            </time>
+        </property>
+        <property name="displayFormat">
+            <string>M/d/yyyy h:mm:ss AP</string>
+        </property>
+        <property name="calendarPopup">
+            <bool>false</bool>
+        </property>
+        <property name="currentSectionIndex">
+            <int>0</int>
+        </property>
+
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>dateTimeChanged(com.trolltech.qt.core.QDateTime dateTime)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>dateChanged(com.trolltech.qt.core.QDate date)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>timeChanged(com.trolltech.qt.core.QTime time)</signal>
+            <slot></slot>
+        </connection>
+
+    </widget>
+
+    <widget name="QDateEdit" extends="QDateTimeEdit">
+        <property name="displayFormat">
+            <string>M/d/yyyy</string>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>110</width>
+                <height>22</height>
+            </rect>
+        </property>
+        <property name="objectName">
+            <string>dateEdit</string>
+        </property>
+    </widget>
+
+    <widget name="QTimeEdit" extends="QDateTimeEdit">
+        <property name="displayFormat">
+            <string>h:mm:ss AP</string>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>118</width>
+                <height>22</height>
+            </rect>
+        </property>
+        <property name="objectName">
+            <string>timeEdit</string>
+        </property>
+    </widget>
+
+    <!--    <widget name="QAbstractScrollArea" extends="QWidget">
+        <property name="verticalScrollBarPolicy">
+            <enum>com.trolltech.qt.core.Qt.ScrollBarPolicy.ScrollBarAsNeeded</enum>
+        </property>
+        <property name="horizontalScrollBarPolicy">
+            <enum>com.trolltech.qt.core.Qt.ScrollBarPolicy.ScrollBarAsNeeded</enum>
+        </property>
+    </widget>-->
+
+    <widget name="QAbstractItemView" extends="QAbstractScrollArea">
+        <property name="autoScroll">
+            <bool>true</bool>
+        </property>
+        <property name="tabKeyNavigation">
+            <bool>false</bool>
+        </property>
+        <!--
+                <property name="showDropIndicator">
+                    <bool>true</bool>
+                </property>
+        -->
+        <property name="dragEnabled">
+            <bool>false</bool>
+        </property>
+        <property name="dragDropOverwriteMode">
+            <bool>false</bool>
+        </property>
+        <property name="dragDropMode">
+            <enum>com.trolltech.qt.gui.QAbstractItemView.DragDropMode.NoDragDrop</enum>
+        </property>
+        <property name="alternatingRowColors">
+            <bool>false</bool>
+        </property>
+        <property name="selectionMode">
+            <enum>com.trolltech.qt.gui.QAbstractItemView.SelectionMode.SingleSelection</enum>
+        </property>
+        <property name="selectionBehavior">
+            <enum>com.trolltech.qt.gui.QAbstractItemView.SelectionBehavior.SelectItems</enum>
+        </property>
+        <property name="verticalScrollMode">
+            <enum>com.trolltech.qt.gui.QAbstractItemView.ScrollMode.ScrollPerItem</enum>
+        </property>
+        <property name="horizontalScrollMode">
+            <enum>com.trolltech.qt.gui.QAbstractItemView.ScrollMode.ScrollPerItem</enum>
+        </property>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>activated(com.trolltech.qt.core.QModelIndex index)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>clicked(com.trolltech.qt.core.QModelIndex index)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>doubleClicked(com.trolltech.qt.core.QModelIndex index)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>entered(com.trolltech.qt.core.QModelIndex index)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>pressed(com.trolltech.qt.core.QModelIndex index)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>viewportEntered()</signal>
+            <slot></slot>
+        </connection>
+    </widget>
+
+    <widget name="QListView" extends="QAbstractItemView">
+        <property name="batchSize">
+            <int>100</int>
+        </property>
+        <property name="wordWrap">
+            <bool>false</bool>
+        </property>
+        <property name="selectionRectVisible">
+            <bool>false</bool>
+        </property>
+        <property name="uniformItemSizes">
+            <bool>false</bool>
+        </property>
+        <property name="modelColumn">
+            <int>0</int>
+        </property>
+        <property name="gridSize">
+            <size>
+                <width>0</width>
+                <height>0</height>
+            </size>
+        </property>
+        <property name="viewMode">
+            <enum>com.trolltech.qt.gui.QListView.ViewMode.ListMode</enum>
+        </property>
+        <property name="spacing">
+            <int>0</int>
+        </property>
+        <property name="objectName">
+            <string>listView</string>
+        </property>
+        <!--
+                <property name="isWrapping">
+                    <bool>false</bool>
+                </property>
+        -->
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>indexesMoved(java.util.List indexes)</signal>
+            <slot></slot>
+        </connection>
+    </widget>
+
+    <widget name="QListWidget" extends="QListView">
+        <property name="currentRow">
+            <int>-1</int>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <!--
+                                <width>256</width>
+                                <height>192</height>
+                -->
+                <width>73</width>
+                <height>73</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Expanding" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Expanding">
+                <horStretch>0</horStretch>
+                <verStretch>0</verStretch>
+            </sizePolicy>
+        </property>
+        <property name="objectName">
+            <string>listWidget</string>
+        </property>
+        <property name="sortingEnabled">
+            <bool>false</bool>
+        </property>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>currentItemChanged(com.trolltech.qt.gui.QListWidgetItem current,com.trolltech.qt.gui.QListWidgetItem previous)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>currentRowChanged(java.lang.Integer currentRow)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>currentTextChanged(Str currentText)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>itemActivated(com.trolltech.qt.gui.QListWidgetItem item)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>itemChanged(com.trolltech.qt.gui.QListWidgetItem item)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>itemClicked(com.trolltech.qt.gui.QListWidgetItem item)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>itemDoubleClicked(com.trolltech.qt.gui.QListWidgetItem item)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>itemEntered(com.trolltech.qt.gui.QListWidgetItem item)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>itemPressed(com.trolltech.qt.gui.QListWidgetItem item)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>itemSelectionChanged()</signal>
+            <slot></slot>
+        </connection>
+    </widget>
+
+    <widget name="QTableView" extends="QAbstractItemView">
+        <property name="showGrid">
+            <bool>true</bool>
+        </property>
+        <property name="gridStyle">
+            <enum>com.trolltech.qt.core.Qt.PenStyle.SolidLine</enum>
+        </property>
+        <property name="sortingEnabled">
+            <bool>false</bool>
+        </property>
+        <property name="wordWrap">
+            <bool>true</bool>
+        </property>
+        <property name="cornerButtonEnabled">
+            <bool>true</bool>
+        </property>
+        <property name="selectionMode">
+            <enum>com.trolltech.qt.gui.QAbstractItemView.SelectionMode.MultiSelection</enum>
+        </property>
+        <property name="objectName">
+            <string>tableView</string>
+        </property>
+    </widget>
+
+    <widget name="QTableWidget" extends="QTableView">
+        <property name="rowCount">
+            <int>0</int>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>73</width>
+                <height>73</height>
+                <!--
+                                <width>256</width>
+                                <height>192</height>
+                -->
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Expanding" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Expanding">
+                <horStretch>0</horStretch>
+                <verStretch>0</verStretch>
+            </sizePolicy>
+        </property>
+        <property name="objectName">
+            <string>tableWidget</string>
+        </property>
+        <property name="columnCount">
+            <int>0</int>
+        </property>
+         <property name="selectionMode">
+            <enum>com.trolltech.qt.gui.QAbstractItemView.SelectionMode.MultiSelection</enum>
+        </property>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>cellActivated(java.lang.Integer row,java.lang.Integer column)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>cellChanged(java.lang.Integer row,java.lang.Integer column)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>cellClicked(java.lang.Integer row,java.lang.Integer column)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>cellDoubleClicked(java.lang.Integer row,java.lang.Integer column)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>cellEntered(java.lang.Integer row,java.lang.Integer column)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>cellPressed(java.lang.Integer row,java.lang.Integer column)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>currentCellChanged(java.lang.Integer currentRow,java.lang.Integer currentColumn,java.lang.Integer previousRow,java.lang.Integer previousColumn)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>currentItemChanged(com.trolltech.qt.gui.QTableWidgetItem current,com.trolltech.qt.gui.QTableWidgetItem previous)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>itemActivated(com.trolltech.qt.gui.QTableWidgetItem item)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>itemChanged(com.trolltech.qt.gui.QTableWidgetItem item)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>itemClicked(com.trolltech.qt.gui.QTableWidgetItem item)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>itemDoubleClicked(com.trolltech.qt.gui.QTableWidgetItem item)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>itemEntered(com.trolltech.qt.gui.QTableWidgetItem item)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>itemPressed(com.trolltech.qt.gui.QTableWidgetItem item)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>itemSelectionChanged()</signal>
+            <slot></slot>
+        </connection>
+    </widget>
+
+    <widget name="QTreeView" extends="QAbstractItemView">
+        <property name="autoExpandDelay">
+            <int>-1</int>
+        </property>
+        <property name="indentation">
+            <int>20</int>
+        </property>
+        <property name="rootIsDecorated">
+            <bool>true</bool>
+        </property>
+        <property name="uniformRowHeights">
+            <bool>false</bool>
+        </property>
+        <property name="itemsExpandable">
+            <bool>true</bool>
+        </property>
+        <property name="sortingEnabled">
+            <bool>false</bool>
+        </property>
+        <property name="animated">
+            <bool>false</bool>
+        </property>
+        <property name="allColumnsShowFocus">
+            <bool>false</bool>
+        </property>
+        <property name="wordWrap">
+            <bool>false</bool>
+        </property>
+        <property name="objectName">
+            <string>treeView</string>
+        </property>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>expanded(com.trolltech.qt.core.QModelIndex index)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>collapsed(com.trolltech.qt.core.QModelIndex index)</signal>
+            <slot></slot>
+        </connection>
+    </widget>
+
+    <widget name="QTreeWidget" extends="QTreeView">
+        <property name="columnCount">
+            <int>1</int>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>73</width>
+                <height>73</height>
+                <!--
+                                <width>256</width>
+                                <height>192</height>
+                -->
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Expanding" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Expanding">
+                <horStretch>0</horStretch>
+                <verStretch>0</verStretch>
+            </sizePolicy>
+        </property>
+        <property name="objectName">
+            <string>treeWidget</string>
+        </property>
+
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>currentItemChanged(com.trolltech.qt.gui.QTreeWidgetItem current,com.trolltech.qt.gui.QTreeWidgetItem previous)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>itemActivated(com.trolltech.qt.gui.QTreeWidgetItem item,java.lang.Integer column)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>itemChanged(com.trolltech.qt.gui.QTreeWidgetItem item,java.lang.Integer column)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>itemClicked(com.trolltech.qt.gui.QTreeWidgetItem item,java.lang.Integer column)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>itemCollapsed(com.trolltech.qt.gui.QTreeWidgetItem item)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>itemDoubleClicked(com.trolltech.qt.gui.QTreeWidgetItem item,java.lang.Integer column)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>itemEntered(com.trolltech.qt.gui.QTreeWidgetItem item,java.lang.Integer column)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>itemExpanded(com.trolltech.qt.gui.QTreeWidgetItem item)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>itemPressed(com.trolltech.qt.gui.QTreeWidgetItem item,java.lang.Integer column)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>itemSelectionChanged()</signal>
+            <slot></slot>
+        </connection>
+    </widget>
+
+    <widget name="QAbstractButton" extends="QWidget">
+        <property name="autoExclusive">
+            <bool>false</bool>
+        </property>
+        <property name="autoRepeat">
+            <bool>false</bool>
+        </property>
+        <property name="autoRepeatDelay">
+            <int>300</int>
+        </property>
+        <property name="autoRepeatInterval">
+            <int>100</int>
+        </property>
+        <property name="checkable">
+            <bool>false</bool>
+        </property>
+        <property name="checked">
+            <bool>false</bool>
+        </property>
+        <property name="icon">
+            <imageRef/>
+        </property>
+        <property name="iconSize">
+            <size>
+                <width>16</width>
+                <height>16</height>
+            </size>
+        </property>
+        <property name="shortcut">
+            <string/>
+        </property>
+        <property name="text">
+            <mlstringid/>
+        </property>
+
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>clicked(Bool checked)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>toggled(Bool checked)</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>pressed()</signal>
+            <slot></slot>
+        </connection>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>released()</signal>
+            <slot></slot>
+        </connection>
+
+    </widget>
+
+    <widget name="QWidget" extends="QObject">
+        <property name="acceptDrops">
+            <bool>false</bool>
+        </property>
+        <property name="accessibleDescription">
+            <string/>
+        </property>
+        <property name="accessibleName">
+            <string/>
+        </property>
+        <property name="autoFillBackground">
+            <bool>false</bool>
+        </property>
+        <property name="baseSize">
+            <size>
+                <width>0</width>
+                <height>0</height>
+            </size>
+        </property>
+        <property name="contextMenuPolicy">
+            <enum>DefaultContextMenu</enum>
+        </property>
+        <property name="cursor">
+            <cursorShape>com.trolltech.qt.core.Qt.CursorShape.ArrowCursor</cursorShape>
+        </property>
+        <property name="enabled">
+            <bool>true</bool>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>100</width>
+                <height>100</height>
+            </rect>
+        </property>
+        <property name="layoutDirection">
+            <enum>com.trolltech.qt.core.Qt.LayoutDirection.LeftToRight</enum>
+        </property>
+        <property name="maximumSize">
+            <size>
+                <width>16777215</width>
+                <height>16777215</height>
+            </size>
+        </property>
+        <property name="minimumSize">
+            <size>
+                <width>0</width>
+                <height>0</height>
+            </size>
+        </property>
+        <property name="sizePolicy">
+            <sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Minimum" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Fixed">
+                <horStretch>0</horStretch>
+                <verStretch>0</verStretch>
+            </sizePolicy>
+        </property>
+        <property name="windowIcon">
+            <imageRef/>
+        </property>
+        <property name="windowTitle">
+            <mlstringid/>
+        </property>
+        <property name="statusTip">
+            <mlstringid/>
+        </property>
+        <property name="styleSheet">
+            <string/>
+        </property>
+        <property name="toolTip">
+            <mlstringid/>
+        </property>
+        <property name="whatsThis">
+            <string/>
+        </property>
+        <connection>
+            <sender></sender>
+            <receiver></receiver>
+            <signal>customContextMenuRequested(com.trolltech.qt.core.QPoint pos)</signal>
+            <slot></slot>
+        </connection>
+
+    </widget>
+
+    <widget name="QWidgetItem">
+        <property name="text">
+            <mlstringid/>
+            <!--
+                        <string></string>
+            -->
+        </property>
+        <property name="icon">
+            <imageRef/>
+        </property>
+        <property name="textAlignment">
+            <set>com.trolltech.qt.core.Qt.AlignmentFlag.AlignLeft | com.trolltech.qt.core.Qt.AlignmentFlag.AlignVCenter</set>
+        </property>
+        <!-- Fake -->
+        <property name="resizeMode">
+            <enum>com.trolltech.qt.gui.QHeaderView.ResizeMode.Interactive</enum>
+        </property>
+        <property name="background">
+            <brush alpha="255">
+                <red>255</red>
+                <green>255</green>
+                <blue>255</blue>
+            </brush>
+        </property>
+        <property name="foreground">
+            <brush alpha="255">
+                <red>0</red>
+                <green>0</green>
+                <blue>0</blue>
+            </brush>
+        </property>
+    </widget>
+
+    <widget name="QObject">
+        <property name="objectName">
+            <string>object</string>
+        </property>
+    </widget>
+
+</QtTypes>

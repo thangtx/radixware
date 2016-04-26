@@ -1,0 +1,650 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcWAGVG6ZHCVAHVIRIHGK4U33EXY" Name="DashDiagramWebContainer" Type="3" Environment="web">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcWAGVG6ZHCVAHVIRIHGK4U33EXY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcWAGVG6ZHCVAHVIRIHGK4U33EXY">
+        <xsc:Item>
+          <xsc:Java>@Override
+protected String[] clientScriptsRequired() {
+    final String[] superResult = super.clientScriptsRequired();
+    final String[] thisResult = new String[]{
+        //"org/radixware/wps/views/dashboard/flot.js",
+        "org/radixware/wps/views/dashboard/chartist.js"
+    };
+    if (superResult == null) {
+        return thisResult;
+    }
+    final String[] result = new String[superResult.length + thisResult.length];
+    for (int i = 0; i &lt; superResult.length; i++) {
+        result[i] = superResult[i];
+    }
+    for (int i = 0; i &lt; thisResult.length; i++) {
+        result[i + superResult.length] = thisResult[i];
+    }
+    return result;
+}
+
+@Override
+protected String[] clientCssRequired() {
+    final String[] superResult = super.clientCssRequired();
+    final String[] thisResult = new String[]{
+        "org/radixware/wps/views/dashboard/chartist.min.css"
+    };
+    if (superResult == null) {
+        return thisResult;
+    }
+    final String[] result = new String[superResult.length + thisResult.length];
+    for (int i = 0; i &lt; superResult.length; i++) {
+        result[i] = superResult[i];
+    }
+    for (int i = 0; i &lt; thisResult.length; i++) {
+        result[i + superResult.length] = thisResult[i];
+    }
+    return result;
+}
+</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmgGWGKLJYEXRF53G6EYWRUY5H4Z4" Name="Root"/>
+    <PropertyGroup Id="cpgGCIMAIV7KBEZLD27NQDYVPSDVY" Name="Root"/>
+    <Properties>
+      <Property Id="prdKYS7TIXCIJFGHFFMNZXP22CXTA" Name="highValue" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="11"/>
+      </Property>
+      <Property Id="prdMMIIBRNHHZDELLGCHKCYPZFZ5E" Name="lowValue" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="11"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth267ZHC7EBNB4PJ7B65B6N2GFWA" Name="DashDiagramWebContainer" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="isHistorical" Id="mprIZAWPO37ARADTHREWGZ2R6BTQE">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super();
+Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mth2EMZ3DOCPZF4HCW2K7ZRQ7ZFV4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("rwt-dash-diagram-container");
+Html.layout("$RWT.dashboard.diagram.layout");
+
+if (!isHistorical) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc5JBNBR6UFNB5RHQAAOP5JLL2AY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> diagramContainer = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc5JBNBR6UFNB5RHQAAOP5JLL2AY mthPJ25IVAC25BFBDICYZYAH6QTEY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    diagramContainer.Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mth2EMZ3DOCPZF4HCW2K7ZRQ7ZFV4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("rwt-dash-corr-diagram-container");
+    diagramContainer.Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthTHOXZPL6J5DYJDZW7WNZP2VU54" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("height", "100%");
+    diagramContainer.Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthTHOXZPL6J5DYJDZW7WNZP2VU54" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("width", "100%");
+    add(diagramContainer);
+    
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc5JBNBR6UFNB5RHQAAOP5JLL2AY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> legendContainer = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc5JBNBR6UFNB5RHQAAOP5JLL2AY mthPJ25IVAC25BFBDICYZYAH6QTEY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    legendContainer.Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mth2EMZ3DOCPZF4HCW2K7ZRQ7ZFV4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("rwt-dash-diagram-legend");
+    legendContainer.Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthTHOXZPL6J5DYJDZW7WNZP2VU54" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("width", "100%");
+    add(legendContainer);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYPA36P75BFCCHOA57RJZWSARFE" Name="updateData" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="diagRs" Id="mprGO5RQXB7RFHDRINEHUXEBT6UIQ">
+            <Type TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="DiagramRs"/>
+          </Parameter>
+          <Parameter Name="diagSettings" Id="mprMNBSYGVNZVCWLLUBFX6LANOCSU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.dashboard.DiagramSettings"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (diagRs != null) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY prdKYS7TIXCIJFGHFFMNZXP22CXTA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = 1;
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY prdMMIIBRNHHZDELLGCHKCYPZFZ5E" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = 0;
+    Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("DiagRs", </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mth5FN25OEZ35BKLIBTLIBYRB4WY4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(diagRs, diagSettings));
+    Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("X-AxisTitle", </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsESSBHYA2ORF4PGEXDOYYO3T5DQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Y-AxisTitle", </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsMBIK2XJAJFHMXNW2HMNETAFVEM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    if (diagRs.isSetHistoryRs()) {
+        String kind = diagRs.HistoryRs.MetricKind;
+        String diagramType = "None";
+        if (kind != null) {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21" Path="acsF47GG6XUPJH5ZKZFOWDK7GI7LE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> kindItem = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21" Path="acsF47GG6XUPJH5ZKZFOWDK7GI7LE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getForValue(kind);
+            if (kindItem.isInDomain(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="dmnHEII2X2EBJDKRCLMY7OZ7Q4U24 dmnQQWPNSU3FBH7ZPNRFXWJKZE7MQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)) {
+                diagramType = "Stat";
+            } else if (kindItem.isInDomain(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="dmnHEII2X2EBJDKRCLMY7OZ7Q4U24 dmnZ6D3VJ3HZFCQBCWV2RN2AIRG34 dmnSJT5QPAID5DVFCJ5IH3WCMOKJM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)) {
+                diagramType = "Point";
+            } else if (kindItem.isInDomain(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="dmnHEII2X2EBJDKRCLMY7OZ7Q4U24 dmnZ6D3VJ3HZFCQBCWV2RN2AIRG34"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)) {
+                diagramType = "Event";
+            }
+        }
+        Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("DiagramType", diagramType);
+        Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("IsAutoRange", diagSettings.HistSettings.isAutoValueRange());
+        if (!diagSettings.HistSettings.isAutoValueRange()) {
+            Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("MinValue", Double.toString(diagSettings.HistSettings.ValueScale[0]));
+            Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("MaxValue", Double.toString(diagSettings.HistSettings.ValueScale[1]));
+        } else {
+            Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("MinValue", Double.toString(1.1 * </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY prdMMIIBRNHHZDELLGCHKCYPZFZ5E" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.doubleValue()));
+            Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("MaxValue", Double.toString(1.1 * </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY prdKYS7TIXCIJFGHFFMNZXP22CXTA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.doubleValue()));
+        }
+    }
+
+    Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("LastUpdateTime", Long.toString(System.currentTimeMillis() * 1000));
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthSCTOUUVKYFG5PLDMDX4A5H2TIQ" Name="calcHighLowValueAndReturnJSONString" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="val" Id="mprWRB32NKJNVG5TDPPUC3W64FCJY">
+            <Type TypeId="400" extStr="java.math.BigDecimal"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (val != null) {
+    if (val > </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY prdKYS7TIXCIJFGHFFMNZXP22CXTA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY prdKYS7TIXCIJFGHFFMNZXP22CXTA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = val;
+    } else if (val &lt; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY prdMMIIBRNHHZDELLGCHKCYPZFZ5E" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY prdMMIIBRNHHZDELLGCHKCYPZFZ5E" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = val;
+    }
+}
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(val);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth5FN25OEZ35BKLIBTLIBYRB4WY4" Name="xmlToJSONString" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="xDiagRs" Id="mprR5FVUESBZFGYTFCQHPOAED6AUU">
+            <Type TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="DiagramRs"/>
+          </Parameter>
+          <Parameter Name="diagSettings" Id="mpr5RLH76ZLQFFLPMB6BHZT7CSVJY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.dashboard.DiagramSettings"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>StringBuilder sb = new StringBuilder();
+if (xDiagRs.isSetHistoryRs()) {
+    sb.append("{\"HistoryRs\" : ");
+    sb.append("{\"TimeFrom\" : \"" + xDiagRs.HistoryRs.TimeFrom.Time + "\", ");
+    sb.append("\"TimeTo\" : \"" + xDiagRs.HistoryRs.TimeTo.Time + "\", ");
+    sb.append("\"Records\" : [");
+
+    org.radixware.schemas.monitoringcommand.MetricRecord rec;
+    //Iteration in reverse order. Result ordered by BegTime ASC.
+    for (int index = xDiagRs.HistoryRs.Records.RecordList.size() - 1; index >= 0; index--) {
+        rec = xDiagRs.HistoryRs.Records.RecordList.get(index);
+        sb.append(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthIANJRCVHOJB5TIW75VKFEYD7HQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(rec, true)).append(",");
+    }
+    if (!xDiagRs.HistoryRs.Records.RecordList.isEmpty()) {
+        sb.deleteCharAt(sb.length() - 1);
+    }
+    sb.append("]");
+    if (xDiagRs.HistoryRs.PrevRecord != null) {
+        sb.append(", \"PrevRecord\" : ");
+        org.radixware.schemas.monitoringcommand.MetricRecord prevRec = xDiagRs.HistoryRs.PrevRecord;
+        sb.append(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthIANJRCVHOJB5TIW75VKFEYD7HQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(prevRec, xDiagRs.HistoryRs.Records.RecordList.isEmpty()));
+    }
+    if (xDiagRs.HistoryRs.ValueRanges != null) {
+        org.radixware.schemas.monitoringcommand.MetricValueRanges ranges = xDiagRs.HistoryRs.ValueRanges;
+        sb.append(", \"ValueRanges\" : " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthBNKOOGLZBJCWJEPJPSCDVLP2WU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ranges));
+    }
+    sb.append("}}");
+
+} else if (xDiagRs.isSetCorrellationRs()) {
+    sb.append("{\"CorrellationRs\" : ");
+    sb.append("{\"Records\" : [");
+    boolean isRecordsEmpty = true;
+    for (org.radixware.kernel.common.client.dashboard.DiagramSettings ds : diagSettings.CorrSettings.MetricSettingsList) {
+        for(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="DiagramRs.CorrellationRs.CorrRecord"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> corrRec : xDiagRs.CorrellationRs.CorrRecordList) {
+            if(corrRec.StateId == ds.StateId) {
+                isRecordsEmpty = false;
+                sb.append("{");
+                if(corrRec.isSetValueRanges()) {
+                    sb.append("\"ValueRange\" : " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthBNKOOGLZBJCWJEPJPSCDVLP2WU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(corrRec.ValueRanges) + ", ");
+                }
+                sb.append("\"Record\" : {\"Title\" : \"" + ds.Title + "\", \"Value\" : ");
+                if(ds.diagramType.equals(org.radixware.kernel.common.client.dashboard.DiagramSettings.EDiagramType.STATISTIC)) {
+                    sb.append("\"" + corrRec.CurrentState.AvgVal + "\"");
+                } else {
+                    sb.append("\"" + corrRec.CurrentState.EndVal + "\"");
+                }
+                sb.append("}}");
+                sb.append(",");
+                break;
+            }
+        }
+    }
+    if (!isRecordsEmpty) {
+        sb.deleteCharAt(sb.length() - 1);
+    }
+    sb.append("]}}");
+}
+
+return sb.toString();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthBNKOOGLZBJCWJEPJPSCDVLP2WU" Name="metricValueRangesToJSONString" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="ranges" Id="mprBTBEA4N5TZHLHP224ZO55RVWSY">
+            <Type TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="MetricValueRanges"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>java.lang.StringBuilder sb = new java.lang.StringBuilder();
+sb.append(" {\"LowErrorVal\" : " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ranges.LowErrorVal) + ", \"HighErrorVal\" : " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ranges.HighErrorVal) + ", ");
+sb.append("\"LowWarnVal\" : " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ranges.LowWarnVal) + ", \"HighWarnVal\" : " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ranges.HighWarnVal) + "}");
+return sb.toString();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthIANJRCVHOJB5TIW75VKFEYD7HQ" Name="metricRecordToJSONString" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="rec" Id="mprMEWHYQ4J5BFS7HRPE76YMO4KSQ">
+            <Type TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="MetricRecord"/>
+          </Parameter>
+          <Parameter Name="calcHighLowVal" Id="mprHW6YBYGYGBHTVK6TJ5OBE3GLIE">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>java.lang.StringBuilder sb = new java.lang.StringBuilder();
+if (calcHighLowVal) {
+    sb.append(" {\"MinVal\" : " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthSCTOUUVKYFG5PLDMDX4A5H2TIQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(rec.MinVal) + ", \"MaxVal\" : " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthSCTOUUVKYFG5PLDMDX4A5H2TIQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(rec.MaxVal) + ", \"AvgVal\" : " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthSCTOUUVKYFG5PLDMDX4A5H2TIQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(rec.AvgVal) + ", ");
+    sb.append("\"BegVal\" : " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthSCTOUUVKYFG5PLDMDX4A5H2TIQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(rec.BegVal) + ", \"EndVal\" : " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthSCTOUUVKYFG5PLDMDX4A5H2TIQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(rec.EndVal) + ", ");
+    sb.append("\"BegTime\" : " + rec.BegTime.Time + ", \"EndTime\" : " + rec.EndTime.Time + "}");
+} else {
+    sb.append(" {\"MinVal\" : " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(rec.MinVal) + ", \"MaxVal\" : " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(rec.MaxVal) + ", \"AvgVal\" : " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(rec.AvgVal) + ", ");
+    sb.append("\"BegVal\" : " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(rec.BegVal) + ", \"EndVal\" : " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(rec.EndVal) + ", ");
+    sb.append("\"BegTime\" : " + rec.BegTime.Time + ", \"EndTime\" : " + rec.EndTime.Time + "}");
+}
+return sb.toString();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Name="bigDecimalToJSONString" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="val" Id="mprN556FA7RXRA3RB7C2JT3GDMPTA">
+            <Type TypeId="400" extStr="java.math.BigDecimal"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return val == null ? "null" : String.valueOf(val.doubleValue());</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="adc5JBNBR6UFNB5RHQAAOP5JLL2AY"/>
+  </AdsClassDefinition>
+</AdsDefinition>

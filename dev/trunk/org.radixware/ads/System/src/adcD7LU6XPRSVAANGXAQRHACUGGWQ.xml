@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcD7LU6XPRSVAANGXAQRHACUGGWQ" Name="EnumKeyValueEditorModel" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcD7LU6XPRSVAANGXAQRHACUGGWQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcD7LU6XPRSVAANGXAQRHACUGGWQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgF4HYOR3OL5CRJHQ5KTZ7HBYBOI" Name="Root"/>
+    <PropertyGroup Id="cpgY7NC3VYYPRHTVDZHZK3UUECEZ4" Name="Root"/>
+    <Properties>
+      <Property Id="prdGOWTTJQ3TFDOXDX7DSI6AWMBBU" Name="enumDef" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules IsFinal="true"/>
+        <Type TypeId="411" Path="adcUTMGTTLFTFBHJMCICCD6GSYFZ4"/>
+      </Property>
+      <Property Id="prdAV2ORWFLH5GANFECUXE5XZXH5U" Name="predefinedValuesByKey" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="400" extStr="java.util.Map">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="21"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="221"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </Type>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthCYWRPL5OT5BATCQYDA2B5FADXA" Name="EnumKeyValueEditorModel" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="enumId" Id="mprPH6MZLAXVFGGJFACV32QMLJX2A">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="predefinedValuesByKey" Id="mprA5ENEBT4EFCTVH4BA5DFESGNNQ">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="221"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcD7LU6XPRSVAANGXAQRHACUGGWQ prdGOWTTJQ3TFDOXDX7DSI6AWMBBU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthFK3EWBJGWBA3JCFUCZGO3QUYZM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc53GYAPZQEBEQLNPUG64TNAO5F4 mthJ65Z3KHRHZEV3MYAFOWB4NLCX4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(enumId);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcD7LU6XPRSVAANGXAQRHACUGGWQ prdAV2ORWFLH5GANFECUXE5XZXH5U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = predefinedValuesByKey;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthMMZGI5HC7ZAJRPQQ7P76IVC4NI" Name="getKeyTitle" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="key" Id="mprCTJX64WGDZB63NYZVTOSBO7CWQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcD7LU6XPRSVAANGXAQRHACUGGWQ prdGOWTTJQ3TFDOXDX7DSI6AWMBBU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcUTMGTTLFTFBHJMCICCD6GSYFZ4 mthYYW4AZNXEVG7VKFUCJ6VP2MBFA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(key).</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcM4BG2LDBPRGKTFHZGXM3KTKYII mthUQVMUHN5IZHRRO5NLE5DYRUC7I" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+} catch (Exception ex) {
+    return null;
+}
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth34S4KEIVN5BHRP63DV3URM7Z74" Name="getKeys" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="221"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> result = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcM4BG2LDBPRGKTFHZGXM3KTKYII"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> item : </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcD7LU6XPRSVAANGXAQRHACUGGWQ prdGOWTTJQ3TFDOXDX7DSI6AWMBBU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Items.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcJ2IOAFJPMJBKLJYWAHHMZMQXVI mthKRPG6W356BE4LPEMV2FAI2WJU4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+        result.add(item.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcM4BG2LDBPRGKTFHZGXM3KTKYII mth65SUO7BDNJGFXP33WJK5UG4MX4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcRGCAH2OFZVFETKEAS4A2YGFWB4 mth5XQGA3MELNGYFCSGHHJUARBSVU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+    }
+    return result;
+} catch (Exception ex) {
+    return null;
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth42P5K42LDVBABOSQIOW2WE2WC4" Name="getValuesForKey" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="key" Id="mprJY56EM6PXJA4DG7ODCG2YKODWE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="221"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcD7LU6XPRSVAANGXAQRHACUGGWQ prdAV2ORWFLH5GANFECUXE5XZXH5U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcD7LU6XPRSVAANGXAQRHACUGGWQ prdAV2ORWFLH5GANFECUXE5XZXH5U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.get(key);
+}
+return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="adcROWD3FJGTFBK7LDZ7IINXGZFZQ"/>
+  </AdsClassDefinition>
+</AdsDefinition>

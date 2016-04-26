@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="axcJVWH6ETL7JBTLASXJNT3MU4FZ4" Name="PipelineException.Interrupted" Type="8" Environment="server">
+    <AccessRules IsFinal="true">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc7X7O5URAUBFPXPWB2C2GB56LIM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcXXWZKT5D2NDQJMSOT3TRAY532A"/>
+    </Bodies>
+    <MethodGroup Id="cmgBK52C2OSMJDL5MJ2IMTWIUGPNU" Name="Root"/>
+    <PropertyGroup Id="cpgUVEWVXSRZRFRLKBKQ6LTTLBLFE" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthWR2QFZZSJVETPHM2HUCMA2OR7Y" Name="PipelineException.Interrupted" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="mess" Id="mpr25A7RSKJVVBVTGF2BSJOYX4ZMY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(mess);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthMZDOFVQBCRAKXNXTEHHF2VIBIE" Name="PipelineException.Interrupted" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="mess" Id="mprXJBE3PNRBJGL3OO7LETOTDMG7U">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="node" Id="mpr6QSJGPI2VBARJJX2IDW74UY2FY">
+            <Type TypeId="411" Path="aicC6PFHABKKZBO3N6RNZ66DMI5O4"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(mess, node);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="axcJUFSBLVXVZEYDIHHN4G3GICTXI"/>
+  </AdsClassDefinition>
+</AdsDefinition>

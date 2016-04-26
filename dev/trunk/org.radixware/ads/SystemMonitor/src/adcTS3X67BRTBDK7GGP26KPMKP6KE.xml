@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcTS3X67BRTBDK7GGP26KPMKP6KE" Name="MetricValue.Event" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.server.monitoring.EventValue"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcZALO6PCYF5GYHIDCAXPOCIN3N4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc72V7E6LQARCM5DIUUAOV6A2CEE"/>
+    </Bodies>
+    <MethodGroup Id="cmgY6WWHUHZIBGHPPE6MDIZUQODSM" Name="Root"/>
+    <PropertyGroup Id="cpgIMY5JCKHG5CDPMZGAG3FTJDTLA" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth7BZUIQY24JEL5FMRENNKJNTYO4" Name="getNewValue" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getNewValue()Ljava.lang.Double;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.lang.Double"/>
+      </Method>
+      <Method Id="mth4ENDGHWNJ5HCBKLTV5HXMH6GOE" Name="MetricValue.Event" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.Double;Ljava.lang.Double;J)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="oldValue" Id="mpr3G2326P7QRBGHEHXABM6B3ZG6I">
+            <Type TypeId="400" extStr="java.lang.Double"/>
+          </Parameter>
+          <Parameter Name="newValue" Id="mpr6XBTV47XCRGH7LHITGA6BQF2WI">
+            <Type TypeId="400" extStr="java.lang.Double"/>
+          </Parameter>
+          <Parameter Name="endTimeMillis" Id="mprALVLPSQVLBGU3MRLRPUYPOPAHM">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthJBH6SEHQENA4RNW3BRY7LN4GJY" Name="getOldValue" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getOldValue()Ljava.lang.Double;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.lang.Double"/>
+      </Method>
+      <Method Id="mthZE4VKFXBMFH5RAMBAA7HPILVNM" Name="MetricValue.Event" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.Double;Ljava.lang.Double;Lorg.radixware.kernel.server.monitoring.IStatValue;J)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprULNVWMVMX5GW3JJG73FJFT42XU">
+            <Type TypeId="400" extStr="java.lang.Double"/>
+          </Parameter>
+          <Parameter Name="arg1" Id="mpr3VHO6UICRFHR3ODF2YDQQWRG7A">
+            <Type TypeId="400" extStr="java.lang.Double"/>
+          </Parameter>
+          <Parameter Name="arg2" Id="mprNJUXOT35HRH5BP7KLODO2NS5ME">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.monitoring.IStatValue"/>
+          </Parameter>
+          <Parameter Name="arg3" Id="mprGGIHXQLM2JHQNNDLE3S5E6AJA4">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthBOPHTFQ6WFDDJBRXLMMRMARKCY" Name="MetricValue.Event" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(JJJ)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprAZN7X7MCHJEYPHZH4NWWRJMOT4">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="arg1" Id="mprWVHKSKKDORCUHME43V4AC44O7U">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="arg2" Id="mprHNIQ4MND3NAB5ICOOJOPKBS2P4">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthEJZVVTP4KVFV3EEF7MQJKJUEW4" Name="getIntermediateStat" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getIntermediateStat()Lorg.radixware.kernel.server.monitoring.IStatValue;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.monitoring.IStatValue"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="apcMGIV674XJHORDAGMABIFNQAABA" Name="SimpleDlg" Type="3" Environment="common-client" IsDual="true">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcVOSDSOUCGRAHVC6K4763ZRNE7E" Environment="common-client"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcIWV6627FQ5CTJP2PYXQHJMPQRM"/>
+    </Bodies>
+    <MethodGroup Id="cmgTPBTZA7RIBE6ZLQR5JC6UVDAKE" Name="Root"/>
+    <PropertyGroup Id="cpg66EQ547VAVFARICMCC4HLC2DFM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth2ABFGGVDL7ORDI2YABIFNQAABA" Name="messageWarning" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="env" Id="mprP7GN6J3AONF5FNBWGCSADMAS4Y">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
+          <Parameter Name="mess" Id="mprBT26PF5G7JHABPJGXGAT6WMLTQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>env.messageWarning(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsOSKUYJNDL7ORDI2YABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,mess);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth3IATAAVDL7ORDI2YABIFNQAABA" Name="messageInformation" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="env" Id="mprWXL4LFN3CVAKZMACFN763SMWD4">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
+          <Parameter Name="mess" Id="mprY3IYHCQUYZFAJE5H6EE4ULNYWU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>env.messageInformation(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsA36QSDNDL7ORDI2YABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, mess);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth75HUJ3FCL7ORDI2YABIFNQAABA" Name="messageError" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="env" Id="mprVJIMF3QMVFA7VGIQCEZNHPGZJA">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
+          <Parameter Name="mess" Id="mprQNQ6MLABG5DU5CJBZWKNETBNYA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>env.messageError(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls2DPQ76VCL7ORDI2YABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,mess);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthE6E4IWVCL7ORDI2YABIFNQAABA" Name="messageInformation" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="env" Id="mpr5ECPVITROFAZZL7DZSVCN3NK4A">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
+          <Parameter Name="title" Id="mprTOZPFJI4MVFANDW27E7KGBIJ5Q">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="mess" Id="mprOBDP7U2NKVHXXAWHAQGEQCS634">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>env.messageInformation(title,mess);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthEOEOINMYJHORDAGMABIFNQAABA" Name="askDateTime" Nature="0" Environment="common-client" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="environment" Id="mprD76FF45IAJGXFDOHJJISNZPYBU">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
+          <Parameter Name="title" Id="mprFRI3UZXICVBX5HUKO4NN67I5PY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="startVal" Id="mpr7ANNI6323ZFN5GJ5SLCHIVQZ7A">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aic6AK7SY62XVCVRKS7SWMSZTZCPI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> dialog = 
+    environment.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthY43VYOUOR5H2ZF2A2FAXYK5HQ4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicB3BNIFTT3JAKJHXNKN6FEHBAPQ mthWRCFNCLWEJBZVJCQUEXKQRLFVM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicMVS5QUGP7RHAFP5ASZ2Z27WXUE mth6SVZNTPSLRHTHLTFRPRBFDIPJQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(environment, 
+                                                                      environment.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthPET57QQAFFCJTO2SXAUU5UUPLY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), 
+                                                                      new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc5WVXEYPYG5GHFPN2MTWADHZ6PY mthMXHCZ7ZNFNAOVKMSI5FZJMUQQQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), 
+                                                                      startVal);
+if (title!=null)
+   dialog.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aic6XXEZKQ2K5AEJFYAA3DX7EFR6U mthLK6D4276YBB23HG3TYDL37YRXU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(title);
+
+return dialog.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aic6XXEZKQ2K5AEJFYAA3DX7EFR6U mth64RWGAYVHRDGJMLHSN66TOXNQQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcDAOFOPE66ZA5ZP7ALHOOPQIQ6I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.ACCEPTED ? dialog.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aic6AK7SY62XVCVRKS7SWMSZTZCPI mthTT3GU42S7JA3THSVCAPB7OG7JI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() : null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthFCE4IWVCL7ORDI2YABIFNQAABA" Name="messageWarning" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="env" Id="mprLJBEEYRGKRBXLETP7XP6PY4PVY">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
+          <Parameter Name="title" Id="mprOOFY52HSGVAM3H3YG2T5JB6EGY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="mess" Id="mprY3QNKQAEDRC2NI6AYJPKWI2NWY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>env.messageWarning(title,mess);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthJBUAFXFCL7ORDI2YABIFNQAABA" Name="messageConfirmation" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="env" Id="mpr73YLEN7A6JGTXORIP4FDGXWUOU">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
+          <Parameter Name="mess" Id="mprFCGYEF6TORGAPPWLBJA54D6674">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return env.messageConfirmation(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls7VHUJ3FCL7ORDI2YABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,mess);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthSXBRABNEJHORDAGMABIFNQAABA" Name="askDate" Nature="0" Environment="common-client" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="environment" Id="mprVEE7L2MOPJC6LMXDGFNZTBSJFY">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
+          <Parameter Name="title" Id="mprYTG3R6X55NCKXAPLOG4DMO7HSA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="startVal" Id="mprNHZWAGUWCFA2TPREW5W7XTPLRY">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aic6AK7SY62XVCVRKS7SWMSZTZCPI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> dialog = 
+    environment.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthY43VYOUOR5H2ZF2A2FAXYK5HQ4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicB3BNIFTT3JAKJHXNKN6FEHBAPQ mthWRCFNCLWEJBZVJCQUEXKQRLFVM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicMVS5QUGP7RHAFP5ASZ2Z27WXUE mth6SVZNTPSLRHTHLTFRPRBFDIPJQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(environment, 
+                                                                      environment.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthPET57QQAFFCJTO2SXAUU5UUPLY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), 
+                                                                      (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)null, 
+                                                                      startVal);
+if (title!=null)
+   dialog.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aic6XXEZKQ2K5AEJFYAA3DX7EFR6U mthLK6D4276YBB23HG3TYDL37YRXU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(title);
+
+return dialog.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aic6XXEZKQ2K5AEJFYAA3DX7EFR6U mth64RWGAYVHRDGJMLHSN66TOXNQQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcDAOFOPE66ZA5ZP7ALHOOPQIQ6I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.ACCEPTED ? dialog.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aic6AK7SY62XVCVRKS7SWMSZTZCPI mthTT3GU42S7JA3THSVCAPB7OG7JI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() : null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthTWQRCB5CL7ORDI2YABIFNQAABA" Name="messageError" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="env" Id="mprB4UVIZQUN5HVHIE4YZFLOY2NJQ">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
+          <Parameter Name="title" Id="mprZDSWGWCARRDHNA2FPFBAP4W3QY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="mess" Id="mprINJL47CXMFALTOFZ4JWB6X7TGE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>env.messageError(title,mess);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthXWDV7D5CL7ORDI2YABIFNQAABA" Name="messageConfirmation" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="env" Id="mprWXFOEYJDQZA4NDJRS4XR2JEI3U">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
+          <Parameter Name="title" Id="mprEK3TR2L2VNDBVI5A32GUSCNJ6U">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="mess" Id="mprWGQ2BBZA7VGQLBU54XQVWN6R24">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return env.messageConfirmation(title,mess);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Model xmlns="http://schemas.radixware.org/ddsdef.xsd" xmlns:com="http://schemas.radixware.org/commondef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" Id="prjI7XFGVCDUZFUVILOXLE2QSSKJI" DbNamePrefix="RDX">
+  <Tables>
+    <Table Id="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" Name="EasSelectorAddons" DbName="RDX_EASSELECTORADDONS" UserExtMask="65568">
+      <Columns>
+        <Column Id="colTOTOEP36JFH35MA7BJYRU67GKU" Name="guid" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="true" DbName="GUID"/>
+        <Column Id="col36K2MUPKPRGPPAGLVPAUJ52PQE" Name="classGuid" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="true" DbName="CLASSGUID"/>
+        <Column Id="colYNFESMLQLBCGDCKG7FGDPYNPR4" Name="seq" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="SEQ"/>
+        <Column Id="colZ23Q7UUURBEAHGCRRSQEKZH76I" Name="isActive" ValType="1" Length="1" DbType="NUMBER(1,0)" NotNull="true" DbName="ISACTIVE">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>0</com:Value>
+          </DefaultVal>
+        </Column>
+        <Column Id="col6QH5TILJHRDDTC4CHYLQ6HLECA" Name="title" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="TITLE"/>
+        <Column Id="colDCQEQLHEC5F6VO633LHAE6BDMQ" Name="tableGuid" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="true" DbName="TABLEGUID"/>
+        <Column Id="colLR66PCM6LJGRNJMVM3ROBROYOY" Name="selPresentations" ValType="221" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="SELPRESENTATIONS"/>
+        <Column Id="colVTTB5PHSCFG5TAUCLOI27MO5XM" Name="lastUpdateUser" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="true" DbName="LASTUPDATEUSER"/>
+        <Column Id="colTZ42HZBXFFBPVL6P4MTIMOAHQE" Name="lastUpdateTime" ValType="12" Length="0" Precision="6" DbType="TIMESTAMP(6)" NotNull="true" DbName="LASTUPDATETIME"/>
+        <Column Id="colXT2U3TRV6VGAPEULXGUEZMPOAU" Name="baseFilterGuid" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="false" DbName="BASEFILTERGUID"/>
+        <Column Id="col6LHR4RTUVNEYXKKGYXZZSB74PY" Name="condition" ValType="27" Length="0" DbType="CLOB" NotNull="false" DbName="CONDITION"/>
+        <Column Id="colUZMKYBFP4VAWBHFP5NM7MIEZRU" Name="parameters" ValType="27" Length="0" DbType="CLOB" NotNull="false" DbName="PARAMETERS"/>
+      </Columns>
+      <PrimaryKey Id="idxK5NUBR4JHVFRBDNCPP4JRZML44" Name="PrimaryKey" DbName="PK_RDX_EASSELECTORADDONS" Unique="true">
+        <Columns>
+          <Column ColumnId="colTOTOEP36JFH35MA7BJYRU67GKU" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqMBPR75SLZRB5FNJNRBBDH3RESE" DbName="PK_RDX_EASSELECTORADDONS" Rely="true"/>
+      </PrimaryKey>
+      <Triggers>
+        <Trigger Id="trgGZOY7FK6ORALRMZ4HYRMYSPRKI" Name="UserPropOwn" DbName="UPO_HQSOHRWZH5ESLD2Y6IVF6XFBE4" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+   RDX_ENTITY.UserPropOnDelOwner('tblHQSOHRWZH5ESLD2Y6IVF6XFBE4', RDX_ENTITY.PackPIDStr(:old.GUID));
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+      </Triggers>
+      <Placement PosX="125" PosY="117"/>
+    </Table>
+  </Tables>
+  <Views>
+    <View Id="tblYXWA57SVWJDPNDY4FWY6VBBTKA" Name="EasSelectorAddonsTables" DbName="RDX_EASSELECTORADDONSTABLES" Distinct="false" WithOption="ReadOnly">
+      <Columns>
+        <Column Id="colGPOVD3BBHNEH7P6WYVSAOLXPGE" Name="tableGuid" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="true" DbName="TABLEGUID"/>
+        <Column Id="colCK67UCPXRFEJXGR4VIQ7NQYMWI" Name="addonClassGuid" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="true" DbName="ADDONCLASSGUID"/>
+      </Columns>
+      <PrimaryKey Id="idxCSFQXEKA3BHZDP2EWFQSBIHMPI" Name="PrimaryKey" DbName="PK_RDX_EASSELECTORADDONSTABLES" GenerateInDb="false" Unique="true">
+        <Columns>
+          <Column ColumnId="colGPOVD3BBHNEH7P6WYVSAOLXPGE" Order="Asc"/>
+          <Column ColumnId="colCK67UCPXRFEJXGR4VIQ7NQYMWI" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqUBWTEZGY4ZHSNISFEZMTWDLBIU" DbName="PK_RDX_EASSELECTORADDONSTABLES" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="238" PosY="400"/>
+      <Query>
+        <xsc:Item>
+          <xsc:Sql>Select Distinct </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="colDCQEQLHEC5F6VO633LHAE6BDMQ" Owner="TABLE">
+            <xsc:Sql>RDX_EASSELECTORADDONS.TABLEGUID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblYXWA57SVWJDPNDY4FWY6VBBTKA" PropId="colGPOVD3BBHNEH7P6WYVSAOLXPGE" Owner="THIS">
+            <xsc:Sql>TABLEGUID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" PropId="col36K2MUPKPRGPPAGLVPAUJ52PQE" Owner="TABLE">
+            <xsc:Sql>RDX_EASSELECTORADDONS.CLASSGUID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblYXWA57SVWJDPNDY4FWY6VBBTKA" PropId="colCK67UCPXRFEJXGR4VIQ7NQYMWI" Owner="THIS">
+            <xsc:Sql>ADDONCLASSGUID</xsc:Sql>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> From </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4">
+            <xsc:Sql>RDX_EASSELECTORADDONS</xsc:Sql>
+          </xsc:TableSqlName>
+        </xsc:Item>
+      </Query>
+      <UsedTables>
+        <Table>tblHQSOHRWZH5ESLD2Y6IVF6XFBE4</Table>
+      </UsedTables>
+    </View>
+  </Views>
+  <ExtTables>
+    <ExtTable Id="tbe23NNGBKB6FCGPCIPSLEQUSEXGE" TableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4">
+      <Placement PosX="408" PosY="203"/>
+    </ExtTable>
+  </ExtTables>
+  <References>
+    <Reference Id="ref6Q7RNEMDGBE3HFWGEDOZ4GPZWQ" DbName="FK_RDX_EASSELECTORADDONS_USER" Rely="true" Disable="true" Novalidate="true" Type="LINK" ChildTableId="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" ParentTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ExtParentTableId="tbe23NNGBKB6FCGPCIPSLEQUSEXGE" ConfirmDelete="false" DeleteMode="NONE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqSY4KIOLTGLNRDHRZABQAQH3XQ4">
+      <Columns>
+        <Item ChildColumnId="colVTTB5PHSCFG5TAUCLOI27MO5XM" ParentColumnId="colEF6ODCYWY3NBDGMCABQAQH3XQ4"/>
+      </Columns>
+    </Reference>
+  </References>
+</Model>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcCKPYW7HAERFDPHFIQME4R7LBDY" Name="DbUtils" Type="3" Environment="server">
+    <AccessRules Access="4" IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcCLZAL3AEVVHNJGUTR4D5VC2QUI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcGVDQWZDPZFFFHCDKYE7B2OC2BU">
+        <xsc:Item>
+          <xsc:Java>private static final String LOCK_SQL =
+        "declare "
+        + "lockHandle varchar2(128); "
+        + "begin "
+        + "dbms_lock.allocate_unique(?, lockHandle); "
+        + "? := dbms_lock.request(lockHandle, 6, 0, true); "
+        + "end;";
+</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmgII3RAGL27ZH4JEZPEX72V2X7ZA" Name="Root"/>
+    <PropertyGroup Id="cpgNV7P5NW2T5DHFAALF2K22KLX34" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthQXUWGG2D3VAC5OVQ2RM5HMECQU" Name="tryLock" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="lockName" Id="mpr6U5I4IJDJZBXLC22OMCE4747FM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="connection" Id="mpr33ZVSUQNQNDJBMGVWSI7PK7ENM">
+            <Type TypeId="400" extStr="java.sql.Connection"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcG6PZC4JQPBAI5C7ZFKWL4SWGKA"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final java.sql.CallableStatement cs = connection.prepareCall(LOCK_SQL);
+cs.registerOutParameter(2, java.sql.Types.INTEGER);
+cs.setString(1, lockName);
+try {
+    cs.execute();
+    if (cs.getInt(2) != 0) {
+        return false;
+    } else {
+        return true;
+    }
+} finally {
+    cs.close();
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,83 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mess="http://schemas.radixware.org/nethub.xsd" xmlns:wsdl="http://schemas.radixware.org/nethub.wsdl" targetNamespace="http://schemas.radixware.org/nethub.wsdl">
+	<types>
+		<xs:schema elementFormDefault="unqualified" attributeFormDefault="unqualified" targetNamespace="http://schemas.radixware.org/nethub.wsdl">
+			<xs:annotation>
+				<xs:appinfo source="http://schemas.radixware.org/designinfo.xsd">
+					<TransparentDef/>
+				</xs:appinfo>
+			</xs:annotation>
+			<xs:import namespace="http://schemas.radixware.org/nethub.xsd" schemaLocation="nethub.xsd"/>
+			<xs:element name="Invoke" type="mess:Invoke"/>
+			<xs:element name="Reconnect" type="mess:Reconnect"/>
+			<xs:element name="Send" type="mess:Send"/>
+			<xs:complexType name="Header"/>
+		</xs:schema>
+	</types>
+	<message name="InvokeRq">
+		<part name="InvokeRq" type="mess:InvokeRq"/>
+	</message>
+	<message name="InvokeRs">
+		<part name="InvokeRs" type="mess:InvokeRs"/>
+	</message>
+	<message name="ReconnectRq">
+		<part name="ReconnectRq" type="mess:ReconnectRq"/>
+	</message>
+	<message name="ReconnectRs">
+		<part name="ReconnectRs" type="mess:ReconnectRs"/>
+	</message>
+	<message name="SendRq">
+		<part name="SendRq" type="mess:SendRq"/>
+	</message>
+	<message name="SendRs">
+		<part name="SendRs" type="mess:SendRs"/>
+	</message>
+	<message name="Header">
+		<part name="Header" type="wsdl:Header"/>
+	</message>	
+	<portType name="nethub">
+		<operation name="Invoke">
+			<input message="wsdl:InvokeRq"/>
+			<output message="wsdl:InvokeRs"/>
+		</operation>
+		<operation name="Reconnect">
+			<input message="wsdl:ReconnectRq"/>
+			<output message="wsdl:ReconnectRs"/>
+		</operation>
+		<operation name="Send">
+			<input message="wsdl:SendRq"/>
+			<output message="wsdl:SendRs"/>
+		</operation>
+	</portType>
+	<binding name="nethub" type="wsdl:nethub">
+		<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<operation name="Invoke">
+			<soap:operation soapAction="http://schemas.radixware.org/nethub.wsdl#Invoke" style="rpc"/>
+			<input/>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="Reconnect">
+			<soap:operation soapAction="http://schemas.radixware.org/nethub.wsdl#Reconnect" style="rpc"/>
+			<input/>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+		<operation name="Send">
+			<soap:operation soapAction="http://schemas.radixware.org/nethub.wsdl#Send" style="rpc"/>
+			<input/>
+			<output>
+				<soap:body use="literal"/>
+				<soap:header message="Header" part="Header" use="literal"/>
+			</output>
+		</operation>
+	</binding>
+	<service name="nethub">
+		<port name="unit-nethub" binding="wsdl:nethub">
+			<soap:address location="http://"/>
+		</port>
+	</service>
+</definitions>

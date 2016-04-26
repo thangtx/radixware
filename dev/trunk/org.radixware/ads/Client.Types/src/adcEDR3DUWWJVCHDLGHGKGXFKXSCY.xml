@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcEDR3DUWWJVCHDLGHGKGXFKXSCY" Name="UnacceptableInput" Type="3" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.types.UnacceptableInput"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcEDR3DUWWJVCHDLGHGKGXFKXSCY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcEDR3DUWWJVCHDLGHGKGXFKXSCY"/>
+    </Bodies>
+    <MethodGroup Id="cmgBIEZQODKI5DGFKLWO422HUJT7E" Name="Root"/>
+    <PropertyGroup Id="cpgFB2UHZSZJFEBPNNGQXQDNGFVAM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthVZG73YFW2JHH5HNCDO5GPT27JU" Name="getMessageText" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getMessageText()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthDMMUXTBQGRGAXFV2JGU6OOKJJ4" Name="getMessageText" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getMessageText(Lorg.radixware.kernel.common.client.meta.mask.validators.InvalidValueReason.EMessageType;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="type" Id="mprFVNRXJYCWZEHNNOXFAIU26TWWI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.validators.InvalidValueReason.EMessageType"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthABE352H4P5AHTB7CXYUL3DRPAU" Name="getReason" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getReason()Lorg.radixware.kernel.common.client.meta.mask.validators.InvalidValueReason;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.validators.InvalidValueReason"/>
+      </Method>
+      <Method Id="mth553HLHEBU5GSLI7VQEVFO52ITY" Name="getText" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getText()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthOMZX7YECVNCDJKH3PWWFWUELMU" Name="showMessage" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="showMessage()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthTNWARG7NXNGTTFNXIIR4LDEIYE" Name="showMessage" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="showMessage(Ljava.lang.String;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" Id="mprHF4WVZW3QZEELEE7TAEGO43SQM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="firstMessageLine" Id="mprUGYYF3YCGNEKTNDFLVOQRV7OP4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth6BTSUYMKNJAGPGXFNYAK5IZGE4" Name="UnacceptableInput" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.client.meta.mask.validators.InvalidValueReason;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprY4WXKKHKYBDQDLSYGBDKMT4UFQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="reason" Id="mprQYJE33B2MNDAHEFYBCX37FR47U">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.validators.InvalidValueReason"/>
+          </Parameter>
+          <Parameter Name="input" Id="mprRHY6LD4MHVFTXBFZ662XEJ3GF4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

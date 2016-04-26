@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcI5LQYSJ2LREM5DBZIGFBAPXNSA" Name="AbstractPropEditor" Type="3" Environment="explorer">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.explorer.widgets.propeditors.AbstractPropEditor"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcLMR5DLGLPVCCZK5YG3BEGI7C7E"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcG2ZMXXGYSZBL7EZKGDSP3OKVYQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgK3EOQU4J2RG6JKQ34QMG4S23DU" Name="Root"/>
+    <PropertyGroup Id="cpgVYI6MYZSFFFUFPZBMAM4VDP6RE" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth5WIXNQ3TZZEWPIUYRPETIIO5IA" Name="bind" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="bind()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthTM6MWKPVHVCLNGKTOVYKAJR6TY" Name="getProperty" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getProperty()Lorg.radixware.kernel.common.client.models.items.properties.Property;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
+      </Method>
+      <Method Id="mth3B7TBENHGNCUBE7KBK75KHSC6Q" Name="refresh" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="refresh(Lorg.radixware.kernel.common.client.models.items.ModelItem;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="modelItem" Id="mprPJQNEXDAZ5DJTCGA5325HMFGLI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.ModelItem"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthRQRDDPYJIBDANO6BVRXHRFLCYM" Name="asQWidget" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="asQWidget()Lcom.trolltech.qt.gui.QWidget;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+      </Method>
+      <Method Id="mth3NYDQUD7FBCPVLPLPDRT5UGZGU" Name="finishEdit" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="finishEdit()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth2MKXUG7MXFBGZKIURVEDYN7OIU" Name="getPropertyValue" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getPropertyValue()Ljava.lang.Object;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+      </Method>
+      <Method Id="mthE7E6ZDXETJHLHAMWMFJJR7U6WU" Name="getPropertyEditMask" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getPropertyEditMask()Lorg.radixware.kernel.common.client.meta.mask.EditMask;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
+      </Method>
+      <Method Id="mthXA652KLLAJBORANVC4WHX4WALI" Name="isReadonly" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isReadonly()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth5GWQ4W3E2ZGLVH3L4T24T6GSJ4" Name="processException" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="processException(Ljava.lang.Throwable;Ljava.lang.String;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="ex" Id="mprRTF2EXJRWZGH7HDCVXO66K5XIU">
+            <Type TypeId="400" extStr="java.lang.Throwable"/>
+          </Parameter>
+          <Parameter Name="title" Id="mprCPINUJGSARECZNME4ZJ73NFJJY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="msg" Id="mprCGXP4CTPTFF2TFEZCGFCFU4E4A">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthCQTSMYWWLJE7RGTLXMSL3MC3U4" Name="closeEditor" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="closeEditor()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthL4GUFWIYOVEZNHFH23CQWAKSBI" Name="getCurrentValueInEditor" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getCurrentValueInEditor()Ljava.lang.Object;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+      </Method>
+      <Method Id="mthJUIN2LNGSBAKXHKAXX5PBNVB7Y" Name="getTitleAlignment" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getTitleAlignment()Lcom.trolltech.qt.core.Qt.AlignmentFlag;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.core.Qt.AlignmentFlag"/>
+      </Method>
+      <Method Id="mthM53H5PPDQNC7FCGHLYQP72ICQU" Name="updateSettings" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="updateSettings()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth2FZL4A2XWBCR5EZFRH2KLYQVSI" Name="AbstractPropEditor" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.models.items.properties.Property;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="property" Id="mprDJPJCK5OG5DTNL55B5R3JT7P6Y">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth44SJGORNEVDCVBDA4P57GN3J5E" Name="updateEditor" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="updateEditor(Ljava.lang.Object;Lorg.radixware.kernel.common.client.editors.property.PropEditorOptions;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="value" Id="mprXBIBUC34YJHJVBC72A5A352DEI">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+          <Parameter Name="options" Id="mprPY2LK6YO7ZDNLN4IBBQTNGGKXU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.editors.property.PropEditorOptions"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthNMFFHNPTCZFT3FYRPJIEODG4F4" Name="getUnacceptableInput" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getUnacceptableInput()Lorg.radixware.kernel.common.client.types.UnacceptableInput;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.types.UnacceptableInput"/>
+      </Method>
+      <Method Id="mthHC3AK76HAVDC3JBMZOGWETMDSY" Name="getPropertyInitialValue" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getPropertyInitialValue()Ljava.lang.Object;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+      </Method>
+      <Method Id="mth4OU7HSAJFVDCZFZEHADMUTI2RI" Name="addCommandButtons" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="addCommandButtons()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthMQFXKZ7A25H4NK23KJHHYMX4B4" Name="addStandardButtons" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="addStandardButtons()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthP5PB644VKRBP5PCCEY7ECNA33I" Name="setPropertyProxy" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setPropertyProxy(Lorg.radixware.kernel.common.client.editors.property.PropertyProxy;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="proxy" Id="mprXG57C76BYBDENEK7TQQGGO5DUA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.editors.property.PropertyProxy"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

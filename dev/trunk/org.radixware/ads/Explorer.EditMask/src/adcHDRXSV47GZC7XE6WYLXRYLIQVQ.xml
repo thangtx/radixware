@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcHDRXSV47GZC7XE6WYLXRYLIQVQ" Name="EditMaskUtils" Type="3" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcHDRXSV47GZC7XE6WYLXRYLIQVQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcHDRXSV47GZC7XE6WYLXRYLIQVQ"/>
+    </Bodies>
+    <MethodGroup Id="cmg4DSA5CTF3RCSVI7ZO22NBKKVIA" Name="Root"/>
+    <PropertyGroup Id="cpgOYWGLNTOKNBTZPJFFNRNCHH4RE" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthOVCFTWWSMVHSXEEE77SOOJ2RCA" Name="checkInputMaskPattern" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="inputMaskPattern" Id="mprUFUQAQSLGZEWJCGGZ53GHRI4NU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="saveSeparators" Id="mprECXTYJW3D5GX5NTT4RKTJGQXZM">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcHDRXSV47GZC7XE6WYLXRYLIQVQ mthAVCVO56PIJHZVLL6PFQV55UW4Q" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKQMN3PXQA5HF3FJCU36OW5ONSA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Factory.newInstance(inputMaskPattern), saveSeparators);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthMZZ3YB5LOJE3DOQBOAYRDQ7TPQ" Name="checkEditMaskStr" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="editMask" Id="mprBJ7ZWMIVGFFQ3J7AA5H4I32MCI">
+            <Type TypeId="411" Path="adcT4FP27ZW3RERZM6XLXMCKXXTWY"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcHDRXSV47GZC7XE6WYLXRYLIQVQ mthAVCVO56PIJHZVLL6PFQV55UW4Q" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(editMask.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcT4FP27ZW3RERZM6XLXMCKXXTWY mthIKVEXNNOE5AGXAODB5MAVXUHME" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), editMask.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcT4FP27ZW3RERZM6XLXMCKXXTWY mthEU5KQWIBMNFBXGM2YXF3JWZFVA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthAVCVO56PIJHZVLL6PFQV55UW4Q" Name="checkInputMask" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="inputMask" Id="mpr24QM5PDF45GTPGJDATQMJ5TBLU">
+            <Type TypeId="411" Path="adcKQMN3PXQA5HF3FJCU36OW5ONSA"/>
+          </Parameter>
+          <Parameter Name="saveSeparators" Id="mprUQOHMOCVGJATXAJH336Y7SLM6M">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return inputMask.checkPattern(saveSeparators, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsSH3D3ZE5OFEZRJDV4QIZKYMIBU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

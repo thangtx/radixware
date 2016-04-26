@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="acc7IDANU3NDZFXRMVCBNRTJ3TZQQ" Name="GetLastUpdateTimeByIdCursor" Type="4">
+    <AccessRules IsPublished="false" IsDeprecated="true"/>
+    <Headers>
+      <Src Name="Headeracc7IDANU3NDZFXRMVCBNRTJ3TZQQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyacc7IDANU3NDZFXRMVCBNRTJ3TZQQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgXDJBCSLA7JEKRIH7GTPNWBOX4Q" Name="Root"/>
+    <PropertyGroup Id="cpgEPK25DIADBHAZPUKWPS5HXL3SU" Name="Root"/>
+    <Properties>
+      <Property Id="prm4OMJTLUCQVA77B4VA3LVSYHN44" Name="tableDbName" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmQ2IDVL2IIRBZHGOG4EVTNLPPOY" Name="lastUpdateTimeColDbName" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmYDKYOSXFTZDATLXGWQQLVL7HRQ" Name="idColDbName" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prmDUC44ZRWFJAW5CZXM7SONO634E" Name="id" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prfIIZCV5APFZDXPA7LXQ32BPYKBE" Name="lastUpdateTime" Nature="3" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="12"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="open" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="tableDbName" Id="mpr4OMJTLUCQVA77B4VA3LVSYHN44">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="lastUpdateTimeColDbName" Id="mprQ2IDVL2IIRBZHGOG4EVTNLPPOY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="idColDbName" Id="mprYDKYOSXFTZDATLXGWQQLVL7HRQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="id" Id="mprDUC44ZRWFJAW5CZXM7SONO634E">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="acc7IDANU3NDZFXRMVCBNRTJ3TZQQ"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="true">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>select </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmQ2IDVL2IIRBZHGOG4EVTNLPPOY" Literal="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="acc7IDANU3NDZFXRMVCBNRTJ3TZQQ" PropId="prfIIZCV5APFZDXPA7LXQ32BPYKBE" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prm4OMJTLUCQVA77B4VA3LVSYHN44" Literal="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmYDKYOSXFTZDATLXGWQQLVL7HRQ" Literal="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmDUC44ZRWFJAW5CZXM7SONO634E"/>
+        </xsc:Item>
+      </Source>
+    </Sql>
+    <Extends TypeId="411" Path="pdcCursor____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

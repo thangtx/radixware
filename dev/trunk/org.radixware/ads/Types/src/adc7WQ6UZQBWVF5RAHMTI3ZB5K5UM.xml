@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc7WQ6UZQBWVF5RAHMTI3ZB5K5UM" Name="SubQuery" Type="3" Environment="server">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.server.types.SubQuery"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcS4M4TATBRFGLFNOGKBDS6B27EM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcGD3LMBBH3RGPNL37BJ64KG2XHI"/>
+    </Bodies>
+    <MethodGroup Id="cmg3XIM7VKI5VG6LEUVOHBC3GV3RA" Name="Root"/>
+    <PropertyGroup Id="cpgEA3K7LG6X5CSJEGE2OAHQSDB5I" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthTH76PUUXZJFNLJ2X7JYDC6VKAY" Name="setParams" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setParams(Ljava.sql.PreparedStatement;I)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="stmt" Id="mprM2FRLZBQI5AJRCP4SOCSSQFMUE">
+            <Type TypeId="400" extStr="java.sql.PreparedStatement"/>
+          </Parameter>
+          <Parameter Name="idx" Id="mprGJLELF27JFD5RCOCGPXCTYT264">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthQQGHKSZVVJDAROJTNMB47PGUHI" Name="getParamCount" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getParamCount()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthJBH2LKZLZFBG7OYOTFEGZEHGRQ" Name="getSql" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getSql()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

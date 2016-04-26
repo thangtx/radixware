@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicFFQ5CBH335G3LJF4GQIWJITBCE" Name="IView" Type="5" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.views.IView"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderaicFFQ5CBH335G3LJF4GQIWJITBCE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaicFFQ5CBH335G3LJF4GQIWJITBCE"/>
+    </Bodies>
+    <MethodGroup Id="cmgFPOHTBUD3BFXPKFHNF3TD6WIJI" Name="Root"/>
+    <PropertyGroup Id="cpgXELBS5MK3BCZBG4A253KSC2XQY" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthR3WD6CFTBNHADOLREOGMOBYWUU" Name="getParentWindow" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getParentWindow()Lorg.radixware.kernel.common.client.widgets.IWidget;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IWidget"/>
+      </Method>
+      <Method Id="mthZKBGGN7PK5ECRB3T56OKGVJYN4" Name="isDisabled" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isDisabled()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthWR62NIZKJRER5HPNBZN5MONOG4" Name="getEnvironment" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getEnvironment()Lorg.radixware.kernel.common.client.IClientEnvironment;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+      </Method>
+      <Method Id="mth3CSUNKY6DBA6THALTVBH267TGM" Name="hasUI" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="hasUI()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth47ZIJQKO7JFOZBA6JGZC6HGKBI" Name="canSafelyClose" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="canSafelyClose(Lorg.radixware.kernel.common.client.models.CleanModelController;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="controller" Id="mprRI57G3Q34VF55GYAPSR3RGBIAQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.CleanModelController"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthIQOM7U3ODFC6NHIEKY5IONUYCA" Name="close" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="close(Z)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="forced" Id="mprEEPQ5GONTRHBBB6SIAOBMUGUMQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthRFFMF3XKRVH77FI7YVYPLMXRSU" Name="visitChildren" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="visitChildren(Lorg.radixware.kernel.common.client.views.IView.Visitor;Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="visitor" Id="mprNHJEQQARBFHTLAC4GRXEI4CRCQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.views.IView.Visitor"/>
+          </Parameter>
+          <Parameter Name="recursively" Id="mprN2LSNGOHRJE2DFBYTIAVOSF45A">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthZKBY6SMNFVDY5KDOLNUV7CPWEY" Name="finishEdit" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="finishEdit()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthCGJ6L2GYLFD43JOQNDDSOGJWHQ" Name="open" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="open(Lorg.radixware.kernel.common.client.models.Model;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="model" Id="mprMTDQPS2BQVABFHSQHAZRSE75J4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.Model"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthETJH65DXQBFTVLIDG7PLVTU2EM" Name="findParentView" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="findParentView()Lorg.radixware.kernel.common.client.views.IView;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.views.IView"/>
+      </Method>
+      <Method Id="mth4KB3OFLMZNHZVEKON26YZOZ7EA" Name="reread" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="reread()V"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthKA5J3W25TVHQHGQFTT6QZ2LA54" Name="setFocusedProperty" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setFocusedProperty(Lorg.radixware.kernel.common.types.Id;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="propertyId" Id="mprKZFGG455O5DWDPEDBTJA7U2CSI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthBIEJBANJ2REHRD5KHXNDKJQK3Y" Name="getModel" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getModel()Lorg.radixware.kernel.common.client.models.Model;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.Model"/>
+      </Method>
+      <Method Id="mth4EI4THEBGNCNHIDCWV4AELTZII" Name="setFocus" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setFocus()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth3US7P4Q25JDD3BEILVHMJOO5AU" Name="getRestrictions" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getRestrictions()Lorg.radixware.kernel.common.client.types.ViewRestrictions;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.types.ViewRestrictions"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

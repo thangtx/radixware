@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:edit="http://schemas.radixware.org/editmask.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclESARTHXEX7NRDB6TAALOMT5GDM" Name="Unit.JobExecutor" Type="2">
+    <AccessRules/>
+    <Headers>
+      <Src Name="Headeradc7IKCOSUQORFRTD7FIKGUGO4MWQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcN2RJ2WWJ7FFS7HBKAFHBHTPFXI"/>
+    </Bodies>
+    <MethodGroup Id="cmgTFNZAW2CBBBQXGJ7X726OASB6Q" Name="Root"/>
+    <PropertyGroup Id="cpgT4CZFBY2YBDARJOIPNJ5NPPJMQ" Name="Root">
+      <Group Id="cpgRSZZP2EKKVHQXEAL5PGWFKNF6E" Name="Props" Members="colLLETMMJJY3NRDB6YAALOMT5GDM colFUSSBVSND7PBDMRRABIFNQAABA col7MRFYQR72JFWRFU64UIBOWU3DE colRQGOY4M2DVBOBGRXOL5M7X5H2Y colE7VFSCMMPBB5VAA62IZDS5QPJQ colAI3BW64PA5BX3AHQWT3JINC5W4 colHXA4RSYOIREI3HY2XNK6Q3F4OQ col2C3352WQAJEFXO7K5IUBW5257M"/>
+    </PropertyGroup>
+    <Properties>
+      <Property Id="colFUSSBVSND7PBDMRRABIFNQAABA" Name="parallelCnt" Nature="5" IsConst="false" IsOverride="false" OriginalPropertyId="colPJDE6LVONJB3PPTQ7ZCF6UPQOI" DetailRefId="refJXQCGBUPIHNRDJIEACQMTAIZT4">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <InitialValue>
+          <ValAsStr>50</ValAsStr>
+        </InitialValue>
+        <Presentation TitleId="mlsA7IHB4KND7PBDMRRABIFNQAABA" InheritanceMask="0">
+          <Editing NotNull="true" IsDuplicatesEnabled="true">
+            <EditMask>
+              <edit:Int MaxValue="1000" MinLength="0" MinValue="1" NumberBase="10" PadChar="0" StepSize="1"/>
+            </EditMask>
+          </Editing>
+        </Presentation>
+      </Property>
+      <Property Id="colLLETMMJJY3NRDB6YAALOMT5GDM" Name="execPeriod" Nature="5" IsConst="false" IsOverride="false" OriginalPropertyId="colCCFCKQ4OIHNRDJIEACQMTAIZT4" DetailRefId="refJXQCGBUPIHNRDJIEACQMTAIZT4">
+        <AccessRules/>
+        <Type TypeId="11"/>
+        <InitialValue>
+          <ValAsStr>0.1</ValAsStr>
+        </InitialValue>
+        <Presentation TitleId="mlsYYUFQOK4OXOBDFKUAAMPGXUWTQ" InheritanceMask="4">
+          <Editing CustomDialogId="cpeF3QUTT7XY3NRDB6ZAALOMT5GDM" NotNull="true" IsDuplicatesEnabled="true">
+            <EditMask>
+              <edit:Num MinValue="0.05" Precision="2" Scale="1"/>
+            </EditMask>
+          </Editing>
+        </Presentation>
+      </Property>
+      <Property Id="col7MRFYQR72JFWRFU64UIBOWU3DE" Name="aboveNormalDelta" Nature="5" IsConst="false" IsOverride="false" OriginalPropertyId="colYS346KYNLVBNFJEHV2EA2KPKKM" DetailRefId="refJXQCGBUPIHNRDJIEACQMTAIZT4">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <InitialValue>
+          <ValAsStr>10</ValAsStr>
+        </InitialValue>
+        <Presentation TitleId="mls3FLHV4JFQ5HT7BUMLKSPEKHAXE" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colRQGOY4M2DVBOBGRXOL5M7X5H2Y" Name="highDelta" Nature="5" IsConst="false" IsOverride="false" OriginalPropertyId="colHBV4J6LEWNCOTM4WHJRSIMLKFM" DetailRefId="refJXQCGBUPIHNRDJIEACQMTAIZT4">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <InitialValue>
+          <ValAsStr>10</ValAsStr>
+        </InitialValue>
+        <Presentation TitleId="mlsSAQ47T7P3BAQZHJFVKECCNQZX4" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colE7VFSCMMPBB5VAA62IZDS5QPJQ" Name="veryHighDelta" Nature="5" IsConst="false" IsOverride="false" OriginalPropertyId="colNJB3FZVNRNGXXMYCHMBRAXJZI4" DetailRefId="refJXQCGBUPIHNRDJIEACQMTAIZT4">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <InitialValue>
+          <ValAsStr>10</ValAsStr>
+        </InitialValue>
+        <Presentation TitleId="mls2P3AEBOM7RDS5BKM7BVTT5WPMA" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colAI3BW64PA5BX3AHQWT3JINC5W4" Name="criticalDelta" Nature="5" IsConst="false" IsOverride="false" OriginalPropertyId="colUX424WYE3ZGARCSQMV4REKOFK4" DetailRefId="refJXQCGBUPIHNRDJIEACQMTAIZT4">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <InitialValue>
+          <ValAsStr>10</ValAsStr>
+        </InitialValue>
+        <Presentation TitleId="mls327E6Q3CDRDCDNF24NOV2RFISQ" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colHXA4RSYOIREI3HY2XNK6Q3F4OQ" Name="avgExecCount" Nature="5" IsConst="false" IsOverride="false" OriginalPropertyId="colXOBNJSQM5BFTJLTZLAOM4U2QOE" DetailRefId="refJXQCGBUPIHNRDJIEACQMTAIZT4">
+        <AccessRules/>
+        <Type TypeId="11"/>
+        <InitialValue>
+          <ValAsStr>0</ValAsStr>
+        </InitialValue>
+        <Presentation TitleId="mlsLKAT44EVIJDL7FPLHCMYC4I6UU" InheritanceMask="4">
+          <Editing NotNull="true" EditPossibility="1" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="col2C3352WQAJEFXO7K5IUBW5257M" Name="avgWaitCount" Nature="5" IsConst="false" IsOverride="false" OriginalPropertyId="colUT45Q6GJB5EZ7ESVA3I35OFKKE" DetailRefId="refJXQCGBUPIHNRDJIEACQMTAIZT4">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="11"/>
+        <InitialValue>
+          <ValAsStr>0</ValAsStr>
+        </InitialValue>
+        <Presentation TitleId="mls5YPL7A57DVFONIHHUW4TZH2OME" InheritanceMask="4">
+          <Editing NotNull="true" EditPossibility="1" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthD77F2HBL2FGSVPJHR3SEAMPWMA" Name="afterInit" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="src" Id="mprRBOOREXOAZBHBOWEVXGJJWHOYQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
+          </Parameter>
+          <Parameter Name="phase" Id="mprQIZVNX5QNRC7HEVGYVREIK7STI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EEntityInitializationPhase"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthD77F2HBL2FGSVPJHR3SEAMPWMA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(src, phase);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E colEWJT6TIHR5VDBNSIAAUMFADAIA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>=</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsLSG35D4GIHNRDJIEACQMTAIZT4 aciLCBEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthQIF7CPRFE5GUTIY26PT5SYUD6E" Name="getUsedAddresses" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="400" extStr="java.util.Collection">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E" AllowedDetailReferences="refJXQCGBUPIHNRDJIEACQMTAIZT4"/>
+    <Presentations ObjectTitleId="mls3YUVQOK4OXOBDFKUAAMPGXUWTQ">
+      <ClassCatalogs>
+        <ClassCatalog Id="eccKOGFFVPJAHOBDA26AAMPGXSZKU" Name="Default">
+          <ClassRef TopicId="cctIM3THFAESQAESFLHAAJZREMVEY" Order="300.0"/>
+        </ClassCatalog>
+      </ClassCatalogs>
+      <EditorPresentations>
+        <EditorPresentation Id="eprQK6UHHXIX7NRDB6TAALOMT5GDM" Name="Edit" BasePresentationId="epr6CPN5BSZHJAN5NTGR7LYEXFEDQ" InheritanceMask="27826" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprXCFCDDGTRHNRDB5MAALOMT5GDM" ClientEnvironment="explorer">
+          <ChildExplorerItems>
+            <Item>
+              <Entity Id="xpiIYWWEYJ5DFHCXLYZBDHCAM5PAU" Name="JobQueueItem" InheritanceMask="16560" IsVisibleInTree="true" ClassId="aecHRWUWEEMIHNRDJIEACQMTAIZT4" SelectorPresentationId="sprWCIUVAQFWHNRDCJQABIFNQAABA" Restrictions="0" EnabledCommands="">
+                <AccessRules IsPublished="false"/>
+                <Condition>
+                  <ConditionWhere/>
+                  <ConditionFrom/>
+                </Condition>
+              </Entity>
+            </Item>
+          </ChildExplorerItems>
+          <EditorPages>
+            <Page Id="epgOCDVZAOTBXOBDNTPAAMPGXSZKU" Name="General" TitleId="mlsQ56EWJQN2ZAL5ITXPY6JDM5MLQ" Type="1">
+              <Properties>
+                <Property Id="colEVLUYADHR5VDBNSIAAUMFADAIA" Row="0" Column="0"/>
+                <Property Id="prdU7QY4J3ZXDORDF72ABIFNQAABA" Row="1" Column="0"/>
+                <Property Id="colI6NERFZYS5VDBFCXAAUMFADAIA" Row="2" Column="0"/>
+                <Property Id="colY5NZZOJBXTNRDB6QAALOMT5GDM" Row="3" Column="0"/>
+                <Property Id="colEVX5YH2SS5VDBN2IAAUMFADAIA" Row="10" Column="0"/>
+                <Property Id="colLLETMMJJY3NRDB6YAALOMT5GDM" Row="4" Column="0"/>
+                <Property Id="colFUSSBVSND7PBDMRRABIFNQAABA" Row="5" Column="0"/>
+                <Property Id="colIREKNEWHBDWDRD25AAYQQMVFBB" Row="11" Column="0"/>
+                <Property Id="colAI3BW64PA5BX3AHQWT3JINC5W4" Row="9" Column="0"/>
+                <Property Id="colE7VFSCMMPBB5VAA62IZDS5QPJQ" Row="8" Column="0"/>
+                <Property Id="colRQGOY4M2DVBOBGRXOL5M7X5H2Y" Row="7" Column="0"/>
+                <Property Id="col7MRFYQR72JFWRFU64UIBOWU3DE" Row="6" Column="0"/>
+                <Property Id="prdP2JMQNROX5GE5POX2SH6R2DLLA" Row="12" Column="0"/>
+                <Property Id="colHXA4RSYOIREI3HY2XNK6Q3F4OQ" Row="13" Column="0"/>
+                <Property Id="col2C3352WQAJEFXO7K5IUBW5257M" Row="14" Column="0"/>
+              </Properties>
+            </Page>
+            <Page Id="epgYNNRFJJGPNCXDLPRMKSJAGN72Y" Name="Jobs" Type="3" EmbeddedExplorerItemId="xpiIYWWEYJ5DFHCXLYZBDHCAM5PAU">
+              <AccessRules IsPublished="false"/>
+            </Page>
+            <Page Id="epgXWVLAPMSONBEHEVDLX6WDMTGXE" Name="Additional" TitleId="mlsW5ZTR7BCDFF6VL6B7LAXCDPQXA" Type="1">
+              <AccessRules IsPublished="false"/>
+              <Properties>
+                <Property Id="colTFK3IJM2HNGF5N3YAIKN5FJKL4" Row="0" Column="0"/>
+              </Properties>
+            </Page>
+            <PageOrder>
+              <Item PageId="epgOCDVZAOTBXOBDNTPAAMPGXSZKU" Level="1"/>
+              <Item PageId="epgXWVLAPMSONBEHEVDLX6WDMTGXE" Level="1"/>
+              <Item PageId="epgUJB2RCH6KZHD5IMTQTE76DQSZA" Level="1"/>
+              <Item PageId="epgYNNRFJJGPNCXDLPRMKSJAGN72Y" Level="1"/>
+              <Item PageId="epgJ4BHY7HBLBBBXIIQZEPCKTW2MU" Level="1"/>
+            </PageOrder>
+          </EditorPages>
+          <ObjectTitleFormat Id="etfBDWOTMF6SBHDRBMF6ZCEQ5VY54"/>
+        </EditorPresentation>
+        <EditorPresentation Id="eprTD3DFCQBGHOBDCHWAALOMT5GDM" Name="Create" BasePresentationId="eprQK6UHHXIX7NRDB6TAALOMT5GDM" InheritanceMask="15536" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprS6PW3X2EKJFUNPGCXYDBACXY7A" ClientEnvironment="explorer">
+          <ChildExplorerItems/>
+          <ObjectTitleFormat Id="etf543CRJVMGFHYFFLG577WVDOCVU"/>
+        </EditorPresentation>
+      </EditorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="aclDPASXTH4VHOBDCLSAALOMT5GDM"/>
+  </AdsClassDefinition>
+</AdsDefinition>

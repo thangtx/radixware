@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclVVLMXYALLZFKTLZR3AG4UK5W4I" Name="MessageQueue.Consumer" Type="2">
+    <AccessRules/>
+    <Headers>
+      <Src Name="HeaderaclVVLMXYALLZFKTLZR3AG4UK5W4I"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaclVVLMXYALLZFKTLZR3AG4UK5W4I"/>
+    </Bodies>
+    <MethodGroup Id="cmgN25EMDTR4FB35J5APNRDHQDOEU" Name="Root"/>
+    <PropertyGroup Id="cpgHJK7YPRLD5DLLAMKB2JTFVB7PY" Name="Root"/>
+    <Properties/>
+    <Methods/>
+    <Entity EntityId="tblQZ2AJHN3PFDWXC5BT6I66OS5PQ"/>
+    <Presentations ObjectTitleId="mlsCPYG5I727ZBENJ5D4TR5XHXI5I">
+      <ClassCatalogs>
+        <ClassCatalog Id="eccGY3MK4FELVCZPLCHRHN5UEDYDM" Name="Consumers"/>
+      </ClassCatalogs>
+      <SelectorPresentations>
+        <SelectorPresentation Id="sprBU6D3OXQLFGJPK5ZZ64L3N3DNA" Name="ConsumersDefault" TitleId="mlsQSR2GB2FZBCVFBTPSXWOOOO2SY" BasePresentationId="sprLUQDA4NYBVG3JJNRMRPBRXLBBU" IconId="imgBSA4BB2JNJFD7I6HISJWJH7BYI" InheritanceMask="104" Restrictions="32" EnabledCommandIds="" CreationEditorPresentationIds="eprKFF4CT7VDRE53FMW76LHR7EL4M" CreationClassCatalogId="eccGY3MK4FELVCZPLCHRHN5UEDYDM" EditorPresentationIds="eprWEEVKI2IT5DQJAS5RJFI4FFDS4">
+          <Condition>
+            <ConditionWhere>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn3OXAHT4FYLORDBBJABIFNQAABA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblQZ2AJHN3PFDWXC5BT6I66OS5PQ" PropId="colLVCKVHLVHBDFDG7LREI4IXZPTM" Owner="NONE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Id Path="aclVVLMXYALLZFKTLZR3AG4UK5W4I"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>) > 0</xsc:Sql>
+              </xsc:Item>
+            </ConditionWhere>
+            <ConditionFrom/>
+          </Condition>
+          <Addons AnyBaseFilterEnabled="false" AnyBaseSortingEnabled="false" CustomFilterEnabled="false" CustomSortingEnabled="false" FilterIsObligatory="false">
+            <DefaultHint/>
+          </Addons>
+        </SelectorPresentation>
+      </SelectorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ"/>
+  </AdsClassDefinition>
+</AdsDefinition>

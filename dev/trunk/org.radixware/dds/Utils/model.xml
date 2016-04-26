@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Model xmlns="http://schemas.radixware.org/ddsdef.xsd" xmlns:com="http://schemas.radixware.org/commondef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" Id="prj5YRLT26YCJCRNLQ37OCBUFDSZY">
+  <Tables>
+    <Table Id="tbl44TUT3JSR5BPTNBRF3PO2HF6OU" Name="Counter" DbName="COUNTER" UserExtMask="65572">
+      <Columns>
+        <Column Id="colGRP5IIOQG5AEPPXSLVNHDZEZRI" Name="id" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="true" DbName="ID" SequenceId="sqnHW77WU4F65FP5F2OTUZFBX24FI"/>
+        <Column Id="colBW34NCALPBBMVJM4KXPBC5LZBM" Name="classGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="CLASSGUID"/>
+        <Column Id="colY6UXL3EROJBYLJ756YU4UO6OYQ" Name="increment" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="VALUE_INCREMENT" AutoDbName="false"/>
+        <Column Id="colGHFBHTHE2JAOFHCLUXCWW2C774" Name="defaultValue" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="DEFAULTVALUE">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>0</com:Value>
+          </DefaultVal>
+        </Column>
+        <Column Id="colPW77RW2WA5FCRCRHGHEC5L6DQM" Name="value" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="VALUE">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>0</com:Value>
+          </DefaultVal>
+        </Column>
+        <Column Id="colWNBO5QS7VNBQBGUU45Q4GS5MQA" Name="resetPeriod" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="RESETPERIOD"/>
+        <Column Id="col7VGLOCGWMBEP3LYYYZYATCR7VI" Name="lastUpdateTime" ValType="12" Length="0" Precision="6" DbType="TIMESTAMP(6)" NotNull="false" DbName="LASTUPDATETIME"/>
+        <Column Id="colHFT7MMCWR5BW3HQGM6I7KMWCSU" Name="lastResetTime" ValType="12" Length="0" Precision="6" DbType="TIMESTAMP(6)" NotNull="false" DbName="LASTRESETTIME"/>
+        <Column Id="colQLLTVKCZDZAGJPWEJNGWQU4Z3Q" Name="upDefId" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="UPDEFID"/>
+        <Column Id="colPC7PN6V5Z5EMPM35JKWELO7QYY" Name="upOwnerEntityId" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="UPOWNERENTITYID"/>
+        <Column Id="colNJSBNTX3FZGHBB3Z5CPJEFLKVQ" Name="upOwnerPid" ValType="21" Length="200" DbType="VARCHAR2(200 char)" NotNull="true" DbName="UPOWNERPID"/>
+      </Columns>
+      <PrimaryKey Id="idxLUVAFTV3Y5C27L3YSGSPAMBXP4" Name="PrimaryKey" DbName="PK_COUNTER" Unique="true">
+        <Columns>
+          <Column ColumnId="colGRP5IIOQG5AEPPXSLVNHDZEZRI" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqTTKZBYG37NBYVCPBMT5VDCL4YE" DbName="PK_COUNTER" Rely="true"/>
+      </PrimaryKey>
+      <Indices>
+        <Index Id="idxCNHENV6FXFHXDOYDNBWI654W74" Name="UserPropertyObjectUniqueIndex" DbName="IDX_COUNTER_USERPROPERTYOBJECT" Unique="true">
+          <Columns>
+            <Column ColumnId="colQLLTVKCZDZAGJPWEJNGWQU4Z3Q" Order="Asc"/>
+            <Column ColumnId="colPC7PN6V5Z5EMPM35JKWELO7QYY" Order="Asc"/>
+            <Column ColumnId="colNJSBNTX3FZGHBB3Z5CPJEFLKVQ" Order="Asc"/>
+          </Columns>
+        </Index>
+      </Indices>
+      <Triggers>
+        <Trigger Id="trgBGENUPFTRZA3TJ5BBA6NOSXQSI" Name="UserPropOwnSched" DbName="UPS_44TUT3JSR5BPTNBRF3PO2HF6OU" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+   RDX_ENTITY.ScheduleUserPropOnDelOwner('tbl44TUT3JSR5BPTNBRF3PO2HF6OU', :old.ID);
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+        <Trigger Id="trgC4FTZM4PKVHWXM5XO7HWEMJDUM" Name="UserPropOwnFlush" DbName="UPF_44TUT3JSR5BPTNBRF3PO2HF6OU" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1" ForEachRow="false">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+   RDX_ENTITY.flushUserPropOnDelOwner('tbl44TUT3JSR5BPTNBRF3PO2HF6OU');
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+      </Triggers>
+      <Placement PosX="79" PosY="120"/>
+    </Table>
+  </Tables>
+  <ExtTables>
+    <ExtTable Id="tbeLTBQJDWMMJADDFKIQFKM5ZTJWA" TableId="tblZVJUSFASRDNBDCBEABIFNQAABA">
+      <Placement PosX="409" PosY="205"/>
+    </ExtTable>
+  </ExtTables>
+  <References>
+    <Reference Id="refHEYWJ3WMKRCZNPHMH34GPAE4IY" DbName="FK_COUNTER_UPVALREF" Type="LINK" ChildTableId="tbl44TUT3JSR5BPTNBRF3PO2HF6OU" ParentTableId="tblZVJUSFASRDNBDCBEABIFNQAABA" ExtParentTableId="tbeLTBQJDWMMJADDFKIQFKM5ZTJWA" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqZVJUSFASRDNBDCBEABIFNQAABA">
+      <Columns>
+        <Item ChildColumnId="colQLLTVKCZDZAGJPWEJNGWQU4Z3Q" ParentColumnId="col2BJUSFASRDNBDCBEABIFNQAABA"/>
+        <Item ChildColumnId="colPC7PN6V5Z5EMPM35JKWELO7QYY" ParentColumnId="col2FJUSFASRDNBDCBEABIFNQAABA"/>
+        <Item ChildColumnId="colNJSBNTX3FZGHBB3Z5CPJEFLKVQ" ParentColumnId="col2JJUSFASRDNBDCBEABIFNQAABA"/>
+      </Columns>
+    </Reference>
+  </References>
+  <Sequences>
+    <Sequence Id="sqnHW77WU4F65FP5F2OTUZFBX24FI" Name="CounterId" DbName="SQN_COUNTERID" Cycle="false" Order="true" Cache="20">
+      <Placement PosX="136" PosY="33"/>
+    </Sequence>
+  </Sequences>
+</Model>

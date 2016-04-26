@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 sp2 U (http://www.altova.com) by pc (pc) -->
+<xs:schema xmlns:mess="http://schemas.radixware.org/aas.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:types="http://schemas.radixware.org/types.xsd" targetNamespace="http://schemas.radixware.org/aas.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+	<!--                   Enumerations    -->
+	<xs:simpleType name="ExceptionEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="FormatError"/>
+			<xs:enumeration value="InvalidRequest"/>
+			<xs:enumeration value="ServerException"/>
+			<xs:enumeration value="ServerMalfunction"/>
+			<xs:enumeration value="ApplicationError"/>
+			<xs:enumeration value="ObjectNotFound"/>
+			<xs:enumeration value="DefinitionNotFound"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TransactionEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="No"/>
+			<xs:enumeration value="AutoCommit"/>
+			<xs:enumeration value="Start"/>
+			<xs:enumeration value="Commit"/>
+			<xs:enumeration value="Continue"/>
+			<xs:enumeration value="Rollback"/>
+			<xs:enumeration value="Finish"/>
+			<xs:enumeration value="CommitFinish"/>
+			<xs:enumeration value="RollbackFinish"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="Value" abstract="false" mixed="true">
+		<xs:choice minOccurs="0">
+			<xs:element name="Bin" type="types:BinBase64" nillable="true"/>
+			<xs:element name="Bool" type="types:Bool" nillable="false"/>
+			<xs:element name="Str" type="types:Str" nillable="true"/>
+			<xs:element name="DateTime" type="types:DateTime" nillable="true"/>
+			<xs:element name="Int" type="types:Int" nillable="true"/>
+			<xs:element name="Num" type="types:Num" nillable="true"/>
+			<xs:element name="Ref" nillable="true">
+				<xs:complexType>
+					<xs:attribute name="EntityId" type="xs:string" use="required"/>
+					<xs:attribute name="PID" type="xs:string" use="required"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Xml" type="xs:anyType" nillable="true"/>
+			<xs:element name="ArrBin" nillable="true">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Item" type="types:BinBase64" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ArrBool" nillable="true">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Item" type="types:Bool" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ArrStr" nillable="true">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Item" type="types:Str" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ArrDateTime" nillable="true">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Item" type="types:DateTime" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ArrInt" nillable="true">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Item" type="types:Int" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ArrNum" nillable="true">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Item" type="types:Num" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ArrRef" nillable="true">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Item" nillable="true" minOccurs="0" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:attribute name="EntityId" type="xs:string" use="required"/>
+								<xs:attribute name="PID" type="xs:string" use="required"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Arte" nillable="true">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="newElement">
+							<xs:complexType>
+								<xs:attribute name="newAttribute" type="xs:string"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="MapStrStr" type="types:MapStrStr" nillable="true"/>
+		</xs:choice>
+	</xs:complexType>
+	<!--                  Messages    -->
+	<xs:complexType name="InvokeRq" abstract="false">
+		<xs:sequence minOccurs="0">
+			<xs:element name="Parameters" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence minOccurs="0">
+						<xs:element name="Item" type="mess:Value" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="User" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="Transaction" type="mess:TransactionEnum" use="optional" default="No"/>
+		<xs:attribute name="SetSavepoint" type="xs:boolean" use="optional"/>
+		<xs:attribute name="RollbackToSavepoint" type="xs:string" use="optional"/>
+		<xs:attribute name="ClassId" type="types:Id" use="optional"/>
+		<xs:attribute name="ClassName" type="xs:string" use="optional"/>
+		<xs:attribute name="EntityId" type="types:Id" use="optional"/>
+		<xs:attribute name="PID" type="xs:string" use="optional"/>
+		<xs:attribute name="MethodId" type="xs:string" use="required"/>
+		<!--deprecated--><xs:attribute name="ThreadPriority" type="xs:integer" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="InvokeRs" abstract="false">
+		<xs:sequence minOccurs="0">
+			<xs:element name="ReturnValue" type="mess:Value" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="SavepointId" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="InvokeMess">
+		<xs:choice>
+			<xs:element name="InvokeRs" type="mess:InvokeRs"/>
+			<xs:element name="InvokeRq" type="mess:InvokeRq"/>
+		</xs:choice>
+	</xs:complexType>
+</xs:schema>

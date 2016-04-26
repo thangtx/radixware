@@ -1,0 +1,46 @@
+<definitions 
+    xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+    xmlns:mess="http://schemas.radixware.org/aas.xsd" 
+    xmlns:wsdl="http://schemas.radixware.org/aas.wsdl" 
+    targetNamespace="http://schemas.radixware.org/aas.wsdl">
+    <types>
+        <xs:schema targetNamespace="http://schemas.radixware.org/aas.wsdl">
+            <xs:import namespace="http://schemas.radixware.org/aas.xsd" schemaLocation="aas.xsd"/>
+            <xs:element name="Invoke" type="mess:InvokeMess"/>
+        </xs:schema>
+    </types>
+    
+    <message name="InvokeRq">
+        <part name="InvokeRq" element="wsdl:Invoke"/>
+    </message>
+    <message name="InvokeRs">
+        <part name="InvokeRs" element="wsdl:Invoke"/>
+    </message>
+    
+    <portType name="AasPortType">
+        <operation name="Invoke">
+            <input message="wsdl:InvokeRq"/>
+            <output message="wsdl:InvokeRs"/>
+        </operation>
+    </portType>
+    
+    <binding name="AasBinding" type="wsdl:AasPortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        
+        <operation name="Invoke">
+            <soap:operation soapAction="http://schemas.radixware.org/aas.wsdl#Invoke" style="document"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+    
+    <service name="AasService">
+        <port name="AasPort" binding="wsdl:AasBinding">
+            <soap:address location="http://"/>
+        </port>
+    </service>
+</definitions>

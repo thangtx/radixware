@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="acl6GCH4ZWBIBDPPDA5WUFG2O6FYY" Name="Unit.Channel.Twitter" DescriptionId="mlsQ6WL7CX3MFBYZP6TRWYHBSN75M" Type="2">
+    <AccessRules/>
+    <Headers>
+      <Src Name="HeaderadcMTCL2P4EXBFXHMZJ5UNES7XPWA"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc6L2WRALO55C77ATDE3UNU2V3WU"/>
+    </Bodies>
+    <MethodGroup Id="cmgVULZDSLSTREOJAXI2ZDAQ2SDCA" Name="Root"/>
+    <PropertyGroup Id="cpgQXM3NKZ63JDQDBNR56FCD5CMNE" Name="Root">
+      <Group Id="cpgKMZVF557UFFMHA35N4XWKHMWKA" Name="Twitter props" Members="colBASILMGMQBGYPEGYRWDO3ACSB4 colB5OH24HEDFD6VFL3ZPDVOWFRTU colF53RPEW7G5AKHANS7YBSHVU4EQ colJXWOC65G6BBEDGFHXIW55GFRGY"/>
+    </PropertyGroup>
+    <Properties>
+      <Property Id="colBASILMGMQBGYPEGYRWDO3ACSB4" Name="twitterConsumerSecret" Nature="5" IsConst="false" IsOverride="false" isDescriptionInherited="false" OriginalPropertyId="colRNTC7FPZPZHVDC4RGQMHO6CG6E" DetailRefId="refLJSTGVRFVLOBDCLSAALOMT5GDM">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsFSUNFEVX7RD6VGYFBYIILMOAUM" InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colB5OH24HEDFD6VFL3ZPDVOWFRTU" Name="twitterConsumerToken" Nature="5" IsConst="false" IsOverride="false" isDescriptionInherited="false" OriginalPropertyId="colS6JTDOKLF5DODKNT3U7JX6NLTE" DetailRefId="refLJSTGVRFVLOBDCLSAALOMT5GDM">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsYQCND5HHIBAWXJ7XY4X2OSQY4M" InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colF53RPEW7G5AKHANS7YBSHVU4EQ" Name="twitterAccessToken" Nature="5" IsConst="false" IsOverride="false" isDescriptionInherited="false" OriginalPropertyId="colXQ24IOUDWVCLRB6HFJBQCW5GNQ" DetailRefId="refLJSTGVRFVLOBDCLSAALOMT5GDM">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mls2UGKHC34QVBXZB3QZGHL7CHXWE" InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colJXWOC65G6BBEDGFHXIW55GFRGY" Name="twitterAccessSecret" Nature="5" IsConst="false" IsOverride="false" isDescriptionInherited="false" OriginalPropertyId="colXJPBII4DQRGMRKMCVYGODJGIRA" DetailRefId="refLJSTGVRFVLOBDCLSAALOMT5GDM">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsWM3OARWX2RGMTN6LDV3QJAWCNY" InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthD77F2HBL2FGSVPJHR3SEAMPWMA" Name="afterInit" DescriptionId="mls5MR55I7YCZGOLEHLD5BE4HCSRU" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="src" Id="mpr35D5QRTOJZCNNJRF7K3MURCGUA">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
+          </Parameter>
+          <Parameter Name="phase" Id="mprD3F3UTQA4VAZLDA2JSYHC5GEOM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EEntityInitializationPhase"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthD77F2HBL2FGSVPJHR3SEAMPWMA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(src, phase);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E colEWJT6TIHR5VDBNSIAAUMFADAIA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsLSG35D4GIHNRDJIEACQMTAIZT4 aciQ3U6UX4EOBDT7HPRMTVWLMZVBE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclVCLH3TEDVTOBDCLTAALOMT5GDM col62V3FXUDVTOBDCLTAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsZ5EEISSCVXOBDCLUAALOMT5GDM aci3WL3JJLD6VHW5JZ2VK5HIMI37Q" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclVCLH3TEDVTOBDCLTAALOMT5GDM colXJZDYDMEVTOBDCLTAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = "Twitter";
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclVCLH3TEDVTOBDCLTAALOMT5GDM colXNZDYDMEVTOBDCLTAALOMT5GDM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = "Twitter";</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E"/>
+    <Presentations ObjectTitleId="mlsJNTMYICBBJBBLK7YVJNVBSAPZA">
+      <ClassCatalogs>
+        <ClassCatalog Id="eccKOGFFVPJAHOBDA26AAMPGXSZKU" Name="Default">
+          <ClassRef TopicId="cctIM3THFAESQAFAFLSAAKJIJDWGY" Order="200.0"/>
+        </ClassCatalog>
+      </ClassCatalogs>
+      <EditorPresentations>
+        <EditorPresentation Id="epr5WBMVOLYAZHZPGX4LOGDGQVUKA" Name="Edit" BasePresentationId="eprEKLU3MUOIZF6TOA77NXQA4EJ7M" InheritanceMask="15538" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprXCFCDDGTRHNRDB5MAALOMT5GDM" ClientEnvironment="explorer">
+          <ChildExplorerItems/>
+          <ObjectTitleFormat Id="etfMDV4AQVNAZHITPECWGJSCUHOVQ"/>
+        </EditorPresentation>
+        <EditorPresentation Id="eprEKLU3MUOIZF6TOA77NXQA4EJ7M" Name="Create" BasePresentationId="eprGVZBTVH6VXOBDCLVAALOMT5GDM" InheritanceMask="11442" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprS6PW3X2EKJFUNPGCXYDBACXY7A" ClientEnvironment="explorer">
+          <ChildExplorerItems/>
+          <EditorPages>
+            <Page Id="epgKBSKPP64YREU5FXPIWWEIZLBZM" Name="Channel" TitleId="mlsJPWJTBR5MJHG7MX4YIO2M4HIHQ" Type="1">
+              <Properties>
+                <Property Id="col62V3FXUDVTOBDCLTAALOMT5GDM" Row="0" Column="0"/>
+                <Property Id="colXVZDYDMEVTOBDCLTAALOMT5GDM" Row="3" Column="0"/>
+                <Property Id="colXBZDYDMEVTOBDCLTAALOMT5GDM" Row="4" Column="0"/>
+                <Property Id="col7HPHZW2DJRHVJEYJSANRF7CASM" Row="1" Column="0"/>
+                <Property Id="col4TIXFUZ7YNDYPDT5MVYA5XWERA" Row="2" Column="0"/>
+                <Property Id="colYYXVCC53YBHT3PZYC2UEGXPGGE" Row="5" Column="0"/>
+              </Properties>
+            </Page>
+            <Page Id="epgHYCGAT64ZNCD5D73NY4WTHPFXQ" Name="Twitter Options" TitleId="mlsMLPLR226ORAIBCEAS2GMBXIGYQ" Type="1">
+              <Properties>
+                <Property Id="colB5OH24HEDFD6VFL3ZPDVOWFRTU" Row="0" Column="0"/>
+                <Property Id="colBASILMGMQBGYPEGYRWDO3ACSB4" Row="1" Column="0"/>
+                <Property Id="colJXWOC65G6BBEDGFHXIW55GFRGY" Row="3" Column="0"/>
+                <Property Id="colF53RPEW7G5AKHANS7YBSHVU4EQ" Row="2" Column="0"/>
+              </Properties>
+            </Page>
+            <PageOrder>
+              <Item PageId="epgOCDVZAOTBXOBDNTPAAMPGXSZKU" Level="1"/>
+              <Item PageId="epgKBSKPP64YREU5FXPIWWEIZLBZM" Level="1"/>
+              <Item PageId="epgHYCGAT64ZNCD5D73NY4WTHPFXQ" Level="1"/>
+              <Item PageId="epg2YV3PH6P3PORDOFEABIFNQAABA" Level="1"/>
+              <Item PageId="epgUJB2RCH6KZHD5IMTQTE76DQSZA" Level="1"/>
+              <Item PageId="epgJ4BHY7HBLBBBXIIQZEPCKTW2MU" Level="1"/>
+            </PageOrder>
+          </EditorPages>
+          <ObjectTitleFormat Id="etfPXKRFVXBFVDEBPDLVW3B3U5MVE"/>
+        </EditorPresentation>
+      </EditorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="aclVCLH3TEDVTOBDCLTAALOMT5GDM"/>
+  </AdsClassDefinition>
+</AdsDefinition>

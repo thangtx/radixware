@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="ssc43AARCFN55CCVO4TGPINYSGR4Y" Name="SetTransactionIsolationLevelSerializableStmt" DescriptionId="mlsSKGJC6W22RH33N5Y5L7CBT2B5E" Type="9">
+    <AccessRules>
+      <Transparence Extendable="true" PublishedName="org.radixware.kernel.server.types.Statement"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headerssc43AARCFN55CCVO4TGPINYSGR4Y"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyssc43AARCFN55CCVO4TGPINYSGR4Y"/>
+    </Bodies>
+    <MethodGroup Id="cmgNLWZ24QHIBB5JJUEZGCIRZLJLM" Name="Root"/>
+    <PropertyGroup Id="cpgS4QV6PQ3R5BSRLHGN6TPDHEXJQ" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="execute" Nature="15" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+      </Method>
+      <Method Id="mth_stmt_setExecuteBatch_____" Name="setExecuteBatch" Nature="15" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="size" Id="mprSize______________________">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth_stmt_sendBatch___________" Name="sendBatch" Nature="15" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>SET TRANSACTION ISOLATION LEVEL SERIALIZABLE</xsc:Sql>
+        </xsc:Item>
+      </Source>
+    </Sql>
+    <Extends TypeId="400" extStr="org.radixware.kernel.server.types.Statement"/>
+  </AdsClassDefinition>
+</AdsDefinition>

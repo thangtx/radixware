@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcGPNNISYF4NG5NC4NX5ITZORVYQ" Name="Application" DescriptionId="mlsHGCTXPTZLBHQRGMN52WY45YKR4" Type="3" Environment="explorer">
+    <AccessRules IsFinal="true">
+      <Transparence Extendable="true" PublishedName="org.radixware.kernel.explorer.env.Application"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcF2Q6NYBUQRGMRAIH4SS26J2WLQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcJUQAQAD755C65E4I5OEIFRTGHE"/>
+    </Bodies>
+    <MethodGroup Id="cmgGU23CBRISVESXICNJERQQE6WFE" Name="Root"/>
+    <PropertyGroup Id="cpgG4MG2OGC3RHRNKHX3PJWEJK6AQ" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth6ISNAOPJTRCBNOD5TDNVPJMWGA" Name="applySettings" DescriptionId="mlsDWRJ42LJBNE7NAKZDVYBZKYP3A" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="applySettings(Lorg.radixware.kernel.explorer.env.ExplorerSettings;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="settings" DescriptionId="mlsNJ6PV5IYERE4HBG4MCCI4JQCCU" Id="mprGKPOPZQ5DREMLJMJPMR4OGNVWA">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.env.ExplorerSettings"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthTKTU6B6IBFDLXOMFG2MDM5RQIY" Name="beep" DescriptionId="mls4P7SXC2X2ZA5XPNYU7QIMRBVPI" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="beep()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthIM6YN3H66ZFXNJKC2SWYBBINAI" Name="getCodeBase" DescriptionId="mlsEMIANXX3DFH4FPXLGXZWZMO6VI" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getCodeBase()Ljava.net.URL;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.net.URL" DescriptionId="mlsVOYCHKLKDVHXLIGLAMRMOBOAME"/>
+      </Method>
+      <Method Id="mthXMQWRXWFBVENPMTDHXUL2Q5SWU" Name="getConfigStore" DescriptionId="mlsENC2AIZZ6BENVNANTIT5MCDDJA" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getConfigStore()Lorg.radixware.kernel.explorer.env.ExplorerSettings;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.env.ExplorerSettings" DescriptionId="mlsNY2DJIEFTZGAHMYECW2CGCF4RE"/>
+      </Method>
+      <Method Id="mth6CRPP4QZ5VHINONGGIFIEOK5D4" Name="getConnectionOptions" DescriptionId="mls2SPNC63TD5BXLOYITRVPB2I5HM" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getConnectionOptions()Lorg.radixware.kernel.common.client.eas.connections.ConnectionOptions;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.eas.connections.ConnectionOptions" DescriptionId="mlsOAI42ESRL5C7HNTNFTYOBHFRHI"/>
+      </Method>
+      <Method Id="mthRHNI6G7RZJGVXNQ4TWNKMFVB2I" Name="getLanguage" DescriptionId="mlsYGAS3R5PBJAVZDTIOOASTAGXW4" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getLanguage()Lorg.radixware.kernel.common.enums.EIsoLanguage;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.enums.EIsoLanguage" DescriptionId="mlsGM5PISFO2JH5JJO7LZDIR2FWWM"/>
+      </Method>
+      <Method Id="mthNQIWGHM3LNEANDMMAJFNCWDTFE" Name="getMainWindow" DescriptionId="mlsQOQ4Q2NZEBCZFKEIAVB5OPNLQU" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getMainWindow()Lorg.radixware.kernel.explorer.views.MainWindow;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.views.MainWindow" DescriptionId="mlsJGF7VYOKFRETZCZ7ZXZAS5FF4I"/>
+      </Method>
+      <Method Id="mthVFPFB2GJE5D2RNVX5YTMCP5XUM" Name="getWorkPath" DescriptionId="mlsKMN4I3EDC5FRVGHCX6KGZIHZUE" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getWorkPath()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21" DescriptionId="mlsPS6EUDDCJFAPTJ2PWTO6ABCX5U"/>
+      </Method>
+      <Method Id="mthOORBDFLM2BCCPAVWE72KPYEEFM" Name="loadIcon" DescriptionId="mlsVB7NMQKNKNAOHIJ3BLVW7RUZKU" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="fileName" DescriptionId="mls6QFJ36Y2CBDKPGURIB6XI53CDY" Id="mprAZXE2DXYVRALRNYICJFEO75NNE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QIcon" DescriptionId="mls7CDLVTHZKFC4LNAXWDL34GMRAQ"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return loadIcon(fileName);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthDN7Q3CISY5EBNIQRPEVSF2VAFI" Name="loadSvgIcon" DescriptionId="mlsW5MU6OC56NAXTGQA33UH7MTUTQ" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="fileName" DescriptionId="mls6RQEOBITSZECXGXABEIQWNK2JU" Id="mpr7GCKK4VUM5HTHHJH4YT4OIGGX4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="background" DescriptionId="mlsQQC32ITFJZAWDFDAAN6FZXXHYE" Id="mprLRH7GR7NIRGAXGIIXBHFRIAQUI">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QColor"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QIcon"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return loadSvgIcon(fileName,background);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthXPKICLBUXFFJ3GJXADPNV3WYDE" Name="messageBox" DescriptionId="mlsZO64JP3QBVF3PJHVFABQ2DJJV4" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="messageBox(Ljava.lang.String;Ljava.lang.String;Lcom.trolltech.qt.gui.QMessageBox.Icon;Lcom.trolltech.qt.gui.QMessageBox.StandardButtons;)Lcom.trolltech.qt.gui.QMessageBox.StandardButton;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" DescriptionId="mlsAT65FQX4BNFK3J2AAFCXTAAKRY" Id="mprDJY7PCVL4JHLFI7OCYC54IKSGI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="message" DescriptionId="mlsY66W3CVHOFBXNFRC5Q2CBTMLNA" Id="mpr5QZPFLZZ2VHZHNZG2WZ354YKKU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="icon" DescriptionId="mlsND4UUXTILRF5PNWSU2TUZEZIXY" Id="mprTTQFOYZDYFD2NMGOE3HT5C6KXM">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QMessageBox.Icon"/>
+          </Parameter>
+          <Parameter Name="buttons" DescriptionId="mlsR3RDWCM6CRBU7IQ45GJ5IFHF4Y" Id="mprEZGCDT74FBDJDHLNB6USGNCBCQ">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QMessageBox.StandardButtons"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QMessageBox.StandardButton" DescriptionId="mlsD6H2NTUH3ZBDRA2BKMXO2AI7MU"/>
+      </Method>
+      <Method Id="mthTJ2UWH3GAFA6BJYN3XTKXTKFOY" Name="messageException" DescriptionId="mlsDGYJHKI5CVAZJNTPZS2EMRNOSU" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="messageException(Ljava.lang.String;Ljava.lang.String;Ljava.lang.Throwable;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" DescriptionId="mlsFOFX4ZCYSJAB3OUOJFYEZODY7A" Id="mpr3QRYJ64X6VBO3IP6T74TVFXQRE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="message" DescriptionId="mls4PSX7ORPRJEQJFTAWOSMTT2ITU" Id="mprSYIP7XKA3BBPBM7FPXXCXE6IJY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="e" DescriptionId="mlsL2PVR6DK4BEGRMC4GDQWBWWPY4" Id="mprRH2AJNOJ7RBTDGREFIEBJI756U">
+            <Type TypeId="400" extStr="java.lang.Throwable"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthLEP5OWV3LFDULGYALX3KD3GT6A" Name="processException" DescriptionId="mlsTO425UJZTVF33JYF5SQPXBOBFE" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="e" DescriptionId="mlsBOKPNT7RSVEFFJP2DOO4KKS46I" Id="mprDL2KO2KUORAUBHURU6E2PM2F2Q">
+            <Type TypeId="400" extStr="java.lang.Throwable"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>getInstance().processException(e);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth3ANQCSGABJHRLIVVWTTAOJYRJI" Name="getTreeManager" DescriptionId="mlsDZUJCWANY5FWJI5FQQN3NBOV4Y" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getTreeManager()Lorg.radixware.kernel.explorer.tree.ExplorerTreeManager;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.tree.ExplorerTreeManager" DescriptionId="mlsYVM47DROK5HWJLLT36IY4VWWYQ"/>
+      </Method>
+      <Method Id="mthFK3EWBJGWBA3JCFUCZGO3QUYZM" Name="getDefManager" DescriptionId="mlsOF3HAKZBOFBV5KGB4ORKS62W7Q" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.env.DefManager" DescriptionId="mlsM5EPHNVNEFFFNFOTD4CRFACUZI"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return getInstance().getDefManager();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthQL6BAMEWSJFBHP2TEOAHMBZ4WU" Name="messageConfirmation" DescriptionId="mlsNIQALJQW7ZFXDFKRBUX5JU2RSY" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="messageConfirmation(Ljava.lang.String;Ljava.lang.String;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" DescriptionId="mls5LHOGXRDGRBJJNRKRW7OWLSP2Q" Id="mpr6OKQJQAEWZDRFHMHLXJUYGPKNA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="message" DescriptionId="mlsADL2TTVE3FASVCK6GWIITMH5HM" Id="mprUE3POCEHC5H4PMPRCMEV2LTCUM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsFYOLHNGDVNBA7I6DGAK7WVHBDU"/>
+      </Method>
+      <Method Id="mthRBQCV7YXWNFAFDCE2AZNZCHAAI" Name="messageError" DescriptionId="mls2TNVHPDTFRC5NHSUATG5U6NB3Y" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="messageError(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="message" DescriptionId="mlsA6CTZTHH2NGHHETTUWH2ESOBYY" Id="mprNPNBSIB6HZGFHPEGBDQRFORZW4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthTBZ664HXGRA35JY3GRAKEYBTBA" Name="messageInformation" DescriptionId="mlsSSDOBDEC3ZGWDL73XFJR4FRJOY" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="messageInformation(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="message" DescriptionId="mls2AUVX4C3YBBULADVDCNO6UCNT4" Id="mprYFTXCKSIWNCRPD5ZJ32JCRD7M4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthJMPOJUWNVBGDJNPXXU7E246JNA" Name="messageWarning" DescriptionId="mlsCREJC2BE4VBF5DHSQUK23I5GCI" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="messageWarning(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="message" DescriptionId="mlsUHMRUF7I4BF27GXTFJHGLX6LWI" Id="mprHMCFGAXHYZE6VIJ46QADLFKYPM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthXD5JII65IZHMNHARJPOUSHMVDM" Name="showModalSwingDialog" DescriptionId="mlsHI2GXCSR7NCVTJCXAE4DPMHVCM" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="showModalSwingDialog(Ljavax.swing.JFrame;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="frame" DescriptionId="mlsHIC22KSPEVE5HG2NTLHMUP4JQ4" Id="mprDYNU7BXN6ZH6BFOKTZUPIZTGVY">
+            <Type TypeId="400" extStr="javax.swing.JFrame"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth7VFWAR64ENC3HGS6LTPSILZI3I" Name="messageConfirmation" DescriptionId="mlsCH64QVBTTVCBNAOCATLFLLKG6M" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="messageConfirmation(Ljava.lang.String;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="message" DescriptionId="mlsR4SJYXCFDNFMZCKXQAJQJY3ECQ" Id="mpr4C3UFQAVCRD2HA3ZMYQ2FP3DO4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsJMRI2SDONBDVJNZ3DAQDZJQVEU"/>
+      </Method>
+      <Method Id="mthZTCOXNJEKBAQFBAFKCDL2IQKCQ" Name="messageError" DescriptionId="mlsJQOUMJRRXRBP3MVLT34OM7DGO4" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="messageError(Ljava.lang.String;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" DescriptionId="mls37MTMWONTVEWRCSQ2YBS6SY344" Id="mprZI3MEM23DFE4ZLHEK2FW7OJT54">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="message" DescriptionId="mlsW3M5VFKAJZFUBPMDA7UMHIQ3PQ" Id="mpr3UTE5QCC35E7ZJ7S6Q5OICRO5A">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthW4W2XY7RIVFRTNIYSZOWKRIOCE" Name="messageInformation" DescriptionId="mlsA3DA7EXR6RA47LWXIZQAGBGSAU" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="messageInformation(Ljava.lang.String;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" DescriptionId="mlsCOVR34WC6VBHFONELXKRY5G3CI" Id="mprT6W4GJ26NBBTHKEXBMMNHGNJCI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="message" DescriptionId="mlsC5ZXL4EJSFFPBGHRSXVVFVXMJ4" Id="mprRYSM2JLKEBA2FJU2DTFPLL6FKA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth7CNYKWAYGFG6JEMGF4GWZW6JOE" Name="messageWarning" DescriptionId="mlsESZGQ5UHZBGUHJJERKHYQPRCKU" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="messageWarning(Ljava.lang.String;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" DescriptionId="mls62ZYDRXIHFGZLGPRTL4MIBIAHM" Id="mpr6F2QMOWIHBGL7G4HS62UU244GA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="message" DescriptionId="mlsE3HOJS4B4VD7VOPSFI6W3PYFG4" Id="mprVEK76PGKWJHITLJFI5DCHFWM34">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthD2QMMLLDRFFVNDN2VTNEFNRAW4" Name="messageBox" DescriptionId="mlsI2NW2HL2QZF7FCRYPS6MK567EQ" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="messageBox(Ljava.lang.String;Ljava.lang.String;Lcom.trolltech.qt.gui.QMessageBox.Icon;Lcom.trolltech.qt.gui.QMessageBox.StandardButtons;Lcom.trolltech.qt.gui.QMessageBox.StandardButton;)Lcom.trolltech.qt.gui.QMessageBox.StandardButton;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" DescriptionId="mlsDGJJES3DTRDXHASXVPFGNZFOE4" Id="mprJ5ORFH52SZH4JKN5UBR4L5PIZY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="message" DescriptionId="mlsNSAAGZRRZNA6DGNNSJ6IVEHF6Q" Id="mprDAVN5VE3YFDMRPOCL5NJW4PIWU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="icon" DescriptionId="mlsAYSYHJQAD5HOLBTFLY2JZJQ4HA" Id="mprJEATWTBOSRCLTN4OMLAHTJHRGA">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QMessageBox.Icon"/>
+          </Parameter>
+          <Parameter Name="buttons" DescriptionId="mlsY22VAZSJCRGRTDLQ455DIJCL3A" Id="mprFAW2PJX7SJHMXB6JD4RJMMNGBU">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QMessageBox.StandardButtons"/>
+          </Parameter>
+          <Parameter Name="defaultButton" DescriptionId="mls7TWAHC2XBJDVZOZQQNGGGOFN5U" Id="mprKAIRQXHPMFD7TFESKQFZV6ZZ7A">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QMessageBox.StandardButton"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QMessageBox.StandardButton" DescriptionId="mlsLBRWQGNHNZFTNHANHORXGKYWPE"/>
+      </Method>
+      <Method Id="mthIPSL35DGEZEUVFJ53BONICPKBM" Name="isContextlessCommandAccessible" DescriptionId="mls5WZLUIS7WBFSRNDYF4MGJL2OBQ" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="commandId" DescriptionId="mlsWOZM265HNBHWNMF25D7S3JZXII" Id="mprFJSXRPJTINHY3KVTCO5QPNW3AE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsTLKMDUOWDNDKFP6P6EB6EMYEAM"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return isContextlessCommandAccessible(commandId);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthGAPTLGXKRJCDHNSXKLEF4VZIZI" Name="isServerResourceAccessible" DescriptionId="mlsYXTD2O2QQZD2XG45HRJ3UTR3T4" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="resource" DescriptionId="mlsQJJA3GQ7SRGIVCIC46JDVEARQA" Id="mprUJRPMPMTL5BNNOYB2VAE5CH6CU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EDrcServerResource"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsPT6XEQING5HWTCWLG5KNY4PKZI"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return isServerResourceAccessible(resource);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth73QTNT4RF5DL3L5TCO4JWOT3OI" Name="getSupportedLanguages" DescriptionId="mlsEAZXPVALSFGHXIJ5AEN5KYZU6U" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getSupportedLanguages()Ljava.util.List&lt;Lorg.radixware.kernel.common.enums.EIsoLanguage;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List" DescriptionId="mlsIAP5NH7Y2FHFJA2RN6VSO3PNPA">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.enums.EIsoLanguage"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthU56VNWWC2NDUFCIHXRLIBDTCRU" Name="Application" DescriptionId="mls3TZD3CVURFFWPNPMX3BMGKMD2Y" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="mainWindow" DescriptionId="mls3QGMEZXUHFGFBMK2NQUSHXOWO4" Id="mprNRFQPS36VJFU7JM75YH3JQERHI">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.views.MainWindow"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(mainWindow);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthLA5FSPM4LZD4DB6PKOWSWNMOGA" Name="messageQuestion" DescriptionId="mlsKI4DSPMFHNF7LOW6TZJK6QRIVQ" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="messageQuestion(Ljava.lang.String;)Ljava.lang.Boolean;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="message" DescriptionId="mlsJVQBF6OWJJHTLIQEBWCYEV3LDM" Id="mprCW4PMLTKXRARBKCUKGDISAHZEQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="1" DescriptionId="mls34F5XSDOWJA3XCC6HZ5HRMPVU4"/>
+      </Method>
+      <Method Id="mthEQTNL2YTT5AWVMUTTD4OOCLNIY" Name="messageQuestion" DescriptionId="mls4B5AMIJCLNAARDI7F5BRDRSERQ" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="messageQuestion(Ljava.lang.String;Ljava.lang.String;)Ljava.lang.Boolean;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="message" DescriptionId="mlsMAXC3K6TS5CQ3I6KO6XLBH7JPY" Id="mprPP66O2OFDVH5DAGW6B3VO2PV7U">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="title" DescriptionId="mls54EO26OT2REXHHU4U2ZY5GXXPI" Id="mprUQEHKKEECZBQ7DZR62WOEAT3NQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="1" DescriptionId="mlsVFRQIN7Y4NBDXODG5652ZJJ74Y"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

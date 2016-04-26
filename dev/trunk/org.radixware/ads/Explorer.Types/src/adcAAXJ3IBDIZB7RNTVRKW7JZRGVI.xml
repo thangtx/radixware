@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcAAXJ3IBDIZB7RNTVRKW7JZRGVI" Name="ViewRestrictions" Type="3" Environment="common-client">
+    <AccessRules IsFinal="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.types.ViewRestrictions"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcAAXJ3IBDIZB7RNTVRKW7JZRGVI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcAAXJ3IBDIZB7RNTVRKW7JZRGVI"/>
+    </Bodies>
+    <MethodGroup Id="cmgKMXHIBGOVVE2DA7NQGJSVGEWRY" Name="Root"/>
+    <PropertyGroup Id="cpgY7I4LLZBTNEI5CNOUAGCE7ICC4" Name="Root"/>
+    <Properties>
+      <Property Id="prdHCPT5H72VZHTDLOGODRYP4EO4I" Name="READ_ONLY" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="READ_ONLY"/>
+        </AccessRules>
+        <Type TypeId="400" extStr="java.util.EnumSet">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.enums.ERestriction"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </Type>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthX3XPXIOSQNAB7OEJCCZEU4VXC4" Name="add" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="add(Lorg.radixware.kernel.common.enums.ERestriction;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="restriction" Id="mprEG3TQFXH7ZEP5I36B3AUI2CAPQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.ERestriction"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthSEFACAXRABBNNGHKBWF7G76HDQ" Name="add" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="add(Ljava.util.EnumSet&lt;Lorg.radixware.kernel.common.enums.ERestriction;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="restrictions" Id="mprYOAASEDMKNDQVOGU57YRREXJC4">
+            <Type TypeId="400" extStr="java.util.EnumSet">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.enums.ERestriction"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthJOEMFLBJABHZ7IOVZ7IUR65AOY" Name="add" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="add(Lorg.radixware.kernel.common.client.types.ViewRestrictions;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="restrictions" Id="mprX3YLEHSP7JBX3LMTVXFUNWXNIY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.types.ViewRestrictions"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthIU5T7C4BQBDFZGFZYQ6VALUFOY" Name="addRestrictedCommand" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="addRestrictedCommand(Lorg.radixware.kernel.common.types.Id;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="commandId" Id="mprAZX7FLAMQRANBC2ZOEZFRK5WAU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthMA26J2K3UJHT3GWLJBSENAJRFI" Name="clear" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="clear()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth3K2C34AFHFBYDIWAP5RC35IEU4" Name="isRestrictedInView" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isRestrictedInView(Lorg.radixware.kernel.common.enums.ERestriction;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="restriction" Id="mprMTVGOMRWCVBBNMZQQJ5V7NDZQQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.ERestriction"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthV6THWZBI4NE3RFUHWEFIRA6OYI" Name="remove" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="remove(Lorg.radixware.kernel.common.enums.ERestriction;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="restriction" Id="mprYKG2YIMAHNDUFAMI6MWPSK3THI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.ERestriction"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthURWZ5VBZYZAAVO6YZE4U4ECDYU" Name="remove" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="remove(Ljava.util.EnumSet&lt;Lorg.radixware.kernel.common.enums.ERestriction;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="restrictions" Id="mprWJU5XMHIHRHDDPYNJEVZRMP3CQ">
+            <Type TypeId="400" extStr="java.util.EnumSet">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.enums.ERestriction"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthXSHDNFJPCVGVHPPE63IWZHL6JU" Name="removeRestrictedCommand" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="removeRestrictedCommand(Lorg.radixware.kernel.common.types.Id;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="commandId" Id="mprEHI3UDCPLNHOPI7KJUBYPPJBWA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth7DCWPPK4ANCYVONAE3VVSMBKPM" Name="ViewRestrictions" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthMROXZ6LUIVFXZJLPKXFHAIKTNU" Name="ViewRestrictions" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.views.IView;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="source" Id="mpr3ZF2X7DDERALHKHFOUYHHFCUII">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.views.IView"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthPB3YZFH535CGBNRDL5XWBYWA4A" Name="add" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="add(Lorg.radixware.kernel.common.client.types.Restrictions;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="restrictions" Id="mprI5B4AQSCTFFTBK4JUABOK6BXDY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.types.Restrictions"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

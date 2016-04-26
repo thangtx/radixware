@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcQE7AEZMDEHORDHVKABIFNQAABA" Name="AccessAreaList" DescriptionId="mls3YOEK5WPOFBVTAMGQ7MYONUF4Q" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcCLJXM3SGTZFSTMLKP37YPKQAZM">
+        <xsc:Item>
+          <xsc:Java>import java.util.Vector;
+</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcLROHEDT255CKXAIBKSTUSNHXUY"/>
+    </Bodies>
+    <MethodGroup Id="cmg33FJGDUTGNEOTLJCXJQQSOBDGU" Name="Root"/>
+    <PropertyGroup Id="cpgA6WL4HR7XVAJLKWHF6XKWPWUB4" Name="Root"/>
+    <Properties>
+      <Property Id="prdHX7JMESOGTOBDGANABIFNQAABA" Name="areas" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="400" extStr="java.util.Vector">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="adcO3RN2IYLGXOBDGAOABIFNQAABA"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </Type>
+        <InitialValue>
+          <ValAsStr>null</ValAsStr>
+        </InitialValue>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth5G76IYSRGTOBDGANABIFNQAABA" Name="clear" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQE7AEZMDEHORDHVKABIFNQAABA prdHX7JMESOGTOBDGANABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.clear();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthBUWUUZ7ULRHQBOT47NCP6UU6AU" Name="getAreas" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="adcO3RN2IYLGXOBDGAOABIFNQAABA"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQE7AEZMDEHORDHVKABIFNQAABA prdHX7JMESOGTOBDGANABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth6WDCLHUCPDOBDBFHABIFNQAABA" Name="isEmpty" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQE7AEZMDEHORDHVKABIFNQAABA prdHX7JMESOGTOBDGANABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.size()==0;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthD2MTVGWRPPOBDBFJABIFNQAABA" Name="setAreas" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="pAreas" Id="mprGZ25O2STSVCYFOFFZ4WYWDF2RA">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="411" Path="adcO3RN2IYLGXOBDGAOABIFNQAABA"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQE7AEZMDEHORDHVKABIFNQAABA prdHX7JMESOGTOBDGANABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = new Vector&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcO3RN2IYLGXOBDGAOABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>(pAreas);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthDCHMQAWRPPOBDBFJABIFNQAABA" Name="AccessAreaList" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="pCoordinates" Id="mprNHYVNYGQFFDGXLEY4MU45MPDVI">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQE7AEZMDEHORDHVKABIFNQAABA prdHX7JMESOGTOBDGANABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = new Vector&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcO3RN2IYLGXOBDGAOABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQE7AEZMDEHORDHVKABIFNQAABA prdHX7JMESOGTOBDGANABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.add(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcO3RN2IYLGXOBDGAOABIFNQAABA mthALXWIAWPPPOBDBFJABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(pCoordinates));</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthLBWECBATGXOBDGAOABIFNQAABA" Name="AccessAreaList" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQE7AEZMDEHORDHVKABIFNQAABA prdHX7JMESOGTOBDGANABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = new Vector&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcO3RN2IYLGXOBDGAOABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthWZWM2JQPGXOBDGAOABIFNQAABA" Name="addArea" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="area" Id="mprCVJRBERV6JB6VHBDVQF53OA6SI">
+            <Type TypeId="411" Path="adcO3RN2IYLGXOBDGAOABIFNQAABA"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQE7AEZMDEHORDHVKABIFNQAABA prdHX7JMESOGTOBDGANABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.add(area);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYJZOJGAPGXOBDGAOABIFNQAABA" Name="getAreas" Nature="0" IsOverride="false">
+        <AccessRules IsDeprecated="true"/>
+        <ReturnType TypeId="400" extStr="java.util.Vector">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="adcO3RN2IYLGXOBDGAOABIFNQAABA"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQE7AEZMDEHORDHVKABIFNQAABA prdHX7JMESOGTOBDGANABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYQYEEHBKGXOBDGAOABIFNQAABA" Name="toString" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>String s;
+              
+if(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQE7AEZMDEHORDHVKABIFNQAABA prdHX7JMESOGTOBDGANABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.size()==0)
+   s = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsA6X6ANOAGVEEXKUB7QZH5HZM2I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.toString();
+else
+{
+   s = "{ ";   
+   for(int i=0; i&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQE7AEZMDEHORDHVKABIFNQAABA prdHX7JMESOGTOBDGANABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.size(); i++)
+   {  
+      if(i>0)
+         s += ", ";
+      s += </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQE7AEZMDEHORDHVKABIFNQAABA prdHX7JMESOGTOBDGANABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.elementAt(i).</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcO3RN2IYLGXOBDGAOABIFNQAABA mth5ECMPVLZH3OBDGAWABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+   }
+   s += " }";
+}   
+   
+return s;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthZ3T2I7ONPPOBDBFJABIFNQAABA" Name="AccessAreaList" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="area" Id="mprEYNU7SBKNZFXVL5ZBL3VWXEFO4">
+            <Type TypeId="411" Path="adcO3RN2IYLGXOBDGAOABIFNQAABA"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQE7AEZMDEHORDHVKABIFNQAABA prdHX7JMESOGTOBDGANABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = new Vector&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcO3RN2IYLGXOBDGAOABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQE7AEZMDEHORDHVKABIFNQAABA prdHX7JMESOGTOBDGANABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.add(area);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

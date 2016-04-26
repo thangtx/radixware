@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:this="http://schemas.radixware.org/testreport.xsd" xmlns:types="http://schemas.radixware.org/types.xsd" targetNamespace="http://schemas.radixware.org/testreport.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+        <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+
+	<xs:complexType name="NameType">
+            <xs:attribute name="Name" type="xs:string" use="optional"/>
+		<xs:attribute name="IconPath" type="xs:string" use="optional"/>
+		<xs:attribute name="Font" type="xs:string" use="optional"/>
+	</xs:complexType>
+        
+        <xs:complexType name="TraceListItem">
+            <xs:attribute name="message" type="xs:string" use="required"/>
+            <xs:attribute name="severity" use="required">
+                <xs:simpleType>
+		    <xs:annotation>
+			<xs:documentation>Enum EEventSeverity</xs:documentation>
+			<xs:appinfo source="http://schemas.radixware.org/types.xsd">
+			    <types:class>org.radixware.kernel.common.enums.EEventSeverity</types:class>
+		        </xs:appinfo>
+		    </xs:annotation>
+		    <xs:restriction base="types:IntEnum"/>
+		</xs:simpleType>
+            </xs:attribute>
+        </xs:complexType>
+
+        <xs:complexType name="EventListItem">
+            <xs:attribute name="name" type="xs:string" use="required"/>
+            <xs:attribute name="message" type="xs:string" use="required"/>
+            <xs:attribute name="stack" type="xs:string" use="optional"/>
+        </xs:complexType>
+
+        <xs:complexType name="TraceListType">
+            <xs:sequence>
+                <xs:element name="TraceItem" type="this:TraceListItem" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+
+
+        <xs:complexType name="EventListType">
+            <xs:sequence>
+                <xs:element name="EventItem" type="this:EventListItem" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+
+
+        <xs:complexType name="ResultType">
+            <xs:sequence>
+                <xs:element name="EventList" type="this:EventListType" minOccurs="0" maxOccurs="1"/>
+                <xs:element name="TraceList" type="this:TraceListType" minOccurs="0" maxOccurs="1"/>
+            </xs:sequence>
+            <xs:attribute name="ResultText" type="xs:string" use="optional"/>
+	</xs:complexType>
+
+        <xs:complexType name="ReportItemsList">
+            <xs:sequence>
+                <xs:element name="item" type="this:ReportItemType" maxOccurs="unbounded" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+
+	<xs:complexType name="ReportItemType">
+		<xs:sequence>
+		    <xs:element name="Result" type="this:ResultType" minOccurs="0"/>
+                    <xs:element name="Name" type="this:NameType" minOccurs="1" maxOccurs="1"/>
+                    <xs:element name="SubItems" type="this:ReportItemsList"/>
+		</xs:sequence>
+		<xs:attribute name="Type" type="xs:string" use="optional"/>
+		<xs:attribute name="Path" type="xs:string" use="optional"/>
+                <xs:attribute name="Color" type="xs:string" use="optional"/>
+                <xs:attribute name="Time" type="xs:string" use="optional"/>
+	</xs:complexType>
+
+	<xs:complexType name="TestReportType">
+		<xs:sequence>
+			<xs:element name="Item" type="this:ReportItemType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="TestInserts" type="xs:boolean" use="required"/>
+                <xs:attribute name="TestFilters" type="xs:boolean" use="required"/>
+                <xs:attribute name="TestPages" type="xs:boolean" use="required"/>
+                <xs:attribute name="TestPropDialog" type="xs:boolean" use="required"/>
+                <xs:attribute name="TestCreationDialog" type="xs:boolean" use="required"/>
+
+                <xs:attribute name="InsertsCount" type="xs:integer" use="optional"/>
+                <xs:attribute name="FiltersCount" type="xs:integer" use="optional"/>
+                <xs:attribute name="PagesCount" type="xs:integer" use="optional"/>
+                
+                <xs:attribute name="OpeningTime" type="xs:long" use="required"/>
+                <xs:attribute name="ClosingTime" type="xs:long" use="required"/>
+                <xs:attribute name="InsertsTime" type="xs:long" use="required"/>
+                <xs:attribute name="FiltersTime" type="xs:long" use="required"/>
+                <xs:attribute name="PagesTime" type="xs:long" use="required"/>
+                <xs:attribute name="PropertyDialogTime" type="xs:long" use="required"/>
+                <xs:attribute name="CreationDialogTime" type="xs:long" use="required"/>
+
+                <xs:attribute name="TotalTests" type="xs:long" use="required"/>
+                <xs:attribute name="PassedTests" type="xs:long" use="required"/>
+                <xs:attribute name="ErroniousTests" type="xs:long" use="required"/>
+                <xs:attribute name="WarnedTests" type="xs:long" use="required"/>
+
+                <xs:attribute name="ResultFilter" type="xs:string" use="required"/>
+ 	</xs:complexType>
+        
+	<xs:element name="TestReport" type="this:TestReportType"/>
+
+</xs:schema>

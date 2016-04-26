@@ -1,0 +1,2328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcHMXIRC2KYZFDRHIIULJ2M6YRLM" Name="GraphView" Type="3" Environment="explorer">
+    <AccessRules IsFinal="true" IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcSKLXDR2CUJD3JGZH2UYKVBBAO4">
+        <xsc:Item>
+          <xsc:Java>import java.util.*;
+import com.trolltech.qt.core.*;
+import com.trolltech.qt.gui.*;
+import com.trolltech.qt.core.Qt.MouseButton;
+</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcFPKD7URORNEDFEERPLAC4DHWOE">
+        <xsc:Item>
+          <xsc:Java>static final public int MOVE_MODE = 0;
+static final public int INSERT_NODE_MODE = 1;
+static final public int INSERT_LINE_MODE = 2;
+
+private int mode = MOVE_MODE;
+private QGraphicsLineItem line = null;
+private </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeInfo"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> info = null;
+
+final private </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> pid;        
+final public Signal0 inserted = new Signal0();
+final public Signal0 modified = new Signal0();
+
+private final </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> userSession;
+private final </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> entityModel;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmg5QOT3SBNX5EDHOJOF4DWJM4V2I" Name="Root"/>
+    <PropertyGroup Id="cpgV5QQATLLCNHZNKTKDC3KKPMGE4" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthHYWURBP4VVFHHBNBIESQVQ25KY" Name="setMode" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="mode" Id="mprC2GOK27J65GDFJC7S4OAGYQTHE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="info" Id="mprSTGRF77BT5FS7OKXLMDBU3X4QU">
+            <Type TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeInfo"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this.mode = mode;
+this.info = info;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthK6Y54LV5WVFDHM3EJ5RLPUMWLU" Name="GraphView" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprGPHKRGREGJGONGQLUEUPF2KPJQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="entityModel" Id="mprV5TTYF6XOVAXBD57K3ZT6WPEPM">
+            <Type TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA"/>
+          </Parameter>
+          <Parameter Name="pid" Id="mpr2KKFWQF24NHJRPEU4QYFPCUJCI">
+            <Type TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this.pid = pid;
+this.userSession = userSession;
+this.entityModel = entityModel;
+
+QGraphicsScene scene = new QGraphicsScene(this);
+scene.setItemIndexMethod(QGraphicsScene.ItemIndexMethod.NoIndex);
+scene.setSceneRect(0, 0, 4000, 4000);
+setScene(scene);
+
+setCacheMode(new QGraphicsView.CacheMode(QGraphicsView.CacheModeFlag.CacheBackground));
+
+setRenderHint(QPainter.RenderHint.Antialiasing);
+setTransformationAnchor(QGraphicsView.ViewportAnchor.NoAnchor);
+setResizeAnchor(QGraphicsView.ViewportAnchor.AnchorViewCenter);
+
+setMinimumSize(400, 400);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthDRSNNHL6ORAXNPNI42TISO3U4Y" Name="scaleView" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="scaleFactor" Id="mpr2S7WNEAEX5GINB425L3U7PKC5E">
+            <Type TypeId="401" extStr="double"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>QMatrix m = matrix();
+m.scale(scaleFactor, scaleFactor);
+double factor = m.mapRect(new QRectF(0, 0, 1, 1)).width();
+if (factor >= 0.07 &amp;&amp; factor &lt;= 100) {
+    setTransformationAnchor(QGraphicsView.ViewportAnchor.AnchorUnderMouse);
+    scale(scaleFactor, scaleFactor);
+    setTransformationAnchor(QGraphicsView.ViewportAnchor.NoAnchor);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthM62ED6HBGBERTKNBEJN2EGAYJY" Name="setMode" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="mode" Id="mpr2J2BVUUTJ5DDPENGJ5EDTHPX5M">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this.mode = mode;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth63526XRTDJAFTOTOQNU2JM5T4Y" Name="mode" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <ReturnType TypeId="401" extStr="int"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return mode;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthSDPELACZ2ZG2FNUQWPOSPYC46E" Name="deleteSelected" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (scene().selectedItems().size() == 0)
+    return;
+
+for (QGraphicsItemInterface item : scene().selectedItems()) {
+    if (item instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+        if (!((</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) item).</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI mth7XG2KIRZ2NAGPK2IL5HCYAFOJ4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="apcMGIV674XJHORDAGMABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcMGIV674XJHORDAGMABIFNQAABA mth3IATAAVDL7ORDI2YABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(userSession, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls4K3EG54EXFFZ7MFYCEBQZXHISQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+            return;
+        }
+    }
+}
+
+if (!</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="apcMGIV674XJHORDAGMABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcMGIV674XJHORDAGMABIFNQAABA mthJBUAFXFCL7ORDI2YABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(userSession, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsYO33FNJLTFEQXKVMXYLHVD4HCY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>))
+    return;
+
+int c = 0;
+for (QGraphicsItemInterface item : scene().selectedItems()) {
+    if (item instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2GIU2FYS25GHNJNFH37JDRZ37A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+        ((</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2GIU2FYS25GHNJNFH37JDRZ37A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) item).</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2GIU2FYS25GHNJNFH37JDRZ37A mthGJHUIZWQN5HVRGYHE6ZWGX5R2Q" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+        c++;
+    }
+}
+
+for (QGraphicsItemInterface item : scene().selectedItems()) {
+    if (item instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcS75H6U36SFG2LDRZX5GM3WS47Q"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcS75H6U36SFG2LDRZX5GM3WS47Q"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> node = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcS75H6U36SFG2LDRZX5GM3WS47Q"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) item;
+        try {
+            node.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI mthFPUNTBY2E5EC7FNXLTMGOWHNYQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+            c++;
+        } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="apcMGIV674XJHORDAGMABIFNQAABA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcMGIV674XJHORDAGMABIFNQAABA mth75HUJ3FCL7ORDI2YABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(userSession, e.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+            node.setSelected(true);
+            node.setZValue(1.1);
+            break;
+        }
+    }
+}
+
+if (c > 0)
+    modified.emit();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthFMY4KXDHNFDR5FMKFD5OPX537I" Name="export" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <ReturnType TypeId="451" Path="xsdL6YN6OJDTBHMPLJWIV3F6VGQCQ" extStr="DiagramDocument"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdL6YN6OJDTBHMPLJWIV3F6VGQCQ" extStr="DiagramDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xDiagramDoc = null;
+
+if (scene().items().size() > 0) {
+    xDiagramDoc = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdL6YN6OJDTBHMPLJWIV3F6VGQCQ" extStr="DiagramDocument.Factory"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.newInstance();
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdL6YN6OJDTBHMPLJWIV3F6VGQCQ" extStr="Diagram"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xDiagram = xDiagramDoc.addNewDiagram();
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdL6YN6OJDTBHMPLJWIV3F6VGQCQ" extStr="Diagram.Edges"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xEdges = xDiagram.addNewEdges();
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdL6YN6OJDTBHMPLJWIV3F6VGQCQ" extStr="Diagram.Nodes"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xNodes = xDiagram.addNewNodes();
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdL6YN6OJDTBHMPLJWIV3F6VGQCQ" extStr="Diagram.Comments"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xComments = xDiagram.addNewComments();
+
+    for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QGraphicsItemInterface"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> item : scene().items()) {
+        if (item instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+            final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> node = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) item;
+            if (node.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI mthCHNL3HNQCVEDXNB4XDXEH6IZJY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdL6YN6OJDTBHMPLJWIV3F6VGQCQ" extStr="Node"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xNode = xNodes.addNewNode();
+                xNode.PosX = node.pos().x();
+                xNode.PosY = node.pos().y();
+                xNode.setVirtual(true);
+                xNode.VirtualNodeType = ((</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc7MOZO3YE5NEYRGKQWHJ26KKXOM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)node).</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc7MOZO3YE5NEYRGKQWHJ26KKXOM mthQZ5EKVCW4RHCHM5D4CY7HNDHQM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+                continue;
+            }
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdL6YN6OJDTBHMPLJWIV3F6VGQCQ" extStr="Node"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xNode = xNodes.addNewNode();
+            xNode.EntityId = node.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI mthDZFKAV7V25FBZMIMETFYNIF5IU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().EntityId;
+            xNode.EntityPid = node.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI mthDZFKAV7V25FBZMIMETFYNIF5IU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().EntityPid;
+            xNode.Inversed = node.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI mth6UQLVK7LNRDOXDAZNL47YPAFHY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+            xNode.PosX = node.pos().x();
+            xNode.PosY = node.pos().y();
+        }
+        if (item instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcOQHC7VO5QBB7ROPFHF2NPF52C4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+            final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcOQHC7VO5QBB7ROPFHF2NPF52C4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> comment = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcOQHC7VO5QBB7ROPFHF2NPF52C4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) item;
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdL6YN6OJDTBHMPLJWIV3F6VGQCQ" extStr="Comment"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xComment = xComments.addNewComment();
+            xComment.PosX = comment.pos().x();
+            xComment.PosY = comment.pos().y();
+            xComment.Text = comment.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcOQHC7VO5QBB7ROPFHF2NPF52C4 mth27G4A73A7VDTNHL6YOPRHWE2KY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+        }
+        if (item instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2GIU2FYS25GHNJNFH37JDRZ37A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+            final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2GIU2FYS25GHNJNFH37JDRZ37A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> edge = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2GIU2FYS25GHNJNFH37JDRZ37A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) item;
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdL6YN6OJDTBHMPLJWIV3F6VGQCQ" extStr="Edge"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xEdge = xEdges.addNewEdge();
+            xEdge.OutConnectorId = edge.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2GIU2FYS25GHNJNFH37JDRZ37A mthDIASHNWU7NGZJBMI54LZABKJDE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU mth6HNJCRFZZJESRDU5PUSMRIN25Q" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+            xEdge.InConnectorId = edge.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2GIU2FYS25GHNJNFH37JDRZ37A mthSN62G6KXZNF65EGP7KDVP5SZ4E" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU mth6HNJCRFZZJESRDU5PUSMRIN25Q" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+        }
+    }
+}
+return xDiagramDoc;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthEJ4LAMROAJDAXIDZT3QUS6K7MU" Name="import" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="xDiagram" Id="mprT2ER22T6X5B3PDG6Q23FTS7LGU">
+            <Type TypeId="451" Path="xsdL6YN6OJDTBHMPLJWIV3F6VGQCQ" extStr="DiagramDocument"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final Map&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> nodes = new HashMap&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();
+final Map&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> roles = new HashMap&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeListRsDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xNodes = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcZ7ETKOF44NCLJBZPR47JS5LQK4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcZ7ETKOF44NCLJBZPR47JS5LQK4 mthGLGWD77TBNG5HMUM6VI2J5HKZQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(userSession, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcHMXIRC2KYZFDRHIIULJ2M6YRLM mth6MFLDZQVUJAABJ5KVMZBT7YG5U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+if (xNodes == null)
+    return;
+
+double minX = sceneRect().center().x();
+double minY = sceneRect().center().y();
+
+final List&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="Node"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> xmlNodes = new ArrayList&lt;>();
+// создаем узлы
+for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="Node"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xNode : xNodes.NodeListRs.NodeList) {
+    xmlNodes.add(xNode);
+
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> node;
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> entityId = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(xNode.EntityId);
+
+    node = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI mthREP3VJ7QSZBKDB6KWPNAPPMUS4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(userSession, this, xNode);
+    nodes.put(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc6MUJT675HNGATDJ477ZWLDUOHM mthGKSYUHLCB5CYVKCNUXASG6XTTQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(entityId, xNode.EntityPid), node);
+}
+
+//проверяем и при необходимости создаем виртуальные узлы
+//для pipeline типа преобразователь нужен вход и выход
+//</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aclACFEFPIGQFEO3NJWMLWNQAM7KA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> transformer = null;
+//
+//if (entityModel instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aclACFEFPIGQFEO3NJWMLWNQAM7KA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+//    transformer = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aclACFEFPIGQFEO3NJWMLWNQAM7KA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) entityModel;
+//}
+
+List&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> allNodes = new java.util.ArrayList&lt;>(nodes.values());
+
+final Map&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc7MOZO3YE5NEYRGKQWHJ26KKXOM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> virtualNodes = new HashMap&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc7MOZO3YE5NEYRGKQWHJ26KKXOM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();
+
+//</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcEFVCX4ZSRZCE3BJ67E26G2YZBE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> start = null;
+//</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcDTLMSYZMQZEZJHTQ4ZRXQDK7YE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> end = null;
+//if (transformer != null) {
+//    start = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcEFVCX4ZSRZCE3BJ67E26G2YZBE mthD4QYJHMALBDZRMC3IHY4SDIJQQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(userSession, this);
+//    virtualNodes.put(start.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc7MOZO3YE5NEYRGKQWHJ26KKXOM mthQZ5EKVCW4RHCHM5D4CY7HNDHQM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), start);
+//    end = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDTLMSYZMQZEZJHTQ4ZRXQDK7YE mthKGPEVRLBXRH4TJH2SCMJS74ESU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(userSession, this);
+//    virtualNodes.put(end.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc7MOZO3YE5NEYRGKQWHJ26KKXOM mthQZ5EKVCW4RHCHM5D4CY7HNDHQM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), end);
+//    allNodes.add(start);
+//    allNodes.add(end);
+//}
+
+for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> node : allNodes) {
+    scene().addItem(node);
+    node.setPos(minX, minY);
+    minX += 5;
+    minY += 5;
+    for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> role : node.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI mthBK7A7OIBWNBYPGRP2CR5KWNLMA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+        roles.put(role.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU mth6HNJCRFZZJESRDU5PUSMRIN25Q" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), role);
+    }
+}
+
+// создаем связи
+for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="Node"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xNode : xmlNodes) {
+    for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="Role"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xRole : xNode.OutRoles.RoleList) {
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> connectionId = xRole.ConnectionId;
+        if (connectionId == null)
+            continue;
+
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> inRole = roles.get(connectionId);
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> outRole = roles.get(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcRFM6PQSFCBFLJA2M3OUDKZK34M"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcRFM6PQSFCBFLJA2M3OUDKZK34M mthKY2DDEXY5RHZZNNHYLU4T3KEUQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(xNode.EntityId, xNode.EntityPid, xRole.Name));
+
+        if (inRole == null || outRole == null)
+            continue;
+
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2GIU2FYS25GHNJNFH37JDRZ37A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> edge = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2GIU2FYS25GHNJNFH37JDRZ37A mthVE3S6QDLGREZDJ7OSXTYRMGNKE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(this, outRole, inRole);
+        scene().addItem(edge);
+        edge.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2GIU2FYS25GHNJNFH37JDRZ37A mthTS5FZU4EYZCQBBUGASHOWUEK5U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    }
+}
+//add additional edges;
+//
+//if (transformer != null &amp;&amp; start != null &amp;&amp; end != null) {
+//    final String startConnectionId = transformer.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclACFEFPIGQFEO3NJWMLWNQAM7KA pruTOA6Z64MX5EEXGIPNAFBQ5JIFI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value;
+//    if (startConnectionId != null) {
+//        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> startRole = roles.get(startConnectionId);
+//        if (startRole != null) {
+//            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2GIU2FYS25GHNJNFH37JDRZ37A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> edge = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2GIU2FYS25GHNJNFH37JDRZ37A mthVE3S6QDLGREZDJ7OSXTYRMGNKE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(this, start.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcEFVCX4ZSRZCE3BJ67E26G2YZBE mthQHFKYLRZFFCVBAS3ARMTYOZXLQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), startRole);
+//            scene().addItem(edge);
+//            edge.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2GIU2FYS25GHNJNFH37JDRZ37A mthTS5FZU4EYZCQBBUGASHOWUEK5U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+//        }
+//    }
+//    final String endConnectionId = transformer.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclACFEFPIGQFEO3NJWMLWNQAM7KA pruLC7PHSNUEFBXJJSNOQVMXZSYVI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value;
+//    if (endConnectionId != null) {
+//        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> endRole = roles.get(endConnectionId);
+//        if (endRole != null) {
+//            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2GIU2FYS25GHNJNFH37JDRZ37A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> edge = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2GIU2FYS25GHNJNFH37JDRZ37A mthVE3S6QDLGREZDJ7OSXTYRMGNKE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(this, endRole, end.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDTLMSYZMQZEZJHTQ4ZRXQDK7YE mthDFCQCSABJRB4TGZOENWLTXIT6E" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+//            scene().addItem(edge);
+//            edge.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2GIU2FYS25GHNJNFH37JDRZ37A mthTS5FZU4EYZCQBBUGASHOWUEK5U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+//        }
+//    }
+//}
+
+// восстанавливаем позиции узлов
+if (xDiagram == null)
+    return;
+
+for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdL6YN6OJDTBHMPLJWIV3F6VGQCQ" extStr="Node"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xNode : xDiagram.Diagram.Nodes.NodeList) {
+    try {
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> node;
+        if (xNode.Virtual) {
+            node = virtualNodes.get(xNode.VirtualNodeType);
+        } else {
+            node = nodes.get(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc6MUJT675HNGATDJ477ZWLDUOHM mthGKSYUHLCB5CYVKCNUXASG6XTTQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(xNode.EntityId), xNode.EntityPid));
+        }
+        if (node != null) {
+            node.setPos(new QPointF(xNode.PosX.doubleValue(), xNode.PosY.doubleValue()));
+            node.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI mthM7BFBA24TNFNJMTVEJRJRA5XCM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(xNode.isSetInversed() ? xNode.Inversed.booleanValue() : false);
+        }
+    } catch (Throwable ex) {
+    }
+}
+
+// создаем комментарии
+if (xDiagram.Diagram.Comments
+        != null) {
+    for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdL6YN6OJDTBHMPLJWIV3F6VGQCQ" extStr="Comment"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xComment : xDiagram.Diagram.Comments.CommentList) {
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcOQHC7VO5QBB7ROPFHF2NPF52C4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> comment = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcOQHC7VO5QBB7ROPFHF2NPF52C4 mthM5O2URG2XNHNBBSJRWD2OVZ5CQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(userSession, this, xComment.Text);
+        scene().addItem(comment);
+        comment.setPos(new QPointF(xComment.PosX.doubleValue(), xComment.PosY.doubleValue()));
+    }
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthMEEU5Q3CA5EPBJNGIPXJDJG7RM" Name="checkConfig" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>scene().clearSelection();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="PipelineCheckRsDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xDoc = 
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcZ7ETKOF44NCLJBZPR47JS5LQK4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcZ7ETKOF44NCLJBZPR47JS5LQK4 mthAOF7DKW4QZC5HOBOCYUU7GVKFM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(this.userSession, pid);
+
+if (xDoc == null)
+    return null;
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="PipelineCheckRsDocument.PipelineCheckRs"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xRs = xDoc.PipelineCheckRs;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> mess = xRs.Mess;
+
+if (xRs.ConnectionId != null)
+    for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QGraphicsItemInterface"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> item : scene().items()) {
+        if (item instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2GIU2FYS25GHNJNFH37JDRZ37A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2GIU2FYS25GHNJNFH37JDRZ37A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> edge = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2GIU2FYS25GHNJNFH37JDRZ37A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)item;
+            if (edge.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2GIU2FYS25GHNJNFH37JDRZ37A mthDIASHNWU7NGZJBMI54LZABKJDE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU mth6HNJCRFZZJESRDU5PUSMRIN25Q" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() == xRs.ConnectionId || edge.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2GIU2FYS25GHNJNFH37JDRZ37A mthSN62G6KXZNF65EGP7KDVP5SZ4E" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU mth6HNJCRFZZJESRDU5PUSMRIN25Q" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() == xRs.ConnectionId) {
+                edge.setSelected(true);
+                return mess;
+            }
+        }
+    }
+        
+if (xRs.EntityId != null &amp;&amp; xRs.EntityPid != null)
+    for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QGraphicsItemInterface"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> item : scene().items()) {
+        if (item instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> node = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)item;
+            if (node.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI mthDZFKAV7V25FBZMIMETFYNIF5IU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().EntityId == xRs.EntityId &amp;&amp; node.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI mthDZFKAV7V25FBZMIMETFYNIF5IU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().EntityPid == xRs.EntityPid) {
+                node.setSelected(true);
+                return mess;
+            }
+        }
+    }
+
+return mess;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth6MFLDZQVUJAABJ5KVMZBT7YG5U" Name="pid" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <ReturnType TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return pid;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthPFB66UEEDZB55MBGP3TNC5ILKY" Name="duplicateSelected" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (scene().selectedItems().size() == 0)
+    return;
+
+int c = 0;
+for (QGraphicsItemInterface item : scene().selectedItems()) {
+    if (item instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcS75H6U36SFG2LDRZX5GM3WS47Q"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcS75H6U36SFG2LDRZX5GM3WS47Q"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> src_node = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcS75H6U36SFG2LDRZX5GM3WS47Q"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) item;
+        if (src_node.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcS75H6U36SFG2LDRZX5GM3WS47Q mthIYB6YKIL6BFDZPPKLPSN4YZZAU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>())
+            continue;
+        if (item instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+            if (((</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) item).</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI mth5TTFMVMPORGPJABUFDPDJIGCHA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+                continue;
+            }
+        }
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcS75H6U36SFG2LDRZX5GM3WS47Q"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> node = src_node.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcS75H6U36SFG2LDRZX5GM3WS47Q mthUWISQNC5SFDNRFSCWDZQFUK6QI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+        scene().addItem(node);
+        node.setPos(src_node.pos().add(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.QPointF"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(30, 30)));
+        src_node.setSelected(false);
+        node.setSelected(true);
+        node.setZValue(1.1);
+        c++;
+    }
+}
+
+if (c > 0) {
+    inserted.emit();
+    modified.emit();
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthXD6QAX62X5AVVFX6CCYGRBOTKQ" Name="inverseSelected" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (scene().selectedItems().size() == 0)
+    return;
+
+int c = 0;
+for (QGraphicsItemInterface item: scene().selectedItems()) {
+    if (item instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> node = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)item;
+        node.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI mthM7BFBA24TNFNJMTVEJRJRA5XCM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(!node.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI mth6UQLVK7LNRDOXDAZNL47YPAFHY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+        c++;
+    }
+}
+
+if (c > 0)
+   modified.emit();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthHSOIMFSTLVFQTGWP67D7DY6CQQ" Name="setFocus" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="aThis" Id="mpr3G7PXMI4LVHGNBOXORUBMFEECI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>setFocus();
+return true;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthTFMFQBQ7IFAG7NSIFYKUH5NOGA" Name="refresh" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="aThis" Id="mpr7URBIOEKXBEM3DSAYIZI5NQSSU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.ModelItem"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+    setUpdatesEnabled(false);
+    scene().clear();
+
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcDG733EO6IBDTHONUSSB7R4ZLXE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> diagram = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcDG733EO6IBDTHONUSSB7R4ZLXE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)aThis;    
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> value = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)diagram.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthLSANOBLXINHNPFDVOGRUZDVNV4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdL6YN6OJDTBHMPLJWIV3F6VGQCQ" extStr="DiagramDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xDoc = null;
+    if (value != null) {
+        try {
+            xDoc = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdL6YN6OJDTBHMPLJWIV3F6VGQCQ" extStr="DiagramDocument.Factory"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.parse(value);
+        } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcCOEVNNRGS5DITM72ZNKZFX6EIU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthLEP5OWV3LFDULGYALX3KD3GT6A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e);        
+            xDoc = null;
+        }
+    }
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcHMXIRC2KYZFDRHIIULJ2M6YRLM mthEJ4LAMROAJDAXIDZT3QUS6K7MU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(xDoc);
+} finally {
+    setUpdatesEnabled(true);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthUTBSPWFMYNAS5AX5VVKPV45X3I" Name="bind" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>// do</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthVKXNNGRBXRHUNIPCH3NP4TPRXA" Name="asQWidget" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return this;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthZ6SA7ZJ2ANGW5NPK7P3I5GR3FQ" Name="getNodesByClassId" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="classId" Id="mprAJGSSDY535F27ANLVUCKK4NTNM">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.Set">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final Set&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> nodes = new HashSet&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();
+for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QGraphicsItemInterface"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> item : scene().items()) {
+    if (item instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> node = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)item;
+        if (node.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI mthDZFKAV7V25FBZMIMETFYNIF5IU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().ClassId == classId.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcELH54EKVCJAATNTLFHHCSVHPZU mthCX6FRHR4VNG37LJWH7N6THCMMA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+            nodes.add(node);
+        }    
+    }
+}
+return nodes;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthT2TS5WMORZFVZPX7O2XGPFO7DM" Name="getEntityModel" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <ReturnType TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return entityModel;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthCWENQI5N5BB4JOWTMT732576PY" Name="keyPressEvent" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="event" Id="mprGKEPNHOCQJAFNGEE7KFHH3ILGY">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QKeyEvent"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final Qt.Key key = Qt.Key.resolve(event.key());
+switch (key) {
+    case Key_Up:
+    case Key_Down:
+    case Key_Left:
+    case Key_Right:
+        break;
+    case Key_Delete:
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcHMXIRC2KYZFDRHIIULJ2M6YRLM mthSDPELACZ2ZG2FNUQWPOSPYC46E" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+        return;
+    case Key_Plus:
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcHMXIRC2KYZFDRHIIULJ2M6YRLM mthDRSNNHL6ORAXNPNI42TISO3U4Y" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(1.2);
+        return;
+    case Key_Minus:
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcHMXIRC2KYZFDRHIIULJ2M6YRLM mthDRSNNHL6ORAXNPNI42TISO3U4Y" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(1 / 1.2);
+        return;
+    default:
+        super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcHMXIRC2KYZFDRHIIULJ2M6YRLM mthCWENQI5N5BB4JOWTMT732576PY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(event);
+        return;
+}
+
+for (QGraphicsItemInterface item : scene().selectedItems()) {
+    if (!(item instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcS75H6U36SFG2LDRZX5GM3WS47Q"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>))
+        continue;
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcS75H6U36SFG2LDRZX5GM3WS47Q"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> node = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcS75H6U36SFG2LDRZX5GM3WS47Q"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) item;
+    switch (key) {
+        case Key_Up:
+            node.moveBy(0, -20);
+            modified.emit();
+            break;
+        case Key_Down:
+            node.moveBy(0, 20);
+            modified.emit();
+            break;
+        case Key_Left:
+            node.moveBy(-20, 0);
+            modified.emit();
+            break;
+        case Key_Right:
+            node.moveBy(20, 0);
+            modified.emit();
+            break;
+        default:
+    }
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthFQIEDP3P2FERDDF4LSA2BWFQ64" Name="mouseMoveEvent" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="event" Id="mprF7YQDDKUSJBUNPVRUJELO3JCHU">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QMouseEvent"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (mode == INSERT_LINE_MODE &amp;&amp; line != null) {
+    line.setLine(new QLineF(line.line().p1(), mapToScene(event.pos())));
+} else if (mode == MOVE_MODE) {
+    super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcHMXIRC2KYZFDRHIIULJ2M6YRLM mthFQIEDP3P2FERDDF4LSA2BWFQ64" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(event);
+}
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth6WJEWDUR3NH2NNBR742GNPBHVU" Name="mousePressEvent" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="event" Id="mprAPWMPVQELZFXVJFG7H3QAJFMBQ">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QMouseEvent"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (event.button() != MouseButton.LeftButton)
+    return;
+
+switch (mode) {
+    case INSERT_NODE_MODE:
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcS75H6U36SFG2LDRZX5GM3WS47Q"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> node;
+        if (info != null) { // Node
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> classId = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.loadFrom(info.ClassId);
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> presentationId = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.loadFrom(info.CreatingPresentationId);
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcQBPLUNLZHRH4REU4P23VERCAEY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ep = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthFK3EWBJGWBA3JCFUCZGO3QUYZM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getEditorPresentationDef(presentationId);
+
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> pid = null;
+            try {
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mthKAHALGDBLBC6DADG5HJI3JKDOY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ep, classId, null, null, null, new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcFRKEP2KWWBFWLPK4GHEKJDAQIM mth37ND7TUMOZG5DCSIMHJQFMWLLY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(userSession, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcHMXIRC2KYZFDRHIIULJ2M6YRLM mth6MFLDZQVUJAABJ5KVMZBT7YG5U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(),((</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecX6WI554KVVCZPGNLK7CSZLOMTY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcHMXIRC2KYZFDRHIIULJ2M6YRLM mthT2TS5WMORZFVZPX7O2XGPFO7DM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>())));
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcOV63PL34KNGY5OT2OTAY5W7H3Q"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> editor = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcOV63PL34KNGY5OT2OTAY5W7H3Q mthBPQ5QHXHXFGWVO34VWQYUAHATY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e);
+                if (editor.exec() == QDialog.DialogCode.Accepted.value())
+                    pid = editor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcOV63PL34KNGY5OT2OTAY5W7H3Q mth4YDGAT5V6FF2RNCIYPWMJ7GEOM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mth2KIAJ6FEFRGK7OPUZOZC4ZHECU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+                else {
+                    inserted.emit();
+                    return;
+                }
+            } catch (Exception e) {
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthLEP5OWV3LFDULGYALX3KD3GT6A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e);
+                return;
+            }
+
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="NodeRsDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xNode = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcZ7ETKOF44NCLJBZPR47JS5LQK4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcZ7ETKOF44NCLJBZPR47JS5LQK4 mthJ7F2Z4JEUFHCFPIYBYALNDNMPE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(userSession, pid);
+            if (xNode == null)
+                break;
+
+            node = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI mthREP3VJ7QSZBKDB6KWPNAPPMUS4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(userSession, this, xNode.NodeRs);
+        } else { // comment
+            final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="cdlHPIXBEFC5JCONLOP5LBP6L23OU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> dlg = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="cdlHPIXBEFC5JCONLOP5LBP6L23OU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(userSession);
+            final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="cdlHPIXBEFC5JCONLOP5LBP6L23OU admHPIXBEFC5JCONLOP5LBP6L23OU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> model = dlg.getModel();
+            if (dlg.exec() != QDialog.DialogCode.Accepted.value()) {
+                inserted.emit();
+                return;
+            }
+            node = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcOQHC7VO5QBB7ROPFHF2NPF52C4 mthM5O2URG2XNHNBBSJRWD2OVZ5CQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(userSession, this, model.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdlHPIXBEFC5JCONLOP5LBP6L23OU admHPIXBEFC5JCONLOP5LBP6L23OU prdUHL3OVXO6NFU5CGCHXAL3BUR3A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        }
+        scene().addItem(node);
+        node.setPos(mapToScene(event.pos()));
+        inserted.emit();
+        modified.emit();
+        break;
+    case INSERT_LINE_MODE:
+        final QPointF pos = mapToScene(event.pos());
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> role = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcCW52PS3PIRC5XHFOH7LKMEYVSY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcCW52PS3PIRC5XHFOH7LKMEYVSY mthIWINWXWHBREA3CKNENRAVN4GIQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(this, pos);
+        if (role == null || role.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU mthQXLZY5VAORD5TFNFRPUTFGNLLY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().size() > 0) {
+            //inserted.emit(null);            
+            break;
+        }
+        if (!role.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU mth5HK6S2XVFJCSJF5AN4B3N2XOII" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIY4RHST2WFHCPAIW6JAM2JB2UI mthCHNL3HNQCVEDXNB4XDXEH6IZJY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+            if (role.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU mthZVAGJYREK5EWZK5SIVRY6SNRNE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() == null || role.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU mth7GZYSZR6LVG2RBHDCUITACHKGY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() == null) {
+                break;
+            }
+        }
+        line = new QGraphicsLineItem(new QLineF(pos, pos));
+        line.setPen(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2GIU2FYS25GHNJNFH37JDRZ37A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.PEN_NORMAL);
+        line.setZValue(2.0);
+        scene().addItem(line);
+        break;
+    default:
+        break;
+}
+super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcHMXIRC2KYZFDRHIIULJ2M6YRLM mth6WJEWDUR3NH2NNBR742GNPBHVU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(event);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthECUWL5U2SBH3HC67ODDH6SUILQ" Name="mouseReleaseEvent" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="event" Id="mprP2HQJG3ALBBFZKT7HGRKBSUHPQ">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QMouseEvent"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (mode == INSERT_LINE_MODE &amp;&amp; line != null) {
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> outRole = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcCW52PS3PIRC5XHFOH7LKMEYVSY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcCW52PS3PIRC5XHFOH7LKMEYVSY mthIWINWXWHBREA3CKNENRAVN4GIQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(this, line.line().p1());
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> inRole = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcCW52PS3PIRC5XHFOH7LKMEYVSY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcCW52PS3PIRC5XHFOH7LKMEYVSY mthXIAGJTJ5PJHGBHVPP2774CJZCQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(this, line.line().p2());
+
+    scene().removeItem(line);
+    line = null;
+
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecX6WI554KVVCZPGNLK7CSZLOMTY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> pipeline = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecX6WI554KVVCZPGNLK7CSZLOMTY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) entityModel;
+
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2GIU2FYS25GHNJNFH37JDRZ37A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> edge = null;
+    if (outRole != null &amp;&amp; inRole != null) {
+
+        boolean canConnect = false;
+
+        if (pipeline.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecX6WI554KVVCZPGNLK7CSZLOMTY prdNJPB4O555NESJNHFAOI2SW4KIE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value == Bool.TRUE) {
+            String outRq = outRole.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU mthZVAGJYREK5EWZK5SIVRY6SNRNE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+            String inRq = inRole.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU mthZVAGJYREK5EWZK5SIVRY6SNRNE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+            canConnect = outRq == inRq;
+        } else {
+            String outRq = outRole.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU mthZVAGJYREK5EWZK5SIVRY6SNRNE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+            String outRs = outRole.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU mth7GZYSZR6LVG2RBHDCUITACHKGY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+            String inRq = inRole.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU mthZVAGJYREK5EWZK5SIVRY6SNRNE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+            String inRs = inRole.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNGQAWOQUY5DMHLIPS27TSPSNRU mth7GZYSZR6LVG2RBHDCUITACHKGY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+            canConnect = outRq == inRq &amp;&amp; outRs == inRs;
+        }
+
+        if (canConnect) {
+
+            edge = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2GIU2FYS25GHNJNFH37JDRZ37A mthVE3S6QDLGREZDJ7OSXTYRMGNKE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(this, outRole, inRole);
+            scene().addItem(edge);
+            edge.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2GIU2FYS25GHNJNFH37JDRZ37A mth6JH54NW5RNFHTH2C5PMBKYH4NM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(userSession);
+            edge.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2GIU2FYS25GHNJNFH37JDRZ37A mthTS5FZU4EYZCQBBUGASHOWUEK5U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+            inserted.emit();
+            modified.emit();
+        }
+    }
+}
+
+super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcHMXIRC2KYZFDRHIIULJ2M6YRLM mthECUWL5U2SBH3HC67ODDH6SUILQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(event);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthTA5NTE5J2ZH63MV46JUA3CILAQ" Name="wheelEvent" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="event" Id="mprUKTFJ6B4A5AOZMDB66Y5EWBUWY">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWheelEvent"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>int step = event.delta() / 2;
+switch (event.orientation()) {
+    case Qt.Orientation.Vertical:
+        translate(0, step);
+        break;
+    case Qt.Orientation.Horizontal:
+        translate(step, 0);
+        break;
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="adc5QJJ3LEDI5GOTBS6FBGAJREMKI"/>
+    <Implements>
+      <Interface TypeId="411" Path="aicW5OHXIKJCVFHJMLHBMSY6G3YLI"/>
+    </Implements>
+  </AdsClassDefinition>
+</AdsDefinition>

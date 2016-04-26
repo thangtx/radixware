@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcFFN7VZNKSBHONKKMDSF2POZHBA" Name="Filters" Type="3" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.models.groupsettings.Filters"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcMGJI6AUGCRGETKMPPVBTGXTE5E"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcJA7LFS5MYRGZLOMV2Z73ITKUHU"/>
+    </Bodies>
+    <MethodGroup Id="cmgCQLW3F3HP5BSVJL7YZXAICPHTQ" Name="Root"/>
+    <PropertyGroup Id="cpgFHZHXMLHJNDCRBULCRDJ2CD45Q" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth3GYOTDHFLJFMZM4FHZE337DF2A" Name="getGroupModel" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getGroupModel()Lorg.radixware.kernel.common.client.models.GroupModel;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+      </Method>
+      <Method Id="mthQQ4O4ZJIRBB7BBPO3FD2D2ZWOM" Name="isObligatory" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isObligatory()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthFUCNS27ZVBG2BORRF262WEPDG4" Name="canCreateNew" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="canCreateNew()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthKZAIEIU2ORBJDHU2LYCOR3T2QA" Name="getDefaultFilter" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getDefaultFilter()Lorg.radixware.kernel.common.client.models.FilterModel;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.FilterModel"/>
+      </Method>
+      <Method Id="mth3MSAN2UWPJBTHKW7LZZCJU6NQQ" Name="getLastUsed" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getLastUsed()Ljava.util.List&lt;TT;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="T" IsArgumentType="true"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthEADQNSJ2ZBH4HAIUYDZOJZCJQI" Name="getPredefinedAddonsByOrder" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getPredefinedAddonsByOrder()Ljava.util.List&lt;TT;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="T" IsArgumentType="true"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthOZNBKBDBZRANJLD4TGQ5YXGANQ" Name="getSettingsCount" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getSettingsCount()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthFNBOW22YWBGW7CE436Q3KLA2LA" Name="isEmpty" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isEmpty()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthSE7PW6EGTJCTPO7CDNJULVGGZM" Name="isSettingExist" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isSettingExist(Lorg.radixware.kernel.common.types.Id;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="filterId" Id="mpr5MSW32JAGRFYPEJQTLEDDLJMGE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthNGRXQC7U4ZFNRFEVLPRH6T3JFA" Name="isSettingWithNameExist" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isSettingWithNameExist(Ljava.lang.String;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="filterName" Id="mprZETVYVJZUVAMTDQ4JR37BY36UM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthWPJK6LSDBRG5LJ55D2KAVEVQI4" Name="setDefaultFilter" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setDefaultFilter(Lorg.radixware.kernel.common.client.models.FilterModel;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="filter" Id="mprULBC3JPSS5F4VGA2DSXVEHSQ7Y">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.FilterModel"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthRTYKRE5SLBHOLPEDPIYTVZ6JUU" Name="setDefaultFilterId" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setDefaultFilterId(Lorg.radixware.kernel.common.types.Id;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="filterId" Id="mpr5IDEKPUIVFDRFIFOYLVNBOLMNY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthJDR7AZBAUFHMFHYR6WA7EFNSWA" Name="setObligatory" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setObligatory(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isObligatory" Id="mprGZLWZUGR2JEUTFDBBHZICUO2L4">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclVL4JVALRV5BGLHMTFRIGF3YRWI" Name="Unit.MessageQueueHandler.Consumer.Fallback" Type="2">
+    <AccessRules/>
+    <Headers>
+      <Src Name="HeaderaclVL4JVALRV5BGLHMTFRIGF3YRWI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaclVL4JVALRV5BGLHMTFRIGF3YRWI"/>
+    </Bodies>
+    <MethodGroup Id="cmg4KH4VQTIXZDGXP5HD5PFTH44MQ" Name="Root"/>
+    <PropertyGroup Id="cpgY6FALQOKEZB35CHEIYPGUMCBGY" Name="Root"/>
+    <Properties>
+      <Property Id="colFUGVE3BA25HP5K5LIZT5WFG4HA" Name="mainUnit" Nature="5" IsConst="false" IsOverride="false" isDescriptionInherited="false" ParentRefId="ref5MQ6BW57SJDTLBLEYPM3R5ZM2E" DetailRefId="refGP76EHYZONGK3AZVHH7DPU4JEE">
+        <AccessRules/>
+        <Type TypeId="31" Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E"/>
+        <Presentation TitleId="mlsIJZBXALVNNAQNIUKOXZVHXIDSI" InheritanceMask="20">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+          <ParentSelect>
+            <ParentSelectCondition>
+              <ConditionWhere>
+                <xsc:Item>
+                  <xsc:DbFuncCall FuncId="dfn3OXAHT4FYLORDBBJABIFNQAABA"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Sql>(</xsc:Sql>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:PropSqlName TableId="aec5HP4XTP3EGWDBRCRAAIT4AGD7E" PropId="colF2TCBU6YX7NRDB6TAALOMT5GDM" Owner="THIS"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Sql>, </xsc:Sql>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Id Path="aclPC7EWUX4OJHNLM3A47ZR2TDUDY"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Sql>) > 0
+and </xsc:Sql>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:DbFuncCall FuncId="dfn3OXAHT4FYLORDBBJABIFNQAABA"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Sql>(</xsc:Sql>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:PropSqlName TableId="aec5HP4XTP3EGWDBRCRAAIT4AGD7E" PropId="colF2TCBU6YX7NRDB6TAALOMT5GDM" Owner="THIS"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Sql>, </xsc:Sql>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Id Path="aclVL4JVALRV5BGLHMTFRIGF3YRWI"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Sql>) = 0 </xsc:Sql>
+                </xsc:Item>
+              </ConditionWhere>
+              <ConditionFrom/>
+            </ParentSelectCondition>
+          </ParentSelect>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods/>
+    <Entity EntityId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E" AllowedDetailReferences="refGP76EHYZONGK3AZVHH7DPU4JEE"/>
+    <Presentations ObjectTitleId="mlsPY4HWEKYJ5FZZDMXUJO3SKI46A">
+      <ClassCatalogs>
+        <ClassCatalog Id="eccKOGFFVPJAHOBDA26AAMPGXSZKU" Name="Default">
+          <ClassRef TopicId="cctIM3THFAESQAESFLHAAJZREMVEY" Order="457.5"/>
+        </ClassCatalog>
+      </ClassCatalogs>
+      <EditorPresentations>
+        <EditorPresentation Id="eprYQ4EIJMG2RF6VDETAIH347V5UM" Name="Edit" BasePresentationId="eprOES76IFRNVARDD5EREQXKGZN5I" InheritanceMask="36016" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprOES76IFRNVARDD5EREQXKGZN5I" ClientEnvironment="explorer">
+          <Model Id="aemYQ4EIJMG2RF6VDETAIH347V5UM" Name="Edit:Model" Type="15" ClientEnvironment="common-client">
+            <AccessRules/>
+            <Headers>
+              <Src Name="HeaderaemYQ4EIJMG2RF6VDETAIH347V5UM"/>
+            </Headers>
+            <Bodies>
+              <Src Name="BodyaemYQ4EIJMG2RF6VDETAIH347V5UM"/>
+            </Bodies>
+            <MethodGroup Id="cmgDYYL72YORZEWPDC5NIWPRM3H3U" Name="Root"/>
+            <PropertyGroup Id="cpgROYRHAJTQVADDFFAGISPGB5L6Y" Name="Root"/>
+            <Properties/>
+            <Methods/>
+          </Model>
+          <ChildExplorerItems/>
+          <EditorPages>
+            <Page Id="epgNY5ZMWWXZJFIBOEQ4YRZAU7A6U" Name="FallbackSettings" TitleId="mlsPKJFSZWU7VGDZER6QSSEARYP5Q" Type="1">
+              <Properties>
+                <Property Id="colFUGVE3BA25HP5K5LIZT5WFG4HA" Row="0" Column="0"/>
+              </Properties>
+            </Page>
+            <PageOrder>
+              <Item PageId="epgOCDVZAOTBXOBDNTPAAMPGXSZKU" Level="1"/>
+              <Item PageId="epgNY5ZMWWXZJFIBOEQ4YRZAU7A6U" Level="1"/>
+              <Item PageId="epgUJB2RCH6KZHD5IMTQTE76DQSZA" Level="1"/>
+              <Item PageId="epgJ4BHY7HBLBBBXIIQZEPCKTW2MU" Level="1"/>
+            </PageOrder>
+          </EditorPages>
+          <ObjectTitleFormat Id="etfGEPZZM4TBRCA3L6RIB4OFRFO7E"/>
+        </EditorPresentation>
+        <EditorPresentation Id="eprBHJ6MN2EXNDYVCCRMTMOKMCQTY" Name="Create" BasePresentationId="eprYQ4EIJMG2RF6VDETAIH347V5UM" InheritanceMask="40112" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprDITXNBQTIVBDRFUZ7UWX4XNMEQ" ClientEnvironment="explorer">
+          <ChildExplorerItems/>
+          <ObjectTitleFormat Id="etfUIHFQDAU2FBSXIE4FZNEK6ZX5Y"/>
+        </EditorPresentation>
+      </EditorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="aclPC7EWUX4OJHNLM3A47ZR2TDUDY"/>
+  </AdsClassDefinition>
+</AdsDefinition>

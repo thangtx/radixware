@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicXQGMFN67CRBVJDJAFU4JV4QWTY" Name="IPropertyStorePossibility" Type="5" Environment="common-client">
+    <AccessRules IsPublished="false" IsAbstract="true">
+      <Transparence Extendable="true" PublishedName="org.radixware.kernel.common.client.views.IPropertyStorePossibility"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderaicXQGMFN67CRBVJDJAFU4JV4QWTY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaicXQGMFN67CRBVJDJAFU4JV4QWTY"/>
+    </Bodies>
+    <MethodGroup Id="cmgZQA253NPNBB7PAAQVBGMWYYMGQ" Name="Root"/>
+    <PropertyGroup Id="cpgXNWOLLBVKNB3ZNYDPW6XM6S5RY" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthOPIGXP44R5BNPCBBBXHMLCEV2Y" Name="canPropertyReadValue" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="canPropertyReadValue()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthY6WHIETELRGFFBWXZECEIAX2PU" Name="canPropertySaveValue" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="canPropertySaveValue()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth3HCBDF6DTNEQ7HQCRJDUOTJOR4" Name="readPropertyValue" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="readPropertyValue(Ljava.io.InputStream;)Ljava.lang.Object;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="in" Id="mprQUXFOSU6TBBW7AL3GWMASYB3UE">
+            <Type TypeId="400" extStr="java.io.InputStream"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+      </Method>
+      <Method Id="mthGOM3RJXY55AJ3GANKU4VDEPNNQ" Name="writePropertyValue" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="writePropertyValue(Ljava.lang.Object;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="value" Id="mprNJAUDBWX25A2LLB5UU7YETNUMA">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

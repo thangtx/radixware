@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicMNTJFQUBYNEQ3KWSWNNYPML74I" Name="IEventLogExportInterface" Type="5" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcBXWNLQYYYZH4LO6AYXP6AOTVNM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcCJNHX4XLCRG2RJ3TRMSTWQ6D4Y"/>
+    </Bodies>
+    <MethodGroup Id="cmgJVSAA3FL6BDMLMPE3IALA64KWA" Name="Root"/>
+    <PropertyGroup Id="cpgANKTUQCL4ZCQHKI7GGK76OQQXU" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthNXJINMB2URDRBHIRUCINEMUHU4" Name="getNextEvent" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="iterator" Id="mprA3AIU6BKUVE6TPWWPRW3HXFPNI">
+            <Type TypeId="400" extStr="java.util.Iterator">
+              <xsc:GenericArguments>
+                <xsc:Argument DerivationRule="extends" Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aecACQVZOMVVHWDBROXAAIT4AGD7E"/>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

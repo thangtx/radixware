@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsContextlessCommandDefinition Id="clcLRR7REE43JEINGXOLFOLEEPDIY" Name="ListAppRoles" Nature="2" IsVisible="true" IsConfirmationRequired="true">
+    <AccessRules Access="4" IsPublished="false"/>
+    <OutType TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="AdsDefinitionListDocument"/>
+    <Source>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="accTY3P4PQOUBAFRI2MVCG5SQVNDU"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> cursor = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="accTY3P4PQOUBAFRI2MVCG5SQVNDU"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="accTY3P4PQOUBAFRI2MVCG5SQVNDU mth_stmt_execute_____________" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>();
+
+
+</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="AdsDefinitionListDocument"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> xRoleListDoc = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="AdsDefinitionListDocument.Factory"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.newInstance();
+</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="AdsDefinitionListDocument.AdsDefinitionList"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> xRoleList = xRoleListDoc.addNewAdsDefinitionList();
+try {
+
+    while (cursor.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>()) {
+        </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aecM7J46MP6F3PBDIJEABQAQH3XQ4"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> role = cursor.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="accTY3P4PQOUBAFRI2MVCG5SQVNDU prf4Z4JZOFUKFCUHM3LWKYFLZXKW4" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>;
+        if (role == null) {
+            continue;
+        }
+        </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="AdsDefinitionListDocument.AdsDefinitionList.Definition"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> xDef = xRoleList.addNewDefinition();
+        xDef.Id = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(role.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aecM7J46MP6F3PBDIJEABQAQH3XQ4 col6FMTUQ76F3PBDIJEABQAQH3XQ4" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>);
+        xDef.Name = role.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aecM7J46MP6F3PBDIJEABQAQH3XQ4 colMFRUYXP6F3PBDIJEABQAQH3XQ4" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>;
+        xDef.Description = role.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aecM7J46MP6F3PBDIJEABQAQH3XQ4 colPJZG5RYZF7PBDIJEABQAQH3XQ4" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>;
+        xDef.ReadOnly = role.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aecM7J46MP6F3PBDIJEABQAQH3XQ4 prdPZ5BW3BSXBE2RBOY2D3QOUWQ7M" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.booleanValue();
+        </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="AdsDefinitionDocument"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> xDefDoc = role.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aecM7J46MP6F3PBDIJEABQAQH3XQ4 colGQVSU7TJYRFCZFU7TADGWIRGHY" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>;
+        if (xDefDoc != null) {
+            xDef.AdsRoleDefinition = xDefDoc.AdsDefinition.AdsRoleDefinition;
+        }
+    }
+} catch (</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> e) {
+    </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>, </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthBXQY2BN2DVEUNP7D645ZOVXZM4" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(e), </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci72EL5SVYFJFK7IJ7P2N723NJ44" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>);
+} finally {
+    cursor.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcCursor____________________ mth_stmt_close_______________" Invoke="true"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>();
+}
+
+return xRoleListDoc;</xsc:Java>
+      </xsc:Item>
+    </Source>
+  </AdsContextlessCommandDefinition>
+</AdsDefinition>

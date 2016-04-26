@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcXOOE64LGCZBBRE5I2ZRWXERCRM" Name="StringFormatter" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.utils.ClientValueFormatter"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcV2WFTKEZ7ND2NHTRYASABFALDY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcPS637X37ANCOLDO5FRXDADQQE4"/>
+    </Bodies>
+    <MethodGroup Id="cmgKL5NRENV2JFA7ANBKQ7OOG2Z6I" Name="Root"/>
+    <PropertyGroup Id="cpgO7D5BYC2E5CG7GA573TNHD6N34" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthNAYHTPXKQJE45ECTWASINFSROA" Name="capitalizeString" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true">
+          <Transparence Extendable="false" PublishedName="capitalizeString(Ljava.lang.String;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="s" Id="mprRXCQVEEMOZDXFJCGBO3NWDYPIU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mth55NJEYCCGVEW7BI4LMB6CV3ZQI" Name="split" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="split(Ljava.lang.String;C)[Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="s" Id="mprIFLGM4M5WRAWVLVRGWPSUSUGWY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="ch" Id="mprTKW75PUXHZHKNJKGVVWTDICS5E">
+            <Type TypeId="401" extStr="char"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21" Dimension="1"/>
+      </Method>
+      <Method Id="mthKLQX2DIQHBH2LKKWKY65V4SOOA" Name="capitalizeIfNecessary" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="capitalizeIfNecessary(Lorg.radixware.kernel.common.client.IClientEnvironment;Ljava.lang.String;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprJDEI6MTECBCW3NB3KOZ3TSUEXY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="str" Id="mprHWJDP6XUKJGIDPLSPODI2CH4EE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthRNVUIO6D3BCCDFYYP7QR45ABHQ" Name="capitalizeIfNecessary" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="capitalizeIfNecessary(Lorg.radixware.kernel.common.enums.EIsoLanguage;Ljava.lang.String;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="language" Id="mprQKB4D6QBXZF2TDBTPJY6AN5LLY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EIsoLanguage"/>
+          </Parameter>
+          <Parameter Name="str" Id="mprZOOT3WFFURF3VHTVAJPUEMI6HA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,647 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 sp2 U (http://www.altova.com) by pc (pc) -->
+<xs:schema xmlns:this="http://schemas.radixware.org/msdl.xsd" xmlns:t="http://schemas.radixware.org/types.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://schemas.radixware.org/msdl.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Message Structure Definition Language</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>-----------------</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType name="AlignDef">
+		<xs:restriction base="t:Str">
+			<xs:enumeration value="Right"/>
+			<xs:enumeration value="Left"/>
+			<xs:enumeration value="None"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="StrCharSetDef">
+		<xs:restriction base="t:Str">
+			<xs:enumeration value="None">
+				<xs:annotation>
+					<xs:documentation>Для StrField</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>		
+			<xs:enumeration value="Any">
+				<xs:annotation>
+					<xs:documentation>Для StrField</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="XML">
+				<xs:annotation>
+					<xs:documentation>Для StrField</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="User">
+				<xs:annotation>
+					<xs:documentation>Для StrField</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+        
+        <xs:simpleType name="ViewEncodingDef">
+                <xs:restriction base="t:Str">
+                        <xs:enumeration value="Hex">
+                                <xs:annotation>
+                                        <xs:documentation>Для BinField, IntField</xs:documentation>
+                                </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="Ebcdic">
+				<xs:annotation>
+					<xs:documentation>StrField, IntField, NumField, DateTimeFied</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+                        <xs:enumeration value="Ascii">
+                                <xs:annotation>
+                                        <xs:documentation>StrField, IntField, NumField, DateTimeFied</xs:documentation>
+                                </xs:annotation>
+                        </xs:enumeration>
+                </xs:restriction>
+	</xs:simpleType>
+                        
+	<xs:simpleType name="EncodingDef">
+		<xs:restriction base="t:Str">
+			<xs:enumeration value="Hex">
+				<xs:annotation>
+					<xs:documentation>Для BinField, IntField</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="HexEbcdic">
+				<xs:annotation>
+					<xs:documentation>Для BinField, IntField</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Bcd">
+				<xs:annotation>
+					<xs:documentation>Для IntField, DateTimeField</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Bin">
+				<xs:annotation>
+					<xs:documentation>Для BinField</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Ascii">
+				<xs:annotation>
+					<xs:documentation>StrField, IntField, NumField, DateTimeFied</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Ebcdic">
+				<xs:annotation>
+					<xs:documentation>StrField, IntField, NumField, DateTimeFied</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Utf8">
+				<xs:annotation>
+					<xs:documentation>StrField, IntField, NumField, DateTimeFied</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Cp866">
+				<xs:annotation>
+					<xs:documentation>StrField, IntField, NumField, DateTimeFied</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Cp1251">
+				<xs:annotation>
+					<xs:documentation>StrField, IntField, NumField, DateTimeFied</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Cp1252">
+				<xs:annotation>
+					<xs:documentation>StrField, IntField, NumField, DateTimeFied</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="BigEndianBin">
+				<xs:annotation>
+					<xs:documentation>Для IntField</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="LittleEndianBin">
+				<xs:annotation>
+					<xs:documentation>Для IntField</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="DefaultCp"/>
+			<xs:enumeration value="Decimal">
+				<xs:annotation>
+					<xs:documentation>Для BinField</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DateTimeFormatDef">
+		<xs:restriction base="t:Str">
+			<xs:enumeration value="Str">
+				<xs:annotation>
+					<xs:documentation>Для IntField</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Flora">
+				<xs:annotation>
+					<xs:documentation>Для IntField</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Java"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="StructureBitmapType">
+		<xs:restriction base="t:Str"/>
+	</xs:simpleType>
+	<xs:simpleType name="LenUnitDef">
+		<xs:restriction base="t:Str">
+			<xs:enumeration value="Byte"/>
+			<xs:enumeration value="Char"/>
+			<xs:enumeration value="Element"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="FixedLenDef">
+		<xs:attribute name="Len" use="required">
+			<xs:simpleType>
+				<xs:restriction base="t:Int">
+					<xs:minInclusive value="1"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="Unit" type="this:LenUnitDef" use="optional"/>
+		<xs:attributeGroup ref="this:FixedLen"/>
+	</xs:complexType>
+	<xs:complexType name="EmbeddedLenDef">
+		<xs:complexContent>
+			<xs:extension base="this:IntField">
+				<xs:sequence>
+					<xs:element name="Bounds" minOccurs="0">
+						<xs:complexType>
+							<xs:attribute name="LowBound" type="xs:int" use="required"/>
+							<xs:attribute name="HighBound" type="xs:int" use="required"/>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+				<xs:attributeGroup ref="this:EmbeddedLen"/>
+				<xs:attributeGroup ref="this:FixedLen"/>
+				<xs:attribute name="Unit" type="this:LenUnitDef" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SeparatedDef">
+		<xs:sequence>
+			<xs:element name="Shielded" type="t:BinHex" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="this:Separated"/>
+	</xs:complexType>
+	<xs:simpleType name="ListOfFieldNames">
+		<xs:list itemType="t:Str"/>
+	</xs:simpleType>
+	<xs:annotation>
+		<xs:documentation>-----------------</xs:documentation>
+	</xs:annotation>
+	<xs:attributeGroup name="FixedLen">
+		<xs:attribute name="PadChar" type="t:Str" use="optional"/>
+		<xs:attribute name="PadBin" type="t:BinHex" use="optional"/>
+                <xs:attribute name="PadViewType" type="this:ViewEncodingDef" use="optional"/>
+		<xs:attribute name="Align" type="this:AlignDef" use="optional"/>
+        <xs:attribute name="TrimToLengthIfExceed" type="t:Bool" use="optional"/>
+	</xs:attributeGroup>
+	<xs:attributeGroup name="EmbeddedLen">
+		<xs:attribute name="IsSelfInclusive" type="t:Bool" use="optional">
+			<xs:annotation>
+				<xs:documentation>DefaultEmbeddedLenIsSelfInclusive</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:attributeGroup>
+	<xs:attributeGroup name="Separated">
+		<xs:attribute name="StartSeparator" type="t:BinHex" use="optional">
+			<xs:annotation>
+				<xs:documentation>Признак начала</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+                <xs:attribute name="StartSeparatorViewType" type="this:ViewEncodingDef" use="optional"/>
+		<xs:attribute name="EndSeparator" type="t:BinHex" use="optional">
+			<xs:annotation>
+				<xs:documentation>Признак конца</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+                <xs:attribute name="EndSeparatorViewType" type="this:ViewEncodingDef" use="optional"/>
+		<xs:attribute name="Shield" type="t:BinHex" use="optional">
+			<xs:annotation>
+				<xs:documentation>Символ, экранирующий последующий спец. символ : Shield, StartSeparator, EndSeparator, Separator, для sequence - ItemSeparator, для FieldStr- NullIndicator, для вложенной структуры - End вышестоящего поля. see DefaultShield</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+                <xs:attribute name="ShieldViewType" type="this:ViewEncodingDef" use="optional"/>
+		<xs:attribute name="ShieldedFormat" use="optional">
+			<xs:annotation>
+				<xs:documentation>Формат экранированного спец. символа</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="t:Str">
+					<xs:enumeration value="AsIs"/>
+					<xs:enumeration value="Hex"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:attributeGroup>
+	<xs:attributeGroup name="StructureDefault">
+		<xs:attribute name="DefaultBCHPadChar" type="t:Str" use="optional"/>
+		<xs:attribute name="DefaultBCHAlign" type="this:AlignDef" use="optional"/>
+		<xs:attribute name="DefaultItemSeparator" type="t:BinHex" use="optional"/>
+                <xs:attribute name="DefaultItemSeparatorViewType" type="this:ViewEncodingDef" use="optional"/>
+		<xs:attribute name="DefaultDateTimePattern" type="t:Str" use="optional">
+			<xs:annotation>
+				<xs:documentation>see java.text.SimpleDateFormat</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DefaultDateTimeFormat" type="this:DateTimeFormatDef" use="optional"/>
+		<xs:attribute name="DefaultDateTimeEncoding" type="this:EncodingDef" use="optional"/>
+		<xs:attribute name="DefaultNullIndicator" type="t:BinHex" use="optional">
+			<xs:annotation>
+				<xs:documentation>Значение поля, которое обозначает null</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+                <xs:attribute name="DefaultNullIndicatorViewType" type="this:ViewEncodingDef" use="optional"/>
+		<xs:attribute name="DefaultPlusSign" type="t:Char" use="optional">
+			<xs:annotation>
+				<xs:documentation>
+                </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DefaultMinusSign" type="t:Char" use="optional">
+			<xs:annotation>
+				<xs:documentation>
+                </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DefaultFractionalPoint" type="t:Char" use="optional"/>
+		<xs:attribute name="DefaultStrEncoding" type="this:EncodingDef" use="optional"/>
+		<xs:attribute name="DefaultStrAlign" type="this:AlignDef" use="optional"/>
+		<xs:attribute name="DefaultIntNumAlign" type="this:AlignDef" use="optional"/>
+		<xs:attribute name="DefaultBinAlign" type="this:AlignDef" use="optional"/>
+		<xs:attribute name="DefaultBinEncoding" type="this:EncodingDef" use="optional"/>
+		<xs:attribute name="DefaultStrPadChar" type="t:Str" use="optional" default=" "/>
+		<xs:attribute name="DefaultIntNumPadChar" type="t:Str" use="optional"/>
+		<xs:attribute name="DefaultIntNumEncoding" type="this:EncodingDef" use="optional"/>
+		<xs:attribute name="DefaultBinPadChar" type="t:Str" use="optional"/>
+		<xs:attribute name="DefaultBinPad" type="t:BinHex" use="optional"/>
+                <xs:attribute name="DefaultBinPadViewType" type="this:ViewEncodingDef" use="optional"/>
+		<xs:attribute name="DefaultBinUnit" type="this:LenUnitDef" use="optional"/>
+		<xs:attribute name="DefaultUnit" type="this:LenUnitDef" use="optional"/>
+		<xs:attribute name="DefaultEncoding" type="this:EncodingDef" use="optional"/>
+		<xs:attribute name="DefaultCharSetType" type="this:StrCharSetDef" use="optional"/>
+		<xs:attribute name="DefaultCharSetExp" type="t:Str" use="optional"/>
+	</xs:attributeGroup>
+	<xs:annotation>
+		<xs:documentation>-----------------</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="Piece" abstract="false">
+		<xs:annotation>
+			<xs:documentation>Ограниченный элемент структуры</xs:documentation>
+		</xs:annotation>
+		<xs:choice minOccurs="0">
+			<xs:element name="FixedLen" type="this:FixedLenDef"/>
+			<xs:element name="Separated">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="this:SeparatedDef"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="EmbeddedLen" type="this:EmbeddedLenDef"/>
+			<xs:element name="BerTLV"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="Field" abstract="true">
+		<xs:annotation>
+			<xs:documentation>Абстрактное поле</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="this:Piece">
+				<xs:sequence minOccurs="0">
+					<xs:element name="Comment" minOccurs="0"/>
+					<xs:element name="TemplateFieldsNames" type="this:ListOfFieldNames" minOccurs="0"/>
+					<xs:element name="RemovedTemplateFields" type="this:ListOfFieldNames" minOccurs="0"/>
+				</xs:sequence>
+				<xs:attribute name="MergeFunctionName" type="t:Str">
+					<xs:annotation>
+						<xs:documentation>Имя функции java  преобразовывающая результат сборки (прототип: byte[] MergeFunctionFullName(byte[] from))</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="ParseFunctionName" type="t:Str">
+					<xs:annotation>
+						<xs:documentation>Имя функции java  преобразовывающая результат разбора (прототип: byte[] MergeFunctionFullName(byte[] from))</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="Name" type="xs:NCName" use="required"/>
+				<xs:attribute name="IsRequired" type="t:Bool" use="required"/>
+				<xs:attribute name="IsFieldArray" type="t:Bool" use="optional">
+					<xs:annotation>
+						<xs:documentation>
+                            Признак того, что данное поле с таким именем может встречаться несколько раз. Имеет смысл только тогда, когда структура, в которой лежит данное поле, задана как структура с именованными полями (см. RADIX-6914)
+                        </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="IsFieldUnion" type="t:Bool" use="optional">
+					<xs:annotation>
+						<xs:documentation>
+                            Признак того, что если данное поле является составным и содержится внутри структуры с форматом полей Named Fields,
+                            то при разборе все подполя данного поля будут попадать в один единственный элемент XML-документа,
+                            а при сборке из данного элемента XML-документа будут созданы отдельные поля. см. RADIX-7710
+                        </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="TemplateSchemeId" type="t:Str" use="optional"/>
+				<xs:attribute name="TemplateFieldPath" type="t:Str" use="optional"/>
+				<xs:attribute name="Abstract" type="t:Bool" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Structure" abstract="false">
+		<xs:annotation>
+			<xs:documentation>Абстрактная  структура</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="DefaultLengthFormat" type="this:IntField" minOccurs="0"/>
+			<xs:element name="Dbf" minOccurs="0">
+				<xs:complexType>
+					<xs:attribute name="Encoding" type="this:EncodingDef"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="FieldNaming" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Способ именования полей. Если нет -имя определяется по позиции</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:choice>
+						<xs:element name="Piece" type="this:Piece"/>
+						<xs:element name="BerTLV">
+							<xs:complexType>
+								<xs:attribute name="Encoding" type="this:EncodingDef" use="optional"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:choice>
+					<xs:attribute name="DefaultLengthFormatFieldName" type="t:Str" use="optional"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="HeaderField" type="this:AnyField" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Поля заголовка в ISO8585-подобных структурах</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Bitmap" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Определяет наличие последующих полей в ISO8585-подобных структура. Если присутствует, то последующие поля должны  называться "Fx", где x-номер поля, 1-самый старший бит</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="Encoding" type="this:EncodingDef"/>
+					<xs:attribute name="BlockLength" type="t:Int" use="optional" default="8"/>
+					<xs:attribute name="FirstBitBehavior" type="this:StructureBitmapType" use="optional" default="Continue"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Field" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="this:AnyField">
+							<xs:attribute name="ExtId" type="t:BinHex">
+								<xs:annotation>
+									<xs:documentation>Внешний ид. поля. Используется совместно с FieldNaming. Если не задано используется Field.Name</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+                                                        <xs:attribute name="ExtIdViewType" type="this:ViewEncodingDef"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attributeGroup ref="this:EmbeddedLen"/>
+		<xs:attributeGroup ref="this:FixedLen"/>
+		<xs:attributeGroup ref="this:Separated"/>
+		<xs:attributeGroup ref="this:StructureDefault"/>
+		<xs:attribute name="FieldSeparator" type="t:BinHex" use="optional"/>
+                <xs:attribute name="FieldSeparatorViewType" type="this:ViewEncodingDef" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="AnyField">
+		<xs:annotation>
+			<xs:documentation>Поле любого типа</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="Int" type="this:IntField"/>
+			<xs:element name="Num" type="this:NumField"/>
+			<xs:element name="Str" type="this:StrField"/>
+			<xs:element name="DateTime" type="this:DateTimeField"/>
+			<xs:element name="Structure" type="this:StructureField"/>
+			<xs:element name="Sequence" type="this:SequenceField"/>
+			<xs:element name="Choice" type="this:ChoiceField"/>
+			<xs:element name="Bin" type="this:BinField"/>
+			<xs:element name="BCH" type="this:BCHField"/>
+			<xs:element name="Boolean" type="this:BooleanField"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="SimpleField" abstract="true">
+		<xs:annotation>
+			<xs:documentation>Абстрактное поле простого типа</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="this:Field">
+				<xs:attribute name="IsNilable" type="t:Bool" use="optional" default="false"/>
+				<xs:attribute name="NullIndicator" type="t:BinHex" use="optional">
+					<xs:annotation>
+						<xs:documentation>Значение поля, которое обозначает null, see DefaultNullIndicator</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+                                <xs:attribute name="NullIndicatorViewType" type="this:ViewEncodingDef" use="optional"/>
+				<xs:attribute name="Encoding" type="this:EncodingDef" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IntField">
+		<xs:annotation>
+			<xs:documentation>Целочисленное поле</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="this:SimpleField">
+				<xs:attribute name="DefaultVal" type="t:Int"/>
+				<xs:attribute name="PlusSign" type="t:Char">
+					<xs:annotation>
+						<xs:documentation>see DefaultPlusSign</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="MinusSign" type="t:Char">
+					<xs:annotation>
+						<xs:documentation>see DefaultMinusSign</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="EnumClassId" type="t:Str"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="NumField">
+		<xs:annotation>
+			<xs:documentation>Числовое поле</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="this:SimpleField">
+				<xs:attribute name="DefaultVal" type="t:Num"/>
+				<xs:attribute name="PlusSign" type="t:Char">
+					<xs:annotation>
+						<xs:documentation>see DefaultPlusSign</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="MinusSign" type="t:Char">
+					<xs:annotation>
+						<xs:documentation>see DefaultMinusSign</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="FractionalPoint" type="t:Char">
+					<xs:annotation>
+						<xs:documentation>see DefaultFractionalPoint</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="StrField">
+		<xs:annotation>
+			<xs:documentation>Строчное поле</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="this:SimpleField">
+				<xs:attribute name="DefaultVal" type="t:Str">
+					<xs:annotation>
+						<xs:documentation>see DefaultMinusSign</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="EnumClassId" type="t:Str"/>
+				<xs:attribute name="CharSetType" type="this:StrCharSetDef"/>
+				<xs:attribute name="CharSetExp" type="t:Str"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="BCHField">
+		<xs:annotation>
+			<xs:documentation>Строка в бинарном виде</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="this:SimpleField">
+				<xs:attribute name="DefaultVal" type="t:Str" use="optional">
+					<xs:annotation>
+						<xs:documentation>see DefaultMinusSign</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="Align" type="this:AlignDef" use="optional"/>
+				<xs:attribute name="PadChar" type="t:Str" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="BinField">
+		<xs:annotation>
+			<xs:documentation>Строчное поле</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="this:SimpleField">
+				<xs:attribute name="DefaultVal" type="t:BinHex"/>
+                                <xs:attribute name="DefaultValViewType" type="this:ViewEncodingDef"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="BooleanField">
+		<xs:annotation>
+			<xs:documentation>Логическое поле</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="this:Field"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DateTimeField">
+		<xs:annotation>
+			<xs:documentation>Поле дата-время</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="this:SimpleField">
+				<xs:attribute name="Format" type="this:DateTimeFormatDef"/>
+				<xs:attribute name="Pattern" type="t:Str">
+					<xs:annotation>
+						<xs:documentation>see DefaultDateTimePattern</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="DefaultVal" type="t:DateTime"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ChoiceFieldVariant">
+		<xs:annotation>
+			<xs:documentation>Вариант вариантного поля</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Field">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="this:AnyField"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="SelectorVal" type="t:Str"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ChoiceField">
+		<xs:annotation>
+			<xs:documentation>Вариантное поле</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="this:Field">
+				<xs:sequence>
+					<xs:element name="Selector" type="this:StrField">
+						<xs:annotation>
+							<xs:documentation>Строчное поле, идентифицирующее вариант</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Variant" type="this:ChoiceFieldVariant" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="SelectorAdvisorFunctionName" type="t:Str">
+					<xs:annotation>
+						<xs:documentation>Имя функции java, "подсказывающей", какой из вариантов разбора поля выбрать  (прототип: String SelectorAdvisorFunctionFullName(byte[] from))</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SequenceField">
+		<xs:annotation>
+			<xs:documentation>Последовательность (массив)  полей</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="this:Field">
+				<xs:sequence>
+					<xs:element name="Item" type="this:AnyField"/>
+				</xs:sequence>
+				<xs:attribute name="ItemSeparator" type="t:BinHex" use="optional">
+					<xs:annotation>
+						<xs:documentation>Разделитель элементов в последовательности, see DefaultItemSeparator</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+                                <xs:attribute name="ItemSeparatorViewType" type="this:ViewEncodingDef" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="StructureField">
+		<xs:annotation>
+			<xs:documentation>Вложеннная структура</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="this:Field">
+				<xs:sequence>
+					<xs:element name="Structure" type="this:Structure"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>----------------</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="Message">
+		<xs:complexContent>
+			<xs:extension base="this:StructureField">
+				<xs:attribute name="ClassTargetNamespace" type="t:Str" use="required"/>
+				<xs:attribute name="ConvertorClassGUID" type="t:Str"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="MessageElement" type="this:Message"/>
+</xs:schema>

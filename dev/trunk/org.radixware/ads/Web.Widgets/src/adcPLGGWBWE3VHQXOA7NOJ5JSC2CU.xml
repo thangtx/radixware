@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcPLGGWBWE3VHQXOA7NOJ5JSC2CU" Name="Node" Type="3" Environment="web">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.wps.rwt.tree.Node"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcPTK4KMU34FD7XAQBZM55UZU6TQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcY4ILUEHFOFFZHDXA3LWXIRZMPE"/>
+    </Bodies>
+    <MethodGroup Id="cmgQWNV2LHY5ZE7HBH7ZBJO2FQXGA" Name="Root"/>
+    <PropertyGroup Id="cpgB7Q6RXGRDBGIRMYRWSCIJVYMJA" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthHC222Q7WUBGHRBQBCBFNGSEZGQ" Name="Node" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthQVLGX5EZX5FRREZXI5KEFKAUOU" Name="Node" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.wps.rwt.tree.Node.Children;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="children" Id="mprKJBDDJO4CNEGPDSQZYXFFNOW7U">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.tree.Node.Children"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthFIWG7CPYAFFW3JOGV74KUWJJHA" Name="Node" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" Id="mprMGW4FNDKUBFHBLZJZS66O5VOCE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthAEHH5MADVRFUPOBFKTKGN7I75U" Name="Node" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.String;Lorg.radixware.wps.rwt.tree.Node.Children;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" Id="mprJVRRVWU3LVHZRPGYMPMRBYU3MU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="children" Id="mprWGINTTZ43RE6LHMODPS37LYA54">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.tree.Node.Children"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthWJGSTBTFDVFU7GC5BT66ULVTJM" Name="Node" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.String;Lorg.radixware.wps.icons.WpsIcon;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" Id="mprUZULRDANIBB5XLLEU32KZ5HSGQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="icon" Id="mprKZLOERUVMJHB5AROIZYL7PXRVA">
+            <Type TypeId="400" extStr="org.radixware.wps.icons.WpsIcon"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth6ITCIL26K5FRVCQ2HXPABEDTIY" Name="Node" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.String;Lorg.radixware.wps.icons.WpsIcon;Lorg.radixware.wps.rwt.tree.Node.Children;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" Id="mprUYPSO3BAFNEAJN7JNJHJ6KMCWA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="icon" Id="mprB56LVQFIMNA4ZJOXRUCERISLAA">
+            <Type TypeId="400" extStr="org.radixware.wps.icons.WpsIcon"/>
+          </Parameter>
+          <Parameter Name="children" Id="mpr5IH6VR6RQ5HJBBXWXRHZJQ22ME">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.tree.Node.Children"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthRI4XJVO3YZF2VOSJFHZU2V7F4M" Name="getPath" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getPath()Ljava.util.List&lt;Lorg.radixware.wps.rwt.tree.Node;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.wps.rwt.tree.Node"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthNPP6QOMWDZBZ7EIRLD6RUTIHGQ" Name="findChildById" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="findChildById(Ljava.lang.String;)Lorg.radixware.wps.rwt.tree.Node;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="id" Id="mpr5LTKSAH6BZDJBAF7FM3LKHUI2Y">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.rwt.tree.Node"/>
+      </Method>
+      <Method Id="mth7LFZSKFDRVE4JAKR4NMO4UXQ4Y" Name="getChildAt" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getChildAt(I)Lorg.radixware.wps.rwt.tree.Node;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mprKS7XDMKY2NCP5EOHLMXC7DYMGM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.rwt.tree.Node"/>
+      </Method>
+      <Method Id="mthGUFFZNN4CFAHTL3RFCQ4IGONRA" Name="getParentNode" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getParentNode()Lorg.radixware.wps.rwt.tree.Node;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.rwt.tree.Node"/>
+      </Method>
+      <Method Id="mthAIQPIH66PRHQLHEXEGVSDPIVQE" Name="getCellValue" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getCellValue(Lorg.radixware.wps.rwt.tree.Tree.Column;)Ljava.lang.Object;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="column" Id="mprAKKT3FULVFAAVOXWZRZEZ3K5QY">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.tree.Tree.Column"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+      </Method>
+      <Method Id="mthXVAMCY2Y7FE5RE7TJL6LZKONIQ" Name="getCellValue" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getCellValue(I)Ljava.lang.Object;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="cellValue" Id="mpr2U27KWKR2FAQVKIXMU6NHX5SKI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+      </Method>
+      <Method Id="mthQAHE5N34IVCXBKE37G26AMTDJU" Name="getUserData" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getUserData()Ljava.lang.Object;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+      </Method>
+      <Method Id="mthWA7HVGBOKJGP5M2BCSPV7DRHJ4" Name="getTree" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getTree()Lorg.radixware.wps.rwt.tree.Tree;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.rwt.tree.Tree"/>
+      </Method>
+      <Method Id="mthBDIRNG7BTNBMZD7VWATFWCJ6KQ" Name="isChildOf" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isChildOf(Lorg.radixware.wps.rwt.tree.Node;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parentNode" Id="mpr4U2VOFWXBZCSZCESZK6DGM4SK4">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.tree.Node"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthQ45RI6SHG5GBPMFYRVUHRGMMUI" Name="isExpanded" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isExpanded()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth6FXD3U5725BENIF4UJIEBKNLYY" Name="getChildNodes" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getChildNodes()Lorg.radixware.wps.rwt.tree.Node.Children;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.rwt.tree.Node.Children"/>
+      </Method>
+      <Method Id="mthTOGF7P3H6VEV7DP5UKKENJ3AWI" Name="getDisplayName" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getDisplayName()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthJCTF7ZNQLNCOHIINO4LF46Z6C4" Name="getIcon" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getIcon()Lorg.radixware.wps.icons.WpsIcon;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.icons.WpsIcon"/>
+      </Method>
+      <Method Id="mthMM5M4UJ6WJG6DF7C7IKNRG4YX4" Name="isLeaf" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isLeaf()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthCFPYR3LAMBDALGDS2HMJE7S4DU" Name="isSpanned" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isSpanned()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthILCLASIEGVHGBG2MJQX4ZCQ3XY" Name="getCellsCount" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getCellsCount()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthEPX4HESRYNEW7AYUFI6PLHD2DY" Name="setCellValue" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setCellValue(Lorg.radixware.wps.rwt.tree.Tree.Column;Ljava.lang.Object;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="column" Id="mprIMQYM5YPLBFZTIZUCDSWG3EHMM">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.tree.Tree.Column"/>
+          </Parameter>
+          <Parameter Name="value" Id="mprPHOIV5FLQZB5NOVUDIGZ5YQ634">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthNVO553VYRNCSRIM75TYDB323BY" Name="setCellValue" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setCellValue(ILjava.lang.Object;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="columnIndex" Id="mpr6E4TULYXGVASZDOGY4V2BM5XE4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="value" Id="mprRXF6RYXZHJGEJCHYKGIKN56VOE">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthFA3JSWSRAFBZZKXC4JGY2FHTDE" Name="setChildNodes" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setChildNodes(Lorg.radixware.wps.rwt.tree.Node.Children;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="children" Id="mpr3P45EJZU4VBCZOHU2LPATU46AM">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.tree.Node.Children"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth363XIT4OLJGJ7F5B3T4EEGS6AA" Name="setDisplayName" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setDisplayName(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" Id="mprSCXBWRPXNJAPNLGIY7NYR462ZE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthB6NLGFCQDNGJTIMJE53X3V3KBA" Name="setIcon" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setIcon(Lorg.radixware.wps.icons.WpsIcon;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="icon" Id="mprMS42BPEUSFC67GQOCU4VEAN3TA">
+            <Type TypeId="400" extStr="org.radixware.wps.icons.WpsIcon"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthMJK7QI5HQFAMFKNZFNMLOOWPOY" Name="setSpanned" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setSpanned(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isSpanned" Id="mprCQLOWGXPZFD4RDG7WXJVSHHJHI">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthLSCI2TIOR5HN3FYI5RNQXOF5LA" Name="getChildCount" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getChildCount()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthTX6EONSECRGJHNODURQQYUOWVQ" Name="indexOfChild" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="indexOfChild(Lorg.radixware.wps.rwt.tree.Node;)I"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="childNode" Id="mprHAADB6PFXFH7VHFNYXLCDJGLKM">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.tree.Node"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthU3B4SRZEVRGMZAQHLTV5MUTN3M" Name="getIndexPath" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getIndexPath()[I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int" Dimension="1"/>
+      </Method>
+      <Method Id="mthL5ZZQZFCVJE6XAILHK3GSQMLYM" Name="collapse" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="collapse()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthO4IU3SADEJBLHNROUXYJXZCDQA" Name="expand" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="expand()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthTVHG3VBTXZGGNNILC56ICPXPBA" Name="finishEdit" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="finishEdit()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthLJ2SW7PMCFEO3LAUSVZMEIZ26M" Name="remove" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="remove()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthDHJOCTAAOVFIZMAVSGKOYNJTHI" Name="setUserData" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setUserData(Ljava.lang.Object;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="userData" Id="mprAN53ILI7GVGPNHXV4CG7DYLQ5Y">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth5M6RAG4NLFDCHD6DRXSKJH7GLY" Name="toggle" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="toggle()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth3TFLLRVFHFCURHGKDCT7TFGTQI" Name="update" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="update()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthHNL2UA3UI5BYLJOUBNVTTJKYIA" Name="getCellRendererProvider" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getCellRendererProvider(I)Lorg.radixware.wps.rwt.tree.Tree.ICellRendererProvider;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprOR4MN3NAYVBL5DYFPRCYL5MYCY">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.rwt.tree.Tree.ICellRendererProvider"/>
+      </Method>
+      <Method Id="mth2Z4KOPUPANFPJBHOR2GPPT5JCU" Name="setCellRendererProvider" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setCellRendererProvider(ILorg.radixware.wps.rwt.tree.Tree.ICellRendererProvider;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprXVLRJHYUCVHXJPSG3FA34Q5AF4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="arg1" Id="mprFXAUKAC4CJENJIZS42EJSOSISE">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.tree.Tree.ICellRendererProvider"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth63SA53EZDRFXPLPTLTVJLPZ62A" Name="getCells" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getCells()Ljava.util.List&lt;Lorg.radixware.wps.rwt.tree.Node.Cell;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.wps.rwt.tree.Node.Cell"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mth2JDHIC6Q4ZCFBB3RFSHYCTW6YQ" Name="getEditingOptionsForCell" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getEditingOptionsForCell(I)Lorg.radixware.wps.rwt.IGrid.IEditingOptions;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprCMLKQHGA3JH5NLAPOGQFMZATVM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.rwt.IGrid.IEditingOptions"/>
+      </Method>
+      <Method Id="mth5YCE2J2JX5EHFC4RCMO73QYSLI" Name="getCellEditorProvider" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getCellEditorProvider(I)Lorg.radixware.wps.rwt.tree.Tree.ICellEditorProvider;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprA6E4QW56NFBPNK77W4RC2K4DBU">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.rwt.tree.Tree.ICellEditorProvider"/>
+      </Method>
+      <Method Id="mthZTJZW5CGUVHK7ODSAUK4YJNXXY" Name="setCellEditorProvider" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setCellEditorProvider(ILorg.radixware.wps.rwt.tree.Tree.ICellEditorProvider;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprZID4O3JBVFBKZBCD2ZDV2VRVLM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="arg1" Id="mprGOLEQJWPJVGM5EFMDQDGTT7DEY">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.tree.Tree.ICellEditorProvider"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthVM7JKVMRVBF7JGT4YMMOC4CFGM" Name="isParentFor" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isParentFor(Lorg.radixware.wps.rwt.tree.Node;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="child" Id="mprY2GCHFESM5F6PPOL4YE23WEWZQ">
+            <Type TypeId="400" extStr="org.radixware.wps.rwt.tree.Node"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthHUREZXKUQFCATE6PH2U4P7O7KQ" Name="setFilterRules" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setFilterRules(Lorg.radixware.kernel.common.client.types.FilterRules;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="newRules" Id="mpr6J7DFZZR6RHCHLLGOTCMYPBP4Y">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.types.FilterRules"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthGSZWJYOGMRGWNHHN74OW45AP3Y" Name="getFilterRules" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getFilterRules()Lorg.radixware.kernel.common.client.types.FilterRules;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.types.FilterRules"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

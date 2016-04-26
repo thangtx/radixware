@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicJMKRUZ3AI5HQLJTVZYWCM6NVKM" Name="IReportFileController" Type="5" Environment="server">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.server.reports.IReportFileController"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderaicJMKRUZ3AI5HQLJTVZYWCM6NVKM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaicJMKRUZ3AI5HQLJTVZYWCM6NVKM"/>
+    </Bodies>
+    <MethodGroup Id="cmgCXWAHKXPSZCVXLELLK3DWR2M4E" Name="Root"/>
+    <PropertyGroup Id="cpgYZE3E3XSSJH5NI3EYY4VWSLSDE" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthMMHPPAI5T5EFHOO5OTAQN4DSWI" Name="adjustFileName" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="adjustFileName(Lorg.radixware.kernel.server.types.Report;Ljava.lang.String;)Ljava.lang.String;"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axc5VQBE2IIHJBXJMAHO52JXIWLDY"/>
+        </ThrownExceptions>
+        <Parameters>
+          <Parameter Name="report" Id="mprLKNP7JKZINEIZJCJDD3XN4BZCM">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Report"/>
+          </Parameter>
+          <Parameter Name="fileName" Id="mprVX3SNFY5GFFCVKCYYN6GZMX6UM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthHCFFTVMPBFBMVJOMMDZMTW4LWU" Name="afterCloseFile" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="afterCloseFile(Lorg.radixware.kernel.server.types.Report;Ljava.io.File;)V"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axc5VQBE2IIHJBXJMAHO52JXIWLDY"/>
+        </ThrownExceptions>
+        <Parameters>
+          <Parameter Name="report" Id="mprKDYCQQ7CEBDSXJIIMOI2JHT25I">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Report"/>
+          </Parameter>
+          <Parameter Name="file" Id="mprSSXIR35Q4JBPTBS4AG5YGBGSKU">
+            <Type TypeId="400" extStr="java.io.File"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthPQ6T4E3WPFELTDJAEYHOVJIXMU" Name="afterCreateFile" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="afterCreateFile(Lorg.radixware.kernel.server.types.Report;Ljava.io.File;Ljava.io.OutputStream;)V"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axc5VQBE2IIHJBXJMAHO52JXIWLDY"/>
+        </ThrownExceptions>
+        <Parameters>
+          <Parameter Name="report" Id="mprZT2Q3OSDMNECBCHZFVGTWASXFA">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Report"/>
+          </Parameter>
+          <Parameter Name="file" Id="mprLZ7Q5RW6Y5HIRHEPDNMQJNPY7Y">
+            <Type TypeId="400" extStr="java.io.File"/>
+          </Parameter>
+          <Parameter Name="outputStream" Id="mprL3JGX3WTKJHIXGKZRVN4HFHCRI">
+            <Type TypeId="400" extStr="java.io.OutputStream"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthEQWZZHVBAZGUTNKSUVXAIQ4ZPI" Name="beforeCloseFile" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="beforeCloseFile(Lorg.radixware.kernel.server.types.Report;Ljava.io.File;Ljava.io.OutputStream;)V"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axc5VQBE2IIHJBXJMAHO52JXIWLDY"/>
+        </ThrownExceptions>
+        <Parameters>
+          <Parameter Name="report" Id="mprTHABHBBKDRHPTBAISXUWT7YCEI">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Report"/>
+          </Parameter>
+          <Parameter Name="file" Id="mprGIWUQV3FENGTPBJAS7UM3Q4ZPY">
+            <Type TypeId="400" extStr="java.io.File"/>
+          </Parameter>
+          <Parameter Name="outputStream" Id="mprKIVQC3UR5VG2ZCIZGQMF5NMMSI">
+            <Type TypeId="400" extStr="java.io.OutputStream"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthNMVOW6LIMVH3LA5FQV52TIFPOI" Name="getDirectory" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getDirectory()Ljava.io.File;"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axc5VQBE2IIHJBXJMAHO52JXIWLDY"/>
+        </ThrownExceptions>
+        <ReturnType TypeId="400" extStr="java.io.File"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="apc5TBMZNK57JHZHNTMFQ2GHVTJSA" Name="Utils" Type="3" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcU6SC465GFVHRZHLJWBQBZDSGSI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc4BLOGXWYYZE3LH2UBKDX3DLCRU"/>
+    </Bodies>
+    <MethodGroup Id="cmg4EEPLGVEARCF3NDRCSPNYGJZVY" Name="Root"/>
+    <PropertyGroup Id="cpg6NGWLEU6SJAKLFWAOGOKNSNK3E" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthIP672GUHBNEIRAHNGG72UVNLW4" Name="getHolderEntity" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="model" Id="mprPZCTHABD2FDMJBO5UDZ3M2TLTY">
+            <Type TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>/*
+  Если надо узнать, под каким объектом-сущностью открыта данная сущность.
+  Варианты:
+    - строка в селекторе
+    - редактор под селектором
+    - создание под селектором
+    - объект вытащен в дерево из селектора
+*/
+
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicCE7LH24XARHJROR7CMOWDCNXUY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> entityModelFinder = 
+        new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicCE7LH24XARHJROR7CMOWDCNXUY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(){
+            @Override
+            public boolean isTarget(final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> model){
+                return model instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+            }
+        };
+        
+return (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)model.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mth3IC5KWE4XJHVNALB7QRHNEB63Q" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(entityModelFinder);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth2DVWAIEBUVEYNGHK63E73NCA24" Name="getOwnerGroup" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="model" Id="mpr6VPR2PELGVCVTHPMVETCE4R4UA">
+            <Type TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicCE7LH24XARHJROR7CMOWDCNXUY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> groupModelFinder = 
+        new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicCE7LH24XARHJROR7CMOWDCNXUY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(){
+            @Override
+            public boolean isTarget(final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> model){
+                return model instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+            }
+        };
+        
+return (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)model.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mth3IC5KWE4XJHVNALB7QRHNEB63Q" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(groupModelFinder);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthSYLSHKFVSZCMHKEA3T54X4GEW4" Name="getOwnerParagraph" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="childModel" Id="mprSQH5EKK67VB3DDVLQGJNSHHZVU">
+            <Type TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adcYBRILDMG2NBABBWQV6POC7XUB4"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicCE7LH24XARHJROR7CMOWDCNXUY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> paragraphModelFinder = 
+        new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicCE7LH24XARHJROR7CMOWDCNXUY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(){
+            @Override
+            public boolean isTarget(final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> model){
+                return model instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcYBRILDMG2NBABBWQV6POC7XUB4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+            }
+        };
+        
+//if (paragraphModelFinder == null)
+//    return null;
+        
+return (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcYBRILDMG2NBABBWQV6POC7XUB4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)childModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mth3IC5KWE4XJHVNALB7QRHNEB63Q" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(paragraphModelFinder);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth2BLPLGPHHZBKZDTOAQ2JI35PGI" Name="findOwnerEntityModel" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="childModel" Id="mprE3AFTNZKXRBGZGSY3W4MRYK7OE">
+            <Type TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU"/>
+          </Parameter>
+          <Parameter Name="entityModelClass" Id="mprLOAYPYU465AOBJVRQSWK4LCXA4">
+            <Type TypeId="400" extStr="java.lang.Class">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?"/>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final java.lang.Class&lt;?> targetModelClass = 
+        entityModelClass;//need to use final variable
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicCE7LH24XARHJROR7CMOWDCNXUY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> entityModelFinder = 
+        new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicCE7LH24XARHJROR7CMOWDCNXUY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(){
+            @Override
+            public boolean isTarget(final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> model){
+                return targetModelClass.isInstance(model);
+            }
+        };
+        
+return (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)childModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mth3IC5KWE4XJHVNALB7QRHNEB63Q" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(entityModelFinder);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthADZE3HFSEVAODB6ATK65ZNCSDE" Name="findOwnerGroupModel" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="childModel" Id="mprMP7GKCI6RZFOZNFHE2AVQBDPFI">
+            <Type TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU"/>
+          </Parameter>
+          <Parameter Name="entityModelClass" Id="mpr6RWA4YIJ5FC5HGWT3QLO7CPICI">
+            <Type TypeId="400" extStr="java.lang.Class">
+              <xsc:GenericArguments>
+                <xsc:Argument DerivationRule="extends" Alias="?">
+                  <xsc:Type TypeId="411" Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final java.lang.Class&lt;? extends </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> targetModelClass = 
+        entityModelClass;//need to use final variable
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicCE7LH24XARHJROR7CMOWDCNXUY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> groupModelFinder = 
+        new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicCE7LH24XARHJROR7CMOWDCNXUY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(){
+            @Override
+            public boolean isTarget(final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> model){
+                return targetModelClass.isInstance(model);
+            }
+        };
+        
+return (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)childModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mth3IC5KWE4XJHVNALB7QRHNEB63Q" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(groupModelFinder);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthXHJ3IE37XNHVDFTSUG4BMBKDDA" Name="findOwnerFormModel" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="childModel" Id="mprUPT4KZOXVZF7HCJ4M4UA6HL34A">
+            <Type TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU"/>
+          </Parameter>
+          <Parameter Name="formModelClass" Id="mprSG2JGBA72RDGTPSBJ5AZMUTNSU">
+            <Type TypeId="400" extStr="java.lang.Class">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?"/>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adcCICJHDC22RGH5ACUPHLRTZQL6Y"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final java.lang.Class&lt;?> targetModelClass = formModelClass;
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicCE7LH24XARHJROR7CMOWDCNXUY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> formModelFinder = 
+        new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicCE7LH24XARHJROR7CMOWDCNXUY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(){
+            @Override
+            public boolean isTarget(final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> model){
+                return targetModelClass.isInstance(model);
+            }
+        };
+        
+return (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcCICJHDC22RGH5ACUPHLRTZQL6Y"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)childModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mth3IC5KWE4XJHVNALB7QRHNEB63Q" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(formModelFinder);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

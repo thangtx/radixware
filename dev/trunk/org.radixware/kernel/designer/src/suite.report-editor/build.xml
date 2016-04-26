@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- You may freely edit this file. See harness/README in the NetBeans platform -->
+<!-- for some information on what you could do (e.g. targets to override). -->
+<!-- If you delete this file and reopen the project it will be recreated. -->
+<project name="suite.report-editor" basedir=".">
+    <description>Builds the module suite suite.report-editor.</description>
+    <import file="nbproject/build-impl.xml"/>
+    
+    <target name="unzip-dist" depends="build-zip" description="Creates an unzipped distributive">
+        <delete dir="../../../report-editor/bin/"/>
+        <unzip src="dist/${app.name}.zip" dest="../../../report-editor/bin/">
+            <globmapper from="${app.name}/*" to="*"/>
+        </unzip>
+        <copy file="${app.name}.conf" tofile="../../../report-editor/bin/etc/${app.name}.conf" overwrite="true"/>
+        <copydir src="../suite/jsstubs" dest="../../../report-editor/bin/ide/jsstubs" forceoverwrite="true"/>
+    </target>
+
+
+    <target name="build-directory">
+        <java classname="org.radixware.kernel.common.build.directory.DirectoryFileBuilder"
+              classpath="${javac.classpath}"
+              fork="true">
+            <!-- Command line must be: DirectoryFile [-compact] excludeRegexp group1 regexp1  group2 regexp2 ... -->
+            <arg value="../../../report-editor/directory.xml"/>
+            <arg value="-order-tail=ide|platform|java"/>
+            <arg value="." />
+            <arg value="KernelDesigner"/>
+            <arg value="(bin).*\.*" />
+            <classpath>
+                <fileset dir="../../../common/bin">
+                    <include name="**/*.jar"/>
+                </fileset>
+                <fileset dir="../../../common/lib">
+                    <include name="**/*.jar"/>
+                </fileset>
+                <pathelement path="${javac.classpath}"/>
+            </classpath>
+        </java>
+    </target>
+
+    <target name="sign-directory">
+        <java classname="org.radixware.kernel.common.build.directory.DirectoryFileSigner"
+              classpath="${javac.classpath}"
+              fork="true">
+            <arg value="../../../report-editor/directory.xml"/>
+            <classpath>
+                <fileset dir="../../../common/bin">
+                    <include name="**/*.jar"/>
+                </fileset>
+                <fileset dir="../../../common/lib">
+                    <include name="**/*.jar"/>
+                </fileset>
+                <pathelement path="${javac.classpath}"/>
+            </classpath>
+        </java>
+    </target>
+    
+    <target name="update-modification-stamp">
+        <tstamp>
+            <format property="rdx-dist-stamp" pattern="MM/dd/yyyy HH:mm:ss "/>
+        </tstamp>
+        <echo file="${basedir}/build/cluster/.lastModified" level="error" append="false" message="${rdx-dist-stamp}"/>
+        <echo message="${basedir}/build/cluster/.lastModified is updated with current date/time" level="error"/>
+
+    </target>
+    <target name="build" depends="suite.build, update-modification-stamp" description="Build all modules in the suite."/>
+
+    
+    <target name="save-default-branding" depends="-init">
+        <property name="branding-startup" value="${basedir}/branding/core/core.jar/org/netbeans/core/startup/"/>
+        <copy preservelastmodified="true" overwrite="true" file="${branding-startup}/Bundle.properties" tofile="${branding-startup}/Bundle.properties.save"/>
+
+        <property name="branding-windows" value="${basedir}/branding/modules/org-netbeans-core-windows.jar/org/netbeans/core/windows/view/ui/"/>
+        <copy preservelastmodified="true" overwrite="true" file="${branding-windows}/Bundle.properties" tofile="${branding-windows}/Bundle.properties.save"/>
+    </target>
+
+    <target name="revert-default-branding" depends="-init">
+        <property name="branding-startup" value="${basedir}/branding/core/core.jar/org/netbeans/core/startup/"/>
+        <copy preservelastmodified="true" overwrite="true"  file="${branding-startup}/Bundle.properties.save" tofile="${branding-startup}/Bundle.properties"/>
+        <delete file="${branding-startup}/Bundle.properties.save"/>
+
+
+        <property name="branding-windows" value="${basedir}/branding/modules/org-netbeans-core-windows.jar/org/netbeans/core/windows/view/ui/"/>
+        <copy preservelastmodified="true" overwrite="true"  file="${branding-windows}/Bundle.properties.save" tofile="${branding-windows}/Bundle.properties"/>
+        <delete file="${branding-windows}/Bundle.properties.save"/>
+    </target>
+
+    <target name="build-brand" depends="save-default-branding">
+        <property name="branding-startup" value="${basedir}/branding/core/core.jar/org/netbeans/core/startup/"/>
+
+        <propertyfile file="${branding-startup}/Bundle.properties" comment="Updated by build script">
+            <entry key="currentVersion" value="${app.title} ${app.version} " />
+        </propertyfile>
+
+        <property name="branding-windows" value="${basedir}/branding/modules/org-netbeans-core-windows.jar/org/netbeans/core/windows/view/ui/"/>
+
+        <propertyfile file="${branding-windows}/Bundle.properties">
+            <entry key="CTL_MainWindow_Title" value="${app.title} ${app.version}" />
+            <entry key="CTL_MainWindow_Title_No_Project" value="${app.title} ${app.version}" />
+        </propertyfile>
+
+        <propertyfile file="${branding-windows}/Bundle.properties">
+            <entry key="LBL_ProductInformation" value="${app.title}" />
+        </propertyfile>
+
+    </target>
+    
+    <target name="distributive" depends ="build-brand, unzip-dist, build-directory, sign-directory, revert-default-branding">
+    </target>
+       
+</project>

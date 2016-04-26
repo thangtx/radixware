@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd"  FormatVersion="0">
+  <AdsClassDefinition Id="adcACRZP2N7KJHLTPMFXSTA2VAWSA" Name="ClientTracer" DescriptionId="mlsHSAJV6YBHRE4FLSIR3XCWLYVFM" Type="3" Environment="common-client">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.trace.ClientTracer"/>
+    </AccessRules>
+    <TypeArguments>
+      <xsc:Argument DerivationRule="extends" Alias="T">
+        <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.trace.IClientTraceItem"/>
+      </xsc:Argument>
+    </TypeArguments>    
+    <Headers>
+      <Src Name="HeaderadcZZKGLPZS65BOXILXLD3ME57CFY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcAGBQA7O6SVDN7MOTPG3BWORHRY"/>
+    </Bodies>
+    <MethodGroup Id="cmgYHTKIWL4OJGHRPV2WGEPQQGIZQ" Name="Root"/>
+    <PropertyGroup Id="cpgSMELA74T4NAG3H3UMVJMYA44VM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthXZXY5QJJFFCS5LZSOQULNIWURE" Name="put" DescriptionId="mlsSA2QJURZ5BCE3PH7H2W3SKIEJU" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="put(Lorg.radixware.kernel.common.enums.EEventSeverity;Ljava.lang.String;Lorg.radixware.kernel.common.enums.EEventSource;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="severity" DescriptionId="mlsOB3GMDSASFGVRAE2ZRUS47WB3E" Id="mprOZQBOH6WT5A2PKZ2VCFMC33PZM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EEventSeverity"/>
+          </Parameter>
+          <Parameter Name="localizedMessage" DescriptionId="mlsAHRMCH5RMBH6LOFVN52K7NIBHU" Id="mprKONGAPV5TFFOFMDZUWK3ZLWHXI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="eventSource" DescriptionId="mlsBJJSUE4BPNADDOOXZC2FVTWY2I" Id="mpr4B25F3LO4ZBGJNLD3V2Z2UTN7E">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EEventSource"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthA2VVKEIRDZG6NIONEADPJF6FUM" Name="leaveEventSource" DescriptionId="mls3BZD623KWZF3NJ57SEJZMOSNSQ" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="leaveEventSource(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="eventSource" DescriptionId="mls2DHFBQRVBZBX7LGP4WGJZCP4ZM" Id="mpr4SJAZT6XY5G2NPA7TP5YF5W47Y">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthPJAN2KFX3RBSVEELIMDEP6Y57M" Name="error" DescriptionId="mls5PEVM7NPLJH6XDEJ7AQZFGETYM" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="error(Ljava.lang.String;Ljava.lang.Throwable;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="localizedMessage" DescriptionId="mlsRGQA3XSV3ZACTIFYTVQ2FTVBVQ" Id="mprAYO2BVFFOZE7VDUIKF6423SF6E">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="exception" DescriptionId="mls43EWO3TLQBHDTBNLCKO4FZ27HQ" Id="mprIFPJQPUVMJHDDBMURAC3QZTTWU">
+            <Type TypeId="400" extStr="java.lang.Throwable"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthX5R7XEMUPVFW3EZ34456NIIJ6Y" Name="error" DescriptionId="mls2CV3YASWIBHDFFBGJKWQGUWZZY" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="error(Ljava.lang.Throwable;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="exception" DescriptionId="mlsTXFKVTAYQFFANAUD5OQ2REN7GM" Id="mprOVKEL6ETZJGBFLNHHDDLHBJRB4">
+            <Type TypeId="400" extStr="java.lang.Throwable"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthXETGBFTGXVFVRFZN4HGAW4PHQ4" Name="getCurrentSource" DescriptionId="mlsFNWZDNJKQ5EJDI6BXF6ZJBJQZE" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getCurrentSource()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21" DescriptionId="mlsXCTVRG5DKBH3TEZ3QRT45SP4SU"/>
+      </Method>
+      <Method Id="mthQDE5FPAIMBA5FD6FITBG37UJAY" Name="warning" DescriptionId="mlsI6U3QXMTGBFUVMNS7MZAUE4S4Y" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="warning(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="localizedMessage" DescriptionId="mlsB35U3C4FQNEKHCEAI7ZNU7ZI4E" Id="mprCMDCGPBQK5BYXNKDW557KU3XHE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth2KNKPQM5EFBIVOODSYTIOL5VEE" Name="event" DescriptionId="mlsVZZTG32ILVE6HMGZNMB2M54SEA" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="event(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="localizedMessage" DescriptionId="mls2WIL3CA53BEV7DKZYNLIYZD7VQ" Id="mpr5OLXADJPIJCMXCX5KP6VAOHPGM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthAN27VDVHWVGQ5HBYJ6CEGNHY3M" Name="debug" DescriptionId="mlsKSR4Q6IQ4FA25L2A5XGSTJZDQQ" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="debug(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="message" DescriptionId="mlsS37WT6XAVJFFBG366WJOZAAD6Q" Id="mprZ52VD3RIXJCK5FNJZNGIF6NBWQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth2FJH5HZPLVFG5LJOFOWPTJLVB4" Name="put" DescriptionId="mlsIDH4DQOFQVARRAIYVMXGSMHBCM" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="put(Lorg.radixware.kernel.common.enums.EEventSeverity;Ljava.lang.String;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="severity" DescriptionId="mlsKAAGHRASGZGCBM4UGTRJ5TE3JY" Id="mprHP4HMTVAGBCG3ONR6WZPKURANE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EEventSeverity"/>
+          </Parameter>
+          <Parameter Name="localizedMessage" DescriptionId="mlsUCCSHMTYQRBLZAZNG3KADCGIOI" Id="mprUEQLHGCN2JA7NKAOYS3JEUEDGU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="eventSource" DescriptionId="mlsW2ZTWNFONNHC3EDXGU7353J2WY" Id="mprFBQ7BPY3HJGAFDB7QCLXTDLW2A">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthQDDWGRNRX5GF3C7P7G2KW4PJWE" Name="enterEventSource" DescriptionId="mls5QLJGYZ4D5GHDF5XZAM46VZ4PA" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="enterEventSource(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="eventSource" DescriptionId="mlsY6FLG33KCNG4BM3R4DVE5BSOSI" Id="mprEVQGTXKFU5F4RI25DBUS7UPFYI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthV4DQTXQAV5AFFLVSJDAQ3TF7KM" Name="put" DescriptionId="mlsU6FJLTVGPRFIJBG2AQ7IYBLTYY" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="put(Lorg.radixware.kernel.common.enums.EEventSeverity;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="severity" DescriptionId="mlsUSI7LLXB4VFDBGTS3CPQZBUGVA" Id="mpr2EORMVJTYVAWVGZ23FXFGQ6GAY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EEventSeverity"/>
+          </Parameter>
+          <Parameter Name="localizedMessage" DescriptionId="mls5SKMRNJAL5FPXCMR3FJXABDQP4" Id="mprPCMEMSJAONAVFE5WTQ3YF4NYUA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth6HLIVNUN4BHINKYCPTPAVU372M" Name="error" DescriptionId="mlsAARVED4J4ZDSBA7QYXIXBHOGW4" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="error(Ljava.lang.String;Ljava.lang.Throwable;Lorg.radixware.kernel.common.enums.EEventSource;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="localizedMessage" DescriptionId="mlsS3EPCO36NJBJPFCUYDL4CSQTOM" Id="mpr4OULZEZ35ZG67JX26TGY4CWMGY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="exception" DescriptionId="mlsLSANP5V7R5CQXFY5JYJ7MIDRKQ" Id="mprJOS2HSVFJNC2VGEQSASPSDBYNM">
+            <Type TypeId="400" extStr="java.lang.Throwable"/>
+          </Parameter>
+          <Parameter Name="eventSource" DescriptionId="mlsXROZLZ4CIZGIHKUHRNJRJD5EOU" Id="mprDAVE57CZVBA2VC6A7RQ5VSMCS4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EEventSource"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthVEBQQMKBG5ASLNIMUH5ANBHWTQ" Name="error" DescriptionId="mls5TXQY6JUIFEJ5MHXDUFUZCNJZY" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="error(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="localizedMessage" DescriptionId="mlsMWVIMQJ3NNC2RMEYAFUBJ5MB4I" Id="mprDJGGDYSZKRAITAMOZGTTGWARXI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthRY3PMSP6TNB47DN6NRQX3YE6TM" Name="getMinSeverity" DescriptionId="mls6AO6E7AO3BD57NKLUF2UXNMFBI" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getMinSeverity(Lorg.radixware.kernel.common.enums.EEventSource;)J"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="eventSource" DescriptionId="mlsCHBXAOGW4VG67E3EC3PO7TLFME" Id="mprJOUYE3KDQ5EPJIFR2CNKLS6QTQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EEventSource"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="long" DescriptionId="mls7Y3YEZV6HRCWVHEWA5DC6RF4E4"/>
+      </Method>
+      <Method Id="mthD4GTPB4VP5HP7ONEB5AKRFV3GQ" Name="alarm" DescriptionId="mls2XC6LGRFHRHUFHJKU2HJIO4BGA" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="alarm(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="localizedMessage" DescriptionId="mls5ULQL7BJPJERDKEZ3LKA6XQBMU" Id="mpr7Y6CHDPFHJBQRFL5QIUSP6N2XE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

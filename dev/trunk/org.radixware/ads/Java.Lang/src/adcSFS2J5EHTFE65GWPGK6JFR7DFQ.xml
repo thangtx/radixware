@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcSFS2J5EHTFE65GWPGK6JFR7DFQ" Name="Thread" Type="3" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="java.lang.Thread"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcSFS2J5EHTFE65GWPGK6JFR7DFQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcSFS2J5EHTFE65GWPGK6JFR7DFQ"/>
+    </Bodies>
+    <MethodGroup Id="cmg4JRBOQF26ZA3NGVDKJFCC7BFFY" Name="Root"/>
+    <PropertyGroup Id="cpgCEXKOJDXYJH35GUUCZZ4SZ5DFM" Name="Root"/>
+    <Properties>
+      <Property Id="prdWAYZ4WVA7VAQPBK4E4Y7VVOT7A" Name="MAX_PRIORITY" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true">
+          <Transparence Extendable="false" PublishedName="MAX_PRIORITY"/>
+        </AccessRules>
+        <Type TypeId="401" extStr="int"/>
+      </Property>
+      <Property Id="prdZUWTMY2IMNC3BOAOCVRNMUWOUM" Name="MIN_PRIORITY" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true">
+          <Transparence Extendable="false" PublishedName="MIN_PRIORITY"/>
+        </AccessRules>
+        <Type TypeId="401" extStr="int"/>
+      </Property>
+      <Property Id="prd2L7SERH7CJAL5FUTJCKQPRKC2U" Name="NORM_PRIORITY" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true">
+          <Transparence Extendable="false" PublishedName="NORM_PRIORITY"/>
+        </AccessRules>
+        <Type TypeId="401" extStr="int"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthTQF675ZJZBBGPJCOKTQUHZQ3AQ" Name="activeCount" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="activeCount()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mth54RWITTSNZHODLRE42E5JYATIM" Name="checkAccess" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="checkAccess()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthUQVL5DRN3ZFIFAAFG6HG7LOFK4" Name="currentThread" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="currentThread()Ljava.lang.Thread;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.lang.Thread"/>
+      </Method>
+      <Method Id="mthDMFIAM7TMRGHVEXUYPSOU32DZE" Name="dumpStack" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="dumpStack()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthJGOFJEDQDNGFHMFBHCUX6HUJ5I" Name="enumerate" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="enumerate([Ljava.lang.Thread;)I"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="tarray" Id="mprDK62SZFKAJDNJGTZTHGXOE5QBQ">
+            <Type TypeId="400" extStr="java.lang.Thread" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthF7RJH3F4URD6NPBZEZVY5UF5KI" Name="getAllStackTraces" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getAllStackTraces()Ljava.util.Map&lt;Ljava.lang.Thread;[Ljava.lang.StackTraceElement;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.Map">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="java.lang.Thread"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="java.lang.StackTraceElement" Dimension="1"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthLYHUFPZ3SRCVVMERL24SSKSIHI" Name="getContextClassLoader" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getContextClassLoader()Ljava.lang.ClassLoader;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.lang.ClassLoader"/>
+      </Method>
+      <Method Id="mthHBFTPXXSJNDUPPK6JZDXUQZRG4" Name="getDefaultUncaughtExceptionHandler" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getDefaultUncaughtExceptionHandler()Ljava.lang.Thread.UncaughtExceptionHandler;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.lang.Thread.UncaughtExceptionHandler"/>
+      </Method>
+      <Method Id="mthWR4ZFWGJMNEOXEOFROT4IOCGHM" Name="getId" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getId()J"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="long"/>
+      </Method>
+      <Method Id="mth4GOWHCA7T5FYTN64COYQR43XVI" Name="getName" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getName()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mth23YZ6BLDBBGGTHOROWWGXTPLB4" Name="getPriority" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getPriority()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthU22V2ZBJ7ZETVLOCGNDBWHZPYI" Name="getStackTrace" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getStackTrace()[Ljava.lang.StackTraceElement;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.lang.StackTraceElement" Dimension="1"/>
+      </Method>
+      <Method Id="mthIQ3ILHYJ3JFQPBKAKOFHE75S4U" Name="getState" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getState()Ljava.lang.Thread.State;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.lang.Thread.State"/>
+      </Method>
+      <Method Id="mthABOYR4VVNFF7XOX2DFE4L5SYQQ" Name="getThreadGroup" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getThreadGroup()Ljava.lang.ThreadGroup;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.lang.ThreadGroup"/>
+      </Method>
+      <Method Id="mthQ3V3UY3QONBTDL6NUMG2AOD5YY" Name="getUncaughtExceptionHandler" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getUncaughtExceptionHandler()Ljava.lang.Thread.UncaughtExceptionHandler;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.lang.Thread.UncaughtExceptionHandler"/>
+      </Method>
+      <Method Id="mth6YBJLWBAZBH6FKTQBMF56FLDAQ" Name="holdsLock" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="holdsLock(Ljava.lang.Object;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="obj" Id="mpr7YEWJWV4ABCF3BTU6SJLP6U6QU">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthA6SWZJ7ZPZBRDEYRVVFVMJCG7I" Name="interrupt" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="interrupt()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthLIGIZNCSPFEKNIWBLMTNLMXDOM" Name="interrupted" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="interrupted()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthMPWHN6AEZNBUPBTOFXS3ZXCC2Y" Name="isAlive" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isAlive()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthTKQNCK2GYNFWXCZCU5HOKJXOPI" Name="isDaemon" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isDaemon()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthTWHFIYOKP5A5VE27ZBN57C45PQ" Name="isInterrupted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isInterrupted()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthHKAGJIMKGFEXPHTXLS3CXDLEVA" Name="join" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="join(J)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="millis" Id="mprXAGNMAOLPBBJXHZNQRS5XESDEE">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth45OHPFP4HRGPDHAOS7UYPX2T2Y" Name="join" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="join(JI)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="millis" Id="mprYQ4RSUFMHFDHREOQ67N5H5ALXM">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="nanos" Id="mprXUT6B5XVVFBN7J3QKT7UBSW6QI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthTDOIJAOWNNF5XHPMQ3MEUI4TBA" Name="join" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="join()V"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth7QHDTHEPNZBBTDSVPNWPTXOZO4" Name="run" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="run()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthKDD72M5GA5CVFFKDUG26EOW5RI" Name="setContextClassLoader" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setContextClassLoader(Ljava.lang.ClassLoader;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="classLoader" Id="mprOW5OYSUOGRHGRMYSRR72XFK5SA">
+            <Type TypeId="400" extStr="java.lang.ClassLoader"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth3CLFEBEB2NCDXD4ZMD7MLM4IJM" Name="setDaemon" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setDaemon(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="on" Id="mprGXPO6ODAGFAFJCYUOHNDBFZTFM">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth3K4OYIU4LBDYNLISN4ZD4ZLRMU" Name="setDefaultUncaughtExceptionHandler" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="setDefaultUncaughtExceptionHandler(Ljava.lang.Thread.UncaughtExceptionHandler;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="eh" Id="mprABSQPM3LPVACZH3HVGPBOBP2JM">
+            <Type TypeId="400" extStr="java.lang.Thread.UncaughtExceptionHandler"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthDJ4GAEELNVAZJL5BCYAXX2X3HI" Name="setName" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setName(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="name" Id="mpr7OM65C7YBZDPDCYRGXC52IWVHY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthYFYME3E5PNH5JDKUO27RL43WXU" Name="setPriority" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setPriority(I)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="newPriority" Id="mprFKNGL3MJPVFKJHVF6M3NKHUV7I">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthC53MLZRD7FDOZHC2RHUKYPJUSM" Name="setUncaughtExceptionHandler" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setUncaughtExceptionHandler(Ljava.lang.Thread.UncaughtExceptionHandler;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="eh" Id="mprJULOAXGUNFCIBGEYAIHTYYKQTQ">
+            <Type TypeId="400" extStr="java.lang.Thread.UncaughtExceptionHandler"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthS3PAMYUBRVFV7ASZNT7UE2S7OY" Name="sleep" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="sleep(J)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="millis" Id="mprLLC3HRWMMZGK7BM4AVFJL5AF2Q">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthNU76EKREPNFN7O35ZPUXS6VFLE" Name="sleep" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="sleep(JI)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="millis" Id="mprGEMRLOTA35ER3BV5EWIBGRXHOQ">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="nanos" Id="mprWM5OVXTOMNGPVF4VNE5WPH6PCQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthL3L5REY4NZABVOXD2W6Y7KNZ7U" Name="start" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="start()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthB2CPH6QPCFEYZIT7KCKQIRX7GQ" Name="Thread" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth3GWFNMFLORD4HHEA4QIJUG5ERI" Name="Thread" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.Runnable;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="target" Id="mpr3J67ZT553VHLTBN27C4EKHY4AM">
+            <Type TypeId="400" extStr="java.lang.Runnable"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthJEDAZYXCL5AW5OB3TDYKV6PDTI" Name="Thread" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.ThreadGroup;Ljava.lang.Runnable;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="group" Id="mprGMBXRDMCWFGU3LZ27LJFV5UNDI">
+            <Type TypeId="400" extStr="java.lang.ThreadGroup"/>
+          </Parameter>
+          <Parameter Name="target" Id="mprKNJXUUAFKNEMXJKJHZQUYDKZPY">
+            <Type TypeId="400" extStr="java.lang.Runnable"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthNPQGWH43LZBYZHEQXT2NYL6ADI" Name="Thread" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="name" Id="mpr5ETNID3UAVFDPGEM65D32WYI4Y">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth6EBBVZ4D7FF7HPU73T6GJT33Z4" Name="Thread" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.ThreadGroup;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="group" Id="mprW246GDJEMZBKXOWQYQBG64OL5I">
+            <Type TypeId="400" extStr="java.lang.ThreadGroup"/>
+          </Parameter>
+          <Parameter Name="name" Id="mpr76M7C4SFIBDL7NY4RU57NH6J2Y">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthLRS647PY7JEGFPYDNSNA542DR4" Name="Thread" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.Runnable;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="target" Id="mprX3XPR3NIUFFCNEBUWAMPPMB5QQ">
+            <Type TypeId="400" extStr="java.lang.Runnable"/>
+          </Parameter>
+          <Parameter Name="name" Id="mprTVQ2E2ZQSNDELENHPJLXJ42UJE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthC7QBBXYVUVG3LDTA2OCOR7I3BU" Name="Thread" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.ThreadGroup;Ljava.lang.Runnable;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="group" Id="mprVNS3HW7U6RDN7KMRLQLJ4YVGVY">
+            <Type TypeId="400" extStr="java.lang.ThreadGroup"/>
+          </Parameter>
+          <Parameter Name="target" Id="mpr5XBXVF5XGBHQVOHII35NUMAVTY">
+            <Type TypeId="400" extStr="java.lang.Runnable"/>
+          </Parameter>
+          <Parameter Name="name" Id="mprMNGMFDKCUNCQFOXFJC7DPYXCZU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthO3MRWPHZQVEANH4ISYVIRWOFO4" Name="Thread" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.ThreadGroup;Ljava.lang.Runnable;Ljava.lang.String;J)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="group" Id="mprPDI56NS25NBIVDQ5XMLLGE5ITE">
+            <Type TypeId="400" extStr="java.lang.ThreadGroup"/>
+          </Parameter>
+          <Parameter Name="target" Id="mprVKRL455HTBCHPPW2NLUTHYUNJM">
+            <Type TypeId="400" extStr="java.lang.Runnable"/>
+          </Parameter>
+          <Parameter Name="name" Id="mprWZWXO6B74JFORIJ3CGHI6U6QQE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="stackSize" Id="mprB2TKMGFWTFCFPPHWG6Z5XCS7TI">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthJGJ4323WZBCX7PLEV5QO6OOK4U" Name="yield" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="yield()V"/>
+        </AccessRules>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

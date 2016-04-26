@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema targetNamespace="http://schemas.radixware.org/wsviews.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:this="http://schemas.radixware.org/wsviews.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    
+    <xs:complexType name="Object">
+        <xs:sequence>
+            <xs:element name="Children" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Child" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Properties" type="this:Properties" minOccurs="0" maxOccurs="1"/>            
+            <xs:element name="Actions" type="this:Actions" minOccurs="0" maxOccurs="1"/>            
+        </xs:sequence>
+        <xs:attribute name="Id" type="xs:string"/>
+        <xs:attribute name="ClassName" type="xs:string"/>
+    </xs:complexType>
+    
+    <xs:element name="View">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element name="ModalDialog">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="Objects" type="this:ObjectList"/>
+                        </xs:sequence>
+                        <xs:attribute name="dialogId" type="xs:string"/>                            
+                        <xs:attribute name="close" type="xs:string"/>                            
+                    </xs:complexType>
+                </xs:element>                
+                <xs:element name="Changes" type="this:ObjectList"/>                
+            </xs:choice>
+            <xs:attribute name="rootId" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:complexType name="ObjectList">
+        <xs:sequence>
+            <xs:element name="Object" type="this:Object" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="Dialog">
+        <xs:complexContent>
+            <xs:extension base="this:Widget">
+                <xs:sequence>
+                    <xs:element name="Buttons">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Button" type="this:Button" minOccurs="0" maxOccurs="1"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element >
+                </xs:sequence>
+                <xs:attribute name="Title" type="xs:string"/>
+            </xs:extension >
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="WidgetList">
+        <xs:sequence>
+            <xs:element name="Widget" type="this:WidgetChoice" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="WidgetChoice">
+        <xs:choice>
+            <xs:element name="Widget" type = "this:Widget"/>
+            <xs:element name="Separator" type = "this:Separator"/>
+            <xs:element name="Grid" type = "this:Grid"/>
+            <xs:element name="Button" type = "this:Button"/>
+            <xs:element name="Label" type = "this:Label"/>
+            <xs:element name="Dialog" type = "this:Dialog"/>
+            <xs:element name="TextField" type = "this:TextField"/>
+            <xs:element name="Page" type = "this:Page"/>
+            <xs:element name="Tree" type = "this:Tree"/>
+            <xs:element name="Spacer" type = "this:Spacer"/>
+            <xs:element name="ModifiedProps" type="this:Properties"/>            
+        </xs:choice>
+        <xs:attribute name="Id" type="xs:string"/> 
+        <xs:attribute name="ParentId" type="xs:string"/> 
+    </xs:complexType>
+    <xs:complexType name="Page">
+        <xs:complexContent>
+            <xs:extension base="this:Widget">
+                <xs:sequence>
+                    <xs:element name="Center" type = "this:WidgetChoice" minOccurs="0"/>
+                    <xs:element name="East" type = "this:WidgetChoice" minOccurs="0"/>
+                    <xs:element name="West" type = "this:WidgetChoice" minOccurs="0"/>
+                    <xs:element name="South" type = "this:WidgetChoice" minOccurs="0"/>
+                    <xs:element name="North" type = "this:WidgetChoice" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Container">
+        <xs:sequence>
+            <xs:element name="Element" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="this:WidgetChoice">
+                            <xs:attribute name="span" type = "xs:int"/>
+                            <xs:attribute name="last" type = "xs:boolean"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType  name="Actions">
+        
+        <xs:sequence>
+            <xs:element name="Action" type="this:Action" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        
+    </xs:complexType>
+    <xs:complexType name="Widget">        
+        <xs:sequence>
+            <xs:choice>
+                <xs:element name="TableLayout" type="this:TableLayout"/>                
+            </xs:choice>
+            <xs:element name="Properties" type = "this:Properties"/>                
+            
+        </xs:sequence>
+        <!--xs:attribute name="Id" type="xs:string"/>
+        <xs:attribute name="ParentId" type="xs:string"/-->
+        <xs:attribute name="PageRole" type="xs:string"/>                
+    </xs:complexType>
+    <xs:complexType name="Button">
+        <xs:complexContent>
+            <xs:extension base="this:Widget">
+                <xs:attribute name="Title" type="xs:string"/>
+            </xs:extension >
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Spacer">
+        <xs:complexContent>
+            <xs:extension base="this:Widget">                
+            </xs:extension >
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Separator">
+        <xs:complexContent>
+            <xs:extension base="this:Widget">
+            </xs:extension >
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Label">
+        <xs:complexContent>
+            <xs:extension base="this:Widget">
+                <xs:sequence>
+                    <xs:element name="Text" minOccurs="0" maxOccurs="unbounded" type="xs:string"/>
+                </xs:sequence>
+            </xs:extension >
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="TextField">
+        <xs:complexContent>
+            <xs:extension base="this:Widget">
+                <xs:attribute name="IsPassword" type="xs:boolean" use="optional" default="false"/> 
+            </xs:extension >
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Grid">
+        <xs:complexContent>
+            <xs:extension base="this:Widget">
+                <xs:sequence>
+                    <xs:element name="Columns" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Col" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:attribute name="Title" type="xs:string"/>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Data" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>                        
+                                <xs:element name="Row" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element name="Cell" minOccurs="0" maxOccurs="unbounded">
+                                                <xs:complexType>
+                                                    <xs:sequence>
+                                                        <xs:element name="Text" type="xs:string"/>
+                                                    </xs:sequence>
+                                                </xs:complexType>
+                                            </xs:element>
+                                        </xs:sequence>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence> 
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence> 
+            </xs:extension >
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="Properties">
+        <xs:sequence>
+            <xs:element name="Property" type="this:Property" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="Property">
+        <xs:sequence>
+            <xs:element name="Value" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute name="Name" type="xs:string"/>
+        <xs:attribute name="HtmlEventName" type="xs:string"/>
+        <xs:attribute name="HtmlPropertyName" type="xs:string"/>
+    </xs:complexType>
+    <xs:complexType name="Action">
+        <xs:attribute name="Name" type="xs:string"/>
+        <xs:attribute name="Title" type="xs:string"/>
+        <xs:attribute name="HtmlEventName" type="xs:string"/>
+    </xs:complexType>   
+    <xs:complexType name="TableLayout">
+        <xs:sequence>
+            <xs:element name="Row" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Cell" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Widget" type="this:WidgetChoice" minOccurs="0" maxOccurs="1"/>
+                                    <xs:element name="Properties" type="this:Properties" minOccurs="0" maxOccurs="unbounded"/>
+                                </xs:sequence>                                                                            
+                            </xs:complexType>                
+                        </xs:element>            
+                    </xs:sequence>
+                </xs:complexType>                
+            </xs:element>            
+        </xs:sequence>       
+    </xs:complexType>
+    <xs:complexType name="Tree">
+        <xs:complexContent>
+            <xs:extension base="this:Widget">                
+                <xs:sequence>
+                    <xs:choice minOccurs="0" maxOccurs="unbounded">
+                        <xs:element name="Folder" type="this:FolderTreeItem" minOccurs="1" maxOccurs="1"/>
+                        <xs:element name="Leaf" type="this:TreeItem" minOccurs="1" maxOccurs="1"/>
+                        <xs:element name="Updates">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:choice minOccurs="0" maxOccurs="unbounded">
+                                        <xs:element name="Folder" type="this:FolderTreeItem" minOccurs="1" maxOccurs="1"/>
+                                        <xs:element name="Leaf" type="this:TreeItem" minOccurs="1" maxOccurs="1"/>    
+                                    </xs:choice>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:choice>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="TreeItem">        
+        <xs:sequence>
+            <xs:element name="Icon" minOccurs="0" maxOccurs="1" type="this:Icon"/>
+        </xs:sequence>
+        <xs:attribute name="Title" type="xs:string"/>
+        <xs:attribute name="Path" type="xs:string"/>
+    </xs:complexType>
+    <xs:complexType name="FolderTreeItem">
+        <xs:complexContent>
+            <xs:extension base="this:TreeItem">
+                <xs:sequence>
+                    <xs:choice minOccurs="0" maxOccurs="unbounded">
+                        <xs:element name="Folder" type="this:FolderTreeItem" minOccurs="1" maxOccurs="1"/>
+                        <xs:element name="Leaf" type="this:TreeItem" minOccurs="1" maxOccurs="1"/>
+                    </xs:choice>
+                </xs:sequence>
+                <xs:attribute name="Expanded" type="xs:boolean" default="false" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Icon">
+        <xs:attribute name="uri" type="xs:string" use="required"/>
+    </xs:complexType>
+</xs:schema>

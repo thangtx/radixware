@@ -1,0 +1,397 @@
+<xs:schema xmlns:this="http://schemas.radixware.org/reports.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xscml="http://schemas.radixware.org/xscml.xsd" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:eas="http://schemas.radixware.org/eas.xsd" targetNamespace="http://schemas.radixware.org/reports.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/eas.xsd" schemaLocation="eas.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/xscml.xsd" schemaLocation="xscml.xsd"/>
+    <xs:complexType name="BandType">
+        <xs:sequence>
+            <xs:element name="Cell" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="Name" type="xs:string" use="required"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="Type" use="required">
+            <xs:annotation>
+                <xs:documentation>EReportBandType</xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EReportBandType</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:StrEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="GroupLevel" type="xs:int" use="optional" default="0"/>
+    </xs:complexType>
+    <xs:complexType name="ReportMsdlType">
+        <xs:sequence>
+            <xs:element name="Band" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Transformation" minOccurs="0">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Xsd" type="xs:string"/>
+                                    <xs:element name="Xslt" type="xs:string"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="Msdl" type="xs:string"/>
+                    </xs:sequence>
+                    <xs:attribute name="Type" use="required">
+                        <xs:annotation>
+                            <xs:documentation>EReportBandType</xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:annotation>
+                                <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                    <types:class>org.radixware.kernel.common.enums.EReportBandType</types:class>
+                                </xs:appinfo>
+                            </xs:annotation>
+                            <xs:restriction base="types:StrEnum"/>
+                        </xs:simpleType>
+                    </xs:attribute>
+                    <xs:attribute name="GroupLevel" type="xs:int" use="optional" default="0"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ReportPub">
+        <xs:sequence>
+            <xs:element name="Title" type="xs:string" minOccurs="0"/>
+            <xs:element name="Location" type="xs:string" minOccurs="0"/>
+            <xs:element name="Description" type="xs:string" minOccurs="0"/>
+            <xs:element name="Params" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>For customer reports</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Param" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="DefaultVal" type="eas:Property" minOccurs="0"/>
+                                </xs:sequence>
+                                <xs:attribute name="Id" type="types:Id" use="required"/>
+                                <xs:attribute name="Name" type="types:Str" use="required"/>
+                                <xs:attribute name="Type" use="required">
+                                    <xs:simpleType>
+                                        <xs:annotation>
+                                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                <types:class>org.radixware.kernel.common.enums.EValType</types:class>
+                                            </xs:appinfo>
+                                        </xs:annotation>
+                                        <xs:restriction base="types:IntEnum"/>
+                                    </xs:simpleType>
+                                </xs:attribute>
+                                <xs:attribute name="Title" type="types:Str" use="optional"/>
+                                <xs:attribute name="IsMandatory" type="xs:boolean" use="optional"/>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="Pid" type="xs:string" use="required"/>
+        <xs:attribute name="ReportClassId" type="types:Id" use="required"/>
+        <xs:attribute name="SupportedFormats" use="optional">
+            <xs:simpleType>
+                <xs:list>                    
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.EReportExportFormat</types:class>
+                            </xs:appinfo>  
+                        </xs:annotation>
+                        <xs:restriction base="types:StrEnum"/>                                  
+                    </xs:simpleType>
+                </xs:list>
+            </xs:simpleType>
+        </xs:attribute>        
+    </xs:complexType>
+    <xs:complexType name="ReportPubContext">
+        <xs:sequence>
+            <xs:element name="Parent" type="this:ReportPubContext" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="PubContextClassId" type="types:Id" use="required"/>
+        <xs:attribute name="PubContextId" type="xs:string" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="ReportPubTopic">
+        <xs:sequence>
+            <xs:element name="Title" type="xs:string" minOccurs="0"/>
+            <xs:element name="Description" type="xs:string" minOccurs="0"/>
+            <xs:element name="Location" type="xs:string" minOccurs="0"/>
+            <xs:element name="Topics" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Topic" type="this:ReportPubTopic" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Pubs" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Pub" type="this:ReportPub" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="Pid" type="xs:string" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="ParametersBindingType">
+        <xs:choice>
+            <xs:element name="ParameterBinding" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:choice>                        
+                            <xs:element name="ExternalValue">
+                                <xs:complexType>
+                                    <xs:sequence>                                          
+                                        <xs:element name="Value" type="eas:Property" minOccurs="0"/>
+                                    </xs:sequence>
+                                    <xs:attribute name="OwnerPID" type="types:SafeStr" use="optional"/>                                
+                                    <xs:attribute name="OwnerClassId" type="types:Id" use="optional"/>
+                                </xs:complexType>
+                            </xs:element>                            
+                            <xs:element name="Value" type="eas:Property" minOccurs="0"/>
+                            <xs:element name="Parameter" type="types:Id" minOccurs="0"/>
+                        </xs:choice>   
+                    </xs:sequence>
+                    <xs:attribute name="ParameterId" type="types:Id" use="required"/>
+                    
+                    <xs:attribute name="Type" use="optional" default="Value">
+                        <xs:simpleType>
+                            <xs:annotation>
+                                <xs:documentation>Enum EReportParameterBindingType</xs:documentation>
+                                <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                    <types:class>org.radixware.kernel.common.enums.EReportParameterBindingType</types:class>
+                                </xs:appinfo>
+                            </xs:annotation>
+                            <xs:restriction base="types:StrEnum"/>
+                        </xs:simpleType>
+                    </xs:attribute>
+                    <xs:attribute name="Final" type="xs:boolean" use="optional" default="false"/>
+                    <xs:attribute name="Restriction" use="optional">
+                        <xs:simpleType>
+                            <xs:annotation>
+                                <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                    <types:class>org.radixware.kernel.common.enums.EReportParameterRestriction</types:class>
+                                </xs:appinfo>
+                            </xs:annotation>
+                            <xs:restriction base="types:StrEnum"/>
+                        </xs:simpleType>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+    </xs:complexType>
+    <xs:element name="Band" type="this:BandType"/>
+    <xs:element name="GenerateReportRq">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="ParamValues" type="eas:PropertyList"/>
+            </xs:sequence>
+            <xs:attribute name="File" type="xs:string" use="required"/>
+            <xs:attribute name="Type" type="xs:string" use="optional"/>
+            <xs:attribute name="ReportPubPid" type="xs:string" use="optional"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="GetReportPubTreeRq">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Context" type="this:ReportPubContext"/>
+            </xs:sequence>
+            <xs:attribute name="PubListClassId" type="types:Id" use="required"/>
+            <xs:attribute name="ForInheritance" type="xs:boolean" use="optional" default="false"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="GetReportPubTreeRp" type="this:ReportPubTopic"/>
+    <xs:element name="CfgReportsPubsRq">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Context" type="this:ReportPubContext"/>
+            </xs:sequence>
+            <xs:attribute name="PubListDomainId" type="types:Id" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="CfgReportsPubsRp">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="PubList" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ClassTitle" type="xs:string"/>
+                        </xs:sequence>
+                        <xs:attribute name="ClassId" type="types:Id" use="required"/>
+                        <xs:attribute name="Pid" type="xs:string" use="optional"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Report">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Band" type="this:BandType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ReportSchedule">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="ParametersBinding" type="this:ParametersBindingType" minOccurs="0"/>
+                <xs:element name="Transformation" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="Xsd" type="xs:string"/>
+                            <xs:element name="Xslt" type="xs:string"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="Msdl" type="this:ReportMsdlType" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="ReportClassGuid" type="xs:string" use="required"/>
+            <xs:attribute name="Dir" type="xs:string" use="required"/>
+            <xs:attribute name="FileNameFormat" type="xs:string" use="required"/>
+            <xs:attribute name="CustomFileExt" type="xs:string" use="optional"/>
+            <xs:attribute name="Format" use="required">
+                <xs:simpleType>
+                    <xs:annotation>
+                        <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                            <types:class>org.radixware.kernel.common.enums.EReportExportFormat</types:class>
+                        </xs:appinfo>
+                    </xs:annotation>
+                    <xs:restriction base="types:StrEnum"/>
+                </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="PostOsCommand" type="xs:string" use="optional"/>
+            <xs:attribute name="Lag" type="xs:long" use="optional"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ParametersBinding" type="this:ParametersBindingType"/>
+    <xs:element name="ReportMsdl" type="this:ReportMsdlType"/>
+    
+    <xs:complexType name="UserReportListRq">
+        <xs:attribute name="moduleId" type="types:Id"/>
+    </xs:complexType>
+    <xs:complexType name="UserReportListRs">
+        <xs:sequence>
+            <xs:element name="Report" type="this:UserReportHeader" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="UserReportHeader">
+        <xs:sequence>
+            <xs:element name="Name" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Description" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ContextParamType" type="xscml:TypeDeclaration" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="Id" type="types:Id"/>
+        <xs:attribute name="CurrentVersion" type="xs:long"/>        
+        <xs:attribute name="CurrentOrder" type="xs:long"/>     
+        <xs:attribute name="FormatVersion" type="xs:long"/>     
+    </xs:complexType>
+    <xs:complexType name="UserReportVersionListRs">
+        <xs:sequence>
+            <xs:element name="Version" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:attribute name="Id" type="xs:long"/>
+                    <xs:attribute name="Order" type="xs:long"/>
+                </xs:complexType>
+            </xs:element> 
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="UserReportVersionListRq">
+        <xs:attribute name="ReportId" type="xs:string"/>
+    </xs:complexType>
+    
+    <xs:complexType name="UserReportCreateVersionRs">
+        <xs:attribute name="VersionId" type="xs:long"/>
+        <xs:attribute name="Order" type="xs:long"/>
+    </xs:complexType>
+    
+    <xs:complexType name="UserReportHeaderListRs">
+        <xs:sequence>
+            <xs:element name="Module" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Report" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:attribute name="Title" type="xs:string"/>
+                                <xs:attribute name="Id" type="types:Id"/>
+                                <xs:attribute name="FullName" type="xs:string"/>
+                                <xs:attribute name="ContextClassId" type="types:Id"/>
+                                <xs:attribute name="SuperInterfaces" use="optional">
+                                    <xs:simpleType>
+                                        <xs:list itemType="types:Id"/>
+                                    </xs:simpleType>
+                                </xs:attribute>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="Title" type="xs:string"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ReadReportRuntimeRq">
+        <xs:attribute name="ReportId" type="types:Id"/>
+        <xs:attribute name="TmpFileName" type="xs:string"/>
+        <xs:attribute name="ReportClassGuid" type="types:Id"/>        
+    </xs:complexType>
+    
+    <xs:complexType name="ReadReportRuntimeRs">        
+        <xs:attribute name="Status" type="xs:int"/>        
+        <xs:attribute name="ReportClassGuid" type="types:Id"/>        
+    </xs:complexType>
+    <xs:complexType name="DisableReportPubsRq">
+        <xs:attribute name="ReportId" type="types:Id"/>
+        <xs:attribute name="Action" type="xs:string"/>
+    </xs:complexType>
+    <xs:complexType name="DisableReportPubsRs">
+        <xs:sequence>
+            <xs:element name="PubInfo" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element type="xs:string" name="Location"/>
+                    </xs:sequence>
+                    <xs:attribute name="PubId" type="xs:int"/>
+                    <xs:attribute name="PubName" type="xs:string"/>                    
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="LibUserFuncsListRs">
+        <xs:sequence>
+            <xs:element name="LibUserFunc" minOccurs="0" maxOccurs="unbounded">   
+                <xs:complexType>
+                    <xs:attribute name="LibFuncId" type="xs:string"/>
+                    <xs:attribute name="LibFuncName" type="xs:string"/>
+                    <xs:attribute name="LibId" type="xs:string"/>
+                    <xs:attribute name="LibName" type="xs:string"/>
+                </xs:complexType> 
+            </xs:element>              
+        </xs:sequence>
+    </xs:complexType>    
+    <xs:complexType name="LibUserFuncXmlRq">
+        <xs:attribute name="LibFuncId" type="xs:string"/>
+    </xs:complexType>    
+    
+    <xs:element name="UserReportListRs" type="this:UserReportListRs"/>
+    <xs:element name="UserReportListRq" type="this:UserReportListRq"/>
+    <xs:element name="UserReportVersionListRs" type="this:UserReportVersionListRs"/>
+    <xs:element name="UserReportVersionListRq" type="this:UserReportVersionListRq"/>
+    <xs:element name="UserReportCreateVersionRs" type="this:UserReportCreateVersionRs"/>
+    <xs:element name="UserReportHeaderListRs" type="this:UserReportHeaderListRs"/>
+    <xs:element name="ReadReportRuntimeRq" type="this:ReadReportRuntimeRq"/>
+    <xs:element name="ReadReportRuntimeRs" type="this:ReadReportRuntimeRs"/>
+    <xs:element name="DisableReportPubsRq" type="this:DisableReportPubsRq"/>
+    <xs:element name="DisableReportPubsRs" type="this:DisableReportPubsRs"/>
+    <xs:element name="LibUserFuncsListRs" type="this:LibUserFuncsListRs"/>
+    <xs:element name="LibUserFuncXmlRq" type="this:LibUserFuncXmlRq"/>
+</xs:schema>

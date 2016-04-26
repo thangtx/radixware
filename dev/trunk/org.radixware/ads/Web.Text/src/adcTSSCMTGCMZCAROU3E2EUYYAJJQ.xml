@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcTSSCMTGCMZCAROU3E2EUYYAJJQ" Name="DefaultTextOptionsProvider" Type="3" Environment="web">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.wps.text.DefaultTextOptionsProvider"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcTSSCMTGCMZCAROU3E2EUYYAJJQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcTSSCMTGCMZCAROU3E2EUYYAJJQ"/>
+    </Bodies>
+    <MethodGroup Id="cmg453HB6Q7VVBHTPU2SNPMDS2BK4" Name="Root"/>
+    <PropertyGroup Id="cpgJN4Q56FCABAJLEBWNEW2LLLFG4" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthXRXWQY2HUZAWTFJORFEYKXLLGI" Name="getDefault" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getDefault()Lorg.radixware.wps.text.WpsTextOptions;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.text.WpsTextOptions"/>
+      </Method>
+      <Method Id="mthLOOVSJPP4BEFRK74GOVHYMUYOA" Name="getOptions" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getOptions(Ljava.util.EnumSet&lt;Lorg.radixware.kernel.common.client.enums.ETextOptionsMarker;>;Lorg.radixware.kernel.common.enums.ESelectorRowStyle;)Lorg.radixware.wps.text.WpsTextOptions;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="markers" Id="mprRNNH7GFCEZC67CPVTRFJSIRAUE">
+            <Type TypeId="400" extStr="java.util.EnumSet">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.ETextOptionsMarker"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="rowStyle" Id="mpr2KCCRB2OZZDE3DRQP45CKBQLGA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.ESelectorRowStyle"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.text.WpsTextOptions"/>
+      </Method>
+      <Method Id="mthGBPYA3N7FJDIJO37WQR6NG5P4I" Name="getOptions" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getOptions([Lorg.radixware.kernel.common.client.enums.ETextOptionsMarker;)Lorg.radixware.wps.text.WpsTextOptions;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="markers" Id="mprTZPMWJXLEJE6NG627HGJZTWW5E">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.ETextOptionsMarker" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.text.WpsTextOptions"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

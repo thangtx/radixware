@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:this="http://schemas.radixware.org/web-ui.xsd" xmlns:ns1="http://schemas.radixware.org/xscml.xsd" targetNamespace="http://schemas.radixware.org/web-ui.xsd" elementFormDefault="qualified">
+    <xs:import namespace="http://schemas.radixware.org/xscml.xsd" schemaLocation="xscml.xsd"/>
+    
+    <xs:complexType name="WebUI">
+        <xs:sequence>
+            <xs:element name="Widget" type="this:Widget"/> 
+        </xs:sequence>        
+    </xs:complexType>
+    
+    <xs:complexType name="Widget">
+        <xs:sequence>
+            <xs:element name="Children" type="this:Children" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Properties" type="this:Properties" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>        
+        <xs:attribute name="Name" type="xs:string"/>
+        <xs:attribute name="ClassName" type="xs:string"/>
+    </xs:complexType>
+   
+    <xs:complexType name="Name2ValuePair">
+        <xs:sequence>
+            <xs:element name="Value" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute name="Name" type="xs:string"/>        
+    </xs:complexType>
+    
+    <xs:complexType name="Properties">
+        <xs:sequence>
+            <xs:element name="Property" type="this:Name2ValuePair" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>            
+    </xs:complexType>    
+    <xs:complexType name="Children">
+        <xs:sequence>
+            <xs:element name="Widget" type="this:Widget" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>            
+    </xs:complexType>    
+</xs:schema>

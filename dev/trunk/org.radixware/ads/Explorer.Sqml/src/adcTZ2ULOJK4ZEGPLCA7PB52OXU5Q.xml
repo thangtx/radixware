@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcTZ2ULOJK4ZEGPLCA7PB52OXU5Q" Name="SqmlTreeModel" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.explorer.models.SqmlTreeModel"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcTLKVGO3ZKZGKHNISRES7HYAKEI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcDH6YJLBREBCN5KLMKQA3KAI7LI"/>
+    </Bodies>
+    <MethodGroup Id="cmgU24ZG4NTLFHUBOTXM6UNZZDUWE" Name="Root"/>
+    <PropertyGroup Id="cpg2B3TJ7OXRRFXVOMCPKBN42EB74" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthXM4CH5XQZ5BSPBPKBP2GV54ZLE" Name="displayMode" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="displayMode()Lorg.radixware.kernel.common.client.enums.EDefinitionDisplayMode;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.enums.EDefinitionDisplayMode"/>
+      </Method>
+      <Method Id="mthJNS6HY33KVFCVOBKCL7NUJANDY" Name="showDefinitions" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="showDefinitions(Lorg.radixware.kernel.explorer.models.SqmlTreeModel.ItemType;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="itemType" Id="mprXHWG53NIB5A2BFQYZILB2QOJRE">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.models.SqmlTreeModel.ItemType"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthX2OR6LYN55ARJIPZ5XO2HFBDCM" Name="removeParameter" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="removeParameter(Lorg.radixware.kernel.common.client.meta.sqml.ISqmlParameter;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parameter" Id="mprYGQBNTIYPRHWVF65Y64POPVTBU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlParameter"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthKI63ZRPYNBFG3EFEMMAAOTKTEE" Name="SqmlTreeModel" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Ljava.util.List&lt;Lorg.radixware.kernel.common.client.meta.sqml.ISqmlDefinition;>;Ljava.util.EnumSet&lt;Lorg.radixware.kernel.explorer.models.SqmlTreeModel.ItemType;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprWTCG5P7BJFCZBC6ICBE5IJ7XUY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="definitions" Id="mprWVS2IECP2ZCABFIMX6H52VPBR4">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlDefinition"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="itemTypes" Id="mprJGL4U2VIYBHKLMNKX2OE44WFTY">
+            <Type TypeId="400" extStr="java.util.EnumSet">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.explorer.models.SqmlTreeModel.ItemType"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth2NHPH4XY3FFCNIAIKYB7I3I27A" Name="showDefinitions" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="showDefinitions(Ljava.util.EnumSet&lt;Lorg.radixware.kernel.explorer.models.SqmlTreeModel.ItemType;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="itemTypes" Id="mpr6USLK63E55HGPCXOCFA3QYIDNE">
+            <Type TypeId="400" extStr="java.util.EnumSet">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.explorer.models.SqmlTreeModel.ItemType"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth6MHDURYVFBHURBMIGZPTBPXKUA" Name="hideDefinitions" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="hideDefinitions(Lorg.radixware.kernel.explorer.models.SqmlTreeModel.ItemType;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="itemType" Id="mpr62UMLUVB5BGRHGZ4V7TPP3TC3M">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.models.SqmlTreeModel.ItemType"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthVYKMGDKN2VCWJDY2DC5BEMJBVE" Name="setTopLevelDefinitions" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setTopLevelDefinitions(Ljava.util.List&lt;Lorg.radixware.kernel.common.client.meta.sqml.ISqmlDefinition;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="definitions" Id="mprFH4FJ62BMVE3XDQIF67YAFO2JM">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlDefinition"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth6WNVMBJHARGMTCLUHG3UPR4NRU" Name="addTopLevelDefinitions" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="addTopLevelDefinitions(Ljava.util.List&lt;Lorg.radixware.kernel.common.client.meta.sqml.ISqmlDefinition;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="definitions" Id="mprIW5MIANWWNGXJPSLV3HX54CPRI">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlDefinition"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth7RTVK7JTJVHVPPT343RA4GWTZE" Name="addParameter" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="addParameter(Lorg.radixware.kernel.common.client.meta.sqml.ISqmlModifiableParameter;)Lcom.trolltech.qt.core.QModelIndex;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parameter" Id="mprSOQUP77KUBDFJLTMBX3IGYEB2A">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlModifiableParameter"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+      </Method>
+      <Method Id="mthKSOS67G44ZHNJEXUODFR6HG2SM" Name="SqmlTreeModel" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Ljava.util.List&lt;Lorg.radixware.kernel.common.client.meta.sqml.ISqmlDefinition;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mpr6OI75CKVU5ER5F7XRQFCY7IFVU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="definitions" Id="mprDLO5XYVM7NDDHPKLZAYHVUDQR4">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlDefinition"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthMUTIG5XRFZF5LLH7CTO6T2U6WA" Name="addTable" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="addTable(Lorg.radixware.kernel.common.client.meta.sqml.ISqmlTableDef;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="table" Id="mprMOHYYMPWXFCD7NHPE74CPMNBFA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlTableDef"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthPINNY4TFIFBANGUS43XAHCW77Q" Name="definition" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="definition(Lcom.trolltech.qt.core.QModelIndex;)Lorg.radixware.kernel.common.client.meta.sqml.ISqmlDefinition;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mprCZID6VMGSVF2XKTMSR5KRZ34WY">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlDefinition"/>
+      </Method>
+      <Method Id="mthOOH3RGMPEFCSPBPHWXWV7KDN5Q" Name="getVisibleDefinitionTypes" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getVisibleDefinitionTypes()Ljava.util.EnumSet&lt;Lorg.radixware.kernel.explorer.models.SqmlTreeModel.ItemType;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.EnumSet">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.explorer.models.SqmlTreeModel.ItemType"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthUXLCTNIAY5ACVC4RYDTSGZPKQA" Name="SqmlTreeModel" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Ljava.util.List&lt;Lorg.radixware.kernel.common.client.meta.sqml.ISqmlDefinition;>;Ljava.util.EnumSet&lt;Lorg.radixware.kernel.explorer.models.SqmlTreeModel.ItemType;>;Lorg.radixware.kernel.common.client.meta.sqml.ISqmlParameters;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mpr4X6BNPMQBJFE5GILSBTSAQSCVQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="definitions" Id="mprBMIQGDMDNBFC3N4O7HKL4C5VLY">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlDefinition"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="itemTypes" Id="mprPKDDYHTHFBEZHE4IUZZ2ZAZVKI">
+            <Type TypeId="400" extStr="java.util.EnumSet">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.explorer.models.SqmlTreeModel.ItemType"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="parameters" Id="mprYDBJE5OSKZFBPDEWLHH3LUIQQM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlParameters"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthVSUL4XG3QZH6JP5OTT5ZYQCJ5I" Name="setDisplayMode" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setDisplayMode(Lorg.radixware.kernel.common.client.enums.EDefinitionDisplayMode;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="displayMode" Id="mprU7HRTNJM5ZB7NEA2CZPELZSJNA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.EDefinitionDisplayMode"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthNSRYYALAORAKVIVJCBJCE5FPFQ" Name="clear" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="clear()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth3Q5H6ULGT5GITPVWEASBI7V2AA" Name="findDefinitionIndex" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="findDefinitionIndex(Lorg.radixware.kernel.common.client.meta.sqml.ISqmlDefinition;Lcom.trolltech.qt.core.QModelIndex;)Lcom.trolltech.qt.core.QModelIndex;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="definition" Id="mpr26PBHPZFTRG4DNCSAHFFJDM27Q">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlDefinition"/>
+          </Parameter>
+          <Parameter Name="parentIndex" Id="mpr4TCP2SQBK5BG7BW2RQZXL2FWZI">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+      </Method>
+      <Method Id="mthP35EKPPQBZCXXKBZSEGGBX2IT4" Name="SqmlTreeModel" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Ljava.util.List&lt;Lorg.radixware.kernel.common.client.meta.sqml.ISqmlDefinition;>;Lorg.radixware.kernel.common.client.meta.sqml.ISqmlParameters;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mpr4HUFWQ3VRFAT3C5HQEVUSZX5NQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="definitions" Id="mprXJT74I3YBNGEXGZSGMDWKBMZ7Y">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlDefinition"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="parameters" Id="mprM4QWWYGR2ZHKROHKS27QXR7MIE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlParameters"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

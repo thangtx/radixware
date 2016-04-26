@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcKG57KND4QNA7HGJTD7OBIZ5E7Q" Name="ClientUserFuncBindingValidator" Type="3" Environment="common-client">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcKG57KND4QNA7HGJTD7OBIZ5E7Q"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcKG57KND4QNA7HGJTD7OBIZ5E7Q">
+        <xsc:Item>
+          <xsc:Java>private </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> env;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmgXL7MKL4XFJFMNI5UC6TZ457FZE" Name="Root"/>
+    <PropertyGroup Id="cpgLJIIORJJ7RBA5FDC5737UQ4PR4" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthVUVAPJDFSZCTLMMO4M47L2S4SQ" Name="checkEntityExistance" Nature="0" IsOverride="true">
+        <AccessRules Access="1" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="uf" Id="mprZK7T3BPZY5C2DBWD2HYLAM7TI4">
+            <Type TypeId="411" Path="adcEWGZMSHL3BFCFFIJVRGAJSRPEY"/>
+          </Parameter>
+          <Parameter Name="entityId" Id="mpr6HVJMYKFJFCRTJTQ2BFOHFUKGE">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="entityPid" Id="mpr5GPVJVZWMNHF7F4IMMSDJXWYCU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="problemHandler" Id="mpr7AWUWVKMNZFYTOM2AQIRAQXW4M">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.check.IProblemHandler"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> tableId = entityId;
+if (tableId.getPrefix() == org.radixware.kernel.common.enums.EDefinitionIdPrefix.ADS_ENTITY_CLASS) {
+    tableId = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Factory.changePrefix(tableId, org.radixware.kernel.common.enums.EDefinitionIdPrefix.DDS_TABLE);
+} else if (tableId.getPrefix() != </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsHL2QKDVQX5FARACANDWKNIZ5OU aciVBTXX3CC5RBSZMHBPRLWWOMNKQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+    org.radixware.kernel.common.defs.ads.AdsDefinition def = org.radixware.kernel.common.defs.ads.userfunc.AdsUserFuncDef.Lookup.findTopLevelDefinition(uf, tableId);
+    if (def instanceof org.radixware.kernel.common.defs.ads.clazz.entity.AdsEntityObjectClassDef) {
+        tableId = ((org.radixware.kernel.common.defs.ads.clazz.entity.AdsEntityObjectClassDef) def).EntityId;
+    }
+
+}
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> pid = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc6MUJT675HNGATDJ477ZWLDUOHM mthGKSYUHLCB5CYVKCNUXASG6XTTQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(tableId, entityPid);
+try {
+    pid.getDefaultEntityTitle(env.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthRKLGSF7BNFDPXMXNAQP6UIV3GU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc665DM3EMENHR7EXGCJWTJITUQM mthOHABFRJPBZH7JLZWYHFGM754U4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(uf, entityId, entityPid, problemHandler);
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcWSBFK4LYMVHTXL55MVC44THTGE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc665DM3EMENHR7EXGCJWTJITUQM mthOHABFRJPBZH7JLZWYHFGM754U4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(uf, entityId, entityPid, problemHandler);
+}
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthLB6ZGNHTTJAUJDZLDYOCHEQQZ4" Name="getEnumItemType" Nature="0" IsOverride="true">
+        <AccessRules Access="1" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="id" Id="mprWDZEGG7ZYZGXXHSEDY6VCG4IBY">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="2" Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try{
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcUTMGTTLFTFBHJMCICCD6GSYFZ4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> enumDef = env.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthRFQCEXJDNJDINHW32QFZAVEBV4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc53GYAPZQEBEQLNPUG64TNAO5F4 mthJ65Z3KHRHZEV3MYAFOWB4NLCX4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(id);
+    return enumDef.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcUTMGTTLFTFBHJMCICCD6GSYFZ4 mthUTY2UNYRWJFQJNZBPIT73A7LWU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+}catch(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcPVZKE3F7SVFBBAEO5YVM6RYGGQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e){
+    return null;
+}
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthDPF6NPWCG5FLDCK7K64EILI6YM" Name="ClientUserFuncBindingValidator" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="env" Id="mprLL76GVWNJFD53MBAFSYK3M3ZYM">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this.env = env;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="adc665DM3EMENHR7EXGCJWTJITUQM"/>
+  </AdsClassDefinition>
+</AdsDefinition>

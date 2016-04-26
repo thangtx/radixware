@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="axcG6PZC4JQPBAI5C7ZFKWL4SWGKA" Name="SQLException" Type="8" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="java.sql.SQLException"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc47VELVWM7RDKZDHUN75JQA4PKI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcI34BR5EKTBA23CEHPJBUDJ3K7Y"/>
+    </Bodies>
+    <MethodGroup Id="cmgG66ZLELXRNEF3FKFLCKY45WX3U" Name="Root"/>
+    <PropertyGroup Id="cpgY4KBC6PES5CGDHFJIOD75Q52PU" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthFP45Q2UZ2BEEFKY46K5ZNBB5PI" Name="getErrorCode" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getErrorCode()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mth6YZBH4DU7ND37OQ3REN7F67KYU" Name="getNextException" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getNextException()Ljava.sql.SQLException;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.sql.SQLException"/>
+      </Method>
+      <Method Id="mthBWR7BFWZJJAVHIDW4QFZ5SR6A4" Name="getSQLState" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getSQLState()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthRYH2QOJZPVDY7DWSH42HG6BUJU" Name="iterator" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="iterator()Ljava.util.Iterator&lt;Ljava.lang.Throwable;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.Iterator">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="java.lang.Throwable"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthEJV2GMJMTVD7HKIMX24EU6C3XA" Name="SQLException" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.String;Ljava.lang.String;I)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="reason" Id="mpr6E4LFMAMBZAEZF53DKWSVZNC44">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="SQLState" Id="mprACRJE3FXMNHGPOOKXYPL3ATZ2M">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="vendorCode" Id="mprAY6N7KRO3BET7C4N7GKIS746R4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthIXHOCHDOG5GIXNHQ6QMFAZTZZI" Name="SQLException" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.String;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="reason" Id="mprBHZ5ATSC3RCOXJWT2FD6PZIUU4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="SQLState" Id="mprIJL6VBMAPJDJ3IIIMNXQHI6GXA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthEU64DHJ545AZBFHF3OCW2J3F6Y" Name="SQLException" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="reason" Id="mprNVYG4W67XBHMPKHOHIUHK2WGP4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthTKCIDJ37RJBERBIMLIMIL23LBY" Name="SQLException" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthV66ZPEOE6NGHVD7PSIXCTVWGB4" Name="SQLException" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.Throwable;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="cause" Id="mprUS44HF53CFAVXGVNQUVTJB5FBQ">
+            <Type TypeId="400" extStr="java.lang.Throwable"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthFZKWWBVHBNHBRGVQYLRCQDD6EQ" Name="SQLException" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.String;Ljava.lang.Throwable;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="reason" Id="mprRFOPTSVXM5EJZMA6NGNVA2YKHM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="cause" Id="mprRF5VA4KSEVFRDEOFWEX2LDDEV4">
+            <Type TypeId="400" extStr="java.lang.Throwable"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthGVN7YYAI4VBN7CYTO4UW22YHFE" Name="SQLException" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.String;Ljava.lang.String;Ljava.lang.Throwable;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="reason" Id="mprJJMPSI3BOJC73ACWGUGQI3EOKQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="sqlstate" Id="mprFMADDCVNOFB37M4PHWK7B23QCM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="cause" Id="mprX46D5JK2VVDQ5EJOJ26LHB2VA4">
+            <Type TypeId="400" extStr="java.lang.Throwable"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthBRH5QEVA2RBMFPTDGUNZEV7BNY" Name="SQLException" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.String;Ljava.lang.String;ILjava.lang.Throwable;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="reason" Id="mprMSPMMZM3L5DNBP4A7MX6D7D3SI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="sqlstate" Id="mprQZVTU5DK3VAWTB2AL7TQPTCNXQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="vendorCode" Id="mprIEYZM2LSFZHWBDHCJEVHQPV2UY">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="cause" Id="mprBKWU2VUEYRFNRILUM24EUCVEXE">
+            <Type TypeId="400" extStr="java.lang.Throwable"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthVWYAJG5QORHB5NXWOIVPI723LA" Name="setNextException" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setNextException(Ljava.sql.SQLException;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="ex" Id="mpr7E7QLA43RBC5LMND4RDKYDG4FA">
+            <Type TypeId="400" extStr="java.sql.SQLException"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

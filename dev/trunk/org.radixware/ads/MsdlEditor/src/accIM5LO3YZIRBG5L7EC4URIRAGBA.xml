@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="accIM5LO3YZIRBG5L7EC4URIRAGBA" Name="ListMsdlSchemesCursor" Type="4">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderaccIM5LO3YZIRBG5L7EC4URIRAGBA"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaccIM5LO3YZIRBG5L7EC4URIRAGBA"/>
+    </Bodies>
+    <MethodGroup Id="cmgSUI4JMKJ6JA4XDZKOARLQP2LJI" Name="Root"/>
+    <PropertyGroup Id="cpgVJ27SZENGFH2FOPP44UWDKPF2U" Name="Root"/>
+    <Properties>
+      <Property Id="prfTP3Z3LZV7RB67NBWZDOAEIL3QA" Name="guid" Nature="3" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prf4ZNBUTWYEFGKFNTIHU6LUH3IE4" Name="msdlScheme" Nature="10" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="31" Path="aecMXLSZGBLI5ECNDF4PJK6CNKJPQ"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+        <FieldToColumnMap>
+          <Item ColumnId="col4SI755YCLRE4BOBSKX7BVUVQY4" FieldId="prfTP3Z3LZV7RB67NBWZDOAEIL3QA"/>
+        </FieldToColumnMap>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="open" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <ReturnType TypeId="411" Path="accIM5LO3YZIRBG5L7EC4URIRAGBA"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>Select </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accIM5LO3YZIRBG5L7EC4URIRAGBA" PropId="prfTP3Z3LZV7RB67NBWZDOAEIL3QA" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblMXLSZGBLI5ECNDF4PJK6CNKJPQ"/>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblMXLSZGBLI5ECNDF4PJK6CNKJPQ"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="411" Path="pdcCursor____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

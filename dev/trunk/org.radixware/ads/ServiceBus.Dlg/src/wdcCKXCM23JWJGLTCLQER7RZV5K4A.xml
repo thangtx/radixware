@@ -1,0 +1,1393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsCustomWidgetDefinition Id="wdcCKXCM23JWJGLTCLQER7RZV5K4A" Name="XPathTable">
+    <ui:ui>
+      <ui:widget name="widget" id="wdgYTQ5GXFGWVCTLIOGPQALCNX2LY" class="wdcCKXCM23JWJGLTCLQER7RZV5K4A" weight="0.0">
+        <ui:property name="geometry">
+          <ui:rect>
+            <ui:x>0</ui:x>
+            <ui:y>0</ui:y>
+            <ui:width>632</ui:width>
+            <ui:height>303</ui:height>
+          </ui:rect>
+        </ui:property>
+        <ui:property name="objectName">
+          <ui:string>widget</ui:string>
+        </ui:property>
+        <ui:property name="sizePolicy">
+          <ui:sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Expanding" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Expanding"/>
+        </ui:property>
+        <ui:layout class="QHBoxLayout" name="horizontalLayout">
+          <ui:property name="layoutLeftMargin">
+            <ui:int>6</ui:int>
+          </ui:property>
+          <ui:property name="layoutTopMargin">
+            <ui:int>6</ui:int>
+          </ui:property>
+          <ui:property name="layoutRightMargin">
+            <ui:int>6</ui:int>
+          </ui:property>
+          <ui:property name="layoutBottomMargin">
+            <ui:int>6</ui:int>
+          </ui:property>
+          <ui:property name="layoutSpacing">
+            <ui:int>0</ui:int>
+          </ui:property>
+          <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+            <ui:widget name="splitter" id="wdgZBF2PKD2EFBINJCSVVMFZRZM4U" class="QSplitter" weight="0.0">
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>-2</ui:x>
+                  <ui:y>153</ui:y>
+                  <ui:width>100</ui:width>
+                  <ui:height>35</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="handleWidth">
+                <ui:int>2</ui:int>
+              </ui:property>
+              <ui:property name="opaqueResize">
+                <ui:bool>false</ui:bool>
+              </ui:property>
+              <ui:widget name="srcTree" id="wdgCDYY5I4NWZHWDNX6ZSDH4R3TSE" class="wdcHAINEIABDFHGPNHEB5LSZECOJM" weight="0.33333333333333337">
+                <ui:property name="objectName">
+                  <ui:string>srcTree</ui:string>
+                </ui:property>
+                <ui:property name="sizePolicy">
+                  <ui:sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Ignored" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Expanding"/>
+                </ui:property>
+                <ui:property name="geometry">
+                  <ui:rect>
+                    <ui:x>79</ui:x>
+                    <ui:y>52</ui:y>
+                    <ui:width>519</ui:width>
+                    <ui:height>291</ui:height>
+                  </ui:rect>
+                </ui:property>
+              </ui:widget>
+              <ui:widget name="frame" id="wdgI7UU5UGC4RFF7AU4BDFL3YF5JI" class="QFrame" weight="0.3333333333333333">
+                <ui:property name="frameShape">
+                  <ui:enum>com.trolltech.qt.gui.QFrame.Shape.StyledPanel</ui:enum>
+                </ui:property>
+                <ui:property name="frameShadow">
+                  <ui:enum>com.trolltech.qt.gui.QFrame.Shadow.Raised</ui:enum>
+                </ui:property>
+                <ui:property name="geometry">
+                  <ui:rect>
+                    <ui:x>366</ui:x>
+                    <ui:y>132</ui:y>
+                    <ui:width>120</ui:width>
+                    <ui:height>120</ui:height>
+                  </ui:rect>
+                </ui:property>
+                <ui:layout class="QHBoxLayout" name="horizontalLayout">
+                  <ui:property name="layoutLeftMargin">
+                    <ui:int>0</ui:int>
+                  </ui:property>
+                  <ui:property name="layoutTopMargin">
+                    <ui:int>0</ui:int>
+                  </ui:property>
+                  <ui:property name="layoutRightMargin">
+                    <ui:int>0</ui:int>
+                  </ui:property>
+                  <ui:property name="layoutBottomMargin">
+                    <ui:int>0</ui:int>
+                  </ui:property>
+                  <ui:property name="layoutSpacing">
+                    <ui:int>0</ui:int>
+                  </ui:property>
+                </ui:layout>
+              </ui:widget>
+              <ui:widget name="dstTree" id="wdgWR7WQX24N5ARRDFCQZ4AULFSUA" class="wdcHAINEIABDFHGPNHEB5LSZECOJM" weight="0.33333333333333337">
+                <ui:property name="objectName">
+                  <ui:string>dstTree</ui:string>
+                </ui:property>
+                <ui:property name="geometry">
+                  <ui:rect>
+                    <ui:x>527</ui:x>
+                    <ui:y>12</ui:y>
+                    <ui:width>202</ui:width>
+                    <ui:height>287</ui:height>
+                  </ui:rect>
+                </ui:property>
+                <ui:property name="sizePolicy">
+                  <ui:sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Ignored" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Expanding"/>
+                </ui:property>
+              </ui:widget>
+            </ui:widget>
+          </ui:item>
+        </ui:layout>
+      </ui:widget>
+      <ui:connections>
+        <ui:connection>
+          <ui:sender>wdgWR7WQX24N5ARRDFCQZ4AULFSUA</ui:sender>
+          <ui:signal>sig3KNY3SWH4FHO5NBOT3MOVEGWTE</ui:signal>
+          <ui:slot>mthXNBADB5P2RFMVCFNX2ZQRLNRPQ</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgWR7WQX24N5ARRDFCQZ4AULFSUA</ui:sender>
+          <ui:signal>sigEGJFVD6RXNHERBKR5B6THFV7M4</ui:signal>
+          <ui:slot>mth7RQ6HPSQFBAKVP4MWGAYBMS3AU</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgCDYY5I4NWZHWDNX6ZSDH4R3TSE</ui:sender>
+          <ui:signal>sigEGJFVD6RXNHERBKR5B6THFV7M4</ui:signal>
+          <ui:slot>mth7RQ6HPSQFBAKVP4MWGAYBMS3AU</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgYTQ5GXFGWVCTLIOGPQALCNX2LY</ui:sender>
+          <ui:signal>opened(com.trolltech.qt.gui.QWidget widget)</ui:signal>
+          <ui:slot>mthC2OG3MEUYRCP5P3CEDWQZM7TY4</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgZBF2PKD2EFBINJCSVVMFZRZM4U</ui:sender>
+          <ui:signal>splitterMoved(java.lang.Integer pos, java.lang.Integer index)</ui:signal>
+          <ui:slot>mth4TE3HWZYMZGZRNHY55YSTFRRJA</ui:slot>
+        </ui:connection>
+      </ui:connections>
+      <ui:signals>
+        <ui:signal id="sigAJ4APQ3OMBH6VFFWPR2WO4PXY4" name="modified"/>
+      </ui:signals>
+      <ui:properties/>
+    </ui:ui>
+    <EmbeddedModel Id="admCKXCM23JWJGLTCLQER7RZV5K4A" Name="XPathTable:Model" Type="23">
+      <AccessRules/>
+      <Headers>
+        <Src Name="HeaderadmCKXCM23JWJGLTCLQER7RZV5K4A">
+          <xsc:Item>
+            <xsc:Java>import java.util.*;</xsc:Java>
+          </xsc:Item>
+        </Src>
+      </Headers>
+      <Bodies>
+        <Src Name="BodyadmCKXCM23JWJGLTCLQER7RZV5K4A">
+          <xsc:Item>
+            <xsc:Java>final class XPathGraphicsView extends </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QGraphicsView"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> {
+    public XPathGraphicsView() {
+        final </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QGraphicsScene"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> scene = new </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:IdReference Path="adcOGT45V4XE5DDNMDDCW55HGXBVE mthW5F2YFNEF5DQ3CUKIMHORNINEI" Invoke="true"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>();
+        final </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QPalette"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> palette = new </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QPalette"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>(</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:IdReference Path="wdcCKXCM23JWJGLTCLQER7RZV5K4A wdgYTQ5GXFGWVCTLIOGPQALCNX2LY" Invoke="true"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>.palette());
+        scene.setBackgroundBrush(palette.brush(</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QPalette.ColorRole"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>.Window));
+        scene.setItemIndexMethod(</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QGraphicsScene"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>.ItemIndexMethod.NoIndex);
+        setScene(scene);        
+        setFrameShape(</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QFrame.Shape"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>.NoFrame);
+        setAlignment(new </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.Qt.AlignmentFlag"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>[] { </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.Qt.AlignmentFlag"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>.AlignLeft, </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.Qt.AlignmentFlag"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>.AlignTop });
+        setCacheMode(new </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QGraphicsView"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>.CacheMode(</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QGraphicsView"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>.CacheModeFlag.CacheBackground));
+        setRenderHint(</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QPainter"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>.RenderHint.Antialiasing);        
+    }
+    
+    @Override
+    protected void resizeEvent(</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QResizeEvent"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> event) {
+        </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:IdReference Path="wdcCKXCM23JWJGLTCLQER7RZV5K4A admCKXCM23JWJGLTCLQER7RZV5K4A mth7RQ6HPSQFBAKVP4MWGAYBMS3AU" Invoke="true"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>();
+    }
+    
+    @Override
+    protected void keyPressEvent(</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QKeyEvent"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> event) {
+        final </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.Qt.Key"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> key = </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.Qt.Key"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>.resolve(event.key());
+        if (key==</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.Qt.Key"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>.Key_Delete) {
+            boolean modified = false;
+            for (</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QGraphicsItemInterface"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> item : scene().items()) {
+                final XPathEdge edge = (XPathEdge)item;
+                if (edge.isSelected()) {
+                    edge.delete();
+                    modified = true;
+                }
+            }
+            scene().update();
+            if (modified)
+                </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:IdReference Path="wdcCKXCM23JWJGLTCLQER7RZV5K4A sigAJ4APQ3OMBH6VFFWPR2WO4PXY4" Invoke="true"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>.emit();
+            return;
+        }
+        super.keyPressEvent(event);
+    }    
+}
+
+private XPathGraphicsView graph = null;
+
+final class XPathEdge extends </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QGraphicsItem"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> {
+    final </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QPen"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> PEN_NORMAL = new </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QPen"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>(</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QColor"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>.black, 1, </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.Qt.PenStyle"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>.SolidLine, </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.Qt.PenCapStyle"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>.RoundCap, </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.Qt.PenJoinStyle"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>.RoundJoin);
+    final </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QPen"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> PEN_SELECTED = new </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QPen"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>(</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QColor"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>.red, 1, </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.Qt.PenStyle"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>.SolidLine, </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.Qt.PenCapStyle"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>.RoundCap, </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.Qt.PenJoinStyle"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>.RoundJoin);
+    
+    final </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="21"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> srcXPath, dstXPath;
+    
+    final </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.QPointF"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> srcPoint = new </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.QPointF"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>();
+    final </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.QPointF"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> dstPoint = new </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.QPointF"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>();
+    final double arrowSize = 5;
+    
+    public XPathEdge(final </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="21"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> srcXPath, final </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="21"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> dstXPath) {
+        this.srcXPath = srcXPath;
+        this.dstXPath = dstXPath;
+        setToolTip(srcXPath + "\n->\n" + dstXPath);
+        setFlag(</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QGraphicsItem"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>.GraphicsItemFlag.ItemIsSelectable);
+        setFlag(</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QGraphicsItem"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>.GraphicsItemFlag.ItemIsFocusable);
+    }
+    
+    private </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="411" Path="wdcHAINEIABDFHGPNHEB5LSZECOJM admHAINEIABDFHGPNHEB5LSZECOJM"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> srcModel() {
+        return (</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="411" Path="wdcHAINEIABDFHGPNHEB5LSZECOJM admHAINEIABDFHGPNHEB5LSZECOJM"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>)</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:IdReference Path="wdcCKXCM23JWJGLTCLQER7RZV5K4A wdgCDYY5I4NWZHWDNX6ZSDH4R3TSE" Invoke="true"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>.getModel();
+    }
+    
+    private </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="411" Path="wdcHAINEIABDFHGPNHEB5LSZECOJM admHAINEIABDFHGPNHEB5LSZECOJM"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> dstModel() {
+        return (</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="411" Path="wdcHAINEIABDFHGPNHEB5LSZECOJM admHAINEIABDFHGPNHEB5LSZECOJM"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>)</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:IdReference Path="wdcCKXCM23JWJGLTCLQER7RZV5K4A wdgWR7WQX24N5ARRDFCQZ4AULFSUA" Invoke="true"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>.getModel();
+    }
+    
+    public void adjust() {
+        final </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> srcBranch = srcModel().</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:IdReference Path="wdcHAINEIABDFHGPNHEB5LSZECOJM admHAINEIABDFHGPNHEB5LSZECOJM mthRZJXPWMCNFGP5IVQMUDBKGBGM4" Invoke="true"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>(srcXPath, false);
+        final </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> dstBranch = dstModel().</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:IdReference Path="wdcHAINEIABDFHGPNHEB5LSZECOJM admHAINEIABDFHGPNHEB5LSZECOJM mthRZJXPWMCNFGP5IVQMUDBKGBGM4" Invoke="true"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>(dstXPath, false);
+        srcPoint.setX(0);
+        srcPoint.setY(srcModel().</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:IdReference Path="wdcHAINEIABDFHGPNHEB5LSZECOJM admHAINEIABDFHGPNHEB5LSZECOJM mthOXCODZZHXRGLFM3Z2ASD6RWROM" Invoke="true"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>(srcBranch));
+        dstPoint.setX(scene().width());
+        dstPoint.setY(dstModel().</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:IdReference Path="wdcHAINEIABDFHGPNHEB5LSZECOJM admHAINEIABDFHGPNHEB5LSZECOJM mthOXCODZZHXRGLFM3Z2ASD6RWROM" Invoke="true"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>(dstBranch));
+    }
+    
+    public boolean isValid() {
+        final </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> srcBranch = srcModel().</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:IdReference Path="wdcHAINEIABDFHGPNHEB5LSZECOJM admHAINEIABDFHGPNHEB5LSZECOJM mthRZJXPWMCNFGP5IVQMUDBKGBGM4" Invoke="true"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>(srcXPath, true);
+        final </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> dstBranch = dstModel().</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:IdReference Path="wdcHAINEIABDFHGPNHEB5LSZECOJM admHAINEIABDFHGPNHEB5LSZECOJM mthRZJXPWMCNFGP5IVQMUDBKGBGM4" Invoke="true"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>(dstXPath, true);
+        return srcBranch != null &amp;&amp; dstBranch != null;
+    }
+    
+    public void delete() {
+        scene().removeItem(this);
+    }
+    
+    @Override
+    public </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.QRectF"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> boundingRect() {
+        return new </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.QRectF"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>(srcPoint, dstPoint);        
+    }
+    
+    @Override
+    public </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QPainterPath"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> shape() {
+        final </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QPolygonF"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> polygon = new </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QPolygonF"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>();
+        polygon.add(srcPoint);
+        polygon.add(dstPoint);
+        
+        final </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QPainterPath"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> path = new </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QPainterPath"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>();
+        path.addPolygon(polygon);
+        
+        final </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QPainterPathStroker"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> stroker = new </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QPainterPathStroker"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>();
+        stroker.setWidth(15);
+
+        return stroker.createStroke(path);
+    }
+    
+    @Override
+    public void paint(</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QPainter"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> painter, </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QStyleOptionGraphicsItem"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> option, </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> widget) {
+        final </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QLineF"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> line = new </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QLineF"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>(srcPoint, dstPoint);
+        painter.setPen(isSelected() ? PEN_SELECTED : PEN_NORMAL);
+        painter.setBrush(painter.pen().brush());
+        painter.drawLine(line);
+        
+        // Draw the arrows if there's enough room
+        double angle;
+        if (line.length() > 0)
+            angle = Math.acos(line.dx() / line.length());
+        else
+            angle = 0;
+
+        if (line.dy() >= 0)
+            angle = (Math.PI * 2) - angle;
+
+        </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.QPointF"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> srcArrowP1 = new </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.QPointF"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>();
+        </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.QPointF"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> srcArrowP2 = new </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.QPointF"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>();
+        </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.QPointF"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> dstArrowP1 = new </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.QPointF"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>();
+        </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.QPointF"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> dstArrowP2 = new </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.QPointF"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>();
+
+        </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QPolygonF"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> pol1 = new </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QPolygonF"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>();
+        </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QPolygonF"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> pol2 = new </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QPolygonF"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>();
+
+        srcArrowP1.setX(srcPoint.x() + Math.sin(angle + Math.PI / 3) * arrowSize);
+        srcArrowP1.setY(srcPoint.y() + Math.cos(angle + Math.PI / 3) * arrowSize);
+
+        srcArrowP2.setX(srcPoint.x() + Math.sin(angle + Math.PI - Math.PI / 3) * arrowSize);
+        srcArrowP2.setY(srcPoint.y() + Math.cos(angle + Math.PI - Math.PI / 3) * arrowSize);
+
+        dstArrowP1.setX(dstPoint.x() + Math.sin(angle - Math.PI / 3) * arrowSize);
+        dstArrowP1.setY(dstPoint.y() + Math.cos(angle - Math.PI / 3) * arrowSize);
+
+        dstArrowP2.setX(dstPoint.x() + Math.sin(angle - Math.PI + Math.PI / 3) * arrowSize);
+        dstArrowP2.setY(dstPoint.y() + Math.cos(angle - Math.PI + Math.PI / 3) * arrowSize);
+
+        pol1.clear();
+        pol2.clear();
+
+        pol1.append(line.p1());
+        pol1.append(srcArrowP1);
+        pol1.append(srcArrowP2);
+
+        pol2.append(line.p2());
+        pol2.append(dstArrowP1);
+        pol2.append(dstArrowP2);
+
+        painter.drawPolygon(pol2);        
+    }    
+}</xsc:Java>
+          </xsc:Item>
+        </Src>
+      </Bodies>
+      <MethodGroup Id="cmgI7GSHV4TGFHUNLGV7JUTYE4UXI" Name="Root">
+        <Group Id="cmgDLTNCYFZSBD7XP3QYSCC7SVUSA" Name="Events" Members="mth7RQ6HPSQFBAKVP4MWGAYBMS3AU mthXNBADB5P2RFMVCFNX2ZQRLNRPQ mthC2OG3MEUYRCP5P3CEDWQZM7TY4 mth4TE3HWZYMZGZRNHY55YSTFRRJA"/>
+        <Group Id="cmgHMTYRVRZTRCCVIIGOA3XB4MSUM" Name="Common" Members="mthVZ5HO2NDFNBWNOPJT6RS4GR7NY mth5O5XUFES3VF5ZCRTBJA6J3OUQE mthXPD5765TCVAABP5EDDT355S5X4 mth2KNW5QQPSBHC7KE5XXNKHVDKTE mthX6HKOKNQXRCKDOH5BNYO6JFNZU"/>
+      </MethodGroup>
+      <PropertyGroup Id="cpgJFU5G4OJL5DPLDJYDYLB2Z5RZU" Name="Root">
+        <Group Id="cpgWQVOM3RGVZC7DI22QW46BOTQRM" Name="Props" Members="prdKDHGEDJQBVFZFG4UQZM24QFZJA"/>
+      </PropertyGroup>
+      <Properties>
+        <Property Id="prdKDHGEDJQBVFZFG4UQZM24QFZJA" Name="key" Nature="2" IsConst="false" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Type TypeId="21"/>
+        </Property>
+      </Properties>
+      <Methods>
+        <Method Id="mth7RQ6HPSQFBAKVP4MWGAYBMS3AU" Name="tree_changed" Nature="2" IsReflectiveCallable="true" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QGraphicsScene"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> scene = graph.scene();
+scene.setSceneRect(new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.QRectF"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(graph.rect()));
+for (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QGraphicsItemInterface"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> item : scene.items()) {
+    final XPathEdge edge = (XPathEdge)item;
+    if (edge.isValid())
+        edge.adjust();
+    else {
+        edge.delete();
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcCKXCM23JWJGLTCLQER7RZV5K4A sigAJ4APQ3OMBH6VFFWPR2WO4PXY4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.emit();        
+    }
+}
+scene.update();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthXNBADB5P2RFMVCFNX2ZQRLNRPQ" Name="tree_linked" Nature="2" IsReflectiveCallable="true" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="srcXPath" Id="mprEZCQWPWWOFFUJGPIGVEWM5KA4Q">
+              <Type TypeId="21"/>
+            </Parameter>
+            <Parameter Name="dstXPath" Id="mprZNG5PFBYBZDSTDMT2XW4OPR34Y">
+              <Type TypeId="21"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>final XPathEdge edge = new XPathEdge(srcXPath, dstXPath);
+graph.scene().addItem(edge);
+edge.adjust();
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcCKXCM23JWJGLTCLQER7RZV5K4A sigAJ4APQ3OMBH6VFFWPR2WO4PXY4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.emit();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthC2OG3MEUYRCP5P3CEDWQZM7TY4" Name="widget_opened" Nature="2" IsReflectiveCallable="true" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="widget" Id="mprVKMCKLUZ2RFC3BMRAB23KDEY3M">
+              <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>graph = new XPathGraphicsView();
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcCKXCM23JWJGLTCLQER7RZV5K4A wdgI7UU5UGC4RFF7AU4BDFL3YF5JI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.layout().addWidget(graph);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthVZ5HO2NDFNBWNOPJT6RS4GR7NY" Name="setSourceType" Nature="0" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="type" Id="mpr26GXFW5GHNA65PEYWHZRCZPXSE">
+              <Type TypeId="21"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="wdcHAINEIABDFHGPNHEB5LSZECOJM admHAINEIABDFHGPNHEB5LSZECOJM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> srcModel = (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="wdcHAINEIABDFHGPNHEB5LSZECOJM admHAINEIABDFHGPNHEB5LSZECOJM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>)</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcCKXCM23JWJGLTCLQER7RZV5K4A wdgCDYY5I4NWZHWDNX6ZSDH4R3TSE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.getModel();
+srcModel.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcHAINEIABDFHGPNHEB5LSZECOJM admHAINEIABDFHGPNHEB5LSZECOJM mthML45D67MVFA2TNTNXSOBCZUOTI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(type);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth5O5XUFES3VF5ZCRTBJA6J3OUQE" Name="setTargetType" Nature="0" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="type" Id="mprCT22RJPYPRAZBE4EJNCALOY7HM">
+              <Type TypeId="21"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="wdcHAINEIABDFHGPNHEB5LSZECOJM admHAINEIABDFHGPNHEB5LSZECOJM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> dstModel = (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="wdcHAINEIABDFHGPNHEB5LSZECOJM admHAINEIABDFHGPNHEB5LSZECOJM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>)</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcCKXCM23JWJGLTCLQER7RZV5K4A wdgWR7WQX24N5ARRDFCQZ4AULFSUA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.getModel();
+dstModel.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcHAINEIABDFHGPNHEB5LSZECOJM admHAINEIABDFHGPNHEB5LSZECOJM mthML45D67MVFA2TNTNXSOBCZUOTI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(type);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthXPD5765TCVAABP5EDDT355S5X4" Name="setXPaths" Nature="0" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="xpaths" Id="mprLEF2W37UGRE33MREBMJ5WHVGDY">
+              <Type TypeId="400" extStr="java.util.List">
+                <xsc:GenericArguments>
+                  <xsc:Argument Alias="?">
+                    <xsc:Type TypeId="411" Path="adcDFCILP42DJEQFK6L7CJPXIPLK4"/>
+                  </xsc:Argument>
+                </xsc:GenericArguments>
+              </Type>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QGraphicsScene"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> scene = graph.scene();
+for (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcDFCILP42DJEQFK6L7CJPXIPLK4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> xpath : xpaths) {
+    final XPathEdge edge = new XPathEdge(xpath.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcDFCILP42DJEQFK6L7CJPXIPLK4 prdAAY3PZBIHBEFZMVD5RZNQZOJOQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, xpath.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcDFCILP42DJEQFK6L7CJPXIPLK4 prdAXVR2ZQFYZGXDPDKERITQIOYTM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+    scene.addItem(edge);
+    if (edge.isValid())
+        edge.adjust();
+    else {
+        edge.delete();
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcCKXCM23JWJGLTCLQER7RZV5K4A sigAJ4APQ3OMBH6VFFWPR2WO4PXY4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.emit();
+    }
+}
+scene.update();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth2KNW5QQPSBHC7KE5XXNKHVDKTE" Name="getXPaths" Nature="0" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <ReturnType TypeId="400" extStr="java.util.List">
+            <xsc:GenericArguments>
+              <xsc:Argument Alias="?">
+                <xsc:Type TypeId="411" Path="adcDFCILP42DJEQFK6L7CJPXIPLK4"/>
+              </xsc:Argument>
+            </xsc:GenericArguments>
+          </ReturnType>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QGraphicsScene"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> scene = graph.scene();
+final List&lt;</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcDFCILP42DJEQFK6L7CJPXIPLK4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>> xpaths = new ArrayList&lt;</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcDFCILP42DJEQFK6L7CJPXIPLK4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>>();
+for (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QGraphicsItemInterface"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> item : scene.items()) {
+    final XPathEdge edge = (XPathEdge)item;
+    xpaths.add(new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcDFCILP42DJEQFK6L7CJPXIPLK4 mthPCVCW4YMPBEOJKNSINZRS2JB3Q" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(edge.srcXPath, edge.dstXPath));
+}
+return xpaths;</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth4TE3HWZYMZGZRNHY55YSTFRRJA" Name="splitter_splitterMoved" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="pos" Id="mprRHN6J6VSKRDIDH225SEQGCNL3A">
+              <Type TypeId="400" extStr="java.lang.Integer"/>
+            </Parameter>
+            <Parameter Name="index" Id="mprISDKE2HFPNEJRGCQXQETPTYQPI">
+              <Type TypeId="400" extStr="java.lang.Integer"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcCKXCM23JWJGLTCLQER7RZV5K4A admCKXCM23JWJGLTCLQER7RZV5K4A prdKDHGEDJQBVFZFG4UQZM24QFZJA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> == null)
+    return;
+
+final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> settings = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthOICRIYTJ6FDK7IKIQGIULAMNHQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+settings.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ mthSYDCALYD7FFVZELCLSPMFW47ME" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthX6SZR26JYFD2LFEEKBH3R2UL5Y" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>());
+try {
+    final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.QByteArray"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> state = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcCKXCM23JWJGLTCLQER7RZV5K4A wdgZBF2PKD2EFBINJCSVVMFZRZM4U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcQVRRFUFZAZE7DB6UTVBDRNJIHU mthZKM5K2UVPFDUZEXKBOQFQ2CBTU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();    
+    settings.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ mthAL342767O5GMFPXUORM2UVWPQE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcCKXCM23JWJGLTCLQER7RZV5K4A admCKXCM23JWJGLTCLQER7RZV5K4A prdKDHGEDJQBVFZFG4UQZM24QFZJA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcNC7RELKU45EFBK2XRUG6T2L5DE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcNC7RELKU45EFBK2XRUG6T2L5DE mthLOCUMHMZ5ZDG7NDBYGMWSCLZBU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(state.toByteArray()));
+} finally {
+    settings.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ mthW3ROOUPACZEQHG66DVJJZZICWQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthX6HKOKNQXRCKDOH5BNYO6JFNZU" Name="loadConfig" Nature="0" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="key" Id="mprTBSPLJQM7BBFZJ6FFR2H6P4YSI">
+              <Type TypeId="21"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcCKXCM23JWJGLTCLQER7RZV5K4A admCKXCM23JWJGLTCLQER7RZV5K4A prdKDHGEDJQBVFZFG4UQZM24QFZJA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = key;
+if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcCKXCM23JWJGLTCLQER7RZV5K4A admCKXCM23JWJGLTCLQER7RZV5K4A prdKDHGEDJQBVFZFG4UQZM24QFZJA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> == null)
+    return;
+    
+final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> settings = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthOICRIYTJ6FDK7IKIQGIULAMNHQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+settings.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ mthSYDCALYD7FFVZELCLSPMFW47ME" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthX6SZR26JYFD2LFEEKBH3R2UL5Y" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>());
+try {
+    final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> cfg = settings.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ mthAIEG7LFMGBHCTDUJ3XEJURLX64" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcCKXCM23JWJGLTCLQER7RZV5K4A admCKXCM23JWJGLTCLQER7RZV5K4A prdKDHGEDJQBVFZFG4UQZM24QFZJA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+    if (cfg != null &amp;&amp; !cfg.isEmpty()) {
+        final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.QByteArray"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> state = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.QByteArray"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcNC7RELKU45EFBK2XRUG6T2L5DE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcNC7RELKU45EFBK2XRUG6T2L5DE mthZYA6V7D5HFDZXKYBVLHCJKUE5U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(cfg));
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcCKXCM23JWJGLTCLQER7RZV5K4A wdgZBF2PKD2EFBINJCSVVMFZRZM4U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcQVRRFUFZAZE7DB6UTVBDRNJIHU mthNWB6QXCAQ5DN7FWXAG2TMX7KCI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(state);
+    }
+} finally {
+    settings.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ mthW3ROOUPACZEQHG66DVJJZZICWQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+      </Methods>
+    </EmbeddedModel>
+  </AdsCustomWidgetDefinition>
+</AdsDefinition>

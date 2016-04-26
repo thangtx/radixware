@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcZLK4XDCB3FGXJENCVKWWJAPG4A" Name="InstantiatableClass" Type="3" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.types.InstantiatableClass"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcZLK4XDCB3FGXJENCVKWWJAPG4A"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcZLK4XDCB3FGXJENCVKWWJAPG4A"/>
+    </Bodies>
+    <MethodGroup Id="cmgH45DMVD7CZEV5F4XVOCOPRZXRE" Name="Root"/>
+    <PropertyGroup Id="cpgWIRNWMCNFNEQDEAAXN3UDYD3T4" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthE45B3XYPK5GLTFLN6IFBFB57HA" Name="addDerivedClass" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="addDerivedClass(Lorg.radixware.kernel.common.client.types.InstantiatableClass;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="derivedClass" Id="mprTPKWEGRU2ZFZZJFULXOTB457DA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.types.InstantiatableClass"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthRCRYXQX62JANZGZB32P6ETIS54" Name="addDerivedClass" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="addDerivedClass(Lorg.radixware.kernel.common.types.Id;Ljava.lang.String;)Lorg.radixware.kernel.common.client.types.InstantiatableClass;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="classId" Id="mprDFTRJEZNIBFBJHYF5CQSD6FI3M">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+          <Parameter Name="classTitle" Id="mprUZ3DFXFOPZBPDDDID7IGCTCYV4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.types.InstantiatableClass"/>
+      </Method>
+      <Method Id="mthNVYSKF4NKZHBZLIOLTLU5FAOFY" Name="compact" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="compact(Ljava.util.List&lt;Lorg.radixware.kernel.common.client.types.InstantiatableClass;>;)Ljava.util.List&lt;Lorg.radixware.kernel.common.client.types.InstantiatableClass;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="classes" Id="mprZQRT6MQB5NCTNGQSTBD2XRG2YI">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.types.InstantiatableClass"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.types.InstantiatableClass"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthELGHLUARFNHRVC3NKF53X53PWA" Name="findDerivedClassById" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="findDerivedClassById(Lorg.radixware.kernel.common.types.Id;)Lorg.radixware.kernel.common.client.types.InstantiatableClass;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="classId" Id="mprBP2T36CK4BHRDCGR4BWGWR73MU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.types.InstantiatableClass"/>
+      </Method>
+      <Method Id="mthOQG2DETXXFHZ5HWL7B2USKLIO4" Name="findDerivedClassByIdRecursively" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="findDerivedClassByIdRecursively(Lorg.radixware.kernel.common.types.Id;)Lorg.radixware.kernel.common.client.types.InstantiatableClass;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="classId" Id="mprPKRGFZGJEJA4LFOVSGOO6GULFQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.types.InstantiatableClass"/>
+      </Method>
+      <Method Id="mthNAAV57XKDFCM3HOBBKJANBHMEA" Name="findDerivedClassByTitle" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="findDerivedClassByTitle(Ljava.lang.String;)Lorg.radixware.kernel.common.client.types.InstantiatableClass;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="classTitle" Id="mprAMWMZBEM6RBYTO7ILNJQ2Q25HA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.types.InstantiatableClass"/>
+      </Method>
+      <Method Id="mthHPQT3KMH6ZG7FA7XZ52CET5UTM" Name="findDerivedClassByTitleRecursively" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="findDerivedClassByTitleRecursively(Ljava.lang.String;)Lorg.radixware.kernel.common.client.types.InstantiatableClass;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="classTitle" Id="mprGHSW7DZP3NBUZKDDUWLMVEA3R4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.types.InstantiatableClass"/>
+      </Method>
+      <Method Id="mthHBCBJ2JQGZGQLIJZRP4OEGT65E" Name="getDerivedClassByIdx" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getDerivedClassByIdx(I)Lorg.radixware.kernel.common.client.types.InstantiatableClass;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mprGCQSQOL23BD47AEUDQP4ONBWHE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.types.InstantiatableClass"/>
+      </Method>
+      <Method Id="mthPPYIARVHWBH23GRIWBNBGYBFBU" Name="getDerivedClassesCount" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getDerivedClassesCount()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthT4ZKDZGA5FDP3OJVCSYCALZBDY" Name="getId" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getId()Lorg.radixware.kernel.common.types.Id;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+      </Method>
+      <Method Id="mthFPBEAV7C7BEOVJFKDA5AXU3YLQ" Name="getLevel" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getLevel()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthAZ5FN5IFTNBCVK6UAMRFD3DWGI" Name="getParentClass" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getParentClass()Lorg.radixware.kernel.common.client.types.InstantiatableClass;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.types.InstantiatableClass"/>
+      </Method>
+      <Method Id="mthLUK77IKH3ZHXLDOY3VVNWOSM5A" Name="getTitle" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getTitle()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mth4DGYRQJZGJGC3LCQWWAIZWYHEE" Name="insertDerivedClass" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="insertDerivedClass(ILorg.radixware.kernel.common.client.types.InstantiatableClass;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mprKEJJDTZPV5FYRN6JYIYAGAZXLM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="derivedClass" Id="mprVLSEWVFRHNCR5IWMK3FBM4V2LM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.types.InstantiatableClass"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthOK2SGYBNIZAJ5OFEF5XHUL2P7E" Name="insertDerivedClass" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="insertDerivedClass(ILorg.radixware.kernel.common.types.Id;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mprCFMBFV7LXRHCBCGZARS7MJZYOI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="classId" Id="mprROMNZVNH2VDMFLFV23WOB5MK7I">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+          <Parameter Name="classTitle" Id="mprLW4KQDB6HRGUZGIM46OIXZAHSA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthQERWNSGG4RAUPFUL53IVEILNWE" Name="InstantiatableClass" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.types.Id;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="classId" Id="mpr74U57OE6SNBWLPHBSJ6OA4ZQVI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+          <Parameter Name="title" Id="mprKYXN3FNUO5BLDHQ3NW4JF3NVGQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthXWL3X6ASAZAUVH5Z6W6AQ4IINQ" Name="isAbstractClass" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isAbstractClass()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthO5HUFLQEAFDHFFFVQ7MSKE5IDA" Name="removeDerivedClass" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="removeDerivedClass(Lorg.radixware.kernel.common.client.types.InstantiatableClass;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="derivedClass" Id="mpr4U3ZKTNW7BGOPPHBYYNF5L6OUQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.types.InstantiatableClass"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthL5SFSOSB7JFSNDCYX4W63CX5MQ" Name="setTitle" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setTitle(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" Id="mprWXULUR3ZE5DZHISRJMZXWOJZ44">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthDOQIVESXLFGFDL3ACNRQBWXHJU" Name="takeDerivedClass" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="takeDerivedClass(I)Lorg.radixware.kernel.common.client.types.InstantiatableClass;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mprOZWCTLUDYFHFBHL5VYICAIJWWI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.types.InstantiatableClass"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

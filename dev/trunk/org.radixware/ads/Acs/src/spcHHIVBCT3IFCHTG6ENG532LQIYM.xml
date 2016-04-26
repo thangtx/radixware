@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="spcHHIVBCT3IFCHTG6ENG532LQIYM" Name="GetUserHasNewGroups" Type="10">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="true" PublishedName="org.radixware.kernel.server.types.SqlClass"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderspcHHIVBCT3IFCHTG6ENG532LQIYM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyspcHHIVBCT3IFCHTG6ENG532LQIYM"/>
+    </Bodies>
+    <MethodGroup Id="cmgVRQT5GBNSBBMHJG2IRYCQ62T7A" Name="Root"/>
+    <PropertyGroup Id="cpgV6YMDTDMHZE7ZH6TGJSCHZJGEA" Name="Root"/>
+    <Properties>
+      <Property Id="prmJSEDNX2WYZD6BBVJCOKKQAVL6Y" Name="hasNewGroups" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prmYS57CIFORFEZJOCWCL42UEHCJU" Name="userName" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="execute" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="userName" Id="mprYS57CIFORFEZJOCWCL42UEHCJU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="spcHHIVBCT3IFCHTG6ENG532LQIYM"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>declare
+hasNewGroups integer;
+begin
+    begin
+        select 1 into hasNewGroups from dual where exists (select * from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblDYWJCJTTGLNRDHRZABQAQH3XQ4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblDYWJCJTTGLNRDHRZABQAQH3XQ4" PropId="col3FA64KN45FDD3P7LNKI4SCYU6E" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>&lt;>0 and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblDYWJCJTTGLNRDHRZABQAQH3XQ4" PropId="colRUQOILQ3Y3NBDGMCABQAQH3XQ4" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmYS57CIFORFEZJOCWCL42UEHCJU"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> and ROWNUM&lt;=1);
+    exception 
+        when others then
+            hasNewGroups := 0;
+    end; 
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmJSEDNX2WYZD6BBVJCOKKQAVL6Y" Direction="1"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> := hasNewGroups;
+end;</xsc:Sql>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4"/>
+        <UsedTable TableId="tblDYWJCJTTGLNRDHRZABQAQH3XQ4"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="400" extStr="org.radixware.kernel.server.types.SqlClass"/>
+  </AdsClassDefinition>
+</AdsDefinition>

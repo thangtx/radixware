@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcOTOFIDJUCVCB3CFUHR3RMGNRCM" Name="XmlSchemaUtils" Type="3" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.utils.XmlSchemaUtils"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcCU6ACW7VGNDDVLEUBATOBKQPNU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcUA6MB2GO4NBCVL2TAQSSLRLDCQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgT264QS7MMRFHZDTS2U6BVT2DQE" Name="Root"/>
+    <PropertyGroup Id="cpgSIAGZFNBKRBQRDJUKGA66P3BZU" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthWAJKLCVSVNHODLFENGJSMEEWJE" Name="isValidDocument" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="isValidDocument(Lorg.apache.xmlbeans.XmlObject;Lorg.apache.xmlbeans.SchemaTypeSystem;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="xml" Id="mpr53TU4PDK25A2HASCSBOETKNLM4">
+            <Type TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+          </Parameter>
+          <Parameter Name="typeSystem" Id="mprWI2NGI5MSBACTIASIVV3PQMDPI">
+            <Type TypeId="400" extStr="org.apache.xmlbeans.SchemaTypeSystem"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth4VKL3R6UHFC5ZO2NBEDZQPLW3U" Name="canCreateNewDocument" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="canCreateNewDocument(Ljava.lang.ClassLoader;Ljava.lang.String;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="classLoader" Id="mprN3PLAFUQAVBRLIQ3S2URXIGHXA">
+            <Type TypeId="400" extStr="java.lang.ClassLoader"/>
+          </Parameter>
+          <Parameter Name="schemaAsStr" Id="mprZFWD2EHCPJC2LI3P57LCJQAGEM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthXGALYCP3ZJEQPBHKZP5RGIGZ74" Name="isValidDocument" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="isValidDocument(Ljava.lang.ClassLoader;Lorg.apache.xmlbeans.XmlObject;Ljava.lang.String;Ljava.util.List&lt;Ljava.lang.String;>;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="classLoader" Id="mprOG3UHBZDQZG5POIFXKNHQJG7JU">
+            <Type TypeId="400" extStr="java.lang.ClassLoader"/>
+          </Parameter>
+          <Parameter Name="xml" Id="mpr4ND7QULJ7RDURHE2AG3RVAXEDM">
+            <Type TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+          </Parameter>
+          <Parameter Name="xmlSchemaDocStr" Id="mprMVQRW6GZ5VHHNPFYB42LRXHGUE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="errors" Id="mprPD6ZIH3WBJDFTM6PF76FKTARDM">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

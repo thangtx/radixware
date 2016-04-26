@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc3T4OO4IRSBBVFBEUYJMJ7V4TMU" Name="ValListEditor" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.explorer.editors.valeditors.ValListEditor"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcJKR7STVWHJAQDPIQ2HJICOOYNQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc66KM47X3PVHSHLFJMPTX6V3XJ4"/>
+    </Bodies>
+    <MethodGroup Id="cmgVN45SF7TWFAEXMNXMIGFT2ZIHE" Name="Root"/>
+    <PropertyGroup Id="cpgXTIBUUZKS5A4LEZHZD6FIAHNY4" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthBIFVDQNMXJETNGXTJBMP6Z5SOQ" Name="ValListEditor" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Lcom.trolltech.qt.gui.QWidget;Lorg.radixware.kernel.common.client.meta.mask.EditMaskList;ZZ)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprNSD4NYKJMVDPHNRFMAXKEAEBBY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parentWidget" Id="mprF7V7O6VLMBAFPLRN33GGTLNS3Q">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+          <Parameter Name="editMask" Id="mprURYY355L5ZFXDFWRTJQNS4ZUHU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMaskList"/>
+          </Parameter>
+          <Parameter Name="isMandatory" Id="mprKLMWCFMLJZHNHLEYIAECPXZLZI">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="isReadonly" Id="mprWKHUBERNZBEWTAIM6NVU62RQB4">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthQ7TDNE73EFFA5LOUSRWHPVRYXM" Name="onActivatedIndex" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="onActivatedIndex(I)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mprA3KEXE4L7ZHXVIJF3Q7WYDHTKQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthJJCVD3SGWZEGROUTDSVURIKTUI" Name="updateComboItems" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="updateComboItems(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="updateStyleSheet" Id="mprGTQNDMMMKBHQ3CZA675QLECNYU">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthTTVHPBVOY5EAVLSIFAYA7GPE7Q" Name="ValListEditor" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Lcom.trolltech.qt.gui.QWidget;Ljava.util.List&lt;Lorg.radixware.kernel.common.client.meta.mask.EditMaskList.Item;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprQPI2N4AV7FCR7OUIILH6CMDANU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parentWidget" Id="mprTZ4GTFKTFBGO7MROHWINYSJ5LY">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+          <Parameter Name="items" Id="mprHE4LLHX6UVCV5ONX6LFKGKDKKQ">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMaskList.Item"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

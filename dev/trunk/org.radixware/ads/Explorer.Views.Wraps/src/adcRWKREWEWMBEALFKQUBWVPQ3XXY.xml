@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcRWKREWEWMBEALFKQUBWVPQ3XXY" Name="SelectorModel" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.explorer.widgets.selector.SelectorModel"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcF2J4NUZ2PVASFEUIWOVGQJARJY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc4FEPY7GO5ZCMHGN64TNRI26G4Y"/>
+    </Bodies>
+    <MethodGroup Id="cmg6FG3K3NNYRH4RFOJY77MN6RUSE" Name="Root"/>
+    <PropertyGroup Id="cpgZVPFNLVA7RDKHIRXQIQSC4KJVA" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth3RAO37ILSZGK7MZSHOQQ22AIFE" Name="canCreateChild" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="canCreateChild(Lorg.radixware.kernel.common.client.models.EntityModel;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parentEntity" Id="mpr6AHZIFCWZRCOLJQOPL43WFQLTI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthY3TLTPQKLBHGRFM7BPTJRX7XKM" Name="canReadMore" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="canReadMore(Lcom.trolltech.qt.core.QModelIndex;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parent" Id="mprTBVJQMNKIVE6RCNHZJXKTOL7YQ">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthZE33XLML5BBGHPZ22E5T4WR7DQ" Name="clear" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="clear()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth5FD6MSWW7BBDPG4XTR6FB5TGDA" Name="columnCount" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="columnCount(Lcom.trolltech.qt.core.QModelIndex;)I"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mprFVNOOBHWYZBONH65K56UKLXWFE">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthVVWKUOUQQ5GALMQWPQRUZ2NXLM" Name="SelectorModel" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.models.GroupModel;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="rootModel" Id="mprYFNKZJIMBREHVM6ZQPDHSR6HH4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth77RLCTER3JBADAC6OBZCKCY6ZA" Name="createChildGroupModel" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="createChildGroupModel(Lorg.radixware.kernel.common.client.models.EntityModel;)Lorg.radixware.kernel.common.client.models.GroupModel;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parentEntity" Id="mprLDM7JXW4ANAWDEZLFPGCLUZK4Y">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+      </Method>
+      <Method Id="mthXH4CG2ZEVBC7DMLRSISJZ6LJVY" Name="data" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="data(Lcom.trolltech.qt.core.QModelIndex;I)Ljava.lang.Object;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mprAQC2S2QZONGAFMGVQNZIMKT47U">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+          </Parameter>
+          <Parameter Name="role" Id="mprQGKGX247JBHQVGGA5CMZVEBTRM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+      </Method>
+      <Method Id="mthDYBRUBTO7RA57BCL7NC3WVDTVI" Name="fillConditionalProperties" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="fillConditionalProperties(Lorg.radixware.kernel.common.client.models.EntityModel;Ljava.util.Map&lt;Lorg.radixware.kernel.common.types.Id;Ljava.lang.Object;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mpr757YGXJKFJCBTD7KRFHS2ZRSNQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+          <Parameter Name="propertyValues" Id="mprKXO75WL7GNEHNNS4R27KZOWEMU">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthFXK7BRZAVZECHNVWFTJG4DI5WI" Name="findEntity" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="findEntity(Lcom.trolltech.qt.core.QModelIndex;Lorg.radixware.kernel.common.client.types.Pid;)I"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parent" Id="mprZ6LN7W446ZERJCP2Z7RNMMPMUY">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+          </Parameter>
+          <Parameter Name="pid" Id="mprBLLP7AMSOFGODIKGUQP7WEMPQM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.types.Pid"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthYDR3RXJWIRCI5D7NXD65BDVC2Q" Name="flags" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="flags(Lcom.trolltech.qt.core.QModelIndex;)Lcom.trolltech.qt.core.Qt.ItemFlags;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mpr323ZDUQ3KJA5LPVSUFLMXMKMR4">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.core.Qt.ItemFlags"/>
+      </Method>
+      <Method Id="mthZRFLR6GO3FCGVB66GXOKSTG5JQ" Name="getBackground" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getBackground(Lcom.trolltech.qt.core.QModelIndex;)Lcom.trolltech.qt.gui.QColor;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mprP5BELXRKZRGUHHHGXJOGTFKWQ4">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QColor"/>
+      </Method>
+      <Method Id="mthZGHCE36P5NGLHDUJX24PLSN2JE" Name="getChildGroup" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getChildGroup(Lcom.trolltech.qt.core.QModelIndex;)Lorg.radixware.kernel.common.client.models.GroupModel;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parent" Id="mpr6RUF7J5C2NGW7GKHVWH7HEISOY">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+      </Method>
+      <Method Id="mthCFOXQC6X3RHD3MCETZCIWE4EC4" Name="getDecoration" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getDecoration(Lcom.trolltech.qt.core.QModelIndex;)Lcom.trolltech.qt.gui.QIcon;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mprH6MGKIQR6FAOHHALEBP7MYC4JU">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QIcon"/>
+      </Method>
+      <Method Id="mthAUG3U6NA2NCWDGCCJ5VC6D5HOM" Name="getDisplay" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getDisplay(Lcom.trolltech.qt.core.QModelIndex;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mpr4PAQMLHIYFHZBNAZJRJ3D6UJCQ">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mth2PAG2D4T7JFB3PVCGTKNAH7DGA" Name="getEntity" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getEntity(Lcom.trolltech.qt.core.QModelIndex;)Lorg.radixware.kernel.common.client.models.EntityModel;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mprY2ZXORZPMZEPTLPCFMEH6PVV6A">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+      </Method>
+      <Method Id="mthQDOYARNPNRDFRDUWTPIONQGQJI" Name="getFont" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getFont(Lcom.trolltech.qt.core.QModelIndex;)Lcom.trolltech.qt.gui.QFont;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mprR7FII6A2NFHEDE2ME2BCAVJEHU">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QFont"/>
+      </Method>
+      <Method Id="mth2OALG72NEVD5BAKCH53GQXXZ2E" Name="getForeground" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getForeground(Lcom.trolltech.qt.core.QModelIndex;)Lcom.trolltech.qt.gui.QColor;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mprGJCGS5PYZFGJLHTRQY3DQBNC3M">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QColor"/>
+      </Method>
+      <Method Id="mthJRG3CFHCHZHIFKFXDLYOWOTAV4" Name="getHasChildrenPropertyId" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getHasChildrenPropertyId(Lorg.radixware.kernel.common.client.models.EntityModel;)Lorg.radixware.kernel.common.types.Id;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parent" Id="mprR6ITRUP4XFFN7A2FWNEYSKESR4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+      </Method>
+      <Method Id="mthYBL4AHU3CFCUROXSLKAJJW6JUQ" Name="getIconForProperty" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getIconForProperty(Lorg.radixware.kernel.common.client.models.items.properties.Property;)Lcom.trolltech.qt.gui.QIcon;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="property" Id="mprB3J77FHQNRFVXDSZVB3NUXBQUU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QIcon"/>
+      </Method>
+      <Method Id="mthFWYTJGW7YZH7RETXCAJCBVE2SI" Name="getPropertyForChange" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getPropertyForChange(Lcom.trolltech.qt.core.QModelIndex;)Lorg.radixware.kernel.common.client.models.items.properties.Property;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mprLJVUBH4ATVFIZPQRFO3JVVWPLM">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
+      </Method>
+      <Method Id="mth6Q22GPEJX5BWZGEVPF3SZDWIHE" Name="getRootGroupModel" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getRootGroupModel()Lorg.radixware.kernel.common.client.models.GroupModel;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+      </Method>
+      <Method Id="mthI5HRZTJWKBGT5KYOYKVF3DQ6HU" Name="getSelectorColumns" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getSelectorColumns()Ljava.util.List&lt;Lorg.radixware.kernel.common.client.models.items.SelectorColumnModelItem;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.SelectorColumnModelItem"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthN35FUKQ5VZAMBP3JXVSBAZJQWI" Name="getTextAlignment" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getTextAlignment(Lcom.trolltech.qt.core.QModelIndex;)Lcom.trolltech.qt.core.Qt.AlignmentFlag;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mpr6G4Y4YXPYVDQ5J2ZM2W6HLP5LM">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.core.Qt.AlignmentFlag"/>
+      </Method>
+      <Method Id="mthZ4ODIBIQHVH7VKXGC3X3DCWSSA" Name="hasChildren" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="hasChildren(Lorg.radixware.kernel.common.client.models.EntityModel;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parentEntity" Id="mprPAJ7SPZJPVEHJO243DMWHCN5T4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthW6XHQ7SOWFCQHFPCQYJ5TDHCWA" Name="headerData" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="headerData(ILcom.trolltech.qt.core.Qt.Orientation;I)Ljava.lang.Object;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="section" Id="mpr4ZXUGZMNFBG6NJZZOQAQGW2BD4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="orientation" Id="mprNSRUS4BTGBCGLAX23NARVVXUY4">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.Qt.Orientation"/>
+          </Parameter>
+          <Parameter Name="role" Id="mprGVVM5BTUFVEABOL47WW6QYZL7E">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+      </Method>
+      <Method Id="mthEQCTAUDZAVDPNFGF6CVMRB2KKY" Name="index" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="index(IILcom.trolltech.qt.core.QModelIndex;)Lcom.trolltech.qt.core.QModelIndex;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="row" Id="mprD7VV7ATDQNDLLGOS2TUWTVWJQA">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="column" Id="mprRMZX4V3TGRDXZKISB2KFJMNCWM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="parent" Id="mprZMUJ4WKAJFGWFK63SQSDSARNHM">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+      </Method>
+      <Method Id="mthNQB26H257VGMXGEXMFCRH7FNSU" Name="mapSelectorColumn" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="mapSelectorColumn(Lorg.radixware.kernel.common.client.models.items.SelectorColumnModelItem;Lorg.radixware.kernel.common.client.models.GroupModel;)Lorg.radixware.kernel.common.types.Id;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="sourceColumn" Id="mprLDHIJQ6JSNFSXNOV6AKNCB6V4U">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.SelectorColumnModelItem"/>
+          </Parameter>
+          <Parameter Name="mapTo" Id="mprJLENC43BXJBTFCCR4KOPTSHHH4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+      </Method>
+      <Method Id="mthBZMG2V5OEJHAXLQL2AGQBZBYWY" Name="parent" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="parent(Lcom.trolltech.qt.core.QModelIndex;)Lcom.trolltech.qt.core.QModelIndex;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="child" Id="mpr2CXGCSGUBVBDXNJ25AAE37QZLE">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+      </Method>
+      <Method Id="mthODAQAYWY7JFCJL363JRIJZ5ERE" Name="readMore" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="readMore(Lcom.trolltech.qt.core.QModelIndex;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parent" Id="mprAGWNN3IJ3BGXDPJKASGC74ZHWM">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthV6FQCOK36NBEVNWUFHAINNS3OU" Name="removeRows" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="removeRows(IILcom.trolltech.qt.core.QModelIndex;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="row" Id="mprU6HXSDH5URGRLBLL433CMIMICY">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="count" Id="mprNUZJIDTEJ5HTZOLJU65NV2YPEE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="parent" Id="mprPISTE7MOOVETROHIWNZPXM2ES4">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthINXDN4TCSRG25HPT5A6FIKKHQ4" Name="reread" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="reread(Lcom.trolltech.qt.core.QModelIndex;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parent" Id="mprPWERGQZJ45G2RDBQBBJESMVKNY">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthLNRGTDYFRNCAPCRU77HA3LDXME" Name="rowCount" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="rowCount(Lcom.trolltech.qt.core.QModelIndex;)I"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mprG7BG7CFDBNBKJBFF6WQT4MQOMA">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthEVSGTWTUXFAPPI4KTXCPTJXDB4" Name="setData" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setData(Lcom.trolltech.qt.core.QModelIndex;Ljava.lang.Object;I)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mprES45DJUUJVAWHCYWNJYRXDFAX4">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+          </Parameter>
+          <Parameter Name="data" Id="mprDGYU6G2ZXRE5TJWY4P2NWM4N4A">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+          <Parameter Name="role" Id="mprBDE6JKTWB5D3JN62NMAR27WSYE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthNLGNINJ6XNBZVCTJ7VXUU3HPVM" Name="subscribeProperties" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="subscribeProperties(Lorg.radixware.kernel.common.client.models.EntityModel;Lorg.radixware.kernel.common.client.widgets.IModelWidget;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="entity" Id="mprH4IEFMXN5RETTIEA4MLAIWJGUY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+          <Parameter Name="subscriber" Id="mprHXKICEONTZBNHABST2GBTI5MUE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IModelWidget"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthOZ6YJUQV2RDB3G7BILI22RJL3A" Name="unsubscribeProperties" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="unsubscribeProperties(Lorg.radixware.kernel.common.client.widgets.IModelWidget;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="subscriber" Id="mprYFQFYIRZARCKZGLN33WPCYGPPM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IModelWidget"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthPELQBKE2KRAUZEM3A4MPCCVLBM" Name="getPropertiesToSubscribe" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getPropertiesToSubscribe(Lorg.radixware.kernel.common.client.models.EntityModel;)Ljava.util.List&lt;Lorg.radixware.kernel.common.client.models.items.properties.Property;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="entity" Id="mprQT7QZ3FPNBEMNCXUP655KFFN6A">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthHOHLH2CWLBHD5HLRU4WW43AHUM" Name="clear" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="clear(Lcom.trolltech.qt.core.QModelIndex;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="modelIndex" Id="mprRTEPLEW6DZD3DGICXHLQYCVA4I">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth5AQ4K6HCYZALBLVUPF4433A3OU" Name="createBrokenEntityModel" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="createBrokenEntityModel(Lorg.radixware.kernel.common.client.models.GroupModel;Lorg.radixware.kernel.common.client.exceptions.BrokenEntityObjectException;)Lorg.radixware.kernel.common.client.models.EntityModel;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="ownerGroupModel" Id="mprKVFYFU25CVEBNMJOIPABO5YPHE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+          </Parameter>
+          <Parameter Name="brokenEntityException" Id="mprSABUPEPFRRC5NE63FFJGZPFWXM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.exceptions.BrokenEntityObjectException"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+      </Method>
+      <Method Id="mth4IXWRPRYK5H67JN3CRMY47O62A" Name="showErrorOnReceivingData" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="showErrorOnReceivingData(Lorg.radixware.kernel.common.exceptions.ServiceClientException;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="serviceClientException" Id="mprFV7ELAEYPFD5FF2XVSMXNGVY2I">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthGV5Q6SPSVJDK7FUBDYB33RE55A" Name="getHeaderToolTip" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getHeaderToolTip(Lorg.radixware.kernel.common.client.models.items.SelectorColumnModelItem;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="column" Id="mprWQEOK7JO6RBSHCS7DCJBLDRPPM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.SelectorColumnModelItem"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mth5RYJMZCD2FCTHJVDHZJQAS2JEE" Name="getToolTip" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getToolTip(Lorg.radixware.kernel.common.client.models.items.properties.Property;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="property" Id="mpr4L6ASCV36JDHNENYSMT6ZQJY34">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthQXFVENIA7NBH7F55RZW3DVINBI" Name="getToolTip" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getToolTip(Lcom.trolltech.qt.core.QModelIndex;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mprCUHMHRED7FBTVL7RZK2RUZ5KDM">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

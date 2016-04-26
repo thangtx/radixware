@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcRF4NNLJCFRETZC4NEP3XLVK5BI" Name="MetricValue.Stat" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.server.monitoring.StatValue"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcKDU7SAT6YVDRFJ46UNX5PGFBO4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcGRQLFWKS4VALVBRKS5JL74WLAU"/>
+    </Bodies>
+    <MethodGroup Id="cmgKOP3TKENRFH7FL5D24JZWTDFBU" Name="Root"/>
+    <PropertyGroup Id="cpgOYUHII5R4FCDTCSD3I7X3VZMOM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthWKLBQCWOSJDYTPRZP54T3B3XOA" Name="MetricValue.Stat" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.server.monitoring.StatValue;JJ)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="value" Id="mprNIVNINVFXFGW3ALUXRIDVUHWNY">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.monitoring.StatValue"/>
+          </Parameter>
+          <Parameter Name="begTimeMillis" Id="mprUDISP3NGTRCF5MG2OWHP4P4SBA">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="endTimeMillis" Id="mprYNEAKB7JYNDEFH63TSV3ZO7MNM">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthHEVIS5QBFBGCBGMMVZ54URSYVE" Name="getMax" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getMax()Ljava.lang.Double;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.lang.Double"/>
+      </Method>
+      <Method Id="mth7NW5LA4BQZA5FJ2T5N7Q2CBWBY" Name="getAvg" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getAvg()D"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="double"/>
+      </Method>
+      <Method Id="mthZIZWLXWGJVANDCYYNL7NSLXVTA" Name="MetricValue.Stat" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.Double;Ljava.lang.Double;DJJ)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="min" Id="mprCSMXLG6IYNDZJJ5T5O7BLJMPCQ">
+            <Type TypeId="400" extStr="java.lang.Double"/>
+          </Parameter>
+          <Parameter Name="max" Id="mprJUTPQR2GKRA2FD6AU6QWRIF3I4">
+            <Type TypeId="400" extStr="java.lang.Double"/>
+          </Parameter>
+          <Parameter Name="avg" Id="mprPRENY3YUXJFETEFJ2BSIWSR6TU">
+            <Type TypeId="401" extStr="double"/>
+          </Parameter>
+          <Parameter Name="begTimeMillis" Id="mprVNPBEAWG2ZDYZLQOJ7AO7VRRCU">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="endTimeMillis" Id="mprYYMTZYEBNZGLJFMHXUZKAYVL2I">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthAAZHJ3TRJZAPZHKQQECCF6PUKA" Name="MetricValue.Stat" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.lang.Double;Ljava.lang.Double;D)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="min" Id="mprBGZARK2MKBHWTDKQFLBRE364YM">
+            <Type TypeId="400" extStr="java.lang.Double"/>
+          </Parameter>
+          <Parameter Name="max" Id="mprK5S62KWPRRFMJIDMZU7VYTRBDI">
+            <Type TypeId="400" extStr="java.lang.Double"/>
+          </Parameter>
+          <Parameter Name="avg" Id="mprC7E3KTGWOFGPZG7MDSSYQ3FPNQ">
+            <Type TypeId="401" extStr="double"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthZOR6MSZ7Z5E25FPRDAWJ7UK4UQ" Name="getMin" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getMin()Ljava.lang.Double;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.lang.Double"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

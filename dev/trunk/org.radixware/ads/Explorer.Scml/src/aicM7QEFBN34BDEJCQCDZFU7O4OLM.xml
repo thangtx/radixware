@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicM7QEFBN34BDEJCQCDZFU7O4OLM" Name="IScmlTagProvider" Type="5" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.explorer.editors.scml.IScmlTagProvider"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcR6NV4DI2TREB5AQDKGURUI5NFQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcQZSUC6VCFFCSNIUX5EADQXT3QQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgCMR25ZV4DVERRK7CZZ4ON4DMOA" Name="Root"/>
+    <PropertyGroup Id="cpgYQCAV3YHJJE2HHPD4CA7MG3EKI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthJRYMPSAMCRDUPBQANDGXR5ELWY" Name="getGroups" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getGroups()Ljava.util.List&lt;Lorg.radixware.kernel.explorer.editors.scml.IScmlTagGroup;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.explorer.editors.scml.IScmlTagGroup"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthVWZJCDZGKBEZPDZSCF3I5S2U54" Name="getAll" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getAll()Ljava.util.List&lt;Lorg.radixware.kernel.explorer.editors.scml.IScmlTagKind;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.explorer.editors.scml.IScmlTagKind"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthQUZ2MWHSSRB7VICV6VAOSG55TA" Name="getAvailable" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getAvailable(Lorg.radixware.kernel.explorer.editors.scml.IScmlItem;I)Ljava.util.Set&lt;Lorg.radixware.kernel.explorer.editors.scml.IScmlTagKind;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="item" Id="mprLOY2GHTKTZBJLB5TFK7GFVQMZQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.editors.scml.IScmlItem"/>
+          </Parameter>
+          <Parameter Name="offset" Id="mprJXE6ZMZZW5CT3AEFJYXN3I4F5I">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.Set">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.explorer.editors.scml.IScmlTagKind"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

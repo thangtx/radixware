@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcHEZJAXTI3JDGJHX3M3PJT6YIRE" Name="UserDesignerLauncher" Type="3" Environment="explorer">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcHEZJAXTI3JDGJHX3M3PJT6YIRE">
+        <xsc:Item>
+          <xsc:Java>import org.radixware.kernel.utils.nblauncher.NbLauncher;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcHEZJAXTI3JDGJHX3M3PJT6YIRE"/>
+    </Bodies>
+    <MethodGroup Id="cmgQYL6OJAOKFDFJNNV3N43TTXH2Y" Name="Root"/>
+    <PropertyGroup Id="cpgEGDQYZIAFVFOBB5ZTDDTGLESGA" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthCPGLYV3UBNBM7KCMZII33J4WUQ" Name="start" DescriptionId="mls5JAZV5LCLNELVI3IMXHNU2XFUI" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="env" DescriptionId="mlsEMK4TIIDUVCI3ELLXQ3FUX3TWU" Id="mpr46VFFHFNJZBXLNYPCM5KTTR4GI">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
+          <Parameter Name="mode" DescriptionId="mlsGNLKEEWHKJCQPHSSJSAGNF746U" Id="mprHWNCVFHKIREHLIXHNGNRXE24JE">
+            <Type TypeId="21" Path="acsQRFRO6RU2JC3NC6LADMT3RGDZ4"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>
+NbLauncher.ApplicationConfig config = new NbLauncher.ApplicationConfig("reporteditor");
+
+config.putValue(NbLauncher.ApplicationConfig.EAS_SESSION, env.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthRKLGSF7BNFDPXMXNAQP6UIV3GU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+
+config.putValue(NbLauncher.ApplicationConfig.FEATURES, mode.Value);
+config.putValue(NbLauncher.ApplicationConfig.TIMEOUT, new Integer(0));
+config.putValue("application", env.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthY43VYOUOR5H2ZF2A2FAXYK5HQ4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aic4WFQODRGC5ARVIB7KGSPFA6QHA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> handle = env.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthHA2XTRPS35GI3L226FEBKVL2LA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFRNI5IGDIVBJXHC7ZVM6H7Q24I mthAJIMRWOBHBFGNCOEGY2ELYCFJE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+
+int attempt = 0;
+
+while (true) {
+    try {
+        handle.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aic4WFQODRGC5ARVIB7KGSPFA6QHA mthNKYETRRC5FCHXMDWLA74M4G3CA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("", false);
+        try {
+            if (!NbLauncher.launchNbApplication(config, env.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthLUUYWKLT5FCADGRMSBQMZYWYGE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>())) {
+                switch (mode) {
+                    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsQRFRO6RU2JC3NC6LADMT3RGDZ4 aci2LLXFWCZCZEXXLV2QEY53WR26E" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+                        env.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthVKWKKR25JFEZBLRTUWIKCRSFAM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsIT3VTKIUXJDVLA65UZGVFFWU4M"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+                        break;
+                    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsQRFRO6RU2JC3NC6LADMT3RGDZ4 aciZY44UBXZT5FAHOKSPI5YG4SJA4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+                        env.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthVKWKKR25JFEZBLRTUWIKCRSFAM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls3T2MYWHI7FHV3GL4XX2RUJF7QQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+                        break;
+                    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsQRFRO6RU2JC3NC6LADMT3RGDZ4 aciGQB4JI5C5FGO3BCROABO74ZBQU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+                        env.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthVKWKKR25JFEZBLRTUWIKCRSFAM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsAR7D7H4BOJHQBN2POKBVZVYU7M"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+                        break;
+                    default:
+                        env.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthVKWKKR25JFEZBLRTUWIKCRSFAM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls4WD32IJJCJGSFEW7PMPLIFON5M"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+                        break;
+                }
+            }
+            break;
+        } catch (RuntimeException e) {
+
+            if ("STARTED".equals(e.getMessage())) {
+                attempt++;
+                if (attempt > 3) {
+                    env.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthVKWKKR25JFEZBLRTUWIKCRSFAM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls447CYX7QFREOBBWY46QOPX76NA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+                    break;
+                } else {
+                    try {
+                        Thread.sleep(attempt * 1000);
+                    } catch (InterruptedException ex) {
+                        break;
+                    }
+                }
+            }
+        }
+    } finally {
+        handle.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aic4WFQODRGC5ARVIB7KGSPFA6QHA mthLFENE4FE65GLZE7HCKQ5SQTC34" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    }
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="acc3ZE7BMYAVZG4LKZCVU4BLLIF34" Name="MetricsToCalculateCursor" Type="4">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderadcN5EF45WNSZCPRNHU2VLHBDREYY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcUO5GW5QHGZGMXJT6RW7O3PIJFU"/>
+    </Bodies>
+    <MethodGroup Id="cmgBHCEVJRS7VC5HOXOBQDA42MEZM" Name="Root"/>
+    <PropertyGroup Id="cpgAGWWD7WEMJCTJHQ6RXNM7LIXUU" Name="Root"/>
+    <Properties>
+      <Property Id="prfECK2IB4KCFEVTD52GPJA6GMVMI" Name="id" Nature="3" IsConst="true" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prfQDIA23IKNVHNFDGVV6GHAUOXO4" Name="userQuery" Nature="3" IsConst="true" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="27"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prfNU5OWQYKNNFCXLRXQNA4PKX4IE" Name="kind" Nature="3" IsConst="true" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prmRIS3LFIB7ZBYHDCDTPY4UTDNFA" Name="pCalculationTime" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="12"/>
+      </Property>
+      <Property Id="prf3RAZGGCM3JGMHKK73JNHMSQOXQ" Name="lastCalculationTime" Nature="3" IsConst="true" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="12"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prf2X4XZCUNQNCMTCS3TFEA27HPPA" Name="period" Nature="3" IsConst="true" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="open" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="pCalculationTime" Id="mprRIS3LFIB7ZBYHDCDTPY4UTDNFA">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="acc3ZE7BMYAVZG4LKZCVU4BLLIF34"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="true">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>select 
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="colNS4TO66OSNH3DCZS64EDNL7VDU" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="acc3ZE7BMYAVZG4LKZCVU4BLLIF34" PropId="prfECK2IB4KCFEVTD52GPJA6GMVMI" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="col3MOMAPD33ZDATALTAP45PLIN5Y" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="acc3ZE7BMYAVZG4LKZCVU4BLLIF34" PropId="prfQDIA23IKNVHNFDGVV6GHAUOXO4" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="col2JJNBDFWIVG47OCFOCMCXVBFXI" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="acc3ZE7BMYAVZG4LKZCVU4BLLIF34" PropId="prfNU5OWQYKNNFCXLRXQNA4PKX4IE" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="col773ODXVAM5DIZIORVOBGIBYK7Y" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="acc3ZE7BMYAVZG4LKZCVU4BLLIF34" PropId="prf2X4XZCUNQNCMTCS3TFEA27HPPA" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="colZN2B3DUPUBFXVP2Y6YPM4RPSV4" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="acc3ZE7BMYAVZG4LKZCVU4BLLIF34" PropId="prf3RAZGGCM3JGMHKK73JNHMSQOXQ" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+from 
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> left join </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> on </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="colFEAY3AHK6NBWFIEFHY5HMNRCSI" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="colNS4TO66OSNH3DCZS64EDNL7VDU" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+where
+    (
+        </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="col2JJNBDFWIVG47OCFOCMCXVBFXI" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:ConstValue EnumId="acsF47GG6XUPJH5ZKZFOWDK7GI7LE" ItemId="aciJG57PBLAWRCQVG2HZLZWKTSJME"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> 
+        or </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="col2JJNBDFWIVG47OCFOCMCXVBFXI" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:ConstValue EnumId="acsF47GG6XUPJH5ZKZFOWDK7GI7LE" ItemId="aciN5HFLHHNURAKVPKT6YEIJPSHAY"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> 
+        or </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="col2JJNBDFWIVG47OCFOCMCXVBFXI" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:ConstValue EnumId="acsF47GG6XUPJH5ZKZFOWDK7GI7LE" ItemId="aciCAT24UCBKJFCVMBUMZUTVSLB2E"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> 
+        or </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:DbFuncCall FuncId="dfn3OXAHT4FYLORDBBJABIFNQAABA"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>(</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="colBI36OSBML5D73KDJOQKMSMISQI" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Id Path="aclMXE64MHT2VHC3K32SQMOHDM6F4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>) > 0
+        
+    )
+    and
+    (
+        </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="colZN2B3DUPUBFXVP2Y6YPM4RPSV4" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> is null
+        or 
+        (cast(systimestamp as date) - cast(</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="colZN2B3DUPUBFXVP2Y6YPM4RPSV4" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as date)) * 24 * 60 * 60 > </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="col773ODXVAM5DIZIORVOBGIBYK7Y" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+    )
+    and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="colQKG6VKSKMBFG7G2WMCOW2DCD2A" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> &lt;> 0
+    </xsc:Sql>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM"/>
+        <UsedTable TableId="tblQZWAUN4CFZF53OBH7NVJCP535Q"/>
+        <UsedTable TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="411" Path="pdcCursor____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

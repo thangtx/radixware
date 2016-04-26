@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcCQCHPCNBHVHUXO27SS74HPKK5U" Name="TaskWaiter" DescriptionId="mls4G7JNLTAEVE6NAINHW62WTNK4A" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.explorer.env.progress.TaskWaiter"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcZ3EJIJQY25GDVDEIPUD6WWV2WM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcC4IVGG5Q5RELFBCURGSU7ESY5A"/>
+    </Bodies>
+    <MethodGroup Id="cmgYQ6S4VI52FCEDNCYHUVLJPPQOQ" Name="Root"/>
+    <PropertyGroup Id="cpgDR3WRUH45FDVPP3IU4YL4KJDQ4" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthPKL5F2YLXFCI7KOHEWROQCHQQI" Name="setCanBeCanceled" DescriptionId="mlsHMVSR5ARIJDWXOD4KMK7B3UEE4" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setCanBeCanceled(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="canBeCanceled" DescriptionId="mlsAYGG6B6IJZCS3OBKHBINVLY6AY" Id="mprR66BFZVX4FGLZBABVQLMWN6QFU">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthP4CPRWOEIRDD5GGF2JC5IEVP6Q" Name="getMessage" DescriptionId="mls6VC6GQQ4TVDYRHOKKXR6A77GOA" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getMessage()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21" DescriptionId="mlsQWV66KCESBFPBLYFMUTI6IYAAQ"/>
+      </Method>
+      <Method Id="mthILK4MRSFZJBGBDBOHD3IHKXSYI" Name="setTitle" DescriptionId="mlsMQM7SSAJ3BAR5MZMT6ZBU5PDEY" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setTitle(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" DescriptionId="mlsWEXHBGKAQBC2LJXHLCDVIRXZYU" Id="mprZL2OGXMBQNBU5GHFDNW7B6XEJU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthEQA77L76HFGOPAG5UGORDLODCE" Name="getTitle" DescriptionId="mlsR4PQZBEL2RHHHMRFW2PFK7IES4" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getTitle()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21" DescriptionId="mlsM2C5DOJMCZG7TCFMTNVO65RXPM"/>
+      </Method>
+      <Method Id="mthDBEZZI4HYRB6XK2B37W6BTJ5XM" Name="canBeCanceled" DescriptionId="mls2CQNYQPIERGPFJJFBDGPB5ANNA" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="canBeCanceled()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsKAVBQHLTOVBOXECVEUDLPAVJXU"/>
+      </Method>
+      <Method Id="mthNVCEVJ6ZGBFRZEUWP5BFYCAIYM" Name="setMessage" DescriptionId="mlsFLZLXBKDXRFVRP35HQSRCGHMYE" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setMessage(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="message" DescriptionId="mlsTLADGGH7WNDLNMNTWXYYD7IVBE" Id="mprGOTLRQBTHRCMNCSMWS6Z65CUPI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth3DFI3X4IDVFOVNJ5YXOL5G6U3Y" Name="runAndWait" DescriptionId="mlsHGRKLP6B6REMTDD67L5ZRGNXDQ" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="runAndWait(Ljava.lang.Runnable;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="task" DescriptionId="mlsSLV26AR6CND23EZQGFIYPA4YBE" Id="mprQBQSZTRDCRFDTBXQKZGRBPZJOY">
+            <Type TypeId="400" extStr="java.lang.Runnable"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException" DescriptionId="mlsUN32PZEGFZDRFBARPY4V4V757U"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth275AFSWPC5BRLFTQIMUZXSTGWA" Name="close" DescriptionId="mlsNOBXL4ONTZEZPPGFYFPNROI3IM" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="close()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth6HUUPWNX6NHXNI33OYQCFWW554" Name="TaskWaiter" DescriptionId="mlsI4L3COO7EBGG7NWZPQKMQNKEJU" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" DescriptionId="mlsXTR6IPQKEZHMXIP3X4YYAU2PMQ" Id="mpr4WB432LX4BFT3ERLMUZ3ICGDSE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthOLRYTKL2YRAO3D736CDKUUA36Y" Name="TaskWaiter" DescriptionId="mlsZQFJXGTK3BAHZOCO2AQXPG7E6U" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Lcom.trolltech.qt.core.QObject;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" DescriptionId="mlsGYTIMTGIYZDDBCZH3O5YOGPH5Q" Id="mprOLZCLUAU2ZEWBNUAKSVATIFTQI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parent" DescriptionId="mlsUEKT4ADL4FADJBZRO2E57AJTXQ" Id="mprQ5IHPPGKJZC5DLYVXENT3K5SGY">
+            <Type TypeId="400" extStr="com.trolltech.qt.core.QObject"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

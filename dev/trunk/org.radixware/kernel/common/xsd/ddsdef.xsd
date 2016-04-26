@@ -1,0 +1,639 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xscml="http://schemas.radixware.org/xscml.xsd" xmlns:ads="http://schemas.radixware.org/adsdef.xsd" xmlns:this="http://schemas.radixware.org/ddsdef.xsd" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:common="http://schemas.radixware.org/commondef.xsd" targetNamespace="http://schemas.radixware.org/ddsdef.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:import namespace="http://schemas.radixware.org/xscml.xsd" schemaLocation="xscml.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/commondef.xsd" schemaLocation="commondef.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/adsdef.xsd" schemaLocation="adsdef-min.xsd"/>
+    <xs:annotation>
+        <xs:documentation>---------- Common Types ----------</xs:documentation>
+    </xs:annotation>
+    <xs:complexType name="PlSqlObject">
+        <xs:complexContent>
+            <xs:extension base="common:DescribedDefinition">
+                <xs:sequence>
+                    <xs:element name="Header" type="this:PlSqlHeader" minOccurs="0"/>
+                    <xs:element name="Body" type="this:PlSqlBody" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="PurityLevelMask" type="xs:int" use="required"/>
+                <xs:attribute name="Deprecated" type="xs:boolean" use="optional" default="false"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="PlSqlHeader">
+        <xs:sequence>
+            <xs:element name="Item" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:choice>
+                        <xs:element name="Prototype" type="this:PlSqlPrototype"/>
+                        <xs:element name="CustomText" type="this:PlSqlCustomText"/>
+                    </xs:choice>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="PlSqlBody">
+        <xs:sequence>
+            <xs:element name="Item" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:choice>
+                        <xs:element name="Function" type="this:PlSqlFunction"/>
+                        <xs:element name="Prototype" type="this:PlSqlPrototype"/>
+                        <xs:element name="CustomText" type="this:PlSqlCustomText"/>
+                    </xs:choice>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:annotation>
+        <xs:documentation>---------- Components ----------</xs:documentation>
+    </xs:annotation>
+    <xs:complexType name="AccessPartitionFamily">
+        <xs:complexContent>
+            <xs:extension base="common:Definition">
+                <xs:attribute name="HeadId" type="xs:string" use="required"/>
+                <xs:attribute name="ParentFamilyReferenceId" type="xs:string"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ColumnTemplate">
+        <xs:complexContent>
+            <xs:extension base="common:DescribedDefinition">
+                <xs:attribute name="ValType" use="required">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:documentation>Enum EValType</xs:documentation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.EValType</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:IntEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="Length" type="xs:int" use="required"/>
+                <xs:attribute name="Precision" type="xs:int" use="optional" default="0"/>
+                <xs:attribute name="AutoDbType" type="xs:boolean" use="optional" default="true"/>
+                <xs:attribute name="DbType" type="xs:string" use="required"/>
+                <xs:attribute name="NativeDbTypeId" type="xs:string"/>
+                <xs:attribute name="Deprecated" type="xs:boolean" use="optional" default="false"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Column">
+        <xs:complexContent>
+            <xs:extension base="this:ColumnTemplate">
+                <xs:sequence>
+                    <xs:element name="DefaultVal" type="common:DefaultValue" minOccurs="0"/>
+                    <xs:element name="CheckConstraint" minOccurs="0">
+                        <xs:complexType>
+                            <xs:complexContent>
+                                <xs:extension base="this:Constraint">
+                                    <xs:sequence>
+                                        <xs:element name="Condition" type="xscml:Sqml"/>
+                                    </xs:sequence>
+                                </xs:extension>
+                            </xs:complexContent>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Expression" type="xscml:Sqml" minOccurs="0"/>
+                    <xs:element name="InitialValues" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Value" type="xs:string" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="NotNull" type="xs:boolean" use="required"/>
+                <xs:attribute name="GenerateInDb" type="xs:boolean" use="optional" default="true"/>
+                <xs:attribute name="DbName" type="xs:string" use="required"/>
+                <xs:attribute name="AutoDbName" type="xs:boolean" use="optional" default="true"/>
+                <xs:attribute name="SequenceId" type="xs:string" use="optional"/>
+                <xs:attribute name="TemplateId" type="xs:string" use="optional"/>
+                <xs:attribute name="AuditMask" type="xs:long" use="optional" default="0"/>
+                <xs:attribute name="Hidden" type="xs:boolean" use="optional" default="0"/>
+                <xs:attribute name="AuditOnUpdate" type="xs:boolean" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Constraint">
+        <xs:complexContent>
+            <xs:extension base="common:NamedDefinition">
+                <xs:attribute name="DbName" type="xs:string" use="required"/>
+                <xs:attribute name="AutoDbName" type="xs:boolean" use="optional" default="true"/>
+                <xs:attribute name="Rely" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="Disable" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="Novalidate" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="Deferrable" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="InitiallyDeferred" type="xs:boolean" use="optional" default="false"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Index">
+        <xs:complexContent>
+            <xs:extension base="common:NamedDefinition">
+                <xs:sequence>
+                    <xs:element name="Columns" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Column" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:attribute name="ColumnId" type="xs:string" use="required"/>
+                                        <xs:attribute name="Order" use="optional" default="Asc">
+                                            <xs:simpleType>
+                                                <xs:annotation>
+                                                    <xs:documentation>Enum EOrder</xs:documentation>
+                                                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                        <types:class>org.radixware.kernel.common.enums.EOrder</types:class>
+                                                    </xs:appinfo>
+                                                </xs:annotation>
+                                                <xs:restriction base="types:StrEnum"/>
+                                            </xs:simpleType>
+                                        </xs:attribute>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="UniqueConstraint" minOccurs="0">
+                        <xs:complexType>
+                            <xs:complexContent>
+                                <xs:extension base="this:Constraint"/>
+                            </xs:complexContent>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="DbName" type="xs:string" use="required"/>
+                <xs:attribute name="AutoDbName" type="xs:boolean" use="optional" default="true"/>
+                <xs:attribute name="GenerateInDb" type="xs:boolean" use="optional" default="true"/>
+                <xs:attribute name="Tablespace" type="xs:string" use="optional"/>
+                <xs:attribute name="Invisible" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="Unique" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="Bitmap" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="Local" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="Reverse" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="Nologging" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="Deprecated" type="xs:boolean" use="optional" default="false"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Trigger">
+        <xs:complexContent>
+            <xs:extension base="common:NamedDefinition">
+                <xs:sequence>
+                    <xs:element name="Body" type="xscml:Sqml"/>
+                </xs:sequence>
+                <xs:attribute name="DbName" type="xs:string" use="required"/>
+                <xs:attribute name="AutoDbName" type="xs:boolean" use="optional" default="true"/>
+                <xs:attribute name="Type" use="optional" default="NONE">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="FOR_AUDIT"/>
+                            <xs:enumeration value="FOR_USER_PROPS"/>
+                            <xs:enumeration value="NONE"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="ActuationTime" use="required">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="AFTER"/>
+                            <xs:enumeration value="BEFORE"/>
+                            <xs:enumeration value="INSTEAD_OF"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="TriggeringEventMask" type="xs:long" use="required"/>
+                <xs:attribute name="ColumnIds" use="optional">
+                    <xs:simpleType>
+                        <xs:list itemType="xs:string"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="ForEachRow" type="xs:boolean" use="optional" default="true"/>
+                <xs:attribute name="Disabled" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="Deprecated" type="xs:boolean" use="optional" default="false"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Table">
+        <xs:complexContent>
+            <xs:extension base="common:DescribedDefinition">
+                <xs:sequence>
+                    <xs:element name="Columns" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Column" type="this:Column" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="PrimaryKey" type="this:Index"/>
+                    <xs:element name="Indices" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Index" type="this:Index" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Triggers" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Trigger" type="this:Trigger" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="DbOptions" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>deprecated</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="DbOption" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element name="Value" type="xs:string" minOccurs="0"/>
+                                        </xs:sequence>
+                                        <xs:attribute name="Name" type="xs:string" use="required"/>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Placement" type="this:Placement"/>
+                    <xs:element name="Partition" type="xscml:Sqml" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="DbName" type="xs:string" use="required"/>
+                <xs:attribute name="AutoDbName" type="xs:boolean" use="optional" default="true"/>
+                <xs:attribute name="GenerateInDb" type="xs:boolean" use="optional" default="true"/>
+                <xs:attribute name="Hidden" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="AuditMask" type="xs:long" use="optional" default="0"/>
+                <xs:attribute name="AuditReferenceId" type="xs:string" use="optional"/>
+                <xs:attribute name="UserExtMask" type="xs:long" use="optional" default="0"/>
+                <xs:attribute name="Tablespace" type="xs:string" use="optional"/>
+                <xs:attribute name="GlobalTemporary" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="OnCommitPreserveRows" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="Deprecated" type="xs:boolean" use="optional" default="false"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="View">
+        <xs:complexContent>
+            <xs:extension base="this:Table">
+                <xs:sequence>
+                    <xs:element name="Query" type="xscml:Sqml" minOccurs="0"/>
+                    <xs:element name="UsedTables" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Table" type="types:Id" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="Distinct" type="xs:boolean" use="required">
+                    <xs:annotation>
+                        <xs:documentation>Deprecated</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="WithOption" use="optional" default="None">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:documentation>Enum EDdsViewWithOption</xs:documentation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.EDdsViewWithOption</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:StrEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ExtTable">
+        <xs:complexContent>
+            <xs:extension base="common:Definition">
+                <xs:sequence>
+                    <xs:element name="Placement" type="this:Placement"/>
+                </xs:sequence>
+                <xs:attribute name="TableId" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Reference">
+        <xs:complexContent>
+            <xs:extension base="this:Constraint">
+                <xs:sequence>
+                    <xs:element name="Columns" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Item" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:attribute name="ChildColumnId" type="xs:string" use="required"/>
+                                        <xs:attribute name="ParentColumnId" type="xs:string" use="required"/>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="Type" use="required">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="LINK"/>
+                            <xs:enumeration value="MASTER_DETAIL"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="GenerateInDb" type="xs:boolean" use="optional" default="true"/>
+                <xs:attribute name="ChildTableId" type="xs:string" use="required"/>
+                <xs:attribute name="ParentTableId" type="xs:string" use="required"/>
+                <xs:attribute name="ParentUniqueConstraintId" type="xs:string"/>
+                <xs:attribute name="ExtChildTableId" type="xs:string" use="optional"/>
+                <xs:attribute name="ExtParentTableId" type="xs:string"/>
+                <xs:attribute name="ConfirmDelete" type="xs:boolean" use="required"/>
+                <xs:attribute name="DeleteMode" use="required">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="NONE"/>
+                            <xs:enumeration value="CASCADE"/>
+                            <xs:enumeration value="RESTRICT"/>
+                            <xs:enumeration value="SET_NULL"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="RestrictCheckMode" use="required">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="ALWAYS"/>
+                            <xs:enumeration value="NEVER"/>
+                            <xs:enumeration value="ONLY_FOR_SINGLE_OBJECT"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Sequence">
+        <xs:complexContent>
+            <xs:extension base="common:NamedDefinition">
+                <xs:sequence>
+                    <xs:element name="Placement" type="this:Placement"/>
+                </xs:sequence>
+                <xs:attribute name="DbName" type="xs:string" use="required"/>
+                <xs:attribute name="AutoDbName" type="xs:boolean" use="optional" default="true"/>
+                <xs:attribute name="StartWith" type="xs:long" use="optional"/>
+                <xs:attribute name="IncrementBy" type="xs:long" use="optional"/>
+                <xs:attribute name="Cycle" type="xs:boolean" use="required"/>
+                <xs:attribute name="MinValue" type="xs:long" use="optional"/>
+                <xs:attribute name="MaxValue" type="xs:long" use="optional"/>
+                <xs:attribute name="Order" type="xs:boolean" use="required"/>
+                <xs:attribute name="Cache" type="xs:long" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Package">
+        <xs:complexContent>
+            <xs:extension base="this:PlSqlObject"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Type">
+        <xs:complexContent>
+            <xs:extension base="this:PlSqlObject">
+                <xs:sequence>
+                    <xs:element name="Fields" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Field" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:complexContent>
+                                            <xs:extension base="common:DescribedDefinition">
+                                                <xs:attribute name="DbType" type="xs:string" use="required"/>
+                                            </xs:extension>
+                                        </xs:complexContent>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="DbType" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="PlSqlFunction">
+        <xs:complexContent>
+            <xs:extension base="common:DescribedDefinition">
+                <xs:sequence>
+                    <xs:element name="Body" type="xscml:Sqml"/>
+                    <xs:element name="Params" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Param" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:complexContent>
+                                            <xs:extension base="common:DescribedDefinition">
+                                                <xs:sequence>
+                                                    <xs:element name="DefaultVal" type="xs:string" nillable="true" minOccurs="0"/>
+                                                </xs:sequence>
+                                                <xs:attribute name="DbType" type="xs:string" use="required"/>
+                                                <xs:attribute name="Direction" use="required">
+                                                    <xs:simpleType>
+                                                        <xs:annotation>
+                                                            <xs:documentation>Enum EParamDirection</xs:documentation>
+                                                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                                <types:class>org.radixware.kernel.common.enums.EParamDirection</types:class>
+                                                            </xs:appinfo>
+                                                        </xs:annotation>
+                                                        <xs:restriction base="types:IntEnum"/>
+                                                    </xs:simpleType>
+                                                </xs:attribute>
+                                                <xs:attribute name="ValType" use="required">
+                                                    <xs:simpleType>
+                                                        <xs:annotation>
+                                                            <xs:documentation>Enum EValType</xs:documentation>
+                                                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                                <types:class>org.radixware.kernel.common.enums.EValType</types:class>
+                                                            </xs:appinfo>
+                                                        </xs:annotation>
+                                                        <xs:restriction base="types:IntEnum"/>
+                                                    </xs:simpleType>
+                                                </xs:attribute>
+                                            </xs:extension>
+                                        </xs:complexContent>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="GenerateInDb" type="xs:boolean" use="optional" default="true"/>
+                <xs:attribute name="ResultDbType" type="xs:string" use="optional"/>
+                <xs:attribute name="ResultValType" use="optional">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:documentation>Enum EValType</xs:documentation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.EValType</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:IntEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="Deterministic" type="xs:boolean" use="required"/>
+                <xs:attribute name="CacheResult" type="xs:boolean" use="required"/>
+                <xs:attribute name="PurityLevelMask" type="xs:int" use="required"/>
+                <xs:attribute name="ReliesOnTableIds">
+                    <xs:simpleType>
+                        <xs:list itemType="xs:string"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="Deprecated" type="xs:boolean" use="optional" default="false"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="PlSqlPrototype">
+        <xs:complexContent>
+            <xs:extension base="common:Definition">
+                <xs:attribute name="FunctionId" type="xs:string" use="required"/>
+                <xs:attribute name="Deprecated" type="xs:boolean" use="optional" default="false"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="PlSqlCustomText">
+        <xs:complexContent>
+            <xs:extension base="common:NamedDefinition">
+                <xs:sequence>
+                    <xs:element name="Text" type="xscml:Sqml"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Label">
+        <xs:complexContent>
+            <xs:extension base="common:Definition">
+                <xs:sequence>
+                    <xs:element name="Placement">
+                        <xs:complexType>
+                            <xs:complexContent>
+                                <xs:extension base="this:Placement">
+                                    <xs:attribute name="Width" type="xs:int" use="required"/>
+                                    <xs:attribute name="Height" type="xs:int" use="required"/>
+                                </xs:extension>
+                            </xs:complexContent>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Font">
+                        <xs:complexType>
+                            <xs:attribute name="Bold" type="xs:boolean" use="required"/>
+                            <xs:attribute name="Italic" type="xs:boolean" use="required"/>
+                            <xs:attribute name="Size" type="xs:int" use="required"/>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Text" type="xs:string"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Placement">
+        <xs:attribute name="PosX" type="xs:int" use="required"/>
+        <xs:attribute name="PosY" type="xs:int" use="required"/>
+    </xs:complexType>
+    <xs:annotation>
+        <xs:documentation>---------- Model ----------</xs:documentation>
+    </xs:annotation>
+    <xs:element name="Model">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="common:Definition">
+                    <xs:sequence>
+                        <xs:element name="AccessPartitionFamilies" minOccurs="0">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="AccessPartitionFamily" type="this:AccessPartitionFamily" maxOccurs="unbounded"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="BeginScript" type="xscml:Sqml" minOccurs="0"/>
+                        <xs:element name="EndScript" type="xscml:Sqml" minOccurs="0"/>
+                        <xs:element name="Tables" minOccurs="0">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Table" type="this:Table" maxOccurs="unbounded"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="Views" minOccurs="0">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="View" type="this:View" maxOccurs="unbounded"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="ExtTables" minOccurs="0">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="ExtTable" type="this:ExtTable" maxOccurs="unbounded"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="References" minOccurs="0">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Reference" type="this:Reference" maxOccurs="unbounded"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="Sequences" minOccurs="0">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Sequence" type="this:Sequence" maxOccurs="unbounded"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="Packages" minOccurs="0">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Package" type="this:Package" maxOccurs="unbounded"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="Types" minOccurs="0">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Type" type="this:Type" maxOccurs="unbounded"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="Labels" minOccurs="0">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Label" type="this:Label" maxOccurs="unbounded"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="ColumnTemplates" minOccurs="0">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="ColumnTemplate" type="this:ColumnTemplate" maxOccurs="unbounded"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="StringBundle" type="ads:LocalizingBundleDefinition" minOccurs="0" maxOccurs="1"/>
+                    </xs:sequence>
+                    <xs:attribute name="DbNamePrefix" type="xs:string" use="optional"/>
+                    <xs:attribute name="DbType" use="optional">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="ORACLE_9"/>
+                                <xs:enumeration value="ORACLE_10"/>
+                                <xs:enumeration value="ORACLE_11"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:attribute>
+                    <xs:attribute name="TablespaceForIndices" type="xs:string" use="optional"/>
+                    <xs:attribute name="TablespaceForTables" type="xs:string" use="optional"/>
+                    <xs:attribute name="Editor" type="xs:string"/>
+                    <xs:attribute name="FilePath" type="xs:string"/>
+                    <xs:attribute name="Station" type="xs:string"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

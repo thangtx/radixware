@@ -1,0 +1,693 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" xmlns:com="http://schemas.radixware.org/commondef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="apc2QX5H55IRZD3RCH6PP7PS6TEFY" Name="FileChoice" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcOYNUAHZBCNGF5F2EO34JEXJUPE">
+        <xsc:Item>
+          <xsc:Java>import com.trolltech.qt.gui.QAction;
+import com.trolltech.qt.gui.QIcon;
+import com.trolltech.qt.gui.QToolButton;
+import com.trolltech.qt.gui.QFileDialog;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcDBPJW4M2UVBNLLY5FMXYRA44MU">
+        <xsc:Item>
+          <xsc:Java>public static final int SAVE = 0;
+public static final int OPEN = 1;
+public static final int SELECT_DIR  = 2;
+
+protected void chooseFile(){
+	</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY mthTVLKJWGDS3ORDL2TAAN7YHKUNI" Invoke="true"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>();
+}
+
+</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmgC7TWURUGJZAV5J4IM6ZRPCG6JY" Name="Root">
+      <Group Id="cmgKUAHN6IXBRADZCFSOJD5VQVPTM" Name="API" Members="mthZGP7R5F4S3ORDL2TAAN7YHKUNI mthXK5PVYKF4ZAZPAQMTUEDKKHHJQ mthHEGC2Y2EZFFKTC2F7O7JVK7BPA"/>
+      <Group Id="cmgS7VW2AM3ZNGPVCDW4QSR46GXNA" Name="Implementaion" Members="mthNIYWTNV5S3ORDL2TAAN7YHKUNI mthTVLKJWGDS3ORDL2TAAN7YHKUNI mthKG22PYUP5FCCNHMIGNJPEBDR7M mthMMC2TXTLCFESVHXIQ44M6IQAVQ mthNXHCFNRDZNEGPBOHXK7FB7KWXI mth5C2OY4O7KFH47LWBHA43JRK5VM mthIH7VTSKRMFD25M32YYL5H2SBMQ mthCZ5QR6D4P5AC5IWXMWLEFFX5II"/>
+    </MethodGroup>
+    <PropertyGroup Id="cpg56A5RGZFGVFPTCQKLOUABEWNFE" Name="Root">
+      <Group Id="cpg27UDOD7LJ5EZXF3DVPRMDUKBX4" Name="Props" Members="prpOO4EKOK33NDLPDSO4HT3UIWUI4 prpOBQTCPEETVDJPN3MI6U3I2MCE4 prpQRLNZVCJ6VGONPKDRTKUNZAS7I prdIUFYGCJ7DRHKRDJFY3YD35FKBQ"/>
+      <Group Id="cpgNCO4BBI6GFFFFDZFFQV6JAXHBM" Name="Buttons and Signals" Members="prpPASGXE33TPORDKW4AAN7YHKUNI prpIQW4WR34TPORDKW4AAN7YHKUNI"/>
+    </PropertyGroup>
+    <Properties>
+      <Property Id="prpIQW4WR34TPORDKW4AAN7YHKUNI" Name="dialogClosed" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="400" extStr="Signal0"/>
+        <InitialValue>
+          <ValAsStr>null</ValAsStr>
+        </InitialValue>
+      </Property>
+      <Property Id="prpOBQTCPEETVDJPN3MI6U3I2MCE4" Name="dialogTitle" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prpOO4EKOK33NDLPDSO4HT3UIWUI4" Name="mode" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="401" extStr="int"/>
+        <InitialValue>
+          <ValAsStr>0</ValAsStr>
+        </InitialValue>
+      </Property>
+      <Property Id="prpPASGXE33TPORDKW4AAN7YHKUNI" Name="chooseAction" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="400" extStr="com.trolltech.qt.gui.QAction"/>
+        <InitialValue>
+          <ValAsStr>null</ValAsStr>
+        </InitialValue>
+      </Property>
+      <Property Id="prpQRLNZVCJ6VGONPKDRTKUNZAS7I" Name="filter" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="400" extStr="com.trolltech.qt.gui.QFileDialog.Filter"/>
+      </Property>
+      <Property Id="prdIUFYGCJ7DRHKRDJFY3YD35FKBQ" Name="basePath" Nature="2" IsConst="false" IsOverride="false">
+        <com:Description>Если для файла задан не абсолютный, а относительный путь, то рассчитываем его относительно basePath.</com:Description>
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthHEGC2Y2EZFFKTC2F7O7JVK7BPA" Name="FileChoice" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprHRUNO77VTVDKJNGZDHGVKPI2H4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parent" Id="mprSHEF2DIVJVFMJB72VVFPI4Z374">
+            <Type TypeId="411" Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4"/>
+          </Parameter>
+          <Parameter Name="mode" Id="mprZIQD5BA34FASXOHX3MLU6LKHOI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="mandatory" Id="mprCSQXR57Y5BBMTP5F4WYRC2G4ZQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="dialogTitle" Id="mprD6LZYLOZSZAPZAYF4GYRXJPT3E">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="filter" Id="mpr2XUWYKA64VC6PDHQIQVJKVIISE">
+            <Type TypeId="400" extStr="QFileDialog.Filter"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this(userSession,parent, mode, mandatory, dialogTitle, filter, null);     </xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthNIYWTNV5S3ORDL2TAAN7YHKUNI" Name="initButton" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="text" Id="mprK35TDVORRVB6XCK3DTUUY6H6JA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="methodName" Id="mprR2C7IMJD7ZBDRCHL5J6JPHQKEI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="toolTip" Id="mprUFVWKATKOZFR7D3M4HAX4SPJ2Y">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="action" Id="mpr5W62BXS33NC2VL4UVAKYFI3FS4">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QAction"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QToolButton"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>action.triggered.connect(this, methodName);
+QToolButton button = new QToolButton(this);
+button.setDefaultAction(action);
+this.addButton(button);
+if (toolTip != null)
+	button.setToolTip(toolTip);
+QIcon icon = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcCUZTMTWLPFABNGEX6P6X2PHQVA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcCUZTMTWLPFABNGEX6P6X2PHQVA mthSD5NQFS2A5BYTFUQPK4UAXD26I" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcBEHABWDEW5FYBH7J3HAL4T4Y7A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.OPEN);        
+button.setIcon(icon);
+if(icon == null)
+	button.setText(text);
+return button;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthTVLKJWGDS3ORDL2TAAN7YHKUNI" Name="chooseFile" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> res = null;
+switch(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prpOO4EKOK33NDLPDSO4HT3UIWUI4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>){
+    case SAVE:
+        res = QFileDialog.getSaveFileName(parentWidget(),
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prpOBQTCPEETVDJPN3MI6U3I2MCE4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+                getValue(),
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prpQRLNZVCJ6VGONPKDRTKUNZAS7I" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        
+        if(res != null &amp;&amp; res != "" &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prpQRLNZVCJ6VGONPKDRTKUNZAS7I" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prpQRLNZVCJ6VGONPKDRTKUNZAS7I" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.selectedFilter != null) {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ending = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prpQRLNZVCJ6VGONPKDRTKUNZAS7I" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.selectedFilter;
+            int i = ending.lastIndexOf('.');
+            if(i != -1)
+                ending = ending.substring(i);
+            int j = ending.indexOf(')');
+            if(j != -1)
+                ending = ending.substring(0, j);
+            if(!res.endsWith(ending))
+                res += ending;
+        }
+        break;
+        
+    case OPEN:
+        String value = getValue();
+        if (value==null)
+            value = "";
+        //Если для диалога указан basePath, и текущий путь в редакторе не абсолютный,
+        //то рассчитываем его относительно basePath.
+        if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prdIUFYGCJ7DRHKRDJFY3YD35FKBQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>!=null &amp;&amp; !(new java.io.File(value).isAbsolute()))
+            value = new java.io.File(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prdIUFYGCJ7DRHKRDJFY3YD35FKBQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, value).Path;
+        res = QFileDialog.getOpenFileName(parentWidget(),
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prpOBQTCPEETVDJPN3MI6U3I2MCE4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+                value,
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prpQRLNZVCJ6VGONPKDRTKUNZAS7I" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        //Если для диалога указан basePath, и выбранный путь является для него дочерним,
+        //то сохраняем выбранный путь как относительный к basePath.
+        if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prdIUFYGCJ7DRHKRDJFY3YD35FKBQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>!=null){
+            java.io.File base = new java.io.File(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prdIUFYGCJ7DRHKRDJFY3YD35FKBQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+            java.io.File file = new java.io.File(res);
+            if (org.radixware.kernel.common.utils.FileUtils.isParentOf(base, file)){
+                res = org.radixware.kernel.common.utils.FileUtils.getRelativePath(base, file);
+                //Предполагается, что относительный путь будет в дальнейшем приведен
+                //к виду, характерному для ОС (см. SystemTools.getApplicationDataPath()).
+                //Поэтому здесь точка в начале относительного пути для не-Windows
+                //будет лишней.
+                if (!</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLLC4LQSF7NG23DKFUGF4LRFLUU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.isWindows &amp;&amp; res.length()>0 &amp;&amp; res.charAt(0)=='.')
+                    res = res.substring(1);
+            }
+        }
+        break;
+    case SELECT_DIR:
+        res = QFileDialog.getExistingDirectory(
+                parentWidget(),
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prpOBQTCPEETVDJPN3MI6U3I2MCE4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+                getValue());
+        break;
+    default:
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthLEP5OWV3LFDULGYALX3KD3GT6A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(
+            new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcMYNNYBUX5BGWFPUJHP6VBTKMIQ mth3DDQE7I32ZAUDF7TH2IO46JB5U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsJ2DP4RUR2FERRDETPE7647AIPU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + String.valueOf(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prpOO4EKOK33NDLPDSO4HT3UIWUI4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>))
+        );            
+}
+
+if(!(res == null || res == ""))
+    setValue(res);
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prpIQW4WR34TPORDKW4AAN7YHKUNI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.emit();
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthXK5PVYKF4ZAZPAQMTUEDKKHHJQ" Name="FileChoice" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mpr6DECUEFHJZDLLBGZRWLQKNCTQY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parent" Id="mprYZOGMG4MZNCVFEVW4WTZXAAIUM">
+            <Type TypeId="411" Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4"/>
+          </Parameter>
+          <Parameter Name="mode" Id="mprIBBRGTNRKFAU7OZHQDBLZH76GM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="mandatory" Id="mprKOOWFVVHLBCYTJETDE2PAYDIDE">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this(userSession,parent, mode, mandatory, null, null, null);     </xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthZGP7R5F4S3ORDL2TAAN7YHKUNI" Name="FileChoice" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="userSession" Id="mprZXW22EVV35ERJESOKGA4DYYV7A">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parent" Id="mprBB22Q5EDRJBSHMLRGZT3NVGPTQ">
+            <Type TypeId="411" Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4"/>
+          </Parameter>
+          <Parameter Name="mode" Id="mprUAV7AWCDI5FYVB2IQ53FKACFBA">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="mandatory" Id="mpr3NFPJ62DZ5GTVBHZDLYN6OK54U">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="dialogTitle" Id="mprIFSQGWGD7VAKTHRE6SF2D63J7M">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="filter" Id="mprGXKBCUMM7ZHT5MHIZ2UQ3XVNWQ">
+            <Type TypeId="400" extStr="QFileDialog.Filter"/>
+          </Parameter>
+          <Parameter Name="initValue" Id="mprFPRXRGB7TNDXDCNPCASOQCMEFU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(userSession,parent,
+        new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcT4FP27ZW3RERZM6XLXMCKXXTWY mthU5LPOHOH5ND5ZB467ZO3CSURVU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(),
+        mandatory,
+        false);
+setValue(initValue);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prpOO4EKOK33NDLPDSO4HT3UIWUI4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = mode;
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prpPASGXE33TPORDKW4AAN7YHKUNI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>=new QAction(this);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prpIQW4WR34TPORDKW4AAN7YHKUNI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>=new Signal0();
+
+if(dialogTitle != null &amp;&amp; dialogTitle != "")
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prpOBQTCPEETVDJPN3MI6U3I2MCE4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = dialogTitle;
+else
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prpOBQTCPEETVDJPN3MI6U3I2MCE4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls2BCOBVDDYJF3VI6B4ILSP45ZOM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prpQRLNZVCJ6VGONPKDRTKUNZAS7I" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = filter;
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY mthNIYWTNV5S3ORDL2TAAN7YHKUNI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("...", "chooseFile()", </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prpOBQTCPEETVDJPN3MI6U3I2MCE4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prpPASGXE33TPORDKW4AAN7YHKUNI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthKG22PYUP5FCCNHMIGNJPEBDR7M" Name="setReadOnly" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="readOnly" Id="mprCHGB3P65WFAJNHWO75D6PW4DLM">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc577BIS4VOZF6LHBG5OV7JJ5SVY mthKG22PYUP5FCCNHMIGNJPEBDR7M" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(readOnly);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prpPASGXE33TPORDKW4AAN7YHKUNI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.setEnabled(!readOnly);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc577BIS4VOZF6LHBG5OV7JJ5SVY mthEKITQ2D6RNEI3NUXW2NHB67K2U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().setReadOnly(readOnly);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthMMC2TXTLCFESVHXIQ44M6IQAVQ" Name="onTextEdited" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="newText" Id="mpr2YMKB3TOEJGTDGBJGN7ISVWG2I">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc577BIS4VOZF6LHBG5OV7JJ5SVY mthMMC2TXTLCFESVHXIQ44M6IQAVQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(newText);
+setOnlyValue(newText);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthNXHCFNRDZNEGPBOHXK7FB7KWXI" Name="setBasePath" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="path" Id="mprZIU7T46NVJF7PJJD2JRLO4NIMQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prdIUFYGCJ7DRHKRDJFY3YD35FKBQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = path;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth5C2OY4O7KFH47LWBHA43JRK5VM" Name="onFocusIn" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (!</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc577BIS4VOZF6LHBG5OV7JJ5SVY mthGNJJL2Z2DZBXBJ3NPBYYUIAARU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+    if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc577BIS4VOZF6LHBG5OV7JJ5SVY mthNDM5T343YFCDFBILQM2Z7RRRLY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().isSpecialValue(getValue())) {
+        setOnlyText("", null);
+    } else {//TWRBS-1449
+        setOnlyText(getStringToShow(getValue()), null);
+    }
+}
+super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc577BIS4VOZF6LHBG5OV7JJ5SVY mth5C2OY4O7KFH47LWBHA43JRK5VM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthIH7VTSKRMFD25M32YYL5H2SBMQ" Name="onFocusOut" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc577BIS4VOZF6LHBG5OV7JJ5SVY mthIH7VTSKRMFD25M32YYL5H2SBMQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+if (!</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc577BIS4VOZF6LHBG5OV7JJ5SVY mthGNJJL2Z2DZBXBJ3NPBYYUIAARU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc577BIS4VOZF6LHBG5OV7JJ5SVY mthNDM5T343YFCDFBILQM2Z7RRRLY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().isSpecialValue(getValue())) {
+    setOnlyText(getStringToShow(getValue()), null);                
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc577BIS4VOZF6LHBG5OV7JJ5SVY mthEKITQ2D6RNEI3NUXW2NHB67K2U" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().home(false);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthCZ5QR6D4P5AC5IWXMWLEFFX5II" Name="closeEvent" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="event" Id="mpr2I7G4GSG65GLHGG7Y3MCIXFBFA">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QCloseEvent"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY prpIQW4WR34TPORDKW4AAN7YHKUNI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.disconnect();
+super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apc2QX5H55IRZD3RCH6PP7PS6TEFY mthCZ5QR6D4P5AC5IWXMWLEFFX5II" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(event);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="adc577BIS4VOZF6LHBG5OV7JJ5SVY">
+      <xsc:GenericArguments>
+        <xsc:Argument Alias="?">
+          <xsc:Type TypeId="21"/>
+        </xsc:Argument>
+      </xsc:GenericArguments>
+    </Extends>
+  </AdsClassDefinition>
+</AdsDefinition>

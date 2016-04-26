@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aic7VM2CM3B6BCRNDKGKZ2DLIO4M4" Name="IFontManager" DescriptionId="mlsXNWKATI6SRE3JPUGG4GDLSGGTE" Type="5" Environment="common-client">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.text.IFontManager"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeraic7VM2CM3B6BCRNDKGKZ2DLIO4M4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyaic7VM2CM3B6BCRNDKGKZ2DLIO4M4"/>
+    </Bodies>
+    <MethodGroup Id="cmgXS6WVOIUYRD7ZLAQF2WXIPXAHM" Name="Root"/>
+    <PropertyGroup Id="cpg62OEWPWZHRGWVA3CJZDH7TRJKM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth7PBZJ2YBCZBRPGOAPXPVKAH6WU" Name="getDefaultFont" DescriptionId="mlsJU7ZVLBEXNAIRHURDMD7GSWDAQ" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getDefaultFont()Lorg.radixware.kernel.common.client.text.IFont;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.text.IFont" DescriptionId="mlsWPYIL5O5MJCFJFCLMORQ6HQMP4"/>
+      </Method>
+      <Method Id="mthZIXIHUK63BBNPOKHSGXQBYXYX4" Name="getFont" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getFont(Ljava.lang.String;ILorg.radixware.kernel.common.client.enums.EFontWeight;Lorg.radixware.kernel.common.client.enums.EFontStyle;Ljava.util.EnumSet&lt;Lorg.radixware.kernel.common.client.enums.ETextDecoration;>;)Lorg.radixware.kernel.common.client.text.IFont;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="family" Id="mprNPSP4AXS5RCFFA6VETI5TKVI2A">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="size" Id="mprU4GW2LDS2NGRNNGYBHLLQV42BY">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="weigth" Id="mpr3I4RUDE7U5HC7N6LGPFOBY4X4E">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.EFontWeight"/>
+          </Parameter>
+          <Parameter Name="style" Id="mprGHZSV3CBHZEHPPJHROLHICEQAI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.EFontStyle"/>
+          </Parameter>
+          <Parameter Name="decoration" Id="mprYYUXTYL7ARCJ3A5KT7MONCTQHE">
+            <Type TypeId="400" extStr="java.util.EnumSet">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.ETextDecoration"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.text.IFont"/>
+      </Method>
+      <Method Id="mthKCQVPA4ISBG27MLMXIBAN54HLE" Name="getFont" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getFont(Ljava.lang.String;ILorg.radixware.kernel.common.client.enums.EFontWeight;Lorg.radixware.kernel.common.client.enums.EFontStyle;)Lorg.radixware.kernel.common.client.text.IFont;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="family" Id="mprFA2APLJHU5E63B5TSES4HEULMI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="size" Id="mprR3K3EYWPE5F3ZNUVZAZGU7FNXM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="weigth" Id="mprMH57DYEYPVERDL2QL65FBCM4J4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.EFontWeight"/>
+          </Parameter>
+          <Parameter Name="style" Id="mpr2HYFNW3LMZFPLJU7MS3ZYKTDPU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.EFontStyle"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.text.IFont"/>
+      </Method>
+      <Method Id="mth6ZCAJ5NCPFCYNPVESSBSCEZ47Q" Name="getFont" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getFont(Ljava.lang.String;ILorg.radixware.kernel.common.client.enums.EFontWeight;)Lorg.radixware.kernel.common.client.text.IFont;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="family" Id="mprB64ZEBTTO5GUJHTLMU4HL77HSM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="size" Id="mprQCOFXIQBRRAJJEDKG4ILCYAP64">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="weigth" Id="mpr6CPZ5YW2YVGBFGHHJHKYRZN4A4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.EFontWeight"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.text.IFont"/>
+      </Method>
+      <Method Id="mth7NFUWRADHJG53C2ASORDGLFSNQ" Name="getFont" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getFont(Ljava.lang.String;I)Lorg.radixware.kernel.common.client.text.IFont;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="family" Id="mprEMKBLRHYW5ATTIY7EDOPAYVI2Y">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="size" Id="mprMRQPOTUUVBBOLPS5XVG7VXSVDQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.text.IFont"/>
+      </Method>
+      <Method Id="mth3MX4PLA5TNB4BGQKENXH5L3AVA" Name="getFont" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getFont(Ljava.lang.String;)Lorg.radixware.kernel.common.client.text.IFont;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="family" Id="mpr3KHQ5H4NDVFB3FRUC5V5I7L7JY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.text.IFont"/>
+      </Method>
+      <Method Id="mth3KTVQEGN5NB3XKEMOLZQQZOD4I" Name="getFont" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getFont(ILorg.radixware.kernel.common.client.enums.EFontWeight;Lorg.radixware.kernel.common.client.enums.EFontStyle;Ljava.util.EnumSet&lt;Lorg.radixware.kernel.common.client.enums.ETextDecoration;>;)Lorg.radixware.kernel.common.client.text.IFont;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="size" Id="mpr44WYNIMWKVF4DONTKQTPJONVJ4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="weigth" Id="mprYETX247YIJCTXOET6NB7MQDGNQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.EFontWeight"/>
+          </Parameter>
+          <Parameter Name="style" Id="mprFB7FV7RBGBDH7EGURNKMLWTAHY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.EFontStyle"/>
+          </Parameter>
+          <Parameter Name="decoration" Id="mpr75IVJ3GDMBHWNMLK7ER4XYBFHI">
+            <Type TypeId="400" extStr="java.util.EnumSet">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.ETextDecoration"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.text.IFont"/>
+      </Method>
+      <Method Id="mthGOHON6P6DZG4VETLHNMTDVIZZI" Name="getFont" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getFont(ILorg.radixware.kernel.common.client.enums.EFontWeight;Lorg.radixware.kernel.common.client.enums.EFontStyle;)Lorg.radixware.kernel.common.client.text.IFont;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="size" Id="mprFZLBW2FUTBBHVIKFULAF6EQ7EI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="weigth" Id="mprCX6GC42O2BHOBJPXNBYARMTWNQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.EFontWeight"/>
+          </Parameter>
+          <Parameter Name="style" Id="mprN75JCLVBFZCR7BAL26CVJZ5BZE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.EFontStyle"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.text.IFont"/>
+      </Method>
+      <Method Id="mthI5X2OHTPVVACPHNZTL5TCXDONE" Name="getFont" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getFont(ILorg.radixware.kernel.common.client.enums.EFontWeight;)Lorg.radixware.kernel.common.client.text.IFont;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="size" Id="mpr4D5O7WXZOZENXPEIFFNJE3ACU4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="weigth" Id="mprDY5DQKKN3RF5XKESJY47MHPFOU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.EFontWeight"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.text.IFont"/>
+      </Method>
+      <Method Id="mthBUV7M7G6HNFW7E47R5MTVJVYRA" Name="getFont" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getFont(I)Lorg.radixware.kernel.common.client.text.IFont;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="size" Id="mprQ34OEIVBOZFJ3OVG5FDW67HJ6Q">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.text.IFont"/>
+      </Method>
+      <Method Id="mthROOBKOESEVFILFB6IMBOE6XK5U" Name="getFont" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getFont(Lorg.radixware.kernel.common.client.enums.EFontWeight;Lorg.radixware.kernel.common.client.enums.EFontStyle;Ljava.util.EnumSet&lt;Lorg.radixware.kernel.common.client.enums.ETextDecoration;>;)Lorg.radixware.kernel.common.client.text.IFont;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="weigth" Id="mprNPARZ5FCGJH77K7CJRGZJ4QQDE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.EFontWeight"/>
+          </Parameter>
+          <Parameter Name="style" Id="mpr54W57YKWQRBN5LJY7VGOQB7F2A">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.EFontStyle"/>
+          </Parameter>
+          <Parameter Name="decoration" Id="mprFWZ7QE5ENJAXRKKGXUGEOUJZPU">
+            <Type TypeId="400" extStr="java.util.EnumSet">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.ETextDecoration"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.text.IFont"/>
+      </Method>
+      <Method Id="mthOWUOIIDF4VBBHI2NDFVNR7B2AU" Name="getFont" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getFont(Lorg.radixware.kernel.common.client.enums.EFontWeight;Lorg.radixware.kernel.common.client.enums.EFontStyle;)Lorg.radixware.kernel.common.client.text.IFont;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="weigth" Id="mprTKP2QR3YIJEJJDSNBHY6SUTCHU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.EFontWeight"/>
+          </Parameter>
+          <Parameter Name="style" Id="mprHIYAJUCRABCNXKXUQ5UY6DHPCE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.EFontStyle"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.text.IFont"/>
+      </Method>
+      <Method Id="mthHC7JYVXM6RCUNFZ32GWVV5VBBM" Name="getFont" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getFont(Lorg.radixware.kernel.common.client.enums.EFontWeight;)Lorg.radixware.kernel.common.client.text.IFont;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="weigth" Id="mprYKYD476KJRFMBH2BGJPVLJTOZ4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.EFontWeight"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.text.IFont"/>
+      </Method>
+      <Method Id="mth6NM72AALO5DFHBERQXJTPDZADE" Name="getFont" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getFont(Lorg.radixware.kernel.common.client.enums.EFontStyle;Ljava.util.EnumSet&lt;Lorg.radixware.kernel.common.client.enums.ETextDecoration;>;)Lorg.radixware.kernel.common.client.text.IFont;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="style" Id="mpr6PJX4YAWQZG4NALFQU3J357Y2Q">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.EFontStyle"/>
+          </Parameter>
+          <Parameter Name="decoration" Id="mprTFN5LIXSBZCYRBJERDEZZZCYV4">
+            <Type TypeId="400" extStr="java.util.EnumSet">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.ETextDecoration"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.text.IFont"/>
+      </Method>
+      <Method Id="mthEOLKXDMYYNF3XBMEY2CM25JAIY" Name="getFont" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getFont(Lorg.radixware.kernel.common.client.enums.EFontStyle;)Lorg.radixware.kernel.common.client.text.IFont;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="style" Id="mprNUNZX7L555CZ7D7NHCC3ZP6H2A">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.EFontStyle"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.text.IFont"/>
+      </Method>
+      <Method Id="mthJERA6ZCRLFFZVNXF7PCLMGLOYM" Name="getFontFromStr" DescriptionId="mlsGBGQRKWS3VE7JBK36F4NFCTLFY" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getFontFromStr(Ljava.lang.String;)Lorg.radixware.kernel.common.client.text.IFont;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="fontAsStr" DescriptionId="mlsN6Z6YZRMX5GA7MQOC5UUJ7EVGM" Id="mprY7ZGFOCYANAQ5BLRQYYC2SLQOY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.text.IFont" DescriptionId="mlsGXPA7OAMHJCXVLXJBBFL7TNUBU"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

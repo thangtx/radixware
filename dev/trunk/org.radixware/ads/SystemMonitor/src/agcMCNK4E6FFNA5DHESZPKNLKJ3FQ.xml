@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" xmlns:com="http://schemas.radixware.org/commondef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="agcMCNK4E6FFNA5DHESZPKNLKJ3FQ" Name="MetricHistGroup" Type="11">
+    <AccessRules/>
+    <Headers>
+      <Src Name="HeaderadcCYUCEFGKZFF4HFZRWZMG5DXQH4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcMASWMJDIMRBFHDDQDX7K3Y6EZM"/>
+    </Bodies>
+    <MethodGroup Id="cmgCVGT4GGFVFFT7JLW2I6ELK3P6Q" Name="Root"/>
+    <PropertyGroup Id="cpgNIROYKQZV5DCJMQ3V7I6ESZXOA" Name="Root"/>
+    <Properties>
+      <Property Id="pgpJ37QO66VBJFADP5BEJPJX4CKD4" Name="since" Nature="12" IsConst="false" IsOverride="false">
+        <AccessRules/>
+        <Type TypeId="12"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthRBVSNNGHO5BAXEMJV2EEEWNKH4" Name="exportToClientFile" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="filePath" Id="mprXD7F3EIHTZD4ZJG64IPPJ5FYSE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="propIdsAsStr" Id="mprMQXPNN4DURDPVNVHYH2XJ6VZVI">
+            <Type TypeId="221"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcFileOutResource___________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> fileResource = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcFileOutResource___________ mthRTCDLQYWGZCCLBWYK74OTYDKFI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), filePath, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsQ2VTKPOMHTNRDCGPABIFNQAABA aciEOBEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFIH6I56MHTNRDCGPABIFNQAABA aciE6BEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    java.io.PrintWriter pw = new java.io.PrintWriter(fileResource);
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>[] propIds = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>[propIdsAsStr.size()];
+    for (int i = 0; i &lt; propIdsAsStr.size(); i++) {
+        propIds[i] = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(propIdsAsStr.get(i));
+    }
+    try {
+        for (int i = 0; i &lt; propIds.length; i++) {
+            final String columnName;
+            if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecMCNK4E6FFNA5DHESZPKNLKJ3FQ colGSIRTHVQ7ZAGBMWHJPA5PNOGTU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.equals(propIds[i])) {
+                columnName = "BegTime";
+            } else if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecMCNK4E6FFNA5DHESZPKNLKJ3FQ col5HEQNQF275CG7PZHGA75LNZQPM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.equals(propIds[i])) {
+                columnName = "EndTime";
+            } else if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecMCNK4E6FFNA5DHESZPKNLKJ3FQ colZ5NP4RP6IBBAFMSIGDA6JBU5TI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.equals(propIds[i])) {
+                columnName = "MinVal";
+            } else if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecMCNK4E6FFNA5DHESZPKNLKJ3FQ col4UAQSFEFFVAE3ACSXME7AQQVPM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.equals(propIds[i])) {
+                columnName = "MaxVal";
+            } else if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecMCNK4E6FFNA5DHESZPKNLKJ3FQ colQLTULHD7JZAR5HRVNFO2ICDSZQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.equals(propIds[i])) {
+                columnName = "AvgVal";
+            } else if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecMCNK4E6FFNA5DHESZPKNLKJ3FQ colRLSYWQAJHFG7RIX5YSNCD7CEMM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.equals(propIds[i])) {
+                columnName = "BegVal";
+            } else if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecMCNK4E6FFNA5DHESZPKNLKJ3FQ colMGT6QJTQPJCHZFO442VOT5EAPE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.equals(propIds[i]) || </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecMCNK4E6FFNA5DHESZPKNLKJ3FQ prdNJOMVIUOT5DQHCQ7O76QKWDRIU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.equals(propIds[i])) {
+                columnName = "EndVal";
+            } else {
+                throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcPOASMSJG3FBCNA5UDLNXL64VSU mthVTS54URV4VDAVONBV4MNTJK6WA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Unsupported property: " + propIds[i]);
+            }
+            if (i > 0) {
+                pw.append(",");
+            }
+            pw.append(columnName);
+        }
+        pw.println();
+        java.util.Iterator&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecMCNK4E6FFNA5DHESZPKNLKJ3FQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> it = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntityGroup_______________ mthH7N6UFUIO5E6XBVWQXTNWXKLOE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+        while (it.hasNext()) {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecMCNK4E6FFNA5DHESZPKNLKJ3FQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> histItem = it.next();
+            for (int i = 0; i &lt; propIds.length; i++) {
+                if (i > 0) {
+                    pw.append(",");
+                }
+                pw.append(histItem.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthTOCEDADAFLPBDLXAAAN7YHKUNI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(propIds[i]));
+            }
+            pw.println();
+        }
+    } finally {
+        pw.close();
+    }
+} catch (Exception ex) {
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsU76ZN5JDGFHIDHKD5RA6BN5HIM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, ex);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblMCNK4E6FFNA5DHESZPKNLKJ3FQ"/>
+    <Presentations>
+      <Commands>
+        <Command Id="cmdNQNNOGQ5LBDMNCF5JJPASVIKVI" Name="ExportHistory" TitleId="mlsDYG2FKXSGVCDBBGE7C4ZDCBN2M" Nature="0" IconId="imgYGRKUM6D5NFB7HJSZFG3KGBC6M" IsVisible="false" IsConfirmationRequired="false" ClientEnvironment="explorer" Accessibility="0" IsDeprecated="true" Scope="2">
+          <AccessRules IsPublished="false"/>
+        </Command>
+        <Command Id="cmdBHIMAIM5RRAPBILXEC5MSIOOAY" Name="remoteCall_exportToClientFile" Nature="2" IsVisible="false" IsConfirmationRequired="false" Accessibility="0" Scope="5" MethodId="mthRBVSNNGHO5BAXEMJV2EEEWNKH4">
+          <com:Description>This is synthetic command generated for remote procedure call implementation purpose.
+Please, do not modify this command</com:Description>
+          <AccessRules IsPublished="false"/>
+          <InType TypeId="451" Path="xsd2C6RVOSGIRB23ONOVI2B6PPQWI" extStr="RPCRequestDocument"/>
+          <OutType TypeId="451" Path="xsd2C6RVOSGIRB23ONOVI2B6PPQWI" extStr="RPCResponseDocument"/>
+        </Command>
+      </Commands>
+    </Presentations>
+    <Extends TypeId="411" Path="pdcEntityGroup_______________">
+      <xsc:GenericArguments>
+        <xsc:Argument Alias="?">
+          <xsc:Type TypeId="32" Path="aecMCNK4E6FFNA5DHESZPKNLKJ3FQ"/>
+        </xsc:Argument>
+      </xsc:GenericArguments>
+    </Extends>
+  </AdsClassDefinition>
+</AdsDefinition>

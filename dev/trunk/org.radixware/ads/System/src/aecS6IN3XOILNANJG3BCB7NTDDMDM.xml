@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aecS6IN3XOILNANJG3BCB7NTDDMDM" Name="ClassLoadingProfile" Type="1">
+    <AccessRules IsFinal="true" IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderaecFCKNQBPMD5CP3GBIL4BBUIGOJQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaecFCKNQBPMD5CP3GBIL4BBUIGOJQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgKL2HSR2NE5H7ZPXMZAQOYXH4AM" Name="Root"/>
+    <PropertyGroup Id="cpg3AURFXVQ35BU5LJYWBNIIBZDGU" Name="Root"/>
+    <Properties>
+      <Property Id="col3LZ27ZF4N5CRLC365B7VNGI4VA" Name="createDate" Nature="0" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="12"/>
+        <Presentation TitleId="mls6U4PUOC3NZFDVHQDDXXCPXJCAQ" InheritanceMask="4">
+          <Editing NotNull="true" EditPossibility="1" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colVFIP2QULPJA4FCKRAXDVPQP4QE" Name="createUser" Nature="0" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mls4LPHJLKMGJAXFN5OJU3YTNDNAQ" InheritanceMask="4">
+          <Editing EditPossibility="1" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colUQJF45R5AJD3VJDJ4LI5OMHDVY" Name="id" Nature="0" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <Presentation TitleId="mlsBYJ22HP4XVHAHM7MLIZ6PPHRAI" InheritanceMask="4">
+          <Editing NotNull="true" EditPossibility="1" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colQNZZ64JBNBCM3CVF6Y6UJEO4SA" Name="title" Nature="0" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsPNEJ7RYQTNAU5D3NLDHH5MX6XI" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colGEW7SN3IS5GU7A6PUOVOSJ7SPE" Name="numberOfClasses" Nature="6" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <Presentation TitleId="mlsDQVYB626MJAXXJPKOFW32IO53M" InheritanceMask="4">
+          <Editing EditPossibility="1" IsDuplicatesEnabled="true"/>
+        </Presentation>
+        <SqmlExpression>
+          <xsc:Item>
+            <xsc:Sql>select count(*) from </xsc:Sql>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TableSqlName TableId="tblNDSJWU62YJCYDFY2N6V3MLOM5A"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Sql> where  </xsc:Sql>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:PropSqlName TableId="tblNDSJWU62YJCYDFY2N6V3MLOM5A" PropId="col4VOK4P3ZPRD2JP2P7U2YSWLF3E" Owner="TABLE"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Sql> = </xsc:Sql>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:PropSqlName TableId="aecS6IN3XOILNANJG3BCB7NTDDMDM" PropId="colUQJF45R5AJD3VJDJ4LI5OMHDVY" Owner="THIS"/>
+          </xsc:Item>
+        </SqmlExpression>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthFMXUFM5J25E4TNM4PR73F6V3E4" Name="beforeCreate" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="src" Id="mprJCBEQYB7EZBPJIRCGQUBOBF66E">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="aecS6IN3XOILNANJG3BCB7NTDDMDM col3LZ27ZF4N5CRLC365B7VNGI4VA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthO6E3U4KDA5A5FFVCN7JGELDMAU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecS6IN3XOILNANJG3BCB7NTDDMDM colVFIP2QULPJA4FCKRAXDVPQP4QE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthJQUPUAH4RPNRDCISABIFNQAABA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+return super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthFMXUFM5J25E4TNM4PR73F6V3E4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(src);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblS6IN3XOILNANJG3BCB7NTDDMDM">
+      <AccessAreas Type="None"/>
+    </Entity>
+    <Presentations ObjectTitleId="mlsVGU222PSDVCWVLNA4IPVRAYLQU" EntityTitleId="mls43UUXDFP7BDGLPHFTMHM34VPR4" DefaultSelectorPresentationId="spr3CO52GT76BA77EPCTDALDZLLRY" IconId="imgWEQPJUYLXCAGMHF4KKUK6VWQPOORINWN" Restrictions="28675">
+      <ObjectTitleFormat Id="etfRYCAKXNLFZA6PJNSOWGQEA2OBY">
+        <TitleItem PropId="colUQJF45R5AJD3VJDJ4LI5OMHDVY">
+          <Pattern>{0}) </Pattern>
+        </TitleItem>
+        <TitleItem PropId="colQNZZ64JBNBCM3CVF6Y6UJEO4SA">
+          <Pattern>{0}</Pattern>
+        </TitleItem>
+      </ObjectTitleFormat>
+      <Sortings>
+        <Sorting Id="srtGLWAVBCUHNHKRAUDCU7Y2FW4LU" Name="ById" TitleId="mlsVWS7XMQ6IBAVBGDFWNVTJ5FNNE">
+          <AccessRules IsPublished="false"/>
+          <OrderBy Desc="false" PropId="colUQJF45R5AJD3VJDJ4LI5OMHDVY"/>
+          <Hint/>
+        </Sorting>
+      </Sortings>
+      <EditorPresentations>
+        <EditorPresentation Id="eprHGKCI7PIZRAK3BTNOQ75K2MUJA" Name="General" InheritanceMask="2192" Restrictions="0" EnabledCommandIds="" RightsInheritanceMode="0">
+          <AccessRules IsPublished="false"/>
+          <ChildExplorerItems>
+            <Item>
+              <ChildRef Id="xpiNG62GWQ3NBBAFABKCGKMDDVDEU" Name="ClassLoadingProfileItem" InheritanceMask="16560" IsVisibleInTree="true" ClassId="aecNDSJWU62YJCYDFY2N6V3MLOM5A" SelectorPresentationId="sprG327LJII6BDEHD266NE6PGCLWU" Restrictions="0" EnabledCommands="" ChildReferenceId="refBXDSODN63FGJJD6B3LWNDBHWQE">
+                <AccessRules IsPublished="false"/>
+                <Condition>
+                  <ConditionWhere/>
+                  <ConditionFrom/>
+                </Condition>
+              </ChildRef>
+            </Item>
+          </ChildExplorerItems>
+          <EditorPages>
+            <Page Id="epgIUTMHAOGTBANDIDPGZISGIKZ2I" Name="Main" TitleId="mls5RQUEHEIT5GOPNS54X7FNVBPCM" Type="1">
+              <AccessRules IsPublished="false"/>
+              <Properties>
+                <Property Id="colUQJF45R5AJD3VJDJ4LI5OMHDVY" Row="0" Column="0"/>
+                <Property Id="colQNZZ64JBNBCM3CVF6Y6UJEO4SA" Row="1" Column="0"/>
+                <Property Id="col3LZ27ZF4N5CRLC365B7VNGI4VA" Row="3" Column="0"/>
+                <Property Id="colVFIP2QULPJA4FCKRAXDVPQP4QE" Row="4" Column="0"/>
+                <Property Id="colGEW7SN3IS5GU7A6PUOVOSJ7SPE" Row="2" Column="0"/>
+              </Properties>
+            </Page>
+            <Page Id="epg2V6LVEDZNBCE3KHKU5AHV54P6E" Name="Items" Type="3" EmbeddedExplorerItemId="xpiNG62GWQ3NBBAFABKCGKMDDVDEU">
+              <AccessRules IsPublished="false"/>
+            </Page>
+            <PageOrder>
+              <Item PageId="epgIUTMHAOGTBANDIDPGZISGIKZ2I" Level="1"/>
+              <Item PageId="epg2V6LVEDZNBCE3KHKU5AHV54P6E" Level="1"/>
+            </PageOrder>
+          </EditorPages>
+          <ObjectTitleFormat Id="etfTS5XMBZSKZGDVNH26AQMVOGWVU"/>
+        </EditorPresentation>
+      </EditorPresentations>
+      <SelectorPresentations>
+        <SelectorPresentation Id="spr3CO52GT76BA77EPCTDALDZLLRY" Name="General" InheritanceMask="144" Restrictions="0" EnabledCommandIds="" CreationEditorPresentationIds="eprHGKCI7PIZRAK3BTNOQ75K2MUJA" EditorPresentationIds="eprHGKCI7PIZRAK3BTNOQ75K2MUJA">
+          <AccessRules IsPublished="false"/>
+          <Condition>
+            <ConditionWhere/>
+            <ConditionFrom/>
+          </Condition>
+          <Addons AnyBaseFilterEnabled="false" AnyBaseSortingEnabled="true" CustomFilterEnabled="false" CustomSortingEnabled="true" FilterIsObligatory="false" DefaultSortingId="srtGLWAVBCUHNHKRAUDCU7Y2FW4LU">
+            <DefaultHint/>
+          </Addons>
+          <SelectorColumns>
+            <Column Align="-1" PropId="colUQJF45R5AJD3VJDJ4LI5OMHDVY" Visibility="1" SizePolicy="0"/>
+            <Column Align="-1" PropId="colQNZZ64JBNBCM3CVF6Y6UJEO4SA" Visibility="1" SizePolicy="0"/>
+            <Column Align="-1" PropId="colGEW7SN3IS5GU7A6PUOVOSJ7SPE" Visibility="1" SizePolicy="0"/>
+            <Column Align="-1" PropId="col3LZ27ZF4N5CRLC365B7VNGI4VA" Visibility="1" SizePolicy="0"/>
+            <Column Align="-1" PropId="colVFIP2QULPJA4FCKRAXDVPQP4QE" Visibility="1" SizePolicy="0"/>
+          </SelectorColumns>
+        </SelectorPresentation>
+      </SelectorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="pdcEntity____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

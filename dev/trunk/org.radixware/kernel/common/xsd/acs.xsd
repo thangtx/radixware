@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xs:schema xmlns:acs="http://schemas.radixware.org/acs-impexp.xsd" xmlns:defs="http://schemas.radixware.org/adsdef.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:xsd="http://schemas.radixware.org/acs-impexp.xsd" targetNamespace="http://schemas.radixware.org/acs-impexp.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/adsdef.xsd" schemaLocation="adsdef.xsd"/>
+    <xs:element name="AppRoles" type="xsd:UserDefinedDefs"/>
+    <xs:element name="MsdlSchemes" type="xsd:UserDefinedDefs"/>
+    <xs:complexType name="UserDefinedDefs">
+        <xs:sequence maxOccurs="unbounded">
+            <xs:element name="UserDefinedDef">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Definition" type="defs:AdsDefinitionElementType" minOccurs="0" maxOccurs="1"/>
+                    </xs:sequence>
+                    <xs:attribute name="guid" type="types:Str"/>
+                    <xs:attribute name="title" type="types:Str"/>
+                    <xs:attribute name="description" type="types:Str"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="CmdImportResult">
+        <xs:simpleType>
+            <xs:restriction base="types:Str"/>
+        </xs:simpleType>
+    </xs:element>        
+</xs:schema>

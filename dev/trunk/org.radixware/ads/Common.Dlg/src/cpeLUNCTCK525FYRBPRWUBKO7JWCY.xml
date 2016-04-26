@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsWebCustomPropEditorDefinition Id="cpeLUNCTCK525FYRBPRWUBKO7JWCY" Name="EventCodeArrChoiceDlgWeb">
+    <AccessRules IsPublished="false"/>
+    <ui:ui>
+      <ui:widget name="widget" id="wdg7MQ6WNSQCVH3NGGFU5M3MZE2LA" class="cpeLUNCTCK525FYRBPRWUBKO7JWCY" weight="0.0">
+        <ui:property name="standardButtons">
+          <ui:set>Ok|Cancel</ui:set>
+        </ui:property>
+        <ui:property name="geometry">
+          <ui:rect>
+            <ui:x>0</ui:x>
+            <ui:y>0</ui:y>
+            <ui:width>483</ui:width>
+            <ui:height>381</ui:height>
+          </ui:rect>
+        </ui:property>
+      </ui:widget>
+      <ui:connections>
+        <ui:connection>
+          <ui:sender>wdg7MQ6WNSQCVH3NGGFU5M3MZE2LA</ui:sender>
+          <ui:signal>opened()</ui:signal>
+          <ui:slot>mthAVG5H46TY5F4ZDQFJB4JQQKSD4</ui:slot>
+          <ui:interface>org.radixware.wps.views.dialog.RwtDialog.RwtDialogListener</ui:interface>
+          <ui:registrator>addDialogListener</ui:registrator>
+          <ui:returnType>void</ui:returnType>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdg7MQ6WNSQCVH3NGGFU5M3MZE2LA</ui:sender>
+          <ui:signal>onClose(org.radixware.kernel.common.enums.EDialogButtonType closeButtonType,org.radixware.kernel.common.client.views.IDialog.DialogResult closeResult)</ui:signal>
+          <ui:slot>mth6UW56MZTAFDZXCUFOKGYJARCPU</ui:slot>
+          <ui:interface>org.radixware.wps.rwt.Dialog.CloseButtonListener</ui:interface>
+          <ui:registrator>addCloseButtonListener</ui:registrator>
+          <ui:returnType>void</ui:returnType>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdg7MQ6WNSQCVH3NGGFU5M3MZE2LA</ui:sender>
+          <ui:signal>beforeClose(org.radixware.kernel.common.enums.EDialogButtonType closeButtonType,org.radixware.kernel.common.client.views.IDialog.DialogResult closeResult)</ui:signal>
+          <ui:slot>mthLGWNKQOFTBELRDVLYTV3RKNJHQ</ui:slot>
+          <ui:interface>org.radixware.wps.rwt.Dialog.BeforeCloseButtonListener</ui:interface>
+          <ui:registrator>addBeforeCloseListener</ui:registrator>
+          <ui:returnType>boolean</ui:returnType>
+        </ui:connection>
+      </ui:connections>
+    </ui:ui>
+    <EmbeddedModel Id="armLUNCTCK525FYRBPRWUBKO7JWCY" Name="EventCodeArrChoiceDlgWeb:Model" Type="17">
+      <AccessRules IsPublished="false"/>
+      <Headers>
+        <Src Name="HeaderarmLUNCTCK525FYRBPRWUBKO7JWCY"/>
+      </Headers>
+      <Bodies>
+        <Src Name="BodyarmLUNCTCK525FYRBPRWUBKO7JWCY">
+          <xsc:Item>
+            <xsc:Java>private </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="411" Path="adcDX57NPKFJ5B5DNC6GBEW3QHFCQ"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> editor;</xsc:Java>
+          </xsc:Item>
+        </Src>
+      </Bodies>
+      <MethodGroup Id="cmgDOPOWSDDN5DCNEVLJNY6XFNUXA" Name="Root"/>
+      <PropertyGroup Id="cpgTNHBXZ65A5HDNFHGYWEVINLRKQ" Name="Root"/>
+      <Properties>
+        <Property Id="prdIKYXWS6DV5HLRDGC6U7QBLQEVY" Name="eventCodes" Nature="2" IsConst="false" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Type TypeId="451" Path="xsdMPH3WOW4SHOBDCKSAALOMT5GDM" extStr="EventCodesRsDocument"/>
+        </Property>
+      </Properties>
+      <Methods>
+        <Method Id="mthclcNDD5T3NLEJCWNPNZZMBFRJ6XQM" Name="onCommand_GetEventCodesCmd" Nature="1" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="command" Id="mprJMNEHMHNIFA7BDQAH4R6MFPJCE">
+              <Type TypeId="411" Path="clcNDD5T3NLEJCWNPNZZMBFRJ6XQM"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>try{
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdMPH3WOW4SHOBDCKSAALOMT5GDM" extStr="EventCodesRqDocument"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> xIn = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdMPH3WOW4SHOBDCKSAALOMT5GDM" extStr="EventCodesRqDocument"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Factory.newInstance();
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdMPH3WOW4SHOBDCKSAALOMT5GDM" extStr="EventCodesRqDocument.EventCodesRq"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> eventCodeRq= xIn.addNewEventCodesRq();
+    eventCodeRq.IsForRedefine=false;
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeLUNCTCK525FYRBPRWUBKO7JWCY armLUNCTCK525FYRBPRWUBKO7JWCY prdIKYXWS6DV5HLRDGC6U7QBLQEVY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = command.send(xIn);
+}catch(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>  e){
+    Environment.processException(e);
+}catch(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="axcWSBFK4LYMVHTXL55MVC44THTGE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>  e){
+    Environment.processException(e);
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthAVG5H46TY5F4ZDQFJB4JQQKSD4" Name="widget_opened" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthBN46PMVUBFADVFFMPLGSSR7ZRM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="clcNDD5T3NLEJCWNPNZZMBFRJ6XQM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>).execute();
+editor = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcDX57NPKFJ5B5DNC6GBEW3QHFCQ mthIERTF4KNPJBGZIMIRMIBJT6XTE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(), </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeLUNCTCK525FYRBPRWUBKO7JWCY armLUNCTCK525FYRBPRWUBKO7JWCY prdIKYXWS6DV5HLRDGC6U7QBLQEVY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>,(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcHEXT6TMJ2FAXJGCQHFISLL36AA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>)this.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcIGHXUXORMFFNXGVBAEOQKN3Q6Y mth7UWTWB24FVASZBR3RCXXWXC4PU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>());
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeLUNCTCK525FYRBPRWUBKO7JWCY wdg7MQ6WNSQCVH3NGGFU5M3MZE2LA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.add(editor);
+editor.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcP2R7IHUBPFDGFNCMJF7KXYRMLM mthAYD7UHHTHZHEZHHZWGGP45C7BE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(5);
+editor.setTop(5);
+editor.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcP2R7IHUBPFDGFNCMJF7KXYRMLM mth232ZH6QIIFBVVHE3A6PJ4H7ZFU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcUJJ5BFBGLRHVRA76XXZWKK2ZYE mthR7EEG2IEDZBXNJ6DTP7BYKLMIA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcXNLYESCJHZAIRFYZEEE445LHUQ mthZM44DW3QIFDQRBPCEQ2CQX7XFY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(1,-5));
+editor.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcP2R7IHUBPFDGFNCMJF7KXYRMLM mth232ZH6QIIFBVVHE3A6PJ4H7ZFU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().setBottom(new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcXNLYESCJHZAIRFYZEEE445LHUQ mthZM44DW3QIFDQRBPCEQ2CQX7XFY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(1,-5));
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth6UW56MZTAFDZXCUFOKGYJARCPU" Name="widget_onClose" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="closeButtonType" Id="mpr3QKGEZ4FTZHB5MPM3AUNEVDJG4">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EDialogButtonType"/>
+            </Parameter>
+            <Parameter Name="closeResult" Id="mprSZWVF2IKQ5GITHQD33PJPRDHJQ">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.client.views.IDialog.DialogResult"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if(closeResult == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcDAOFOPE66ZA5ZP7ALHOOPQIQ6I"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcDAOFOPE66ZA5ZP7ALHOOPQIQ6I prdF2Y7KMCNG5BJNNVWGIMXUHANS4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>){
+    editor.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcDX57NPKFJ5B5DNC6GBEW3QHFCQ mthLSHN5DVYMBFQJCQ7W4XOXA3QAU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthLGWNKQOFTBELRDVLYTV3RKNJHQ" Name="widget_beforeClose" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="closeButtonType" Id="mprXTIBNYVGAZCUPDE76ATQJ2T7NI">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EDialogButtonType"/>
+            </Parameter>
+            <Parameter Name="closeResult" Id="mprFFH2EAMNOFFGXFPDHTEWFSN4Q4">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.client.views.IDialog.DialogResult"/>
+            </Parameter>
+          </Parameters>
+          <ReturnType TypeId="400" extStr="boolean"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>
+if(closeButtonType == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsS7F4BA7TJXNRDCHCABIFNQAABA aci3KAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>){
+    editor.finishEdit();
+    if(!editor.checkValues(false)){
+        return false;
+    }
+}
+return true;</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+      </Methods>
+    </EmbeddedModel>
+  </AdsWebCustomPropEditorDefinition>
+</AdsDefinition>

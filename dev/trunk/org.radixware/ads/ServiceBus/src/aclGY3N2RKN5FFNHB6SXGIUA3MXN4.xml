@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclGY3N2RKN5FFNHB6SXGIUA3MXN4" Name="CfgItem.PipelineGroup" Type="2" ClientEnvironment="explorer">
+    <AccessRules Access="4"/>
+    <Headers>
+      <Src Name="HeaderaclGY3N2RKN5FFNHB6SXGIUA3MXN4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaclGY3N2RKN5FFNHB6SXGIUA3MXN4"/>
+    </Bodies>
+    <MethodGroup Id="cmgQWKQTKV2MNDTVGIN46C632TZZY" Name="Root"/>
+    <PropertyGroup Id="cpgMKRTNQAH4RCRFF2MP6WYUZCNQ4" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthEBTC42HN7RENPIGWWSTFCC2IOQ" Name="linkImpObject" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth7Z323JY4JFB7PAHXRDBVOX2EE4" Name="extractExportData" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="data" Id="mprBUZWPTFKMBFTRHUXT6N6ODNYEQ">
+            <Type TypeId="411" Path="adcE2YCRKQL7JE7HBMJ7SVQTSLQRA"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecX6WI554KVVCZPGNLK7CSZLOMTY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecX6WI554KVVCZPGNLK7CSZLOMTY mthDCYIW34TUBAVBHEZNEE42U2RH4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(data);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthHOVIQBNNZRERVBNIKFD56Y6OK4" Name="load" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="helper" Id="mpr5TINUT3NSBFD5ATONDMO6XIO24">
+            <Type TypeId="411" Path="aicKHRATBBJWBDMXKUCDE7IDPVFOM"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblJ4WZRLJ23BGMBKQ2JBSOBEGBP4"/>
+    <Presentations ObjectTitleId="mlsCU2R4YYWBNDNZKMAUKQN6SWC34">
+      <EditorPresentations>
+        <EditorPresentation Id="epr3N2LRTNZBZH45NCBNTGQSMTRPE" Name="Export" BasePresentationId="eprJ2YTMJMIYZHL3HKDSW272LXO2M" InheritanceMask="40114" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprCUUYK4MIYVFVLCLQGXLUNZWINM">
+          <AccessRules IsPublished="false"/>
+          <ChildExplorerItems/>
+          <EditorPages>
+            <Page Id="epg4QJDGB5JP5DEDCDPEMT2NPMS64" Name="General" Type="1">
+              <AccessRules IsPublished="false"/>
+              <Properties>
+                <Property Id="colIUQVQZZKPFBRLG7DTABUYGLYBQ" Row="0" Column="0"/>
+                <Property Id="colKLNALIUEZJGQHKSQ22KH6YAQAI" Row="3" Column="0"/>
+                <Property Id="prdY3N4QO6NSRDXTCHP27YWP3WONM" Row="1" Column="0"/>
+                <Property Id="colJHVNNS3BSZCDHPM5MZET64JSGU" Row="4" Column="0"/>
+                <Property Id="colXUWWBUGM6VAXXM4LRGA7BJRC7U" Row="2" Column="0"/>
+              </Properties>
+            </Page>
+            <PageOrder>
+              <Item PageId="epg4QJDGB5JP5DEDCDPEMT2NPMS64" Level="1"/>
+            </PageOrder>
+          </EditorPages>
+          <ObjectTitleFormat Id="etfEQ76OGNDF5HS7FUKQ43XS6CKYQ"/>
+        </EditorPresentation>
+        <EditorPresentation Id="eprC5YOPGXXZZDYFGKHD3TZOI64QU" Name="Import" BasePresentationId="eprIFGJZ5IMOBC5BOPWMWBGQ6GI3M" InheritanceMask="105648" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprIFGJZ5IMOBC5BOPWMWBGQ6GI3M" RightsInheritanceMode="0">
+          <AccessRules IsPublished="false"/>
+          <ChildExplorerItems/>
+          <ObjectTitleFormat Id="etfF5EGNDNMKZCAPK6UCQUCMRWVDA"/>
+        </EditorPresentation>
+      </EditorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="aclUCWMPHKY3JETLBF7GYCXUMVJ4E"/>
+  </AdsClassDefinition>
+</AdsDefinition>

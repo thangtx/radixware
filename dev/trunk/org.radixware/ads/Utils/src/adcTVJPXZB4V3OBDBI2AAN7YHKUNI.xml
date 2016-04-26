@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcTVJPXZB4V3OBDBI2AAN7YHKUNI" Name="Luhn" Type="3" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcYD7RA2KUGJAPLGMZNQGFHOLQTY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcWH2KOEHM5ZHZRM6G7TQN7WBLYY"/>
+    </Bodies>
+    <MethodGroup Id="cmgORKW5OLW4NFE7HBVBW6BVXEVRI" Name="Root"/>
+    <PropertyGroup Id="cpgAWCQOHAQ7BEK7MIJGYXNMA73LA" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthF2I2P7J4V3OBDBI2AAN7YHKUNI" Name="check" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="s" Id="mprSS3CACAABRA5LJIPYIXWV6VBRY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="1"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>int len=s.length();
+if(len&lt;2)
+   return false;
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcTVJPXZB4V3OBDBI2AAN7YHKUNI mthFWI2P7J4V3OBDBI2AAN7YHKUNI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(s.substring(0,len-1))==(s.charAt(len)-'0');</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthFWI2P7J4V3OBDBI2AAN7YHKUNI" Name="calc" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="s" Id="mprX6ZPFN5DJZALLOQUEVQONSHC5A">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>int sum=0;
+int t;
+for(int i=1;i&lt;=s.length();i++) {
+   t=s.charAt(s.length()-i)-'0';
+   if((i&amp;1)==1) {
+      t*=2;
+      t=t/10+t%10;
+      }
+   sum+=t;
+   }
+int res=10-(sum%10);
+return res==10 ? 0 : res;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

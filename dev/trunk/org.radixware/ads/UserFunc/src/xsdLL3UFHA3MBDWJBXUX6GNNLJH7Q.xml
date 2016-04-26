@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdLL3UFHA3MBDWJBXUX6GNNLJH7Q" Name="ImpExpXsd" TargetNamespace="http://schemas.radixware.org/userfunc-impexp.xsd" Environment="common"><ads:AccessRules IsPublished="false"/><xs:schema targetNamespace="http://schemas.radixware.org/userfunc-impexp.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:com="http://schemas.radixware.org/common.xsd" xmlns:t="http://schemas.radixware.org/types.xsd" xmlns:this="http://schemas.radixware.org/userfunc-impexp.xsd">
+	<xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+	<xs:import namespace="http://schemas.radixware.org/common.xsd" schemaLocation="common.xsd"/>
+	<xs:complexType name="ValueGroup">
+		<xs:choice>
+			<xs:element name="StrValue" type="t:Str" minOccurs="0"/>
+			<xs:element name="BoolValue" type="t:Bool" minOccurs="0"/>
+			<xs:element name="IntegerValue" type="t:Int" minOccurs="0"/>
+			<xs:element name="CharValue" type="t:Char" minOccurs="0"/>
+			<xs:element name="NumValue" type="t:Num" minOccurs="0"/>
+			<xs:element name="DateTimeValue" type="t:DateTime" minOccurs="0"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="UserFuncLibParam">
+		<xs:sequence>
+			<xs:element name="Description" type="t:Str" minOccurs="0"/>
+			<xs:element name="Value" type="this:ValueGroup"/>
+		</xs:sequence>
+		<xs:attribute name="Name" type="t:Str" use="required"/>
+		<xs:attribute name="ClassGuid" type="t:Str" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="Parameters">
+		<xs:sequence>
+			<xs:element name="Parameter" type="this:UserFuncLibParam" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Functions">
+		<xs:sequence>
+			<xs:element name="Function" type="this:LibUserFunc" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="LibUserFunc">
+		<xs:sequence>
+			<xs:element name="Description" type="t:Str" minOccurs="0"/>
+			<xs:element name="UserFunc" type="com:UserFunc" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="Name" type="t:Str" use="required"/>
+		<xs:attribute name="Id" type="t:Str" use="required"/>
+                <xs:attribute name="Profile" type="t:Str" use="optional"/>
+                <xs:attribute name="LibName" type="t:Str" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="UserFuncLib">
+		<xs:sequence>
+			<xs:element name="Description" type="t:Str" minOccurs="0"/>
+			<xs:element name="Functions" type="this:Functions" minOccurs="0"/>
+			<xs:element name="Parameters" type="this:Parameters" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="Name" type="t:Str" use="required"/>
+		<xs:attribute name="Title" type="t:Str"/>
+                <xs:attribute name="PipelineId" type="t:Int"/>
+	</xs:complexType>
+	<xs:complexType name="UserFuncLibGroup">
+		<xs:sequence>
+			<xs:element name="Library" type="this:UserFuncLib" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+        <xs:complexType name="LibUserFuncGroup">
+            <xs:complexContent>
+                <xs:extension base="this:Functions">
+                    <xs:attribute name="LibName" type="t:Str" use="optional"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+        
+        <xs:element name="UserFuncLib" type="this:UserFuncLib"/>
+	<xs:element name="UserFuncLibGroup" type="this:UserFuncLibGroup"/>
+        <xs:element name="LibUserFunc" type="this:LibUserFunc"/>
+        <xs:element name="LibUserFuncGroup" type="this:LibUserFuncGroup"/>
+</xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

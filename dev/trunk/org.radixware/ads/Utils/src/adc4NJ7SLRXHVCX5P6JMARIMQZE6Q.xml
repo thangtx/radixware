@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc4NJ7SLRXHVCX5P6JMARIMQZE6Q" Name="FloraTime" DescriptionId="mlsWH3VHYDS2FDX3ERSZU4YESLRK4" Type="3" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.utils.FloraTime"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcAA52JMERLZGMPFKLOBZG7RVLGM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcXCJ7PO6BYJHV7L6PF3C2Q4JTG4"/>
+    </Bodies>
+    <MethodGroup Id="cmgO2FIRTCAJRACRNHF7GU5ZWH5VY" Name="Root"/>
+    <PropertyGroup Id="cpgOHWFQ5CS25GQZIASNFWRBYHSSM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthDRNNPDM3DBEFLGIGDBF6REDJPI" Name="FloraTime" DescriptionId="mlsVSXXUIHE3VHFBGTS5276E32GRQ" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules IsDeprecated="true">
+          <Transparence Extendable="false" PublishedName="&lt;init>()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth4G3Q7M6HVNEQ7OAY5AT6P5PO44" Name="toTimestamp" DescriptionId="mlsEJYEB7ZJKJCMTJ5D3NIPHWZSTM" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true">
+          <Transparence Extendable="false" PublishedName="toTimestamp(Ljava.math.BigDecimal;)Ljava.sql.Timestamp;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="floraTime" DescriptionId="mlsXUFOWVKC6ZH3ZNQ5MCNZJWYLPI" Id="mprABG3XXP77BDTFELSP2SI4WBWO4">
+            <Type TypeId="400" extStr="java.math.BigDecimal"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12" DescriptionId="mlsNHUEYOMSEZDSPOSXNLI4GMZUAE"/>
+      </Method>
+      <Method Id="mthSFW4U6KNM5GU3DXEWKABEJT4ZE" Name="getForValue" DescriptionId="mls6P532SVQG5FPVGR5OKFRSREEN4" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true" IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getForValue(Ljava.util.Date;)Ljava.math.BigDecimal;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="val" DescriptionId="mlsZAJVT3P6GVCFBONKLWLV6EHGPE" Id="mprAXNYL5577JBJHOHQCY3DDEAOKY">
+            <Type TypeId="400" extStr="java.util.Date"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.math.BigDecimal" DescriptionId="mlsPDDRKJZMIZFVPEOMY4NADMR5HE"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,1424 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsWebCustomPropEditorDefinition Id="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ" Name="RoleArrEditorDlgWeb">
+    <ui:ui>
+      <ui:widget name="dialog" id="wdgJZ5IGUGA55BC3OGVCJLJTVE37U" class="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ" weight="0.0">
+        <ui:property name="standardButtons">
+          <ui:set>Ok|Cancel</ui:set>
+        </ui:property>
+        <ui:property name="geometry">
+          <ui:rect>
+            <ui:x>0</ui:x>
+            <ui:y>0</ui:y>
+            <ui:width>394</ui:width>
+            <ui:height>303</ui:height>
+          </ui:rect>
+        </ui:property>
+        <ui:property name="windowTitle">
+          <ui:mlstringid>mlsZ3A4DWOMRRFS3HNP3N2XNYS6MI</ui:mlstringid>
+        </ui:property>
+        <ui:property name="objectName">
+          <ui:string>dialog</ui:string>
+        </ui:property>
+        <ui:widget name="widget" id="wdgOERMH5FNW5DLZJUKNRKPC6HB54" class="org.radixware.wps.rwt.VerticalBoxContainer" weight="0.0">
+          <ui:property name="geometry">
+            <ui:rect>
+              <ui:x>10</ui:x>
+              <ui:y>10</ui:y>
+              <ui:width>374</ui:width>
+              <ui:height>253</ui:height>
+            </ui:rect>
+          </ui:property>
+          <ui:property name="anchor">
+            <ui:anchor>
+              <ui:Bottom Part="1.0" Offset="-10"/>
+              <ui:Right Part="1.0" Offset="-10"/>
+            </ui:anchor>
+          </ui:property>
+          <ui:widget name="toolBar" id="wdg2XU4DA6WNVDB3E64SS76KGVL34" class="org.radixware.wps.rwt.ToolBar" weight="0.0">
+            <ui:property name="geometry">
+              <ui:rect>
+                <ui:x>3</ui:x>
+                <ui:y>3</ui:y>
+                <ui:width>560</ui:width>
+                <ui:height>25</ui:height>
+              </ui:rect>
+            </ui:property>
+            <ui:property name="objectName">
+              <ui:string>toolBar</ui:string>
+            </ui:property>
+            <ui:property name="actions">
+              <ui:idList>
+                <ui:Id>wdg7ZC72JMH3BFQFB4DCXHQM7FKNY</ui:Id>
+                <ui:Id>wdgZRXNS4BNZ5DKTEUF3UNITCQ2ZY</ui:Id>
+                <ui:Id>wdgI6Y7UJEC2BCHJE3Z6Y2J72B2GU</ui:Id>
+              </ui:idList>
+            </ui:property>
+          </ui:widget>
+          <ui:widget name="cbDefine" id="wdg6Y5GAISP4VAM7PCWB74VYCL3LE" class="org.radixware.wps.rwt.CheckBox" weight="0.0">
+            <ui:property name="text">
+              <ui:mlstringid>mlsAFZ4O5WRZRBCZOLYLXXAOOMV7E</ui:mlstringid>
+            </ui:property>
+            <ui:property name="geometry">
+              <ui:rect>
+                <ui:x>129</ui:x>
+                <ui:y>24</ui:y>
+                <ui:width>81</ui:width>
+                <ui:height>21</ui:height>
+              </ui:rect>
+            </ui:property>
+            <ui:property name="objectName">
+              <ui:string>cbDefine</ui:string>
+            </ui:property>
+          </ui:widget>
+          <ui:widget name="list" id="wdgZXLLWIHJSJDXRG43MLNY6RQJ6U" class="org.radixware.wps.rwt.ListBox" weight="0.0">
+            <ui:property name="geometry">
+              <ui:rect>
+                <ui:x>86</ui:x>
+                <ui:y>105</ui:y>
+                <ui:width>135</ui:width>
+                <ui:height>57</ui:height>
+              </ui:rect>
+            </ui:property>
+            <ui:property name="objectName">
+              <ui:string>list</ui:string>
+            </ui:property>
+            <ui:property name="expand">
+              <ui:bool>true</ui:bool>
+            </ui:property>
+          </ui:widget>
+          <ui:widget name="widget" id="wdg6TA7SHDUJ5ESRJOIVRRNDJTASM" class="org.radixware.wps.rwt.HorizontalBoxContainer" weight="0.0">
+            <ui:property name="geometry">
+              <ui:rect>
+                <ui:x>3</ui:x>
+                <ui:y>95</ui:y>
+                <ui:width>309</ui:width>
+                <ui:height>21</ui:height>
+              </ui:rect>
+            </ui:property>
+            <ui:widget name="lbSystem" id="wdgYF7GBI53TRAGHFYPLOEWR2XIHY" class="org.radixware.wps.rwt.Label" weight="0.0">
+              <ui:property name="text">
+                <ui:mlstringid>mlsNIJWOLI6XBDLFPDXBBZB3C2HUQ</ui:mlstringid>
+              </ui:property>
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>74</ui:x>
+                  <ui:y>9</ui:y>
+                  <ui:width>50</ui:width>
+                  <ui:height>20</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="expand">
+                <ui:bool>true</ui:bool>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>lbSystem</ui:string>
+              </ui:property>
+            </ui:widget>
+            <ui:widget name="lbAppRole" id="wdgTI7KLBL5JNGFHKHWPWF3J2XVTU" class="org.radixware.wps.rwt.Label" weight="0.0">
+              <ui:property name="text">
+                <ui:mlstringid>mlsZJOUD56AHFDGFP7ZTRILNGYBWE</ui:mlstringid>
+              </ui:property>
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>147</ui:x>
+                  <ui:y>14</ui:y>
+                  <ui:width>50</ui:width>
+                  <ui:height>20</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>lbAppRole</ui:string>
+              </ui:property>
+              <ui:property name="expand">
+                <ui:bool>true</ui:bool>
+              </ui:property>
+            </ui:widget>
+          </ui:widget>
+        </ui:widget>
+        <ui:widget name="aRevokeAllRoles" id="wdgI6Y7UJEC2BCHJE3Z6Y2J72B2GU" class="org.radixware.wps.views.RwtAction" weight="0.0">
+          <ui:property name="geometry">
+            <ui:rect>
+              <ui:x>73</ui:x>
+              <ui:y>13</ui:y>
+              <ui:width>30</ui:width>
+              <ui:height>25</ui:height>
+            </ui:rect>
+          </ui:property>
+          <ui:property name="icon">
+            <ui:imageRef>imgYHTVMMFW4VHVZJRUDLRALGGYXI</ui:imageRef>
+          </ui:property>
+          <ui:property name="toolTip">
+            <ui:mlstringid>mlsEN7JKJWVVNCQJJJ3QNC5GXCDFM</ui:mlstringid>
+          </ui:property>
+          <ui:property name="objectName">
+            <ui:string>aRevokeAllRoles</ui:string>
+          </ui:property>
+        </ui:widget>
+        <ui:widget name="aAddRole" id="wdg7ZC72JMH3BFQFB4DCXHQM7FKNY" class="org.radixware.wps.views.RwtAction" weight="0.0">
+          <ui:property name="geometry">
+            <ui:rect>
+              <ui:x>13</ui:x>
+              <ui:y>13</ui:y>
+              <ui:width>30</ui:width>
+              <ui:height>25</ui:height>
+            </ui:rect>
+          </ui:property>
+          <ui:property name="icon">
+            <ui:imageRef>imgDH5JZKQNGREJBB6YH4YYJ54DHU</ui:imageRef>
+          </ui:property>
+          <ui:property name="objectName">
+            <ui:string>aAddRole</ui:string>
+          </ui:property>
+          <ui:property name="toolTip">
+            <ui:mlstringid>mls7ZH2RKZ2QVHMJFDTKQAWDIJYFA</ui:mlstringid>
+          </ui:property>
+        </ui:widget>
+        <ui:widget name="aRevokeRole" id="wdgZRXNS4BNZ5DKTEUF3UNITCQ2ZY" class="org.radixware.wps.views.RwtAction" weight="0.0">
+          <ui:property name="geometry">
+            <ui:rect>
+              <ui:x>43</ui:x>
+              <ui:y>13</ui:y>
+              <ui:width>30</ui:width>
+              <ui:height>25</ui:height>
+            </ui:rect>
+          </ui:property>
+          <ui:property name="icon">
+            <ui:imageRef>imgTGXV5P5GONAXZLZ3JBDBMO4FY4</ui:imageRef>
+          </ui:property>
+          <ui:property name="toolTip">
+            <ui:mlstringid>mlsEGDG3ELWXZBRLHMVIQUGALOBUE</ui:mlstringid>
+          </ui:property>
+          <ui:property name="objectName">
+            <ui:string>aRevokeRole</ui:string>
+          </ui:property>
+        </ui:widget>
+      </ui:widget>
+      <ui:connections>
+        <ui:connection>
+          <ui:sender>wdgJZ5IGUGA55BC3OGVCJLJTVE37U</ui:sender>
+          <ui:signal>opened()</ui:signal>
+          <ui:slot>mth6FSHXQD76VE7FBWOJHP776G6CY</ui:slot>
+          <ui:interface>org.radixware.wps.views.dialog.RwtDialog.RwtDialogListener</ui:interface>
+          <ui:registrator>addDialogListener</ui:registrator>
+          <ui:returnType>void</ui:returnType>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdg6Y5GAISP4VAM7PCWB74VYCL3LE</ui:sender>
+          <ui:signal>onSelectionChange(org.radixware.wps.rwt.CheckBox checkBox)</ui:signal>
+          <ui:slot>mthFSIISGWZBNGZNEGJCOBZCAW6OE</ui:slot>
+          <ui:interface>org.radixware.wps.rwt.CheckBox.SelectionStateListener</ui:interface>
+          <ui:registrator>addSelectionStateListener</ui:registrator>
+          <ui:returnType>void</ui:returnType>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdg7ZC72JMH3BFQFB4DCXHQM7FKNY</ui:sender>
+          <ui:signal>triggered(org.radixware.kernel.common.client.widgets.actions.Action action)</ui:signal>
+          <ui:slot>mthIXAYGOIGUNGS7A27V2OFBY6WZA</ui:slot>
+          <ui:interface>org.radixware.kernel.common.client.widgets.actions.Action.ActionListener</ui:interface>
+          <ui:registrator>addActionListener</ui:registrator>
+          <ui:returnType>void</ui:returnType>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgZRXNS4BNZ5DKTEUF3UNITCQ2ZY</ui:sender>
+          <ui:signal>triggered(org.radixware.kernel.common.client.widgets.actions.Action action)</ui:signal>
+          <ui:slot>mthEALJJLXJLBF6NOJGDGGRAWH5B4</ui:slot>
+          <ui:interface>org.radixware.kernel.common.client.widgets.actions.Action.ActionListener</ui:interface>
+          <ui:registrator>addActionListener</ui:registrator>
+          <ui:returnType>void</ui:returnType>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgI6Y7UJEC2BCHJE3Z6Y2J72B2GU</ui:sender>
+          <ui:signal>triggered(org.radixware.kernel.common.client.widgets.actions.Action action)</ui:signal>
+          <ui:slot>mthWQZW5L52B5D3RELBTTQ5POTNOE</ui:slot>
+          <ui:interface>org.radixware.kernel.common.client.widgets.actions.Action.ActionListener</ui:interface>
+          <ui:registrator>addActionListener</ui:registrator>
+          <ui:returnType>void</ui:returnType>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgJZ5IGUGA55BC3OGVCJLJTVE37U</ui:sender>
+          <ui:signal>beforeClose(org.radixware.kernel.common.enums.EDialogButtonType closeButtonType,org.radixware.kernel.common.client.views.IDialog.DialogResult closeResult)</ui:signal>
+          <ui:slot>mth6W2XPUX625GUDCVITWXAXS3GB4</ui:slot>
+          <ui:interface>org.radixware.wps.rwt.Dialog.BeforeCloseButtonListener</ui:interface>
+          <ui:registrator>addBeforeCloseListener</ui:registrator>
+          <ui:returnType>boolean</ui:returnType>
+        </ui:connection>
+      </ui:connections>
+    </ui:ui>
+    <EmbeddedModel Id="arm7J5XAWOKZFHQTPMFLHATY3NMWQ" Name="RoleArrEditorDlgWeb:Model" Type="17">
+      <AccessRules/>
+      <Headers>
+        <Src Name="Headerarm7J5XAWOKZFHQTPMFLHATY3NMWQ"/>
+      </Headers>
+      <Bodies>
+        <Src Name="Bodyarm7J5XAWOKZFHQTPMFLHATY3NMWQ">
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="221"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> rolesGuids = null;
+</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> roleListDocument = null;
+</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> roleListDocument2 = null;</xsc:Java>
+          </xsc:Item>
+        </Src>
+      </Bodies>
+      <MethodGroup Id="cmgLIB2CRAHSRCBHAYCMGQFK7LE6M" Name="Root"/>
+      <PropertyGroup Id="cpgOPDUUYLNTRE7FBGOQ3K3KDGT3I" Name="Root"/>
+      <Properties/>
+      <Methods>
+        <Method Id="mthNVCHUTIPKVEUHCJWFRFJNESJIU" Name="fill" Nature="0" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if (rolesGuids == null) {
+    return;
+}
+roleListDocument2 = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Factory.newInstance();
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument.RoleList"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> roleList = roleListDocument2.addNewRoleList();
+if (rolesGuids.size()>0) {
+    for (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> guid : rolesGuids) {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument.RoleList.Role"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> role = roleList.addNewRole();
+        role.Id = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Factory.loadFrom(guid);
+    }
+    int inputSize = rolesGuids.size();
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcETZW74XVUBEX5N3MV3IZMMDTUU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> cmd = getCommand(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="clcPPJBWPUZDBAOBG7VYPZWDSWM74"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+    cmd.execute();
+    roleList = roleListDocument2.RoleList;
+    
+    if (inputSize != roleList.RoleList.size()) {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthA5MYDLGBIZFR7HVUDLFWB2FGJA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsNVYMXEVQDRCZHL2IID2WZGJCDQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mls6NHIJP446BHRTF5DPORGW3E7QY"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+    }
+    rolesGuids.clear();
+    for (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument.RoleList.Role"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> role : roleList.RoleList) {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcUEGK7CJB6NET3HMZ7Z4HWLEQ6Y"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> item = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcUEGK7CJB6NET3HMZ7Z4HWLEQ6Y mthKTM6DXUNFZGFXKUD57HLFLQKZQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+        item.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcARXODDBCB5ATVAVXSIHCSKCTW4 mthEUSULYPVFZBERBHJ2NNFIYNUWQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(role.Name);
+        if(role.IsApplicationRole == Boolean.TRUE){
+            item.setForeground(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcWZMNTDGRGFGDZHH7E7GXH2MZ2M"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.BLUE);
+        }
+        rolesGuids.add(role.Id.toString());        
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ wdgZXLLWIHJSJDXRG43MLNY6RQJ6U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWWE4WRISX5CWLCUYEGVI4XSMYU mthW23CXDTS7VHZPIZXCABNAKRCIQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(item);        
+    }
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ wdgZXLLWIHJSJDXRG43MLNY6RQJ6U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.CurrentRow = 0;
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthclcKPRAHIUWSPORDID2ABQAQH3XQ4" Name="getRoleListCmd" Nature="1" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="command" Id="mprHWJMZZ2D4JAVRIHU35BP6DEOIU">
+              <Type TypeId="411" Path="clcKPRAHIUWSPORDID2ABQAQH3XQ4"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>
+try {
+    roleListDocument = command.send();
+} catch(Exception e) {
+    showException(e);
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthclcPPJBWPUZDBAOBG7VYPZWDSWM74" Name="fillNamesAtRoleListCmd" Nature="1" IsOverride="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="command" Id="mprB6H2LYLA6BFJLBPWWH2SS5LJSY">
+              <Type TypeId="411" Path="clcPPJBWPUZDBAOBG7VYPZWDSWM74"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>
+try {
+    roleListDocument2 = command.send(roleListDocument2);
+} catch(Exception e) {
+    showException(e);
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthIXAYGOIGUNGS7A27V2OFBY6WZA" Name="aAddRole_triggered" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="action" Id="mprKECS7PQGXVAKBIBXCOE3J26DYI">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.actions.Action"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="cpeNRYE7B3JDZALLFTFUBNWYVYJWA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> dialog = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="cpeNRYE7B3JDZALLFTFUBNWYVYJWA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>());
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="cpeNRYE7B3JDZALLFTFUBNWYVYJWA armNRYE7B3JDZALLFTFUBNWYVYJWA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> model = dialog.getModel();
+if (dialog.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aic6XXEZKQ2K5AEJFYAA3DX7EFR6U mth64RWGAYVHRDGJMLHSN66TOXNQQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>() == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcDAOFOPE66ZA5ZP7ALHOOPQIQ6I"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcDAOFOPE66ZA5ZP7ALHOOPQIQ6I prdF2Y7KMCNG5BJNNVWGIMXUHANS4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+    rolesGuids.add(model.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeNRYE7B3JDZALLFTFUBNWYVYJWA armNRYE7B3JDZALLFTFUBNWYVYJWA prdQBMW7TR5XNGIRCYMC7XTKFZG3I" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcUEGK7CJB6NET3HMZ7Z4HWLEQ6Y"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> newItem = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcUEGK7CJB6NET3HMZ7Z4HWLEQ6Y mthKTM6DXUNFZGFXKUD57HLFLQKZQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+    newItem.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcARXODDBCB5ATVAVXSIHCSKCTW4 mthEUSULYPVFZBERBHJ2NNFIYNUWQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(model.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeNRYE7B3JDZALLFTFUBNWYVYJWA armNRYE7B3JDZALLFTFUBNWYVYJWA prdKXKCQG3URREOROKNAJQJNKIW7A" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+    if (model.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeNRYE7B3JDZALLFTFUBNWYVYJWA armNRYE7B3JDZALLFTFUBNWYVYJWA prdEC6EOZZT3FB6ZD5R3MLB75CIR4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+        newItem.setForeground(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcWZMNTDGRGFGDZHH7E7GXH2MZ2M"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.BLUE);
+    }
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ wdgZXLLWIHJSJDXRG43MLNY6RQJ6U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWWE4WRISX5CWLCUYEGVI4XSMYU mthW23CXDTS7VHZPIZXCABNAKRCIQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(newItem);
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ wdgZXLLWIHJSJDXRG43MLNY6RQJ6U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Current = newItem;
+
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ arm7J5XAWOKZFHQTPMFLHATY3NMWQ mthXY4Z4OLQB5AYPEVG2UOIER5ARU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthEALJJLXJLBF6NOJGDGGRAWH5B4" Name="aRevokeRole_triggered" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="action" Id="mpr2CGNLAJNTNBZFJ44Z6P65346UM">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.actions.Action"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>int index = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ wdgZXLLWIHJSJDXRG43MLNY6RQJ6U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.CurrentRow;
+if (index &lt; 0)
+    return;
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ wdgZXLLWIHJSJDXRG43MLNY6RQJ6U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWWE4WRISX5CWLCUYEGVI4XSMYU mthJDIJKUTRTVCGDNWQ2E3SYRAG3I" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(index);
+rolesGuids.remove(index);
+
+if (index >= </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ wdgZXLLWIHJSJDXRG43MLNY6RQJ6U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWWE4WRISX5CWLCUYEGVI4XSMYU mthSMQCKC6TDVESHL4H2RTQ7M25AA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>())
+    index = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ wdgZXLLWIHJSJDXRG43MLNY6RQJ6U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWWE4WRISX5CWLCUYEGVI4XSMYU mthSMQCKC6TDVESHL4H2RTQ7M25AA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>() - 1;
+if(index>0){
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ wdgZXLLWIHJSJDXRG43MLNY6RQJ6U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.CurrentRow = index;
+}
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ arm7J5XAWOKZFHQTPMFLHATY3NMWQ mthXY4Z4OLQB5AYPEVG2UOIER5ARU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthWQZW5L52B5D3RELBTTQ5POTNOE" Name="aRevokeAllRoles_triggered" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="action" Id="mprHMBEQKQX2JFDPOQ2UMAJXFZOEM">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.actions.Action"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if (rolesGuids == null || rolesGuids.size() == 0 || !</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mth2JQ3SLH3LFDOBBPAKPGBK2JVAY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsZGDC36USB5DTLLQ447DB4HPV3Q"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsEABAE3SYGNGATABMWU7UJMBSWU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>))
+    return;
+rolesGuids.clear();
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ wdgZXLLWIHJSJDXRG43MLNY6RQJ6U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWWE4WRISX5CWLCUYEGVI4XSMYU mth7AV5XFVUD5CJ3AZ6B4QQYX37YA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ arm7J5XAWOKZFHQTPMFLHATY3NMWQ mthXY4Z4OLQB5AYPEVG2UOIER5ARU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthXY4Z4OLQB5AYPEVG2UOIER5ARU" Name="updateButtonsState" Nature="0" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>boolean isEnabled = !</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcIGHXUXORMFFNXGVBAEOQKN3Q6Y mth7UWTWB24FVASZBR3RCXXWXC4PU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthRW4PMU4LZZBPHNXA6VCQA6DQNQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+boolean isEmpty = rolesGuids == null || rolesGuids.isEmpty();
+boolean hasCurrent = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ wdgZXLLWIHJSJDXRG43MLNY6RQJ6U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Current != null;
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ wdgZRXNS4BNZ5DKTEUF3UNITCQ2ZY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(isEnabled &amp;&amp; !isEmpty &amp;&amp; hasCurrent);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ wdgI6Y7UJEC2BCHJE3Z6Y2J72B2GU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(isEnabled &amp;&amp; !isEmpty);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ wdg7ZC72JMH3BFQFB4DCXHQM7FKNY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(isEnabled &amp;&amp; rolesGuids != null);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ wdg6Y5GAISP4VAM7PCWB74VYCL3LE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setEnabled(isEnabled);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth6FSHXQD76VE7FBWOJHP776G6CY" Name="widget_opened" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if (this.getPropEditorContext().getHolderModel() instanceof </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> arrRoleHolder = (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) this.getPropEditorContext().getHolderModel();
+
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcHEXT6TMJ2FAXJGCQHFISLL36AA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> rolePropIds = arrRoleHolder.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU mthACJJVIPBDRH7RD7ESZLJ3SYRAI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(getPropEditorContext().property.Id);
+    if (rolePropIds != null)
+        if (rolePropIds.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthLSANOBLXINHNPFDVOGRUZDVNV4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>() == null)
+            rolesGuids = null;
+        else
+            rolesGuids = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="221"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>((</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="221"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) rolePropIds.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthLSANOBLXINHNPFDVOGRUZDVNV4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>());
+}
+
+if (rolesGuids != null)
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ wdg6Y5GAISP4VAM7PCWB74VYCL3LE" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setSelected(true);
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ wdgTI7KLBL5JNGFHKHWPWF3J2XVTU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcP2R7IHUBPFDGFNCMJF7KXYRMLM mthHTGYUIY2UZBWNFBMDDI7JDLQWQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcWZMNTDGRGFGDZHH7E7GXH2MZ2M"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.BLUE);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4 mth7J6NDTEGS5HN3E5J2AU5CNSULA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ wdgYF7GBI53TRAGHFYPLOEWR2XIHY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>,</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ wdgTI7KLBL5JNGFHKHWPWF3J2XVTU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ arm7J5XAWOKZFHQTPMFLHATY3NMWQ mthNVCHUTIPKVEUHCJWFRFJNESJIU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ arm7J5XAWOKZFHQTPMFLHATY3NMWQ mthXY4Z4OLQB5AYPEVG2UOIER5ARU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthNSULZZBUBJEKBP3AIFYMRUPN6Y" Name="widget_onAction" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="actionName" Id="mprK4J6GFI24RB5DELJ7SE7ZZDBZE">
+              <Type TypeId="400" extStr="String"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if (actionName == org.radixware.wps.views.dialog.RwtDialog.CLOSE_ACTION_OK) {
+    if (this.getPropEditorContext().getHolderModel() instanceof </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> arrRoleHolder = (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) this.getPropEditorContext().getHolderModel();
+
+        String title = null;
+        if (rolesGuids != null) {
+            title = "";
+            for (int i = 0; i &lt;= </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ wdgZXLLWIHJSJDXRG43MLNY6RQJ6U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWWE4WRISX5CWLCUYEGVI4XSMYU mthSMQCKC6TDVESHL4H2RTQ7M25AA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(); i++) {
+                if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ wdgZXLLWIHJSJDXRG43MLNY6RQJ6U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWWE4WRISX5CWLCUYEGVI4XSMYU mth27MLKHNIDVDBZHCW2V5S3CAQ7Q" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(i) != null) {
+                    if (title.length() > 0)
+                        title += "; ";
+                    title += </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ wdgZXLLWIHJSJDXRG43MLNY6RQJ6U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWWE4WRISX5CWLCUYEGVI4XSMYU mth27MLKHNIDVDBZHCW2V5S3CAQ7Q" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(i).</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcARXODDBCB5ATVAVXSIHCSKCTW4 mth6EKKNQEMLVHXRPPQSWRCR3P6KU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+                }
+            }
+        }
+
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcG4LPCCZWKFAYDPURZEU7GOHAWY"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> propRoleTitlesProp = arrRoleHolder.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU mthP773EUAWSFGYNF4QD3ACXVIKFM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(getPropEditorContext().property.Id);
+        if (propRoleTitlesProp == null) {
+            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().messageError(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsCVIAJFHT3RFHJL3DUVGEHOMPVA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsESCJDFAJOZBO5EZKRWW5QAOYLQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+            return;
+        }
+        propRoleTitlesProp.setValueObject(title);
+
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcHEXT6TMJ2FAXJGCQHFISLL36AA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> propRoleIdsProp = arrRoleHolder.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU mthACJJVIPBDRH7RD7ESZLJ3SYRAI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(getPropEditorContext().property.Id);
+        if (propRoleIdsProp == null) {
+            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().messageError(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsLUCUDVDXTVCJPKVSHUXKIXUXXQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mls3B7BOHUO2ZCZNN2B6MBX3R6FBE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+            return;
+        }
+
+        propRoleIdsProp.setValueObject(rolesGuids);
+
+    } else {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().messageError(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mls4YZANRHYHVAHHNGKNJI5YLR3T4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mls2LGWK3FJINE5TNJ6PSWMGEYQSQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+        return;
+    }
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mth7EFAYV56HBHZTJRSCD227GZ2ZA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthFSIISGWZBNGZNEGJCOBZCAW6OE" Name="widget_onSelectionChange" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="checkBox" Id="mprUPVKCESPGNDITGENQMLTYBF5TQ">
+              <Type TypeId="400" extStr="org.radixware.wps.rwt.CheckBox"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if (checkBox.isSelected()) {
+    if (rolesGuids == null)
+        rolesGuids = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="221"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+} else {
+    if (rolesGuids != null &amp;&amp; rolesGuids.size() > 0 &amp;&amp; !</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mth2JQ3SLH3LFDOBBPAKPGBK2JVAY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsY76FJRB3AFHLXDX7D4VNZSVWPE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsKBPZR4CEIZAEVCUXH2V23SPU6U"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>)) {
+        checkBox.setSelected(true);
+        return;
+    }
+    rolesGuids = null;
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ wdgZXLLWIHJSJDXRG43MLNY6RQJ6U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWWE4WRISX5CWLCUYEGVI4XSMYU mth7AV5XFVUD5CJ3AZ6B4QQYX37YA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+}
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ arm7J5XAWOKZFHQTPMFLHATY3NMWQ mthXY4Z4OLQB5AYPEVG2UOIER5ARU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth6W2XPUX625GUDCVITWXAXS3GB4" Name="dialog_beforeClose" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="closeButtonType" Id="mprEYJJAQXBY5BBFDFR6VWQMPV6WY">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EDialogButtonType"/>
+            </Parameter>
+            <Parameter Name="closeResult" Id="mpr2DVTTYCVZFGD7AIXQDNJOSSPEM">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.client.views.IDialog.DialogResult"/>
+            </Parameter>
+          </Parameters>
+          <ReturnType TypeId="400" extStr="boolean"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if (closeResult == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcDAOFOPE66ZA5ZP7ALHOOPQIQ6I"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcDAOFOPE66ZA5ZP7ALHOOPQIQ6I prdF2Y7KMCNG5BJNNVWGIMXUHANS4" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+    if (this.getPropEditorContext().getHolderModel() instanceof </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> arrRoleHolder = (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) this.getPropEditorContext().getHolderModel();
+
+        String title = null;
+        if (rolesGuids != null) {
+            title = "";
+            for (int i = 0; i &lt; </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ wdgZXLLWIHJSJDXRG43MLNY6RQJ6U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWWE4WRISX5CWLCUYEGVI4XSMYU mthSMQCKC6TDVESHL4H2RTQ7M25AA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(); i++) {
+                if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ wdgZXLLWIHJSJDXRG43MLNY6RQJ6U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWWE4WRISX5CWLCUYEGVI4XSMYU mth27MLKHNIDVDBZHCW2V5S3CAQ7Q" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(i) != null) {
+                    if (title.length() > 0)
+                        title += "; ";
+                    title += </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpe7J5XAWOKZFHQTPMFLHATY3NMWQ wdgZXLLWIHJSJDXRG43MLNY6RQJ6U" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWWE4WRISX5CWLCUYEGVI4XSMYU mth27MLKHNIDVDBZHCW2V5S3CAQ7Q" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(i).</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcARXODDBCB5ATVAVXSIHCSKCTW4 mth6EKKNQEMLVHXRPPQSWRCR3P6KU" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+                }
+            }
+        }
+
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcG4LPCCZWKFAYDPURZEU7GOHAWY"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> propRoleTitlesProp = arrRoleHolder.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU mthP773EUAWSFGYNF4QD3ACXVIKFM" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(getPropEditorContext().property.Id);
+        if (propRoleTitlesProp == null) {
+            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().messageError(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsGBLNVXN2QJAMBCW6GUURKFV77Y"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsW5CXQ6STABC4VDM57G2KDSVWKE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+            return true;
+        }
+        propRoleTitlesProp.setValueObject(title);
+
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcHEXT6TMJ2FAXJGCQHFISLL36AA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> propRoleIdsProp = arrRoleHolder.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU mthACJJVIPBDRH7RD7ESZLJ3SYRAI" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(getPropEditorContext().property.Id);
+        if (propRoleIdsProp == null) {
+            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().messageError(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mls2QMEL7YE35AYNCK72BZQWC4FFQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsMDRN3XYPWRHGTPWBVUG6OQDWPI"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+            return true;
+        }
+
+        propRoleIdsProp.setValueObject(rolesGuids);
+
+    } else {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().messageError(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mls4F5QGM5ZKBHB3PPWP74JYXCYKU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsRI3CBJMPBJFVFLHS5QNMYAO7WA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+        return true;
+    }
+}
+return true;</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+      </Methods>
+    </EmbeddedModel>
+  </AdsWebCustomPropEditorDefinition>
+</AdsDefinition>

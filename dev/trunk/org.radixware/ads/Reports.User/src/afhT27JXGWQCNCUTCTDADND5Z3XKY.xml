@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="afhT27JXGWQCNCUTCTDADND5Z3XKY" Name="CfgExportForm.UserReportGroup" Type="19" ClientEnvironment="explorer">
+    <AccessRules/>
+    <Headers>
+      <Src Name="HeaderafhT27JXGWQCNCUTCTDADND5Z3XKY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyafhT27JXGWQCNCUTCTDADND5Z3XKY"/>
+    </Bodies>
+    <MethodGroup Id="cmgJK3COOP6LJHWXNUMFHQ6UBGQZ4" Name="Root"/>
+    <PropertyGroup Id="cpgQU7LPMXYARENRGDD4LORMRKACI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthQBTJF44B3ZDN7DLPVA4RQQ7OUU" Name="extractExportData" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="cfgContext" Id="mprVEBFXCE4SZHR7JKUUAUP4SCVSU">
+            <Type TypeId="411" Path="pdcEntityGroup_______________">
+              <xsc:GenericArguments>
+                <xsc:Argument DerivationRule="extends" Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="data" Id="mpr3RQJSXZP4BFF7OYRUOSV7Y3DT4">
+            <Type TypeId="411" Path="adcE2YCRKQL7JE7HBMJ7SVQTSLQRA"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecRHH7SYO5I5EFRGYIBOSVUXKD7U"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecRHH7SYO5I5EFRGYIBOSVUXKD7U mthDS52HOWT4ZAQZFWRC3K4GU4OH4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(null,data);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthWHMWY4VFSNDRHJXOLK72ZVSRDY" Name="storeExportOptions" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="item" Id="mprHZPQWPDAFVGJHAXDS522YNALQM">
+            <Type TypeId="411" Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4"/>
+          </Parameter>
+          <Parameter Name="context" Id="mprCS4OEXO6V5BYDE2RM3SS7Y4KXU">
+            <Type TypeId="411" Path="pdcEntityGroup_______________">
+              <xsc:GenericArguments>
+                <xsc:Argument DerivationRule="extends" Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Presentations>
+      <Form InheritanceMask="4114">
+        <Model Id="afmT27JXGWQCNCUTCTDADND5Z3XKY" Name="CfgExportForm.UserReportGroup:Model" Type="18">
+          <AccessRules/>
+          <Headers>
+            <Src Name="HeaderafmT27JXGWQCNCUTCTDADND5Z3XKY"/>
+          </Headers>
+          <Bodies>
+            <Src Name="BodyafmT27JXGWQCNCUTCTDADND5Z3XKY"/>
+          </Bodies>
+          <MethodGroup Id="cmgLTRL3EYMW5GYLKUFIZDH43TYCY" Name="Root"/>
+          <PropertyGroup Id="cpg5LAN5SQLO5EGPPTEJETKDASPUU" Name="Root"/>
+          <Properties/>
+          <Methods/>
+        </Model>
+      </Form>
+    </Presentations>
+    <Extends TypeId="411" Path="afh762LZFWFDFGPBJ6P33H4XR2OYQ"/>
+  </AdsClassDefinition>
+</AdsDefinition>

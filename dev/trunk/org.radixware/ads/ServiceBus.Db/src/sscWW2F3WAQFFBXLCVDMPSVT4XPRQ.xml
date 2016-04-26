@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="sscWW2F3WAQFFBXLCVDMPSVT4XPRQ" Name="DeleteNodeParams" Type="9">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="true" PublishedName="org.radixware.kernel.server.types.Statement"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcJYH2HI2WKBDZBF73SYMB7PTSGA"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcKBIRVS5EXVBIXKXCFN6PV4KMUU"/>
+    </Bodies>
+    <MethodGroup Id="cmgEBWWE4B4YBCFXKBHEIGV7Z2JQY" Name="Root"/>
+    <PropertyGroup Id="cpgWU54KISPUVCYNF7SYBTZ6CGUVU" Name="Root"/>
+    <Properties>
+      <Property Id="prmFLXBXUS7ONDABOYMG5442L4HTY" Name="nodeId" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="execute" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="nodeId" Id="mprFLXBXUS7ONDABOYMG5442L4HTY">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>DELETE FROM </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblPYSASPASJBD3BDXH3LHM7N3UJY"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> WHERE </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblPYSASPASJBD3BDXH3LHM7N3UJY" PropId="colUYB6X37IQVERJFRMS3QOZEYC7Q" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmFLXBXUS7ONDABOYMG5442L4HTY"/>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblPYSASPASJBD3BDXH3LHM7N3UJY"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="400" extStr="org.radixware.kernel.server.types.SqlClass"/>
+  </AdsClassDefinition>
+</AdsDefinition>

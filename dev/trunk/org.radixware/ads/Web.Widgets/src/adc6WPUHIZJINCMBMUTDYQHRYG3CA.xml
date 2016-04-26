@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc6WPUHIZJINCMBMUTDYQHRYG3CA" Name="ValEditorFactory" Type="3" Environment="web">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.wps.views.editors.valeditors.ValEditorFactory"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc6WPUHIZJINCMBMUTDYQHRYG3CA"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc6WPUHIZJINCMBMUTDYQHRYG3CA"/>
+    </Bodies>
+    <MethodGroup Id="cmgCKYDLN3KO5ATTLHH5WGEIMC7GY" Name="Root"/>
+    <PropertyGroup Id="cpgOCBB6MCTLZG37IRHWQV4L5YEL4" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthZUUZNIRZMJH2ZP3FVECPYQXO2I" Name="createValEditor" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="createValEditor(Lorg.radixware.kernel.common.enums.EValType;Lorg.radixware.kernel.common.client.meta.mask.EditMask;Lorg.radixware.kernel.common.client.IClientEnvironment;)Lorg.radixware.wps.views.editors.valeditors.IValEditor&lt;**>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="valType" Id="mprY2DMWCBYEZDILBKWUI7B6V4RMA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+          </Parameter>
+          <Parameter Name="editMask" Id="mprXPVTS2QGDNBGXL7WI3FDSAU34E">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
+          </Parameter>
+          <Parameter Name="environment" Id="mprESTYNKPW3VAULAVYEQCTR7WT3M">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.views.editors.valeditors.IValEditor">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?"/>
+            <xsc:Argument Alias="?"/>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthDNLMH7RNEBHJRIIGGU33VAKNLM" Name="getDefault" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getDefault()Lorg.radixware.wps.views.editors.valeditors.ValEditorFactory;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.wps.views.editors.valeditors.ValEditorFactory"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

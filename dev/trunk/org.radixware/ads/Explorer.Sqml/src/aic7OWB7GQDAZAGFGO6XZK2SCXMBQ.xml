@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aic7OWB7GQDAZAGFGO6XZK2SCXMBQ" Name="ISqmlParameters" Type="5" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.meta.sqml.ISqmlParameters"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcNN3VMF3HB5ERHMWLMDOI2UL2XU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcGWQI5OQEJBA2VCN7ZAKUYGZGDQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgSUICFSNBZRHTTEQWNI5HJKFZMA" Name="Root"/>
+    <PropertyGroup Id="cpgMGOHZV6EERGHLIWRBANTTOZBWE" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthC22NS4A73ZGUTGY7UIDOCMOQEY" Name="removeParameter" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="removeParameter(I)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mpr6HRTFY2RQZGLPHOSPEB5JXDFIM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth2XGEZW4FPNHTHK7HJJNUAFXKPU" Name="addParameter" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="addParameter(Lorg.radixware.kernel.common.client.meta.sqml.ISqmlModifiableParameter;)I"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parameter" Id="mprTVREKB5CVJE5PM3DXBWA5GPUUY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlModifiableParameter"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mth76P2EFMW4ZGV3I5WHLIVPEJ3TA" Name="getAll" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getAll()Ljava.util.List&lt;Lorg.radixware.kernel.common.client.meta.sqml.ISqmlParameter;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlParameter"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthFAPS6AOVLNCRXL7IG55JIGY5UA" Name="createNewParameter" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="createNewParameter(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.client.widgets.IWidget;)Lorg.radixware.kernel.common.client.meta.sqml.ISqmlModifiableParameter;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprB6RNNYOT25D2RAJQDXFPVB4EYY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parentWidget" Id="mprKJ2U5EOZNBAGFH4R2F5CJ3BAZU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IWidget"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlModifiableParameter"/>
+      </Method>
+      <Method Id="mthCP6652GOE5E2FI5SCRPQRABKWU" Name="size" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="size()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mth56WOR4M4RZCVHHQIKZTI42IU3U" Name="get" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="get(I)Lorg.radixware.kernel.common.client.meta.sqml.ISqmlParameter;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mprRU4BOJU3DZA43OQMKMEWMAFKKQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlParameter"/>
+      </Method>
+      <Method Id="mthBDCDUXEA2NAG5ALWINPOQ36X3A" Name="openParameterEditor" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="openParameterEditor(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.client.meta.sqml.ISqmlParameter;ZLorg.radixware.kernel.common.client.widgets.IWidget;)Lorg.radixware.kernel.common.client.views.IDialog.DialogResult;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprC5F2ZEAPIFG2JHZGQESD2ODKYA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parameter" Id="mpr4MGAKICQJFAFXIGGADXE4MEPI4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlParameter"/>
+          </Parameter>
+          <Parameter Name="isReadOnly" Id="mprPLO2C3H6Y5GTPH7TL3OAV7OPPE">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="parentWidget" Id="mprFH4MILRS3FHONMH7XFXIUALXCM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IWidget"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.views.IDialog.DialogResult"/>
+      </Method>
+      <Method Id="mthC3UBLAOK4RGXZG4OU7DKG75QGQ" Name="getParameterById" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getParameterById(Lorg.radixware.kernel.common.types.Id;)Lorg.radixware.kernel.common.client.meta.sqml.ISqmlParameter;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="paramId" Id="mpr5NYVTEGVPNAUDCBHF46BEIEGNU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.sqml.ISqmlParameter"/>
+      </Method>
+      <Method Id="mth7SAS6S3WBRD6VAVLZ45NZGFNZM" Name="swapParameters" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="swapParameters(II)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="x" Id="mprUIVW7MNR2NFADGIFNMHJB6OAKU">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="y" Id="mprQ4TS3OJVRBGJNCHZM4T6YZOTOM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthWNDIL2JLY5CVZJOPADHUANEZAE" Name="isReadonly" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isReadonly()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

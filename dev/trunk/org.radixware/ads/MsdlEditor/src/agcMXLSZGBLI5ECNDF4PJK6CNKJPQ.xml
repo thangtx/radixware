@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="agcMXLSZGBLI5ECNDF4PJK6CNKJPQ" Name="MsdlSchemeGroup" DescriptionId="mls2FPF2WWOMBHKLLO3Q76YWLLC2M" Type="11">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderagcGXXLT2HCUZDBNLRZSCI7YWLEOU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyagcGXXLT2HCUZDBNLRZSCI7YWLEOU"/>
+    </Bodies>
+    <MethodGroup Id="cmgEVAZ6S75JREOVGHJNRHFVBPJLE" Name="Root"/>
+    <PropertyGroup Id="cpg72VBPBUDUFG73G6QNQ7HQMAQBI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthcmdQTBQ7SAZ7VE2BK5V2FA3VMNM7U" Name="onCommand_exportAll" DescriptionId="mlsZO6EQXKP3BHDHKFW2R4HFZTTBA" Nature="1" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <ReturnType TypeId="451" Path="xsd77LEE5CMNZHAFGV5TMMAOZSAVE" extStr="MsdlSchemesDocument"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>java.util.Iterator&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecMXLSZGBLI5ECNDF4PJK6CNKJPQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> iter = this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntityGroup_______________ mthH7N6UFUIO5E6XBVWQXTNWXKLOE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd77LEE5CMNZHAFGV5TMMAOZSAVE" extStr="MsdlSchemesDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> doc =  </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd77LEE5CMNZHAFGV5TMMAOZSAVE" extStr="MsdlSchemesDocument.Factory"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.newInstance();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd77LEE5CMNZHAFGV5TMMAOZSAVE" extStr="UserDefinedDefs"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> msdlSchemes = doc.addNewMsdlSchemes();
+
+while (iter.hasNext()){    
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd77LEE5CMNZHAFGV5TMMAOZSAVE" extStr="UserDefinedDefs.UserDefinedDef"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> msdlScheme = msdlSchemes.addNewUserDefinedDef();
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecMXLSZGBLI5ECNDF4PJK6CNKJPQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> entity = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecMXLSZGBLI5ECNDF4PJK6CNKJPQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)iter.next();
+    entity.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecMXLSZGBLI5ECNDF4PJK6CNKJPQ mthEL3YX7V6ZVAB5PKT6QBP32CCJY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(msdlScheme);
+    //msdlScheme.Guid = entity.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecMXLSZGBLI5ECNDF4PJK6CNKJPQ col4SI755YCLRE4BOBSKX7BVUVQY4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+    //msdlScheme.Title = entity.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecMXLSZGBLI5ECNDF4PJK6CNKJPQ col32KF5KAE2RB6JL7MLOASNV2NFU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+    //if(entity.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecMXLSZGBLI5ECNDF4PJK6CNKJPQ colBIPJ6JCOKZBG3DOKDPMCQJJCAY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>!=null &amp;&amp; entity.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecMXLSZGBLI5ECNDF4PJK6CNKJPQ colBIPJ6JCOKZBG3DOKDPMCQJJCAY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.AdsDefinition!=null){
+    //    msdlScheme.Definition = entity.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecMXLSZGBLI5ECNDF4PJK6CNKJPQ colBIPJ6JCOKZBG3DOKDPMCQJJCAY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.AdsDefinition;
+    //}
+    //msdlScheme.Description = entity.;
+}
+return doc;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthcmd3SW5EKJWBZBWRCIFNLFWBXN35Q" Name="onCommand_importAll" DescriptionId="mlsLNCYHX45G5GTZK3MRJOXQXXD2Q" Nature="1" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="input" Id="mprSL2WYYDQJZARFKYAKEVBR2FIIY">
+            <Type TypeId="451" Path="xsd77LEE5CMNZHAFGV5TMMAOZSAVE" extStr="MsdlSchemesDocument"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451" Path="xsd77LEE5CMNZHAFGV5TMMAOZSAVE" extStr="CmdImportResultDocument"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd77LEE5CMNZHAFGV5TMMAOZSAVE" extStr="CmdImportResultDocument"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> res =  </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd77LEE5CMNZHAFGV5TMMAOZSAVE" extStr="CmdImportResultDocument.Factory"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.newInstance();
+res.CmdImportResult = "";
+try {
+    java.util.List&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd77LEE5CMNZHAFGV5TMMAOZSAVE" extStr="UserDefinedDefs.UserDefinedDef"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> list = input.MsdlSchemes.UserDefinedDefList;
+    for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd77LEE5CMNZHAFGV5TMMAOZSAVE" extStr="UserDefinedDefs.UserDefinedDef"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> msdlScheme : list) {
+        /*java.util.Iterator&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecMXLSZGBLI5ECNDF4PJK6CNKJPQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> iter = this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntityGroup_______________ mthH7N6UFUIO5E6XBVWQXTNWXKLOE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+        
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecMXLSZGBLI5ECNDF4PJK6CNKJPQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> searchEntity = null;
+        boolean isFind = false;
+        while (iter.hasNext()) {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecMXLSZGBLI5ECNDF4PJK6CNKJPQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> entity = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecMXLSZGBLI5ECNDF4PJK6CNKJPQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)iter.next();
+            if (entity.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecMXLSZGBLI5ECNDF4PJK6CNKJPQ col4SI755YCLRE4BOBSKX7BVUVQY4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.equals(msdlScheme.Guid)) {
+                searchEntity = entity;
+                isFind = true;
+                break;
+            }
+        }*/
+        
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecMXLSZGBLI5ECNDF4PJK6CNKJPQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> searchEntity =</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="agcMXLSZGBLI5ECNDF4PJK6CNKJPQ mthGJJMVS2YXFH37MZ6UO57WOF7FM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(msdlScheme.Guid);
+        boolean isFind=(searchEntity != null);
+        if (!isFind) {
+            searchEntity = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecMXLSZGBLI5ECNDF4PJK6CNKJPQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+            searchEntity.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthMUQ4NQFMSTNRDDXBABIFNQAAAE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+            searchEntity.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecMXLSZGBLI5ECNDF4PJK6CNKJPQ col4SI755YCLRE4BOBSKX7BVUVQY4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = msdlScheme.getGuid();
+        }
+        searchEntity.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecMXLSZGBLI5ECNDF4PJK6CNKJPQ mthHN3PYRABE5FXPLE3MPHWFWNW4Y" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(msdlScheme);
+        /*searchEntity.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecMXLSZGBLI5ECNDF4PJK6CNKJPQ col32KF5KAE2RB6JL7MLOASNV2NFU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = msdlScheme.getTitle();
+        //searchEntity.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecM7J46MP6F3PBDIJEABQAQH3XQ4 colPJZG5RYZF7PBDIJEABQAQH3XQ4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>  = role.getDescription();
+        
+        if(msdlScheme.Definition!=null &amp;&amp; msdlScheme.Definition.AdsRoleDefinition!=null){
+            org.radixware.schemas.adsdef.AdsDefinitionDocument xDoc = org.radixware.schemas.adsdef.AdsDefinitionDocument.Factory.newInstance();
+            xDoc.addNewAdsDefinition().AdsMsdlSchemeDefinition = msdlScheme.Definition.AdsMsdlSchemeDefinition;            
+            searchEntity.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecMXLSZGBLI5ECNDF4PJK6CNKJPQ colBIPJ6JCOKZBG3DOKDPMCQJJCAY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = xDoc;
+        }*/
+                 
+        if (isFind)
+            searchEntity.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mth5A5TVHUCNVHFXIT7FDJ75MILHE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+        else
+            searchEntity.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mth7X446DFQSTNRDDXBABIFNQAAAE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    }
+} catch (org.radixware.kernel.server.exceptions.DatabaseError e) {
+    res.CmdImportResult = e.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+}
+return res;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthGJJMVS2YXFH37MZ6UO57WOF7FM" Name="findById" DescriptionId="mlsFVV5ZOFUOBGNJMIUYKA2UN347Q" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="guid" DescriptionId="mls6KUXCBLXANFRVCBBDR2LQWG4DY" Id="mprSXPRZOBTPRHCBEBHDG2QXR7C24">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aecMXLSZGBLI5ECNDF4PJK6CNKJPQ"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecMXLSZGBLI5ECNDF4PJK6CNKJPQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> searchEntity = null;
+java.util.Iterator&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecMXLSZGBLI5ECNDF4PJK6CNKJPQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> iter = this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntityGroup_______________ mthH7N6UFUIO5E6XBVWQXTNWXKLOE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+while (iter.hasNext()) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecMXLSZGBLI5ECNDF4PJK6CNKJPQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> entity = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecMXLSZGBLI5ECNDF4PJK6CNKJPQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)iter.next();
+    if (entity.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecMXLSZGBLI5ECNDF4PJK6CNKJPQ col4SI755YCLRE4BOBSKX7BVUVQY4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.equals(guid)) {
+        searchEntity = entity;
+        break;
+    }
+}
+return searchEntity;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblMXLSZGBLI5ECNDF4PJK6CNKJPQ"/>
+    <Presentations>
+      <Commands>
+        <Command Id="cmdQTBQ7SAZ7VE2BK5V2FA3VMNM7U" Name="exportAll" DescriptionId="mlsI6J2BRXTJFGHNH4XRMDLULTKE4" Nature="2" IconId="imgYGRKUM6D5NFB7HJSZFG3KGBC6M" IsVisible="true" IsConfirmationRequired="false" ClientEnvironment="explorer" Accessibility="0" Scope="2">
+          <OutType TypeId="451" Path="xsd77LEE5CMNZHAFGV5TMMAOZSAVE" extStr="MsdlSchemesDocument"/>
+        </Command>
+        <Command Id="cmd3SW5EKJWBZBWRCIFNLFWBXN35Q" Name="importAll" DescriptionId="mlsYPK677VDU5BJHLB4WVHJ7XMRIU" Nature="2" IconId="imgMUCCZVMA4JC4NMTVVEGYXEXU5Q" IsVisible="true" IsConfirmationRequired="false" ClientEnvironment="explorer" Accessibility="0" Scope="2">
+          <InType TypeId="451" Path="xsd77LEE5CMNZHAFGV5TMMAOZSAVE" extStr="MsdlSchemesDocument"/>
+          <OutType TypeId="451" Path="xsd77LEE5CMNZHAFGV5TMMAOZSAVE" extStr="CmdImportResultDocument"/>
+        </Command>
+        <Command Id="cmd4BWAZSSFARBWPE72DBCMSJOUGY" Name="launchEditor" DescriptionId="mlsE36J4ZP37NHCVPWSUIKP4JBRBM" Nature="0" IconId="img3GZRN2QJPRBB5M5RAYSO7WRJA4" IsVisible="true" IsConfirmationRequired="false" ClientEnvironment="explorer" Accessibility="0" Scope="2">
+          <AccessRules IsPublished="false"/>
+        </Command>
+      </Commands>
+    </Presentations>
+    <Extends TypeId="411" Path="pdcEntityGroup_______________">
+      <xsc:GenericArguments>
+        <xsc:Argument Alias="?">
+          <xsc:Type TypeId="32" Path="aecMXLSZGBLI5ECNDF4PJK6CNKJPQ"/>
+        </xsc:Argument>
+      </xsc:GenericArguments>
+    </Extends>
+  </AdsClassDefinition>
+</AdsDefinition>

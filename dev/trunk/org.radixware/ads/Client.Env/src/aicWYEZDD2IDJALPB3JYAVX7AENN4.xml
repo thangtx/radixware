@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicWYEZDD2IDJALPB3JYAVX7AENN4" Name="ImageManager" Type="5" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.env.ImageManager"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcUUCFN43DHBHYHCYANDTXLURU3I"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcWPUA2LXE7RHTHONBKAI6ZAHXAY"/>
+    </Bodies>
+    <MethodGroup Id="cmg7O4RTOJIYRGBPCTFRCZW3UJMYE" Name="Root"/>
+    <PropertyGroup Id="cpgUV2KEOETAJENPORODTKHUCLGKE" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthOB55IRASFBG3FAOYSITSBEHT6Q" Name="loadIcon" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="loadIcon(Ljava.lang.String;)Lorg.radixware.kernel.common.client.types.Icon;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="iconPath" Id="mprCQQ7TG53OBEC5OLMFYHW7DQXBA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.types.Icon"/>
+      </Method>
+      <Method Id="mthFIE5WYKSDVHYZMOBUYTFT4N2II" Name="findCachedIconId" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="findCachedIconId(Lorg.radixware.kernel.common.client.types.Icon;)Lorg.radixware.kernel.common.types.Id;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="icon" Id="mpr4ANTK2F5NVABLFRYEESY6V3FOU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.types.Icon"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

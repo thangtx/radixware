@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcR7CBK743TFFM7AUIH447MGTSJA" Name="XmlStreamHelper" Type="3" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.utils.XmlStreamHelper"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcTXZ4NREBXZHPZOTEHN4ZMFIH5Y"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcPVDKZIHVH5BAPKM3Z3MPH5NP7E"/>
+    </Bodies>
+    <MethodGroup Id="cmgWBERF4URF5HUDIJIO5XQFQCMJQ" Name="Root"/>
+    <PropertyGroup Id="cpgWBBOI7VHFFG5ZFFQHFJQF77XTY" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthVPWCCCTAERB4THPLOWW6ZA3IIE" Name="XmlStreamHelper" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth5AWYVH7QNFHMLOG256ZKW6B5IM" Name="copy" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="copy(Ljavax.xml.stream.XMLStreamReader;Ljavax.xml.stream.XMLStreamWriter;Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="in" Id="mprH7RYOYT2PFCCRNBWRIATT3PNJI">
+            <Type TypeId="400" extStr="javax.xml.stream.XMLStreamReader"/>
+          </Parameter>
+          <Parameter Name="out" Id="mprHL3JL4IXA5F2DJS3QFAMAQBQDI">
+            <Type TypeId="400" extStr="javax.xml.stream.XMLStreamWriter"/>
+          </Parameter>
+          <Parameter Name="repairing" Id="mprUK7OIGWKHFEPPCD4NPNONH3YI4">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="javax.xml.stream.XMLStreamException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthIIPSFW62IFFBFOLNFUXYMHM7GE" Name="getQualifiedName" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getQualifiedName(Ljavax.xml.namespace.QName;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="qname" Id="mprB6XG5XYKZZABHPRWUZVBEVUHSM">
+            <Type TypeId="400" extStr="javax.xml.namespace.QName"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthTIODNFDQCBCDTMHUFVXMIBKIWQ" Name="isPrefixNotMappedToUri" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsStatic="true">
+          <Transparence Extendable="false" PublishedName="isPrefixNotMappedToUri(Ljavax.xml.stream.XMLStreamWriter;Ljava.lang.String;Ljava.lang.String;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="out" Id="mpr7EAF4YSO7JFNXFVXD5VPJGQRUE">
+            <Type TypeId="400" extStr="javax.xml.stream.XMLStreamWriter"/>
+          </Parameter>
+          <Parameter Name="prefix" Id="mpr455KZRMGORBPZCSDXDPHZOGC7A">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="uri" Id="mprIF6X22JEHRG6DOYN3QSIC44XZU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthCKG7AD5MEJAMRGOU3WYSL3EBDE" Name="skipToStartOfElement" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="skipToStartOfElement(Ljavax.xml.stream.XMLStreamReader;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="in" Id="mprUVSX7ZCFJVCYZEXW7HHDEBXI7M">
+            <Type TypeId="400" extStr="javax.xml.stream.XMLStreamReader"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="javax.xml.stream.XMLStreamException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthRUIGAZIC4BDNHMEZMO65WMUZS4" Name="writeAttribute" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="writeAttribute(Ljavax.xml.stream.XMLStreamWriter;Ljavax.xml.namespace.QName;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="out" Id="mprNEPSISBCCFDDRDHNUSEPUIWO6E">
+            <Type TypeId="400" extStr="javax.xml.stream.XMLStreamWriter"/>
+          </Parameter>
+          <Parameter Name="name" Id="mprFWC3WJH6PRCEZA7HKSFTZ2PNLM">
+            <Type TypeId="400" extStr="javax.xml.namespace.QName"/>
+          </Parameter>
+          <Parameter Name="attributeValue" Id="mprTR7YUDSSDRCB7CAUGNMCXLUTXM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="javax.xml.stream.XMLStreamException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthA2SKNYFC6VHXZOEEKI5LN2MMYM" Name="writeAttributes" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="writeAttributes(Ljavax.xml.stream.XMLStreamWriter;Ljavax.xml.stream.XMLStreamReader;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="out" Id="mprXUIKFGNI4NBPRHCUZY3NG3J3N4">
+            <Type TypeId="400" extStr="javax.xml.stream.XMLStreamWriter"/>
+          </Parameter>
+          <Parameter Name="in" Id="mprYT73MVBFUJGY7F4HHMBT3FJXUI">
+            <Type TypeId="400" extStr="javax.xml.stream.XMLStreamReader"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="javax.xml.stream.XMLStreamException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthYJZ6W7YF75FTHD7CJICGHOYJLM" Name="writeEndElement" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="writeEndElement(Ljavax.xml.namespace.QName;Lorg.xml.sax.ContentHandler;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="qname" Id="mprZDWOEHOOO5GYPJQ7PESEDYLFPU">
+            <Type TypeId="400" extStr="javax.xml.namespace.QName"/>
+          </Parameter>
+          <Parameter Name="handler" Id="mprLQNPNFGSUFEX7HIUKC7T7AANPI">
+            <Type TypeId="400" extStr="org.xml.sax.ContentHandler"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.xml.sax.SAXException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthDKMRYWM4OVEX7E3JZ2N6J6SB4A" Name="writeNamespaces" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="writeNamespaces(Ljavax.xml.stream.XMLStreamWriter;Ljavax.xml.stream.XMLStreamReader;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="out" Id="mprZOAQX2MZW5AJ5N4X4N2Z6BJLUU">
+            <Type TypeId="400" extStr="javax.xml.stream.XMLStreamWriter"/>
+          </Parameter>
+          <Parameter Name="in" Id="mprE74UMGMSURCNVPJYVXXNVV262E">
+            <Type TypeId="400" extStr="javax.xml.stream.XMLStreamReader"/>
+          </Parameter>
+          <Parameter Name="prefixOfCurrentElement" Id="mprP5Q7PEELLNCGBFAVNNLF4Q6WUU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="javax.xml.stream.XMLStreamException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthD2R43RLXWFB7LMVOB2355TUBOQ" Name="writeNamespacesExcludingPrefixAndNamespace" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="writeNamespacesExcludingPrefixAndNamespace(Ljavax.xml.stream.XMLStreamWriter;Ljavax.xml.stream.XMLStreamReader;Ljava.lang.String;Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="out" Id="mprWZWHDOGZFREAHD7ZLNGTJGG3XY">
+            <Type TypeId="400" extStr="javax.xml.stream.XMLStreamWriter"/>
+          </Parameter>
+          <Parameter Name="in" Id="mpr6G34N4AZIBHJPDL3J6RUTMNWUU">
+            <Type TypeId="400" extStr="javax.xml.stream.XMLStreamReader"/>
+          </Parameter>
+          <Parameter Name="ignorePrefix" Id="mprZYLHMU3LO5FGRM7WAESNF2CMRU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="ignoreNamespace" Id="mprPTDJSGRPQRHWXHJPUCBUSNSHXI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="javax.xml.stream.XMLStreamException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth5RCZOYCIVJGL3H5QFWQREX5BIM" Name="writeStartElement" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="writeStartElement(Ljavax.xml.stream.XMLStreamWriter;Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="out" Id="mpr5GNTEMI7CVHP5AS4FB5KS2RMPI">
+            <Type TypeId="400" extStr="javax.xml.stream.XMLStreamWriter"/>
+          </Parameter>
+          <Parameter Name="prefix" Id="mprOAV6XYZPCVAATMV2CA5Q2IKVBY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="uri" Id="mprHDIE7Q4SHFCN7L56FKKMVNSA2A">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="localName" Id="mprUNISFHL7SBGGTPOQ6LWXR7HOFQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="repairing" Id="mprVQVDMMZJYJAAZO75F7RWJGSPDA">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="javax.xml.stream.XMLStreamException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthXLAVXQ2XPRH5TCVJGQ37VQWQKI" Name="writeStartElementAndAttributes" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="writeStartElementAndAttributes(Ljavax.xml.stream.XMLStreamWriter;Ljavax.xml.stream.XMLStreamReader;Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="out" Id="mprNG3NVECQ6ZHEPOC4RLQOXLAMZM">
+            <Type TypeId="400" extStr="javax.xml.stream.XMLStreamWriter"/>
+          </Parameter>
+          <Parameter Name="in" Id="mprT75PDC5XNJFGXOXUXJMKLWCCEM">
+            <Type TypeId="400" extStr="javax.xml.stream.XMLStreamReader"/>
+          </Parameter>
+          <Parameter Name="repairing" Id="mpr526WSG6JRJEE7MH64OAF4DDJ5Q">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="javax.xml.stream.XMLStreamException"/>
+        </ThrownExceptions>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

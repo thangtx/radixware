@@ -1,0 +1,180 @@
+!IFNDEF JAVA_HOME
+!ERROR Specify JAVA_HOME, pointing to your JDK installation directory
+!ENDIF
+
+JAVAC = "$(JAVA_HOME)"\bin\javac
+JAR = "$(JAVA_HOME)"\bin\jar
+JAVAH = "$(JAVA_HOME)"\bin\javah
+
+!IFNDEF TARGET_PLATFORM
+!IF "$(PROCESSOR_ARCHITECTURE)"=="AMD64"
+TARGET_PLATFORM=X64
+!ELSE
+TARGET_PLATFORM=X86
+!ENDIF
+!ENDIF
+
+OUT=bin
+!IFDEF DEBUG_INFO
+OUT_DLL=$(OUT)\$(TARGET_PLATFORM)\debug
+OUT_OBJ=$(OUT_DLL)\obj
+!ELSE
+OUT_DLL=$(OUT)\$(TARGET_PLATFORM)\release
+OUT_OBJ=$(OUT_DLL)\obj
+!ENDIF
+
+OUT_JAVA=$(OUT)\java
+OUT_JAVA_CLASSES=$(OUT_JAVA)\classes
+
+JAVA_SRC=src\java\org\radixware\kernel\utils
+CPP_SRC=src\cpp
+CFLAGS= /nologo /I"$(JAVA_HOME)"\include /I"$(JAVA_HOME)"\include\win32 /I$(CPP_SRC) /D "WIN32" /D "_WINDOWS" /D "JAVAWIA_EXPORTS" /D "_WINDLL" /D "_UNICODE" /D "UNICODE" /EHsc /W3 /c /TP  /Fo.\$(OUT_OBJ)\ 
+#
+#/nologo		Suppresses display of sign-on banner.
+#/EHsc          The exception-handling model that catches C++ exceptions only and tells the compiler to assume that functions declared as extern "C" never throw a C++ exception.
+#/W3			Warnings level
+#/c				Compiles without linking.
+#/TP			Specifies a C++ source file.
+#
+LINK_FLAGS = /nologo /MAP /INCREMENTAL:NO /DLL /MANIFEST:NO /NODEFAULTLIB:"MSVCRT" /SUBSYSTEM:WINDOWS /DYNAMICBASE /NXCOMPAT /MACHINE:$(TARGET_PLATFORM) wiaguid.lib ole32.lib oleAut32.lib DelayImp.lib
+#
+#/nologo			Suppresses the startup banner.
+#/MAP				Creates a mapfile.
+#/INCREMENTAL:NO	Disable incremental linking
+#/MANIFEST:NO		Do not create manifest file
+#/DYNAMICBASE		Generate an executable image that can be randomly rebased at load time by using the address space layout randomization (ASLR) feature of Windows Vista.
+#/NXCOMPAT			Marks an executable as verified to be compatible with the Windows Data Execution Prevention feature.
+#
+!IFDEF DEBUG_INFO
+CFLAGS = /Od /Oi- /Oy- /RTC1 /MTd /D "_DEBUG" /Zi $(CFLAGS) /Fd.\$(OUT_DLL)\vc90pdb
+#
+#/Od 			Disables optimization.
+#/Oi-			Disable replacing some function calls with intrinsics
+#/Oy-			Disable frame-pointer omission
+#/MTd			Creates a debug multithreaded executable file using LIBCMTD.lib.
+#/RTC1			Enables stack frame run-time error checking and reports when a variable is used without having been initialized.
+#/Zi			Generate complete debugging information.
+#
+LINK_FLAGS = $(LINK_FLAGS) /DEBUG 
+DEBUG_INFO_FLAG = DEBUG_INFO^=1
+!ENDIF
+
+OBJS = stdafx.obj\
+	jniUtils.obj\
+	WiaDataCallback.obj\
+	dllmain.obj\
+	wiaItem.obj\
+	wiaItems.obj\
+	wiaRootItem.obj\
+	wiaPropertyStorage.obj\
+	wiaProperties.obj\
+	wiaDeviceManager.obj\
+	wiaDataTransfer.obj\
+	wiaDeviceCapabilities.obj\
+	wiaDevices.obj\
+	stgMediumWrapper.obj\
+	comStream.obj\
+	comObject.obj\
+	comLibrary.obj
+	
+JNI_CLASSES = org.radixware.kernel.utils.wia.ComLibrary\
+	org.radixware.kernel.utils.wia.ComObject\
+	org.radixware.kernel.utils.wia.WiaDataTransfer\
+	org.radixware.kernel.utils.wia.WiaDeviceManager\
+	org.radixware.kernel.utils.wia.WiaItem\
+	org.radixware.kernel.utils.wia.WiaItems\
+	org.radixware.kernel.utils.wia.properties.WiaPropertyStorage\
+	org.radixware.kernel.utils.wia.properties.WiaProperties\
+	org.radixware.kernel.utils.wia.WiaRootItem\
+	org.radixware.kernel.utils.wia.WiaDeviceCapabilities\
+	org.radixware.kernel.utils.wia.WiaDevices\
+	org.radixware.kernel.utils.wia.AbstractComObjectStream\
+	org.radixware.kernel.utils.wia.StgMedium
+	
+JNI_HEADERS = comLibrary.h\
+    comObject.h\
+	wiaDataTransfer.h\
+	wiaDeviceManager.h\
+	wiaItem.h\
+	wiaItems.h\
+	wiaPropertyStorage.h\
+	wiaProperties.h\
+	wiaRootItem.h\
+	wiaDeviceCapabilities.h\
+	wiaDevices.h\
+	abstractComObjectStream.h\
+	stgMedium.h
+
+all: jwia.dll
+
+mkdirs:
+   -mkdir $(OUT)
+   -mkdir $(OUT_DLL)
+   -mkdir $(OUT_OBJ)
+   -mkdir $(OUT_JAVA)
+   -mkdir $(OUT_JAVA_CLASSES)
+
+jwia.dll: $(OBJS)    
+	link -dll -out:$(OUT_DLL)\$@ /LIBPATH:.\$(OUT_OBJ)\ $** $(LINK_FLAGS)
+
+stdafx.obj: mkdirs
+	$(CC) $(CFLAGS) -c $(CPP_SRC)\stdafx.cpp
+
+dllmain.obj: mkdirs
+	$(CC) $(CFLAGS) -c $(CPP_SRC)\dllmain.cpp
+	
+jniUtils.obj: mkdirs
+	$(CC) $(CFLAGS) -c $(CPP_SRC)\jniUtils.cpp
+	
+WiaDataCallback.obj: mkdirs
+	$(CC) $(CFLAGS) -c $(CPP_SRC)\WiaDataCallback.cpp
+
+wiaItem.obj: mkdirs wiaItem.h
+	$(CC) $(CFLAGS) -c $(CPP_SRC)\wiaItem.cpp
+
+wiaItems.obj: mkdirs wiaItems.h
+	$(CC) $(CFLAGS) -c $(CPP_SRC)\wiaItems.cpp
+	
+wiaRootItem.obj: mkdirs wiaRootItem.h
+	$(CC) $(CFLAGS) -c $(CPP_SRC)\wiaRootItem.cpp
+
+wiaPropertyStorage.obj: mkdirs wiaPropertyStorage.h
+	$(CC) $(CFLAGS) -c $(CPP_SRC)\wiaPropertyStorage.cpp
+	
+wiaProperties.obj: mkdirs wiaProperties.h
+	$(CC) $(CFLAGS) -c $(CPP_SRC)\wiaProperties.cpp	
+
+wiaDeviceManager.obj: mkdirs wiaDeviceManager.h
+	$(CC) $(CFLAGS) -c $(CPP_SRC)\wiaDeviceManager.cpp
+
+wiaDataTransfer.obj: mkdirs wiaDataTransfer.h
+	$(CC) $(CFLAGS) -c $(CPP_SRC)\wiaDataTransfer.cpp
+	
+wiaDeviceCapabilities.obj: mkdirs wiaDeviceCapabilities.h
+	$(CC) $(CFLAGS) -c $(CPP_SRC)\wiaDeviceCapabilities.cpp
+	
+wiaDevices.obj: mkdirs wiaDevices.h
+	$(CC) $(CFLAGS) -c $(CPP_SRC)\wiaDevices.cpp
+	
+stgMediumWrapper.obj: mkdirs stgMedium.h
+	$(CC) $(CFLAGS) -c $(CPP_SRC)\stgMediumWrapper.cpp
+
+comObject.obj: mkdirs comObject.h
+	$(CC) $(CFLAGS) -c $(CPP_SRC)\comObject.cpp
+	
+comLibrary.obj: mkdirs comLibrary.h
+	$(CC) $(CFLAGS) -c $(CPP_SRC)\comLibrary.cpp	
+	
+comStream.obj: mkdirs abstractComObjectStream.h
+	$(CC) $(CFLAGS) -c $(CPP_SRC)\comStream.cpp
+		
+$(JNI_HEADERS): java-wia.jar
+	$(JAVAH) -jni -classpath .\$(OUT_JAVA_CLASSES)\ -d $(CPP_SRC)\generated $(JNI_CLASSES)
+
+java-wia.jar:
+	$(JAVAC) -d .\$(OUT_JAVA_CLASSES) $(JAVA_SRC)\wia\properties\*.java $(JAVA_SRC)\wia\*.java
+	$(JAR) -cf .\$(OUT_JAVA)\java-wia.jar -C .\$(OUT_JAVA_CLASSES) .
+	
+clean:
+	-rmdir /s /q $(CPP_SRC)\generated
+	-rmdir /s /q bin

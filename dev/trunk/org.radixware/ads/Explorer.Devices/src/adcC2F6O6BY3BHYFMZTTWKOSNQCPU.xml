@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcC2F6O6BY3BHYFMZTTWKOSNQCPU" Name="ImageAcquaringDevice" Type="3" Environment="explorer">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.explorer.iad.ImageAcquaringDevice"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcC2F6O6BY3BHYFMZTTWKOSNQCPU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcC2F6O6BY3BHYFMZTTWKOSNQCPU"/>
+    </Bodies>
+    <MethodGroup Id="cmg4RBPN3QHYVCMXJDEUH6KVDZ7WQ" Name="Root"/>
+    <PropertyGroup Id="cpgJAITTKM7KJD4NAPYQWEEUHS5PU" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth4GPJGWYQ6VDPTMAQPS5HQT4DIY" Name="enumDevices" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="enumDevices(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.explorer.iad.EImageAcquaringDeviceType;)Ljava.util.Collection&lt;Lorg.radixware.kernel.explorer.iad.ImageAcquaringDevice;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprPRM3UVBG25HN7PERLOKW6QBAGE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="deviceType" Id="mpr4PAZ77UG4BGT7BBVQNU5PW672I">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.iad.EImageAcquaringDeviceType"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.Collection">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.explorer.iad.ImageAcquaringDevice"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mth5HMJJ2BXLBF6TBSKK4NJRZ6JOM" Name="getDescription" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getDescription()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mth5MJ2TC74TVFULLJ2W4HYRMRWBI" Name="getId" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getId()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthV2BBHQQRSJHSBOBBMGEYE73YKI" Name="getImage" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getImage(Z)Lcom.trolltech.qt.gui.QImage;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="showImageConfirmationDialog" Id="mprCV55DYD2WFGSZLCS2DQ2LXSBXU">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QImage"/>
+      </Method>
+      <Method Id="mthLIEHZ2WDRFFVHAW2PLUK7AOGPA" Name="getImage" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getImage(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.explorer.iad.EImageAcquaringDeviceType;Lcom.trolltech.qt.gui.QWidget;Z)Lcom.trolltech.qt.gui.QImage;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprEBLOZVO5KRBSZGQJ5XXE2WFHYA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="deviceType" Id="mpr2R76M7YU35GFZANU4SCUZZ3QMM">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.iad.EImageAcquaringDeviceType"/>
+          </Parameter>
+          <Parameter Name="parentWidget" Id="mprQFGCMOWDIFDANGCT742MYZWTAM">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+          <Parameter Name="showImageConfirmationDialog" Id="mprLEKMN6NRRFCP5BRMV3BDQVMEYA">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QImage"/>
+      </Method>
+      <Method Id="mthQW65JAAI35BTFP53SPMVO6PD2Y" Name="release" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="release()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth5A4BGKX53BCKDPLVARDMM2IAWU" Name="selectDevice" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="selectDevice(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.explorer.iad.EImageAcquaringDeviceType;Lcom.trolltech.qt.gui.QWidget;Z)Lorg.radixware.kernel.explorer.iad.ImageAcquaringDevice;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprAUG726SKOZBI3NQ5QA6LV6TFZE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="deviceType" Id="mprBFN263OVN5AVJF75DSZ4QY237Q">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.iad.EImageAcquaringDeviceType"/>
+          </Parameter>
+          <Parameter Name="parentWidget" Id="mpr4R2EJ5MPO5AE5NSMGMECLGF4XU">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+          <Parameter Name="forcedlyShowImage" Id="mprARKZ7V7NXBBH7LLXFQTLBDIHYU">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.iad.ImageAcquaringDevice"/>
+      </Method>
+      <Method Id="mthRD3PUUG25VGZBIJR7S5SIVKZK4" Name="getImage" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getImage(ZLcom.trolltech.qt.gui.QWidget;)Lcom.trolltech.qt.gui.QImage;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="showImageConfirmationDialog" Id="mprMGATXQ4H2NGHXHPYRZC6OSXUUM">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="parentWidget" Id="mprC4CV3QAZKBAWDNHAQ23MIGBRAE">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QImage"/>
+      </Method>
+      <Method Id="mthQMRGKUSCR5FZROJEGUBBZIHSHI" Name="loadImageToFile" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="loadImageToFile(Z)Ljava.io.File;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="showImageConfirmationDialog" Id="mprHJA7AE3X3REFFM77JHWQYTB5D4">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.io.File"/>
+      </Method>
+      <Method Id="mth3424M2DXNNGHPCRB6XJKKY6DDI" Name="loadImageToFile" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="loadImageToFile(Ljava.lang.String;Z)Ljava.io.File;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="filePath" Id="mpr5J3B75SRBREMHDHHHSU7BMNTOE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="showImageConfirmationDialog" Id="mprOH2V2PU3IJFPRC57ZT2QUAUJAU">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.io.File"/>
+      </Method>
+      <Method Id="mthQT53ZCEKQZD5NHO43BS2GQZTSM" Name="loadImageToFile" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="loadImageToFile(Ljava.lang.String;ZLcom.trolltech.qt.gui.QWidget;)Ljava.io.File;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="filePath" Id="mprFDY4N6GPNFCJZG77FMUJIVLLEM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="showImageConfirmationDialog" Id="mprQGCW56CPW5HD5O6OCHJDABMRUQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="parentWidget" Id="mpr3YCFLOSUERAZTFES2SDGPYZTCQ">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.io.File"/>
+      </Method>
+      <Method Id="mthO5V6SFXG6RCKVLAL3QLHUFMUGI" Name="loadImageToFile" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="loadImageToFile(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.explorer.iad.EImageAcquaringDeviceType;Ljava.lang.String;Lcom.trolltech.qt.gui.QWidget;Z)Ljava.io.File;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mpr5EIYHUPN4ZAJTN3SNR6QMGBXU4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="type" Id="mprDHS4V2XH7RGPZPAE25HHIPYMRQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.iad.EImageAcquaringDeviceType"/>
+          </Parameter>
+          <Parameter Name="filePath" Id="mprLMXXAMMNMNDWRBY5C2EPQWPMEA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="parentWidget" Id="mprEWXFO6PHCNEB7EJRKTCXDJ4A2Y">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+          <Parameter Name="showImageConfirmationDialog" Id="mprRLLBCD6VJNAZVHQ5H2D4VJQXW4">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.io.File"/>
+      </Method>
+      <Method Id="mthYPMNZP6DPNFELJIK7YEB223CJU" Name="isSupportedPlatform" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="isSupportedPlatform(Lorg.radixware.kernel.explorer.iad.EImageAcquaringDeviceType;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="type" Id="mpr2QLLD2PSGJCVBLH3HLODDZX4VY">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.iad.EImageAcquaringDeviceType"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

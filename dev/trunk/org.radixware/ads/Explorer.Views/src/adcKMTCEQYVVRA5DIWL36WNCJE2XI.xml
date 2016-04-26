@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcKMTCEQYVVRA5DIWL36WNCJE2XI" Name="Form" Type="3" Environment="explorer">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.explorer.views.Form"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcJJ7UNH5UEVDYXOAFS7EA5KEURM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcOWKAJFKUIRFQTAXAFLG2GJ34VA"/>
+    </Bodies>
+    <MethodGroup Id="cmg5NEJBIHRQNBNDGOUCYHXWA3NDE" Name="Root"/>
+    <PropertyGroup Id="cpgY4MAR6J34JBZHHEDLF6JAWUJYU" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthL4JFUWHLRFEDDHQM2K422RIQI4" Name="reread" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="reread()V"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthBKFAMSG6WFDHBJTF47VQTUUJDE" Name="returnToPreviousForm" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="returnToPreviousForm()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthT4Q2LL3KNFCU5JXHCBB3OBGWWQ" Name="findButtonByType" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="findButtonByType(Lorg.radixware.kernel.explorer.widgets.ExplorerDialogButtonBox;Ljava.lang.String;)Lcom.trolltech.qt.gui.QAbstractButton;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="buttonBox" Id="mprMLGGLAMJRRBIJIMLB2VOMQGD34">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.widgets.ExplorerDialogButtonBox"/>
+          </Parameter>
+          <Parameter Name="buttonType" Id="mpr2D3G5RF24VGIFKRGFBR52NH3JI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QAbstractButton"/>
+      </Method>
+      <Method Id="mthRN6FHF7VWRBLRJDELXBDT7OMCA" Name="setupButtonBox" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setupButtonBox(Lorg.radixware.kernel.explorer.widgets.ExplorerDialogButtonBox;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="buttonBox" Id="mprBDHRZ4EBF5DUBMBBEVT5OTT46Y">
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.widgets.ExplorerDialogButtonBox"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthOGYHBRHQL5FP7H6CGS2VVYHPJU" Name="submit" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="submit()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthQJJ3KXRHDZF3LGS2UOJA2MOR6Y" Name="getFormModel" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getFormModel()Lorg.radixware.kernel.common.client.models.FormModel;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.FormModel"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

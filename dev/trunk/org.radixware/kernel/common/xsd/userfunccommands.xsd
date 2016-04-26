@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://schemas.radixware.org/userfunccommands.xsd" 
+           xmlns:types="http://schemas.radixware.org/types.xsd"  xmlns:defs="http://schemas.radixware.org/adsdef.xsd" 
+           xmlns:this="http://schemas.radixware.org/userfunccommands.xsd" xmlns:xscml="http://schemas.radixware.org/xscml.xsd" 
+           elementFormDefault="qualified">
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/adsdef.xsd" schemaLocation="adsdef.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/xscml.xsd" schemaLocation="xscml.xsd"/>
+    <xs:element name="CompileRq">
+        <xs:complexType>
+            <xs:attribute name="breakOnFirstError" type="xs:boolean" use="optional" default="false"/>
+            <xs:attribute name="diagnose" type="xs:boolean" use="optional" default="false"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="SyncBuildPathRq">
+        <xs:complexType>
+            <xs:attribute name="CacheDir" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="CompileRs">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Result" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="Problem" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="Message" type="xs:string"/>
+                                        <xs:element name="Location">
+                                            <xs:complexType>
+                                                <xs:attribute name="StartItem" type="xs:int"/>
+                                                <xs:attribute name="StartOffset" type="xs:int"/>
+                                                <xs:attribute name="EndItem" type="xs:int"/>
+                                                <xs:attribute name="EndOffset" type="xs:int"/>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                    <!--0 - warning 1 - error-->
+                                    <xs:attribute name="Severity" type="xs:int" use="required"/>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="ufId" type="xs:long"/>
+                            <xs:element name="ufOwnerPid" type="xs:string"/>
+                            <xs:element name="ufTitle" type="xs:string"/>
+                        </xs:sequence>
+                        <xs:attribute name="ownerEntityId" type="xs:string"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+            <xs:attribute name="CompileWasCancelled" type="types:Bool" default="false"/>
+        </xs:complexType>
+    </xs:element>    
+    
+    <xs:element name="ReadUserDefHeadersRq">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="DefType" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:attribute name="Value">
+                            <xs:simpleType>
+                                <xs:annotation>
+                                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                        <types:class>org.radixware.kernel.common.enums.EDefType</types:class>
+                                    </xs:appinfo>
+                                </xs:annotation>
+                                <xs:restriction base="types:IntEnum"/>
+                            </xs:simpleType>
+                        </xs:attribute> 
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="ReadUserDefHeadersRs">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="DefInfo" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:attribute name="Id" type="types:Id"/>
+                        <xs:attribute name="Name" type="xs:string"/>
+                        <xs:attribute name="ModuleId" type="types:Id"/>
+                        <xs:attribute name="ModuleName" type="xs:string"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="GetParamsRs">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Parameter" type="defs:ParameterDeclaration" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="ReturnType" type="xscml:TypeDeclaration" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+</xs:schema>

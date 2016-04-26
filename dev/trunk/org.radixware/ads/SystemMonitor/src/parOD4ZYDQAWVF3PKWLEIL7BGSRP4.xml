@@ -1,0 +1,578 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" FormatVersion="0">
+  <AdsParagraphDefinition Id="parOD4ZYDQAWVF3PKWLEIL7BGSRP4" Name="SysPerformance" TitleId="mls6GIB57EDA5C3ZBUOE4UKADCNMU" IconId="imgKD357ORZTZCQ7GDB6T7BKWVK5Q" IsRoot="false" ClientEnvironment="explorer">
+    <ChildExplorerItems>
+      <Item>
+        <Entity Id="xpiS5K4QH67AREQTERBADNNZFY5OI" Name="MetricType" InheritanceMask="16560" IsVisibleInTree="false" ClassId="aec2H6SULJHXJGFVIS6UVHRWQS4AM" ClientEnvironment="explorer" SelectorPresentationId="sprUT72FHD2WBCJ3BFZAKTCGS4WKU" Restrictions="0" EnabledCommands="">
+          <AccessRules IsPublished="false"/>
+          <Condition>
+            <ConditionWhere/>
+            <ConditionFrom/>
+          </Condition>
+        </Entity>
+      </Item>
+      <Item>
+        <Entity Id="xpiEP3CANWV6VFTFOPGS5EV4MNLWA" Name="StateView" InheritanceMask="16560" IsVisibleInTree="false" ClassId="aecWQK6FDKV4BHXVHI62W7MV3AGMI" SelectorPresentationId="sprI42QK5M3NVDDXHMITEJW5BIVWA" Restrictions="0" EnabledCommands="">
+          <AccessRules IsPublished="false"/>
+          <Condition>
+            <ConditionWhere/>
+            <ConditionFrom/>
+          </Condition>
+        </Entity>
+      </Item>
+    </ChildExplorerItems>
+    <Model Id="apmOD4ZYDQAWVF3PKWLEIL7BGSRP4" Name="SysPerformance:Model" Type="13">
+      <AccessRules/>
+      <Headers>
+        <Src Name="HeaderadcUMTI23FLCBECBGFC7QOD7BHNOI" Environment="explorer">
+          <xsc:Item>
+            <xsc:Java>import org.radixware.kernel.explorer.editors.monitoring.diagram.*;</xsc:Java>
+          </xsc:Item>
+        </Src>
+      </Headers>
+      <Bodies>
+        <Src Name="BodyadcSCE76RGZE5DGBMX7WCLRSPSE74" Environment="explorer">
+          <xsc:Item>
+            <xsc:Java>MetricHistWidget metricHistWidget;</xsc:Java>
+          </xsc:Item>
+        </Src>
+      </Bodies>
+      <MethodGroup Id="cmgUA2DUU5GTBGL3IYF2FNPKCHJBY" Name="Root"/>
+      <PropertyGroup Id="cpgXVVCPC6OM5CK5EL3XLRZ37J3KM" Name="Root"/>
+      <Properties/>
+      <Methods>
+        <Method Id="mthBKGMU2OLIZDJZBXV4PRN76U5OU" Name="ParagEditor_opened" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="widget" Id="mpr4LH46PITERGPHBKAONSGUWV6ZM">
+              <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>metricHistWidget=new MetricHistWidget(widget,</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parOD4ZYDQAWVF3PKWLEIL7BGSRP4 apmOD4ZYDQAWVF3PKWLEIL7BGSRP4 mthMKISDBCAKBEVLOLWNFSPTZZ22Q" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(),this);
+metricHistWidget.open();
+
+widget.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthPUWBC7L4QFCCRCCPSXJY2HF5IY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().setMargin(0);
+widget.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthPUWBC7L4QFCCRCCPSXJY2HF5IY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().addWidget(metricHistWidget);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthMKISDBCAKBEVLOLWNFSPTZZ22Q" Name="createIdsGetter" Nature="0" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.editors.monitoring.diagram.MetricHistWidget.IdsGetter"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>MetricHistWidget.IdsGetter idsGetter=new MetricHistWidget.IdsGetter(){
+    
+    public </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> getMetricEventDomainId(){
+        return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="dmnHEII2X2EBJDKRCLMY7OZ7Q4U24 dmnZ6D3VJ3HZFCQBCWV2RN2AIRG34"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+    }
+    public </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> getMetricStatisticDomainId(){
+        return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="dmnHEII2X2EBJDKRCLMY7OZ7Q4U24 dmnQQWPNSU3FBH7ZPNRFXWJKZE7MQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+    }
+    public </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> getMetricPointDomainId(){
+        return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="dmnHEII2X2EBJDKRCLMY7OZ7Q4U24 dmnZ6D3VJ3HZFCQBCWV2RN2AIRG34 dmnSJT5QPAID5DVFCJ5IH3WCMOKJM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+    }
+    
+    public </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> getPropIdByName(MetricHistWidget.EPropertyName propName){
+        if(propName==MetricHistWidget.EPropertyName.METRIC_STATE_ID)
+            return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aec4QTN5SWVEFB55HPL32XOX6KZ7Y colAJKGMNFACVDP3NKSFE74FBBJWI" Soft="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+        if(propName==MetricHistWidget.EPropertyName.METRIC_TYPE_ID)
+            return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM colNS4TO66OSNH3DCZS64EDNL7VDU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+        if(propName==MetricHistWidget.EPropertyName.METRIC_STATE_SENSOR_TITLE)
+            return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aec4QTN5SWVEFB55HPL32XOX6KZ7Y prdVSJ4MBIWJRH3FH6CZLCK2DB6YI"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+        if(propName==MetricHistWidget.EPropertyName.METRIC_KIND)
+            return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM col2JJNBDFWIVG47OCFOCMCXVBFXI"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+        //if(propName==MetricHistWidget.EPropertyName.METRIC_STATE_SENSOR_TITLE)
+        //    return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecWQK6FDKV4BHXVHI62W7MV3AGMI colE6T7IPRVTFFVDKYLOSFZCLMCTI"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;//  </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aec4QTN5SWVEFB55HPL32XOX6KZ7Y prdVSJ4MBIWJRH3FH6CZLCK2DB6YI"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+        
+        
+        if(propName==MetricHistWidget.EPropertyName.METRIC_VIEW_TYPE_ID)
+            return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecWQK6FDKV4BHXVHI62W7MV3AGMI col5RHY3KHFPBGRDK6LUWXXCNSE4A"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;// </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM colNS4TO66OSNH3DCZS64EDNL7VDU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+        if(propName==MetricHistWidget.EPropertyName.METRIC_VIEW_KIND)
+            return  </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecWQK6FDKV4BHXVHI62W7MV3AGMI colDVZEATMUZJDRTHRHWF6HXQ276Q"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;// </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM col2JJNBDFWIVG47OCFOCMCXVBFXI"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+        if(propName==MetricHistWidget.EPropertyName.METRIC_VIEW_TYPE_TITLE)
+            return  </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecWQK6FDKV4BHXVHI62W7MV3AGMI colT65HMSDOUVFJXJXUDBCKNZL6QE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;//</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM colNS4TO66OSNH3DCZS64EDNL7VDU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>; 
+        
+        if(propName==MetricHistWidget.EPropertyName.METRIC_VIEW_STATE_ID)
+            return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecWQK6FDKV4BHXVHI62W7MV3AGMI colE6T7IPRVTFFVDKYLOSFZCLMCTI"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;// </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aec4QTN5SWVEFB55HPL32XOX6KZ7Y colAJKGMNFACVDP3NKSFE74FBBJWI"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+        if(propName==MetricHistWidget.EPropertyName.METRIC_VIEW_AVG_VAL)
+            return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecWQK6FDKV4BHXVHI62W7MV3AGMI colFVN7CMMGPNGNZASBP5POKFTONE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;        
+        if(propName==MetricHistWidget.EPropertyName.METRIC_VIEW_END_VAL)
+            return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecWQK6FDKV4BHXVHI62W7MV3AGMI colWTL4DBZ3XVEDJP4F3GIGMW3DQE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+        
+        
+       
+        if(propName==MetricHistWidget.EPropertyName.END_TIME)
+            return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecMCNK4E6FFNA5DHESZPKNLKJ3FQ col5HEQNQF275CG7PZHGA75LNZQPM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>; 
+        if(propName==MetricHistWidget.EPropertyName.BEG_TIME)
+            return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecMCNK4E6FFNA5DHESZPKNLKJ3FQ colGSIRTHVQ7ZAGBMWHJPA5PNOGTU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>; 
+        if(propName==MetricHistWidget.EPropertyName.END_VAL)
+            return  </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecMCNK4E6FFNA5DHESZPKNLKJ3FQ colMGT6QJTQPJCHZFO442VOT5EAPE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>; 
+        if(propName==MetricHistWidget.EPropertyName.BEG_VAL)
+            return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecMCNK4E6FFNA5DHESZPKNLKJ3FQ colRLSYWQAJHFG7RIX5YSNCD7CEMM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>; 
+        if(propName==MetricHistWidget.EPropertyName.AVG_VAL)
+            return  </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecMCNK4E6FFNA5DHESZPKNLKJ3FQ colQLTULHD7JZAR5HRVNFO2ICDSZQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+        if(propName==MetricHistWidget.EPropertyName.MIN_VAL)
+            return  </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecMCNK4E6FFNA5DHESZPKNLKJ3FQ colZ5NP4RP6IBBAFMSIGDA6JBU5TI"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+        if(propName==MetricHistWidget.EPropertyName.MAX_VAL)
+            return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecMCNK4E6FFNA5DHESZPKNLKJ3FQ col4UAQSFEFFVAE3ACSXME7AQQVPM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>; 
+        if(propName==MetricHistWidget.EPropertyName.SINCE)
+            return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="agcMCNK4E6FFNA5DHESZPKNLKJ3FQ pgpJ37QO66VBJFADP5BEJPJX4CKD4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+        //if(propName==MetricHistWidget.EPropertyName.HIST_STATE_ID)
+        //    return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecMCNK4E6FFNA5DHESZPKNLKJ3FQ colGUQOPXPQIFE63KK5JQWPP36JIY"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>; 
+            
+        if(propName==MetricHistWidget.EPropertyName.LOW_WARN_VAL)
+            return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecWQK6FDKV4BHXVHI62W7MV3AGMI colIW36ISYLQ5GFDNAWFQJ5NJFKIQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;// </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM colP5GRYC4WIRFDVCOV3AYNBAPYY4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>; 
+        if(propName==MetricHistWidget.EPropertyName.LOW_ERROR_VAL)
+            return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecWQK6FDKV4BHXVHI62W7MV3AGMI colNSMQQXSIDZHYTFTUV5AHIXECHQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;// </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM colSYQ72HEL2RD3VFYFLWVG6GFZEA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+        if(propName==MetricHistWidget.EPropertyName.HIGH_WARN_VAL)
+            return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecWQK6FDKV4BHXVHI62W7MV3AGMI colEGVMKECYG5DNLIYAW7SFJJD77E"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;// </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM colXHO3TMONUZFWVLGCBFATASRCZ4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+        if(propName==MetricHistWidget.EPropertyName.HIGH_ERROR_VAL)
+            return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecWQK6FDKV4BHXVHI62W7MV3AGMI colNBNTUV24WFCOLJYJCQ7BLUCS3I"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;// </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM col2RJUTHZLBFGDPHT5NR6S6APSYM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>; 
+        
+        if(propName==MetricHistWidget.EPropertyName.METRIC_TYPE_INSTANCE_ID)
+            return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecWQK6FDKV4BHXVHI62W7MV3AGMI col4DFFLKJPZZCNFFJHK4WO7LFJQA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+        if(propName==MetricHistWidget.EPropertyName.METRIC_TYPE_NETCHENNEL_ID)
+            return  </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecWQK6FDKV4BHXVHI62W7MV3AGMI col2G4MXOVTKVB2JBOM75ZFSRGJ5Q"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+        if(propName==MetricHistWidget.EPropertyName.METRIC_TYPE_UNIT_ID)
+            return  </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecWQK6FDKV4BHXVHI62W7MV3AGMI colB7BZ6PAH5BE3HN3AHL6WYHHBFY"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+        //if(propName==MetricHistWidget.EPropertyName.METRIC_TYPE_SYSTEM_ID)
+        //    return  </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecWQK6FDKV4BHXVHI62W7MV3AGMI colB7BZ6PAH5BE3HN3AHL6WYHHBFY"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+        if(propName==MetricHistWidget.EPropertyName.METRIC_TYPE_SERVICE_URI)
+            return  </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecWQK6FDKV4BHXVHI62W7MV3AGMI colBL3ITU6IUZCYPJ2VXPFBQDGATQ"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+        if(propName==MetricHistWidget.EPropertyName.METRIC_TYPE_TIMING_SECTION)
+            return  </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecWQK6FDKV4BHXVHI62W7MV3AGMI col7T66XXRR2BE7PHILZ2OEPBZDS4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+        throw new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="axcFGLHWXKG3BB7TLTAJY2WUTIWIU mth3X6EGB3BRFGWJH4VNIE7PHVKRA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>("Unknown property "+propName.toString());
+    }
+    
+    public </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> getMetricTypeChildId(){
+         return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parOD4ZYDQAWVF3PKWLEIL7BGSRP4 xpiS5K4QH67AREQTERBADNNZFY5OI"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+    }
+    
+    public </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> getMetricStateChildId(){
+         return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM eprSE464PGOZVAYPG5C7DZYJQ4P3E xpi6B74WDD67FDR3FNAC23XRLBY6Y"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+    }
+    
+    public </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> getMetricHistChildId(){
+         return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aecWQK6FDKV4BHXVHI62W7MV3AGMI eprZ4PMZR2P6VG2RD34ZHJEGHQCLU xpiQA47TXFERVHTFJG2RCII3GVSDI"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;// </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aec4QTN5SWVEFB55HPL32XOX6KZ7Y eprA7VYCYI6ZNGZ5MKUFR56KWTSP4 xpiQEDSMH56CVEXPITOAMVREOBCBU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+    }   
+    
+    public </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> getStateViewChildId(){
+         return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parOD4ZYDQAWVF3PKWLEIL7BGSRP4 xpiEP3CANWV6VFTFOPGS5EV4MNLWA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+    }
+    
+    public </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> getMetricKindEnumId(){
+         return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsF47GG6XUPJH5ZKZFOWDK7GI7LE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+    } 
+};
+return idsGetter;</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthESD5EMF4FVAATK2OYQRD2UXBRA" Name="ParagEditor_closed" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>metricHistWidget.onClosed();
+metricHistWidget=null;</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+      </Methods>
+    </Model>
+    <View Id="cceOD4ZYDQAWVF3PKWLEIL7BGSRP4" Name="View">
+      <AccessRules IsPublished="false"/>
+      <ui:ui>
+        <ui:widget name="ParagEditor" id="wdgGCCVYRKOI5HN5MDTKBLQYHMFW4" class="cceOD4ZYDQAWVF3PKWLEIL7BGSRP4" weight="0.0">
+          <ui:layout class="QVBoxLayout" name="verticalLayout"/>
+        </ui:widget>
+        <ui:connections>
+          <ui:connection>
+            <ui:sender>wdgGCCVYRKOI5HN5MDTKBLQYHMFW4</ui:sender>
+            <ui:signal>opened(com.trolltech.qt.gui.QWidget widget)</ui:signal>
+            <ui:slot>mthBKGMU2OLIZDJZBXV4PRN76U5OU</ui:slot>
+          </ui:connection>
+          <ui:connection>
+            <ui:sender>wdgGCCVYRKOI5HN5MDTKBLQYHMFW4</ui:sender>
+            <ui:signal>closed()</ui:signal>
+            <ui:slot>mthESD5EMF4FVAATK2OYQRD2UXBRA</ui:slot>
+          </ui:connection>
+        </ui:connections>
+      </ui:ui>
+    </View>
+  </AdsParagraphDefinition>
+</AdsDefinition>

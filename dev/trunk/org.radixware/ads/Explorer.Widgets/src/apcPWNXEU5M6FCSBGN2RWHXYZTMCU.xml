@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="apcPWNXEU5M6FCSBGN2RWHXYZTMCU" Name="SelectorActions" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcGUEO4BDFKRCVJLFQWS2D4MLRJQ">
+        <xsc:Item>
+          <xsc:Java>import com.trolltech.qt.gui.QAction;
+import com.trolltech.qt.gui.QColor;
+</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcCXI3DZSR7VDCBOGUJ6NTTJLXZM">
+        <xsc:Item>
+          <xsc:Java>public final QAction prevAction;
+public final QAction nextAction;
+public final QAction beginAction;
+public final QAction endAction;
+</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmgY2IRDMCPKZFLDOJZYTRBHR6NDY" Name="Root"/>
+    <PropertyGroup Id="cpgOTMXVG4XWNHJVLWK27YXWOWRQI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth5GXFFDPGW5CZTJ5ILJQLWWC3UI" Name="setupToolBarActions" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="toolBar" Id="mprH4OZ3MJEERBJDLX5GKQUCJVWGA">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QToolBar"/>
+          </Parameter>
+          <Parameter Name="selectorView" Id="mprWXPDCOC6DJEEBIJC4TPPDMAS3A">
+            <Type TypeId="411" Path="adc5H7P5FMQSNAEBGKNU3ESVQAEEA"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>QAction before = (QAction)selectorView.Actions.CreateAction;
+toolBar.insertAction(before, this.beginAction);
+toolBar.insertAction(before, this.prevAction);
+toolBar.insertAction(before, this.nextAction);
+toolBar.insertAction(before, this.endAction);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthCLUVIKSFQ5HCZNRS32NG2AAUPQ" Name="SelectorActions" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>nextAction = new QAction(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthDN7Q3CISY5EBNIQRPEVSF2VAFI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("classpath:images/next.svg", QColor.transparent), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.translate("Selector","Select Next Row"), null);
+nextAction.setToolTip(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.translate("Selector", "select next row"));
+//nextAction.triggered.connect(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="apcFBVH2LT4BZF4TKIE4S7D6QUTIY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.this, "selectNextRow()");
+
+prevAction = new QAction(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthDN7Q3CISY5EBNIQRPEVSF2VAFI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("classpath:images/prev.svg", QColor.transparent), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.translate("Selector","Select Prev Row"), null);
+prevAction.setToolTip(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.translate("Selector", "select previous row"));
+//prevAction.triggered.connect(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="apcFBVH2LT4BZF4TKIE4S7D6QUTIY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.this, "selectPrevRow()");
+
+beginAction = new QAction(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthDN7Q3CISY5EBNIQRPEVSF2VAFI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("classpath:images/begin.svg", QColor.transparent), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.translate("Selector","Select First Row"), null);
+beginAction.setToolTip(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.translate("Selector", "select first row"));
+//beginAction.triggered.connect(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="apcFBVH2LT4BZF4TKIE4S7D6QUTIY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.this, "selectFirstRow()");
+
+endAction = new QAction(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthDN7Q3CISY5EBNIQRPEVSF2VAFI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("classpath:images/end.svg", QColor.transparent), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.translate("Selector","Select Last Row"), null);
+endAction.setToolTip(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.translate("Selector", "select last row"));
+//endAction.triggered.connect(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="apcFBVH2LT4BZF4TKIE4S7D6QUTIY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.this, "selectLastRow()");
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthVCTZKXAXYRENDD2B2WB6KIMAAY" Name="setupMenuActions" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="menu" Id="mprBIN2QHEMRJBEZMCCY4QQO2ZCCU">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QMenu"/>
+          </Parameter>
+          <Parameter Name="selectorView" Id="mprX2DSUSFCHZCWLISTAHK7S7H6CM">
+            <Type TypeId="411" Path="adc5H7P5FMQSNAEBGKNU3ESVQAEEA"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>QAction before = (QAction)selectorView.Actions.CreateAction;
+menu.insertAction(before, this.beginAction);
+menu.insertAction(before, this.prevAction);
+menu.insertAction(before, this.nextAction);
+menu.insertAction(before, this.endAction);
+menu.insertSeparator(before);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

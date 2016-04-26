@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcEAYJLUONM5HZHDALCGRB7GRTVE" Name="ValueConverter" Type="3" Environment="common-client">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.utils.ValueConverter"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcEAYJLUONM5HZHDALCGRB7GRTVE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcEAYJLUONM5HZHDALCGRB7GRTVE"/>
+    </Bodies>
+    <MethodGroup Id="cmgBQDO5BR7NRCE7BCIDGZDLYVPZI" Name="Root"/>
+    <PropertyGroup Id="cpgNYWNOUQ45JGS5CRO6B2YNSRPOM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthHB5BPPREGVDFFOLT77BDXPJAHA" Name="arrByte2arrChar" DescriptionId="mlsRMQQXFUITFEU7I5PKDFEDWDG3Y" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="arrByte2arrChar([BLjava.lang.String;)[C"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="bytes" DescriptionId="mlsADRDSSIMJRFJDEUFOTB3ZQ3QEU" Id="mprXYAUMYSGSRG2XLOLJPOAV5JLSI">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="encoding" DescriptionId="mlsW3GMR3U4INDBFHNQKCPAYJORQY" Id="mprMK2TMY76JFDX3BJ2VF4VQC4JHU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="char" Dimension="1" DescriptionId="mlsKA2EGF5TEJB3NGVXBT4H2EPO34"/>
+      </Method>
+      <Method Id="mthZ36FCK65KRAFHGFE6NDFTCLYAA" Name="arrByte2Str" DescriptionId="mlsA6BG6XRRGJHIPABWC3BLBH5YPA" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="arrByte2Str([BLjava.lang.String;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="bytes" DescriptionId="mls576T3OL5YFCPTPJJDNTOS5CSC4" Id="mpr6RS3ZZGDYBFBZD2QXCMAVCZR6Q">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="space" DescriptionId="mlsG3YHU3GARRHF7K6EFOXDOHHALU" Id="mprYB4YUYA3MVBMVCKGISNCOHAN3Y">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21" DescriptionId="mlsLLBA4J5WJFB4TAQTNFUFBRGHBI"/>
+      </Method>
+      <Method Id="mthBXM7ZN7Z7VDXRHWVSIR4ZSN6D4" Name="dialogButtonEnum2StandardButton" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="dialogButtonEnum2StandardButton(Lorg.radixware.kernel.common.enums.EDialogButtonType;)Lorg.radixware.kernel.common.client.dialogs.IMessageBox.StandardButton;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="buttonType" Id="mprMUUPWPFGSZD7LKXH7HV74O76I4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EDialogButtonType"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.dialogs.IMessageBox.StandardButton"/>
+      </Method>
+      <Method Id="mthKK3QLUPYSNGQVB3XVVPVRAWCYU" Name="easPropXmlVal2ObjVal" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="easPropXmlVal2ObjVal(Lorg.radixware.schemas.eas.Property;Lorg.radixware.kernel.common.enums.EValType;Lorg.radixware.kernel.common.types.Id;)Ljava.lang.Object;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="xmlProperty" Id="mprOAMP6GWDNZGFXETADBPMWWFDWQ">
+            <Type TypeId="400" extStr="org.radixware.schemas.eas.Property"/>
+          </Parameter>
+          <Parameter Name="valueType" Id="mprAKGIEVETKJHRVIBQSF45FRMH6U">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+          </Parameter>
+          <Parameter Name="valueTableId" Id="mprC4J2EXU4PNGH7JWZWOALHSZWSA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+      </Method>
+      <Method Id="mthRZ7LW4JJXVCEDMRL5GKNKSNFI4" Name="floraValueOf" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="floraValueOf(Ljava.util.Date;)D"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="dateValue" Id="mprETP5VGMVD5AXBMFCLL3QDFN3HE">
+            <Type TypeId="400" extStr="java.util.Date"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="double"/>
+      </Method>
+      <Method Id="mthMVVA7EPT7JDS3MWK6COVAWCZKA" Name="hexadecimalString2Bin" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="hexadecimalString2Bin(Ljava.lang.String;Ljava.lang.String;)Lorg.radixware.kernel.common.types.Bin;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="hexValueInStr" Id="mprU2AOQO5UV5A2HPHI23M3JIOCHE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="splitter" Id="mpr5VZAP46PLZD4LOODKYQHV2JEPA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="22"/>
+      </Method>
+      <Method Id="mthFWLWAF3JI5DV7CZOVKQDGVKFQ4" Name="objVal2EasPropXmlVal" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="objVal2EasPropXmlVal(Ljava.lang.Object;Lorg.radixware.kernel.common.enums.EValType;Lorg.radixware.schemas.eas.Property;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="value" Id="mprATTX7SUUNNGWDLNWBG6JWLRY44">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+          <Parameter Name="valueType" Id="mprA5VMP367SZBXVHEBMAO6VGGOHM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+          </Parameter>
+          <Parameter Name="property" Id="mprPQMUGL5MY5EUHN2O4BMC5HZGAU">
+            <Type TypeId="400" extStr="org.radixware.schemas.eas.Property"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthF3CWCKHESRD35KCNVTGEOMY5A4" Name="serverValType2ClientValType" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="serverValType2ClientValType(Lorg.radixware.kernel.common.enums.EValType;)Lorg.radixware.kernel.common.enums.EValType;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="serverValueType" Id="mprES2TITE24ZBWBAHFPX7ZAQI5QY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+      </Method>
+      <Method Id="mthYAXFEBPFIJHURG5HSSNSKRSUMM" Name="str2ArrByte" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="str2ArrByte(Ljava.lang.String;Ljava.lang.String;)[B"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="string" Id="mprFBLMLWIY7NACFIE4UBLTHCQJW4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="splitter" Id="mprNNKTLHVRMVG37DPAS3URWECGQU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="byte" Dimension="1"/>
+      </Method>
+      <Method Id="mthNLY5QICEEFDCJLL7C6BGAX5INI" Name="timestamp2Calendar" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="timestamp2Calendar(Ljava.sql.Timestamp;)Ljava.util.Calendar;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="dateTime" Id="mprUINIIC36SFG3LMIVN5CQZRDUEM">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.Calendar"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://schemas.radixware.org/services.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:t="http://schemas.radixware.org/types.xsd" targetNamespace="http://schemas.radixware.org/services.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+	<xs:element name="System">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Title" type="t:Str" minOccurs="0"/>
+				<xs:element name="Notes" type="t:Str" minOccurs="0"/>
+				<xs:element name="FileRefreshPeriod" type="t:Int" default="3600" minOccurs="0"/>
+				<xs:element name="SCP" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Title" type="t:Str" minOccurs="0"/>
+							<xs:element name="Notes" type="t:Str" minOccurs="0"/>
+							<xs:element name="Service" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="SAP" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:attribute name="Name" type="t:Str" use="required"/>
+												<xs:attribute name="Priority" type="t:Int" use="required"/>
+												<xs:attribute name="ConnectTimeout" type="t:Int" default="10"/>
+												<xs:attribute name="BlockingPeriod" type="t:Int" default="600"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="URI" type="xs:anyURI" use="required"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="Name" type="t:Str" use="required"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Service" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Title" type="t:Str" minOccurs="0"/>
+							<xs:element name="SAP" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Title" type="t:Str" minOccurs="0"/>
+										<xs:element name="Notes" type="t:Str" minOccurs="0"/>
+									</xs:sequence>
+									<xs:attribute name="Name" type="t:Str" use="required"/>
+									<xs:attribute name="Type" use="required">
+										<xs:simpleType>
+											<xs:restriction base="t:Str">
+												<xs:enumeration value="TCP"/>
+												<xs:enumeration value="X25"/>
+												<xs:enumeration value="Pipe"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attribute name="Address" type="t:Str" use="required"/>
+									<xs:attribute name="IsActive" type="t:Bool" use="optional" default="1"/>
+									<xs:attribute name="SecurityProtocol" use="required">
+										<xs:simpleType>
+											<xs:restriction base="t:Str">
+												<xs:enumeration value="None"/>
+												<xs:enumeration value="SSL"/>
+												<xs:enumeration value="Kerberos"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attribute name="Frame" type="t:Str" use="optional" default="%[R]H"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="URI" type="xs:anyURI" use="required">
+							<xs:annotation>
+								<xs:documentation>unique id of service in system</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+						<xs:attribute name="WSDL_URI" type="xs:anyURI" use="required">
+							<xs:annotation>
+								<xs:documentation>Service definition id</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="Name" type="t:Str" use="required"/>
+			<xs:attribute name="Product" type="t:Str"/>
+			<xs:attribute name="ProductVersion" type="t:Str"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

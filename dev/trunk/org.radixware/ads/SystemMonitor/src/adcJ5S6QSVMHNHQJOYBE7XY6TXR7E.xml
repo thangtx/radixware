@@ -1,0 +1,793 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcJ5S6QSVMHNHQJOYBE7XY6TXR7E" Name="DashTableMetric" Type="3" Environment="common-client" IsDual="true">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcJ5S6QSVMHNHQJOYBE7XY6TXR7E"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcJ5S6QSVMHNHQJOYBE7XY6TXR7E"/>
+    </Bodies>
+    <MethodGroup Id="cmgRB55EGQG6VAW3GPOT5VUW6FW6U" Name="Root"/>
+    <PropertyGroup Id="cpgT5L6WFBOWZAE5L6RNTB3J6434E" Name="Root">
+      <Group Id="cpgWZRUSZCA25DT3GKOPOEHUI3Y3Y" Name="Props" Members="prdIFJKOFQG35HOVI3XJR23L24SW4"/>
+    </PropertyGroup>
+    <Properties>
+      <Property Id="prdIFJKOFQG35HOVI3XJR23L24SW4" Name="metricSeverityMap" Nature="2" IsConst="false" Environment="common-client" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="400" extStr="java.util.Map">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="2"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="adcJ5S6QSVMHNHQJOYBE7XY6TXR7E adcM7362JDVJJCQLEYAHI66VXQ4OE"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </Type>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthIYPNSPDI4ZFRTHIX3IOC35AAP4" Name="setColumnType" Nature="0" Environment="common-client" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="column" Id="mprTNYKRJMENNBP7EYAD2SMPBOKDI">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="valType" Id="mprH4LQPR5A3BCY7EOAADNSQTFU5I">
+            <Type TypeId="2" Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMOX3YQ4D7NFJBK6TD5OGER6SRI prdAI4DPZK6G5GTFOMMNQQH3R74QM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc4RYP3EGKMRCZRPN4M235GW4KSA prd4TZLMRYZVZHVPNGKJCJTUGD7NI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.get(column.intValue()).</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc4RYP3EGKMRCZRPN4M235GW4KSA adcPE2MEOEOYRHVBEGWCUIKCIOCXU mthF4Y5ZBNAXRGULHQRRTJZZBAW7E" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(valType);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthQOK3T3AORJCMHDWZ77SGAPQO34" Name="setColumnTitle" Nature="0" Environment="common-client" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="column" Id="mprPCIAK5ISO5BL7ESYD5AW5COCFE">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="title" Id="mpr3P2FD7BHHBGLHNBAQH7LYS45PU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMOX3YQ4D7NFJBK6TD5OGER6SRI prdAI4DPZK6G5GTFOMMNQQH3R74QM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc4RYP3EGKMRCZRPN4M235GW4KSA prd4TZLMRYZVZHVPNGKJCJTUGD7NI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.get(column.intValue()).</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc4RYP3EGKMRCZRPN4M235GW4KSA adcPE2MEOEOYRHVBEGWCUIKCIOCXU mthX6KKJELCXRBGHNX4NNK4TBA3D4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(title);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthBKWDJCF6AJHKTMFKFSSEAHXGIM" Name="getRowCount" Nature="0" Environment="common-client" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="401" extStr="int"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMOX3YQ4D7NFJBK6TD5OGER6SRI prdPXRD35NKDJA2RF4QWYLW2MF7ZI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMOX3YQ4D7NFJBK6TD5OGER6SRI prdPXRD35NKDJA2RF4QWYLW2MF7ZI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.size();
+}
+return 0;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth6EXP63HZZ5BGFKEIBRF6M7OOMI" Name="getColumnType" Nature="0" Environment="common-client" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="column" Id="mprREYQJMUXXZHAFESFX7GQV4HFJM">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="2" Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMOX3YQ4D7NFJBK6TD5OGER6SRI prdAI4DPZK6G5GTFOMMNQQH3R74QM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc4RYP3EGKMRCZRPN4M235GW4KSA prd4TZLMRYZVZHVPNGKJCJTUGD7NI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.get(column.intValue()).</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc4RYP3EGKMRCZRPN4M235GW4KSA adcPE2MEOEOYRHVBEGWCUIKCIOCXU mthCH73HGGEKRDI7MGXC5PZXEOEAM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth7WJZKMPCBBEP5NGEDANA7PMQYA" Name="getColumnTitle" Nature="0" Environment="common-client" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="column" Id="mprUYXTQOJ7UVDRNAYZAU2OJB2HNE">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMOX3YQ4D7NFJBK6TD5OGER6SRI prdAI4DPZK6G5GTFOMMNQQH3R74QM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc4RYP3EGKMRCZRPN4M235GW4KSA prd4TZLMRYZVZHVPNGKJCJTUGD7NI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.get(column.intValue()).</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc4RYP3EGKMRCZRPN4M235GW4KSA adcPE2MEOEOYRHVBEGWCUIKCIOCXU mthKE4647JMG5HDXGMV2AD2QV2TRA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthHVKWEEVTHBFTLLXZZXM663X6RU" Name="getColumnCount" Nature="0" Environment="common-client" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="401" extStr="int"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>switch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLACMR6AAKVC6LIJSDSVWEJN6CA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLACMR6AAKVC6LIJSDSVWEJN6CA mthDMNMUSZ45RD5BBMOWP2OWU2LT4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMOX3YQ4D7NFJBK6TD5OGER6SRI mthKIVBVGPDUJBNXB5DGQOTURVVPI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>())) {
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsJW5X3HYYBFFT3LECMFTSPIZYQE aciE2VEVSQY2VBSLP7AEKW5AWFJUI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return 3;
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsJW5X3HYYBFFT3LECMFTSPIZYQE aciL47VGDVATZDLBORQBGLS37I77Y" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return 4;
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsJW5X3HYYBFFT3LECMFTSPIZYQE aciDVG6HS76WNHNBKDPWNNTRSCMSU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+        return 6;
+    default:
+        throw new IllegalArgumentException("Not supported MetricType");
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthVUIQCMQBAJFR3M2NCLKNHSLLPE" Name="getCellValue" Nature="0" Environment="common-client" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="row" Id="mpr7LPHOBIEVJGNTFY22EQTI2YDTI">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="column" Id="mprCRDWL453Z5CTPBYZA45GVULHNA">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>org.radixware.schemas.monitoringcommand.TableRs.TableItem rowItem = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMOX3YQ4D7NFJBK6TD5OGER6SRI prdPXRD35NKDJA2RF4QWYLW2MF7ZI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.get(row.intValue());
+
+switch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLACMR6AAKVC6LIJSDSVWEJN6CA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLACMR6AAKVC6LIJSDSVWEJN6CA mthDMNMUSZ45RD5BBMOWP2OWU2LT4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMOX3YQ4D7NFJBK6TD5OGER6SRI mthKIVBVGPDUJBNXB5DGQOTURVVPI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>())) {
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsJW5X3HYYBFFT3LECMFTSPIZYQE aciE2VEVSQY2VBSLP7AEKW5AWFJUI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>: {
+        switch (column.intValue()) {
+            case 0:
+                return rowItem.SensorTitle;
+            case 1:
+                return rowItem.CurrentState.EndTime;
+            case 2:
+                return rowItem.CurrentState.EndVal;
+            default:
+                return null;
+        }
+    }
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsJW5X3HYYBFFT3LECMFTSPIZYQE aciL47VGDVATZDLBORQBGLS37I77Y" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>: {
+        switch (column.intValue()) {
+            case 0:
+                return rowItem.SensorTitle;
+            case 1:
+                return rowItem.CurrentState.EndTime;
+            case 2:
+                return rowItem.CurrentState.BegVal;
+            case 3:
+                return rowItem.CurrentState.EndVal;
+            default:
+                return null;
+        }
+    }
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsJW5X3HYYBFFT3LECMFTSPIZYQE aciDVG6HS76WNHNBKDPWNNTRSCMSU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>: {
+        switch (column.intValue()) {
+            case 0:
+                return rowItem.SensorTitle;
+            case 1:
+                return rowItem.CurrentState.BegTime;
+            case 2:
+                return rowItem.CurrentState.EndTime;
+            case 3:
+                return rowItem.CurrentState.MinVal;
+            case 4:
+                return rowItem.CurrentState.AvgVal;
+            case 5:
+                return rowItem.CurrentState.MaxVal;
+            default:
+                return null;
+        }
+    }
+    default:
+        return null;
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthIJFKSJ52URHYRNKECCCKJ3CA2Q" Name="DashTableMetric" Nature="0" IsConstructor="true" Environment="common-client" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="guid" Id="mprMROOIFQOV5GRZLWJB3S23ER7AQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="parent" Id="mprUZ5QBTM5JVBYXKHZ5GKMXNJXE4">
+            <Type TypeId="411" Path="adcRVWLRZ4A7NHYNKFVO2W4I4YWZM"/>
+          </Parameter>
+          <Parameter Name="metricKind" Id="mprTN5LFKKBEZFDXAC55WWG3D75N4">
+            <Type TypeId="21" Path="acsF47GG6XUPJH5ZKZFOWDK7GI7LE"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this(guid, parent, metricKind, false);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthEDZ3MMSCB5BKNGSDGVOSVSS5OU" Name="DashTableMetric" Nature="0" IsConstructor="true" Environment="common-client" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="guid" Id="mprMROOIFQOV5GRZLWJB3S23ER7AQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="parent" Id="mprUZ5QBTM5JVBYXKHZ5GKMXNJXE4">
+            <Type TypeId="411" Path="adcRVWLRZ4A7NHYNKFVO2W4I4YWZM"/>
+          </Parameter>
+          <Parameter Name="metricKind" Id="mprTN5LFKKBEZFDXAC55WWG3D75N4">
+            <Type TypeId="21" Path="acsF47GG6XUPJH5ZKZFOWDK7GI7LE"/>
+          </Parameter>
+          <Parameter Name="isRefWidget" Id="mpr6WPYRVH5NJFQBHN6K5P73OUKYU">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(guid, parent, isRefWidget);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcJ5S6QSVMHNHQJOYBE7XY6TXR7E prdIFJKOFQG35HOVI3XJR23L24SW4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = new java.util.HashMap&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcJ5S6QSVMHNHQJOYBE7XY6TXR7E adcM7362JDVJJCQLEYAHI66VXQ4OE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMOX3YQ4D7NFJBK6TD5OGER6SRI prdDEMVYGV56NCUNLLDWPVQYWPACM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = metricKind;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMOX3YQ4D7NFJBK6TD5OGER6SRI prdAI4DPZK6G5GTFOMMNQQH3R74QM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc4RYP3EGKMRCZRPN4M235GW4KSA mthI2D23Q4PFNBRRFUDKOL2VTMZIA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMOX3YQ4D7NFJBK6TD5OGER6SRI prdDEMVYGV56NCUNLLDWPVQYWPACM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth4KR3EGKQ3JESDC7MEXII56NTXU" Name="getSeverityAnalyzeResult" Nature="0" Environment="common-client" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="rowNum" Id="mprVWORCGV5ERE2ZDSZR5A36GXKX4">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adc7V2TPZWXYJB6FIMONPCW2S7FRA"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="TableRs.TableItem"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> rowItem = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMOX3YQ4D7NFJBK6TD5OGER6SRI prdPXRD35NKDJA2RF4QWYLW2MF7ZI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.get(rowNum.intValue());
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcJ5S6QSVMHNHQJOYBE7XY6TXR7E mthYPIUDSAPBRAVDECORWGVQQWFRI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(rowItem);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYPIUDSAPBRAVDECORWGVQQWFRI" Name="getSeverityByRow" Nature="0" Environment="common-client" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="row" Id="mprBLZEWCQOBREBLAXQ4MAPW5SYRM">
+            <Type TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="TableRs.TableItem"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adc7V2TPZWXYJB6FIMONPCW2S7FRA"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="MetricRecord"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> value = row.CurrentState;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="MetricValueRanges"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ranges = row.ValueRanges;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc7V2TPZWXYJB6FIMONPCW2S7FRA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> severityRes = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLACMR6AAKVC6LIJSDSVWEJN6CA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLACMR6AAKVC6LIJSDSVWEJN6CA mthWLNZRZEZ7REPPKW3X7ECCTKPHY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(value.AvgVal,
+        value.MinVal,
+        value.MaxVal,
+        value.EndVal,
+        ranges.LowWarnVal,
+        ranges.HighWarnVal,
+        ranges.LowErrorVal,
+        ranges.HighErrorVal,
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21" Path="acs3JQBPC2NCJD37LVXZ6FUAXVNZ4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.valueOf(ranges.ControlledValue));
+return severityRes;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthXCPXPTKWRBE35FIX2J3OI22XVE" Name="afterModelUpdate" Nature="0" Environment="common-client" IsOverride="true">
+        <AccessRules IsPublished="false"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>for (org.radixware.schemas.monitoringcommand.TableRs.TableItem row : </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMOX3YQ4D7NFJBK6TD5OGER6SRI prdPXRD35NKDJA2RF4QWYLW2MF7ZI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+    long currTime = System.currentTimeMillis();
+    if (!</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcJ5S6QSVMHNHQJOYBE7XY6TXR7E prdIFJKOFQG35HOVI3XJR23L24SW4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.containsKey(row.StateId)) {
+        //Default event severity = Event; time = 0 (not highlight row).
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcJ5S6QSVMHNHQJOYBE7XY6TXR7E adcM7362JDVJJCQLEYAHI66VXQ4OE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> s = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcJ5S6QSVMHNHQJOYBE7XY6TXR7E adcM7362JDVJJCQLEYAHI66VXQ4OE mthFTPH6WLJH5H7FD7PYEWWKXEK4I" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci52AUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, 0);
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcJ5S6QSVMHNHQJOYBE7XY6TXR7E prdIFJKOFQG35HOVI3XJR23L24SW4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.put(row.StateId, s);
+    }
+    
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2" Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> currSeverity = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcJ5S6QSVMHNHQJOYBE7XY6TXR7E mthYPIUDSAPBRAVDECORWGVQQWFRI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(row).</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc7V2TPZWXYJB6FIMONPCW2S7FRA mthOYNBJKVL3VBQRK2J42ID3OVLGI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcJ5S6QSVMHNHQJOYBE7XY6TXR7E adcM7362JDVJJCQLEYAHI66VXQ4OE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> prevSeverityInfo = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcJ5S6QSVMHNHQJOYBE7XY6TXR7E prdIFJKOFQG35HOVI3XJR23L24SW4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.get(row.StateId);
+    if (!currSeverity.equals(prevSeverityInfo.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcJ5S6QSVMHNHQJOYBE7XY6TXR7E adcM7362JDVJJCQLEYAHI66VXQ4OE prdJEZ6O7AUZZAF5GRI4GCMHVCCFU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2Y5H7GMDM5DFZHINXHEGWFVWGE mth5XQ3OIPPY5DPJFYGPPXQVPD7WM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcGISEEZ725BDHDGY6XMEKDKBRG4 mthRPN4UKK5LVCM7O5J5MZXF6KPHI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(currSeverity, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2Y5H7GMDM5DFZHINXHEGWFVWGE prd4FQEN3CLQRB6VJWQCHHPSOPLLQ" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+                 </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsMZFO4JCBAFCS5C2E3XNKN7AATI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>+ row.SensorTitle + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsWHWKRB5AEFBEHCFEOQFMQ2ZEZA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + currSeverity));
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcJ5S6QSVMHNHQJOYBE7XY6TXR7E adcM7362JDVJJCQLEYAHI66VXQ4OE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> s = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcJ5S6QSVMHNHQJOYBE7XY6TXR7E adcM7362JDVJJCQLEYAHI66VXQ4OE mthFTPH6WLJH5H7FD7PYEWWKXEK4I" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(currSeverity, currTime);
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcJ5S6QSVMHNHQJOYBE7XY6TXR7E prdIFJKOFQG35HOVI3XJR23L24SW4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.put(row.StateId, s);
+    }
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthDJMUKFESZZDMRD54KBH3MCDSDQ" Name="getMetricSeverityChangeMills" Nature="0" Environment="common-client" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="rowNum" Id="mprXCOO3EA6URGEXDE5T3NOAFCE5A">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="long"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="TableRs.TableItem"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> rowItem = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMOX3YQ4D7NFJBK6TD5OGER6SRI prdPXRD35NKDJA2RF4QWYLW2MF7ZI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.get(rowNum.intValue());
+if(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcJ5S6QSVMHNHQJOYBE7XY6TXR7E prdIFJKOFQG35HOVI3XJR23L24SW4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.get(rowItem.StateId) != null) {
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcJ5S6QSVMHNHQJOYBE7XY6TXR7E prdIFJKOFQG35HOVI3XJR23L24SW4" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.get(rowItem.StateId).</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcJ5S6QSVMHNHQJOYBE7XY6TXR7E adcM7362JDVJJCQLEYAHI66VXQ4OE prdHRIHMVESHFBLVHIC63TOHCLNQU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+}
+return 0;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <InnerClasses>
+      <Clazz Id="adcM7362JDVJJCQLEYAHI66VXQ4OE" Name="SeverityInfo" Type="3" Environment="common-client">
+        <AccessRules IsPublished="false" IsStatic="true">
+          <Transparence Extendable="false"/>
+        </AccessRules>
+        <Headers>
+          <Src Name="HeaderadcM7362JDVJJCQLEYAHI66VXQ4OE"/>
+        </Headers>
+        <Bodies>
+          <Src Name="BodyadcM7362JDVJJCQLEYAHI66VXQ4OE"/>
+        </Bodies>
+        <MethodGroup Id="cmgR4TNHHXISFB45BCPDUYZ7LESLE" Name="Root"/>
+        <PropertyGroup Id="cpgMI6N3L2SBRCBRCVRKJBI4ON26Q" Name="Root"/>
+        <Properties>
+          <Property Id="prdHRIHMVESHFBLVHIC63TOHCLNQU" Name="lastChangeMills" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+            <AccessRules IsPublished="false"/>
+            <Type TypeId="401" extStr="long"/>
+          </Property>
+          <Property Id="prdJEZ6O7AUZZAF5GRI4GCMHVCCFU" Name="severity" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+            <AccessRules IsPublished="false"/>
+            <Type TypeId="2" Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4"/>
+          </Property>
+        </Properties>
+        <Methods>
+          <Method Id="mthFTPH6WLJH5H7FD7PYEWWKXEK4I" Name="SeverityInfo" Nature="0" IsConstructor="true" IsOverride="false">
+            <AccessRules IsPublished="false"/>
+            <Parameters>
+              <Parameter Name="severity" Id="mpr5O7JFSW2MZGI7LAMDJZIFFTREM">
+                <Type TypeId="2" Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4"/>
+              </Parameter>
+              <Parameter Name="lastChangeMills" Id="mprZTFIJBLYFNCKVC4DRCLDYWIS4Y">
+                <Type TypeId="401" extStr="long"/>
+              </Parameter>
+            </Parameters>
+            <Sources>
+              <Src>
+                <xsc:Item>
+                  <xsc:IdReference Path="adcJ5S6QSVMHNHQJOYBE7XY6TXR7E adcM7362JDVJJCQLEYAHI66VXQ4OE prdHRIHMVESHFBLVHIC63TOHCLNQU" Invoke="true"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java> = lastChangeMills;
+</xsc:Java>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:IdReference Path="adcJ5S6QSVMHNHQJOYBE7XY6TXR7E adcM7362JDVJJCQLEYAHI66VXQ4OE prdJEZ6O7AUZZAF5GRI4GCMHVCCFU" Invoke="true"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java> = severity;</xsc:Java>
+                </xsc:Item>
+              </Src>
+            </Sources>
+          </Method>
+        </Methods>
+      </Clazz>
+    </InnerClasses>
+    <Extends TypeId="411" Path="adcMOX3YQ4D7NFJBK6TD5OGER6SRI"/>
+  </AdsClassDefinition>
+</AdsDefinition>

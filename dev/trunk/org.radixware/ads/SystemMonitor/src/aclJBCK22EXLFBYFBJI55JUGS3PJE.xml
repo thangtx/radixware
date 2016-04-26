@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclJBCK22EXLFBYFBJI55JUGS3PJE" Name="MetricType.Unit.Arte.SessionCnt" Type="2" ClientEnvironment="explorer">
+    <AccessRules IsFinal="true" IsPublished="false"/>
+    <Headers>
+      <Src Name="Headeradc3LOUHZ2NAZFM3FLVJ5GHBDIVY4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc237GSD2Q6ZA7HCECGASS2PIYRI"/>
+    </Bodies>
+    <MethodGroup Id="cmg36ADAQBT7NFBZCCP6VAM7FWJVU" Name="Root"/>
+    <PropertyGroup Id="cpgLFHM5CVPTRHVHLZZRDVDUUH7O4" Name="Root"/>
+    <Properties>
+      <Property Id="colGSFAITPT5JEYNOOD7WASUJ3LOU" Name="unit" Nature="0" IsConst="false" IsOverride="true" ParentRefId="refBRBSH532FRC3BOQAMSVBUJQA74">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="31" Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E"/>
+        <Presentation InheritanceMask="55">
+          <ParentSelect>
+            <ParentSelectCondition>
+              <ConditionWhere>
+                <xsc:Item>
+                  <xsc:PropSqlName TableId="aec5HP4XTP3EGWDBRCRAAIT4AGD7E" PropId="colEWJT6TIHR5VDBNSIAAUMFADAIA" Owner="THIS"/>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Sql> = </xsc:Sql>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:ConstValue EnumId="acsLSG35D4GIHNRDJIEACQMTAIZT4" ItemId="aciKWBEJTYZVPORDJHCAANE2UAFXA"/>
+                </xsc:Item>
+              </ConditionWhere>
+              <ConditionFrom/>
+            </ParentSelectCondition>
+          </ParentSelect>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthSK64PGWTZNFZFAJVJ5NHXBAC6M" Name="getKind" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="21" Path="acsF47GG6XUPJH5ZKZFOWDK7GI7LE"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsF47GG6XUPJH5ZKZFOWDK7GI7LE aciGHEQOUESZFAQJMGR7ZXNLLUVWU" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM"/>
+    <Presentations ObjectTitleId="mlsARDH5WIU6NDF3JJDTLTZULW3B4">
+      <ClassCatalogs>
+        <ClassCatalog Id="eccXISAEUV6HRA7JNQ453IS2OBSFI" Name="Common">
+          <AccessRules IsPublished="false"/>
+          <ClassRef Order="100.0"/>
+        </ClassCatalog>
+      </ClassCatalogs>
+      <EditorPresentations>
+        <EditorPresentation Id="epr6M7MOE3LLVCPVMN3LPBKCMIHGU" Name="General" BasePresentationId="eprQZBCBFUUOZHCJL2XJ2L3PATCRM" InheritanceMask="40112" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprQZBCBFUUOZHCJL2XJ2L3PATCRM" ClientEnvironment="explorer">
+          <AccessRules IsPublished="false"/>
+          <ChildExplorerItems/>
+          <ObjectTitleFormat Id="etfO24RA2NFKZBW7CVYZDXHFCFKNU"/>
+        </EditorPresentation>
+      </EditorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="aclFJSN77CFJJDCDLOZXJ2X3WQUBE"/>
+  </AdsClassDefinition>
+</AdsDefinition>
