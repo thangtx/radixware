@@ -535,14 +535,14 @@ class SvnFileList {
 
     private boolean processRemoteEntry(final Directory.FileGroups.FileGroup.File xDef, final String directoryIndexParentPath, final long latestRevision, DirIndexHint hint) {
 
-        final String entryPath = SvnPath.append(directoryIndexParentPath, xDef.getName());        
+        final String entryPath = SvnPath.append(directoryIndexParentPath, xDef.getName());
         SvnFile existingFile = layerRoot.findChild(entryPath);
         if (existingFile != null) {
             //file now is under version control
             return true;
         } else {
             existingFile = layerRoot.addFile(entryPath, false, flow.getSettings().getLogger(), true);
-            existingFile.remoteDigest = ("api.xml".equals(xDef.getName()) || "directory.xml".equals(xDef.getName())) ? null : xDef.getDigest();
+            existingFile.remoteDigest = ("definitions.xml".equals(xDef.getName()) || "usages.xml".equals(xDef.getName()) || "api.xml".equals(xDef.getName()) || "directory.xml".equals(xDef.getName())) ? null : xDef.getDigest();
             existingFile.external = true;
             existingFile.setExternalRevisionNumber(latestRevision);
             return true;
