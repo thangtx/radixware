@@ -231,9 +231,13 @@ public abstract class SvnRepository {
             return mPath;
         }
         if (path.startsWith("/")) {
-            return path;
+            return path.substring(1);
         } else {
-            return SvnPath.append(mPath, path);
+            if (mPath.isEmpty()) {
+                return path;
+            } else {
+                return SvnPath.append(mPath, path);
+            }
         }
     }
 
@@ -258,7 +262,7 @@ public abstract class SvnRepository {
         rootUrl = url;
     }
 
-    public String getRootUrl() throws RadixSvnException {        
+    public String getRootUrl() throws RadixSvnException {
         return rootUrl;
     }
 
