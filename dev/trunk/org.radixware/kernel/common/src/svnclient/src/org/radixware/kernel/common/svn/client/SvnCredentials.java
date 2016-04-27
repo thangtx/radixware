@@ -15,6 +15,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 import org.radixware.kernel.common.svn.RadixSvnException;
 
 /**
@@ -31,6 +35,17 @@ public class SvnCredentials {
     private char[] passPhrase;
     private char[] privateKey;
     private final ISvnPasswordProvider passwordGetter;
+    private static final Map<String, int[]> credentialsCache = new HashMap<>();
+    private String myrealm;
+    private static Class[] classes = new Class[]{SvnCredentials.class,
+        SvnRepository.class,
+        SvnRARepository.class};
+
+    void reset() {
+        if (myrealm != null) {
+            credentialsCache.remove(myrealm);
+        }
+    }
 
     public final static class Factory {
 
@@ -81,12 +96,62 @@ public class SvnCredentials {
         this.privateKey = null;
     }
 
+    private static int mask = ((new Random().nextInt(3)) ^ SvnCredentials.class.hashCode());
+
     public SvnAuthType getAuthType() {
         return authType;
     }
 
     public String getUserName() {
         return userName;
+    }
+
+    void store(String realm, char[] pwd) {
+        String asString = String.valueOf(pwd);
+        try {
+            byte[] bytes = asString.getBytes("UTF-8");
+            int[] ints = new int[bytes.length];
+            for (int i = 0; i < bytes.length; i++) {
+                int value = bytes[i] << 24;
+                ints[i] = value ^ getMask();
+            }
+            myrealm = realm;
+            credentialsCache.put(realm, ints);
+            char[] test = restore(realm);
+        } catch (UnsupportedEncodingException ex) {
+
+        }
+    }
+
+    private static int getMask() {
+        if (mask < 0) {
+            return classes[(mask ^ SvnCredentials.class.hashCode())].hashCode();
+        }
+        return mask;
+    }
+
+    char[] restore(String realm) {
+        int[] data = credentialsCache.get(realm);
+        if (data == null) {
+            return null;
+        } else {
+            int[] conveted = new int[data.length];
+            for (int i = 0; i < conveted.length; i++) {
+                conveted[i] = data[i] ^ getMask();
+            }
+            byte[] bytes = new byte[conveted.length];
+            for (int i = 0; i < conveted.length; i++) {
+                bytes[i] = (byte) ((conveted[i] & 0xFF000000) >> 24);
+            }
+            String asString;
+            try {
+                asString = new String(bytes, "UTF-8");
+            } catch (UnsupportedEncodingException ex) {
+                return null;
+            }
+            return asString.toCharArray();
+        }
+
     }
 
     public File getKeyFile() {
@@ -127,15 +192,17 @@ public class SvnCredentials {
 
     public char[] getPassPhrase() throws RadixSvnException {
         if (passPhrase == null) {
+            File keyFile = getKeyFile();
+            String keyFilePath = keyFile == null ? "Unknown" : keyFile.getPath();
+            passPhrase = restore(keyFilePath);
             if (passwordGetter != null) {
                 try {
                     boolean ft = fistTime;
                     fistTime = false;
-                    File keyFile = getKeyFile();
-                    String keyFilePath = keyFile == null ? "Unknown" : keyFile.getPath();
                     char[] pwd = passwordGetter.getPassword(ft, authType, "Enter passphrase", "Key file", keyFilePath, null);
                     if (pwd != null) {
                         passPhrase = pwd;
+                        store(keyFilePath, pwd);
                     }
                 } catch (RadixSvnException ex) {
                     throw ex;
@@ -147,14 +214,19 @@ public class SvnCredentials {
 
     public char[] getCertificatePassword() throws RadixSvnException {
         if (passPhrase == null) {
+            final String keyFilePath = getCertificatePath() == null ? "Unknown" : getCertificatePath();
+            passPhrase = restore(keyFilePath);
+            if (password != null) {
+                return password;
+            }
             if (passwordGetter != null) {
                 try {
                     boolean ft = fistTime;
                     fistTime = false;
-                    String keyFilePath = getCertificatePath() == null ? "Unknown" : getCertificatePath();
                     char[] pwd = passwordGetter.getPassword(ft, authType, "Enter passphrase", "Certificate file", keyFilePath, null);
                     if (pwd != null) {
                         passPhrase = pwd;
+                        store(keyFilePath, pwd);
                     }
                 } catch (RadixSvnException ex) {
                     throw ex;
@@ -166,6 +238,10 @@ public class SvnCredentials {
 
     public char[] getPassword(String url) throws RadixSvnException {
         if (password == null) {
+            password = restore(url);
+            if (password != null) {
+                return password;
+            }
             if (passwordGetter != null) {
                 try {
                     boolean ft = fistTime;
@@ -173,6 +249,7 @@ public class SvnCredentials {
                     char[] pwd = passwordGetter.getPassword(ft, authType, "Enter password", "Repository", url, userName);
                     if (pwd != null) {
                         password = pwd;
+                        store(url, pwd);
                     }
                 } catch (RadixSvnException ex) {
                     throw ex;
