@@ -272,7 +272,7 @@ class SvnFileList {
         if (hint == DirIndexHint.SEGMENT) {
             ads = ADS_SEGMENT.equals(dir.getPath());
         }
-        
+
         for (SvnDir child : dirs) {
             final String newPath = SvnPath.append(path, child.getName());
 
@@ -535,15 +535,14 @@ class SvnFileList {
 
     private boolean processRemoteEntry(final Directory.FileGroups.FileGroup.File xDef, final String directoryIndexParentPath, final long latestRevision, DirIndexHint hint) {
 
-        final String entryPath = SvnPath.append(directoryIndexParentPath, xDef.getName());
-
+        final String entryPath = SvnPath.append(directoryIndexParentPath, xDef.getName());        
         SvnFile existingFile = layerRoot.findChild(entryPath);
         if (existingFile != null) {
             //file now is under version control
             return true;
         } else {
             existingFile = layerRoot.addFile(entryPath, false, flow.getSettings().getLogger(), true);
-            existingFile.remoteDigest = xDef.getDigest();
+            existingFile.remoteDigest = ("api.xml".equals(xDef.getName()) || "directory.xml".equals(xDef.getName())) ? null : xDef.getDigest();
             existingFile.external = true;
             existingFile.setExternalRevisionNumber(latestRevision);
             return true;
