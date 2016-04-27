@@ -272,6 +272,20 @@ public class RAMessage {
             throw new RadixSvnException(ex);
         }
     }
+    public void mergeItemsWithoutEnvelope(List<MessageItem> items, OutputStream out) throws RadixSvnException {
+        try {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            mergeItemsImpl(items, stream);
+            
+            byte[] bytes = stream.toByteArray();
+//            String debug = new String(bytes, "UTF-8");
+//            System.out.println(debug);
+            out.write(bytes);
+            out.flush();
+        } catch (IOException ex) {
+            throw new RadixSvnException(ex);
+        }
+    }
 
     private void mergeItemsImpl(List<MessageItem> items, OutputStream stream) throws RadixSvnException {
         try {

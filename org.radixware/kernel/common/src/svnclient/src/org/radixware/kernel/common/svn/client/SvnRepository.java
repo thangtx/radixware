@@ -62,7 +62,7 @@ public abstract class SvnRepository {
 
     private final SvnCredentials[] credentials;
     private final X509TrustManager trustManager;
-    private SvnCredentials activeCredentials;
+    SvnCredentials activeCredentials;
     private SvnConnection connection;
     private final URI location;
     private final String myPath;
@@ -74,6 +74,37 @@ public abstract class SvnRepository {
         this.trustManager = trustManager;
         this.location = location;
         this.myPath = path;
+    }
+
+    private Object lockMarker;
+
+    private void lock() throws RadixSvnException {
+        synchronized (this) {
+            if (lockMarker == null) {
+                lockMarker = Thread.currentThread();
+            } else {
+                while (lockMarker != null) {
+                    if (lockMarker == Thread.currentThread()) {
+                        return;
+                    }
+                    try {
+                        wait();
+                    } catch (InterruptedException ex) {
+                        throw new RadixSvnException("Executor thread was interrupted");
+                    }
+                }
+                lockMarker = Thread.currentThread();
+            }
+        }
+    }
+
+    private void unlock() {
+        synchronized (this) {
+            if (lockMarker == Thread.currentThread()) {
+                lockMarker = null;
+                notify();
+            }
+        }
     }
 
     public X509TrustManager getTrustManager() {
@@ -103,6 +134,7 @@ public abstract class SvnRepository {
     public void connect() throws RadixSvnException {
 
         synchronized (this) {
+            lock();
 //            if (connection != null) {
 //                disconnect();
 //            }
@@ -128,7 +160,7 @@ public abstract class SvnRepository {
                         break;
                     } catch (RadixSvnException ex) {
                         credentialsIndex++;
-
+                        activeCredentials.reset();
                         activeCredentials = null;
                         if (credentialsIndex >= credentials.length) {
                             throw ex;
@@ -142,6 +174,7 @@ public abstract class SvnRepository {
                 try {
                     connection.open(this);
                 } catch (RadixSvnException ex) {
+                    activeCredentials.reset();
                     if (ex.isAuthenticationCancelled()) {
                         throw ex;
                     }
@@ -172,6 +205,7 @@ public abstract class SvnRepository {
             if (force) {
                 disconnectImpl();
             }
+            unlock();
 //            if (disconnectorTask == null) {
 //                disconnector.schedule(disconnectorTask = new TimerTask() {
 //
@@ -224,11 +258,7 @@ public abstract class SvnRepository {
         rootUrl = url;
     }
 
-    public String getRootUrl() throws RadixSvnException {
-        if (rootUrl == null) {
-            connect();
-            disconnect();
-        }
+    public String getRootUrl() throws RadixSvnException {        
         return rootUrl;
     }
 

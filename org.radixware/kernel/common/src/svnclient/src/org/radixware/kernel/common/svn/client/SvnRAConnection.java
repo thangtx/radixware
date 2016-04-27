@@ -21,6 +21,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.radixware.kernel.common.svn.RadixSvnException;
+import org.radixware.kernel.common.svn.client.auth.SvnAuthentication;
+import org.radixware.kernel.common.svn.client.auth.SvnPasswordAuthentication;
 import org.radixware.kernel.common.svn.client.auth.SvnSaslAuthenticator;
 
 /**
@@ -42,7 +44,7 @@ public class SvnRAConnection extends SvnConnection {
     private static final String MERGE_INFO = "mergeinfo";
     private static final String DEPTH = "depth";
     private static final String LOG_REVPROPS = "log-revprops";
-    
+
     public SvnRAConnection(SvnConnector connector) {
         this.connector = connector;
     }
@@ -162,6 +164,14 @@ public class SvnRAConnection extends SvnConnection {
             throw new RadixSvnException(ex);
         }
     }
+    public void writeWithoutEnvelope(RAMessage.MessageItem... items) throws RadixSvnException {
+        RAMessage message = new RAMessage();
+        try {
+            message.mergeItemsWithoutEnvelope(Arrays.asList(items), connector.getOutputStream());
+        } catch (IOException ex) {
+            throw new RadixSvnException(ex);
+        }
+    }
 
     public RAMessage.MessageItem readItem() throws IOException {
         return new RAMessage().readItem(getInputStream());
@@ -186,7 +196,7 @@ public class SvnRAConnection extends SvnConnection {
                     RAMessage.MessageItem.newWord(DEPTH),
                     RAMessage.MessageItem.newWord(MERGE_INFO),
                     RAMessage.MessageItem.newWord(LOG_REVPROPS)
-            );            
+            );
 
             write(RAMessage.MessageItem.newNumber(2),
                     myCaps,
@@ -214,8 +224,20 @@ public class SvnRAConnection extends SvnConnection {
                 if (mechs.isEmpty()) {
                     return;
                 }
+                List<SvnAuthentication> auths = new LinkedList<>();
 
-                new SvnSaslAuthenticator(this).authenticate(mechs, realm, repository);
+                if (repository.activeCredentials != null) {
+                    if (repository.activeCredentials.getAuthType() == SvnAuthType.SVN_PASSWORD) {
+                        auths.add(new SvnPasswordAuthentication(
+                                repository.activeCredentials.getUserName(), 
+                                repository.activeCredentials.getPassword(repository.getLocation().toString()), 
+                                true, 
+                                uri, 
+                                true));
+                    }
+                }
+
+                new SvnSaslAuthenticator(this, auths).authenticate(mechs, realm, repository);
 
                 List<RAMessage.MessageItem> repoInfo = read(true, RAMessage.STRING, RAMessage.STRING, RAMessage.LIST);
                 if (repoInfo != null && !repoInfo.isEmpty()) {

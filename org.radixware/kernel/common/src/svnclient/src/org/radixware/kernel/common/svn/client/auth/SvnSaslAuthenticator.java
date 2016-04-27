@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -43,9 +44,22 @@ public class SvnSaslAuthenticator extends SvnAuthenticator {
 
     private SaslClient saslClient;
     private SvnAuthentication authentication;
+    private List<SvnAuthentication> others;
 
-    public SvnSaslAuthenticator(SvnRAConnection connection) throws RadixSvnException {
+    public SvnSaslAuthenticator(SvnRAConnection connection, List<SvnAuthentication> others) throws RadixSvnException {
         super(connection);
+        this.others = others;
+    }
+
+    @Override
+    protected SvnAuthentication getNextAuthentication(String realm, URI location) throws RadixSvnException {
+        if (others == null) {
+            return null;
+        }
+        if (others.isEmpty()) {
+            return null;
+        }
+        return others.remove(0);
     }
 
     @Override
@@ -58,7 +72,7 @@ public class SvnSaslAuthenticator extends SvnAuthenticator {
             howTos = new ArrayList();
             howTos.add("EXTERNAL");
         } else {
-            for (String m : howTos) {                
+            for (String m : howTos) {
                 if ("ANONYMOUS".equals(m) || "EXTERNAL".equals(m) || "PLAIN".equals(m)) {
                     howTos = new ArrayList();
                     isAnonymous = "ANONYMOUS".equals(m);
@@ -173,7 +187,7 @@ public class SvnSaslAuthenticator extends SvnAuthenticator {
             }
             byte[] challengeBytes = "CRAM-MD5".equals(howTo) ? challenge.getBytes() : fromBase64(challenge);
             byte[] response = null;
-            if (!saslClient.isComplete()) {
+            while (!saslClient.isComplete()) {
                 response = saslClient.evaluateChallenge(challengeBytes);
             }
             if (SvnAuthenticator.SUCCESS.equals(status)) {
@@ -182,11 +196,12 @@ public class SvnSaslAuthenticator extends SvnAuthenticator {
             if (response == null) {
                 throw new RadixSvnException("Unexpected response from " + howTo);
             }
+
             if (response.length > 0) {
                 String responseStr = "CRAM-MD5".equals(howTo) ? new String(response) : toBase64(response);
-                connection.write(RAMessage.MessageItem.newString(responseStr));
+                connection.writeWithoutEnvelope(RAMessage.MessageItem.newString(responseStr));
             } else {
-                connection.write(RAMessage.MessageItem.newString(""));
+                connection.writeWithoutEnvelope(RAMessage.MessageItem.newString(""));
             }
         }
         return true;
@@ -372,7 +387,7 @@ public class SvnSaslAuthenticator extends SvnAuthenticator {
                     final String userName = authentication.getUserName();
                     ((NameCallback) callback).setName(userName != null ? userName : "");
                 } else if (callback instanceof PasswordCallback) {
-                    ((PasswordCallback)callback).setPassword(authentication.getPassword());
+                    ((PasswordCallback) callback).setPassword(authentication.getPassword());
                 } else if (callback instanceof RealmCallback) {
                     ((RealmCallback) callback).setText(realm);
                 } else {
