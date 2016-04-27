@@ -265,6 +265,23 @@ public class SvnHttpEditor implements SvnEditor, ISvnDeltaConsumer {
         filesMap.put(originalPath, newFile);
 
         newFile.setAdded(true);
+
+        if (copyFromPath != null) {
+            while (copyFromPath.startsWith("/")) {
+                copyFromPath = copyFromPath.substring(1);
+            }
+            copyFromPath = SvnPath.uriEncode(copyFromPath);
+            DAV.BaselineInfo info = repo.getBaselineInfo(connection, repo, copyFromPath, revision, false, false, null);
+            copyFromPath = SvnPath.append(info.baselineBase, info.baselinePath);
+
+            URI loc = repo.getLocation();
+            try {
+                URI uri = new URI(loc.getScheme(), loc.getAuthority(), loc.getHost(), loc.getPort(), newFile.getWorkingURL(), loc.getQuery(), loc.getFragment());
+                connection.copy(copyFromPath, uri.toString(), 1);
+            } catch (URISyntaxException ex) {
+                throw new RadixSvnException(ex);
+            }
+        }
     }
 
     @Override
@@ -279,7 +296,7 @@ public class SvnHttpEditor implements SvnEditor, ISvnDeltaConsumer {
     public void updateFile(String path, long revision, InputStream content) throws RadixSvnException {
         SvnEntry.Kind kind = repo.checkPath(path, revision);
         System.out.print(kind);
-                
+
         openFile(path, revision);
         applyTextDelta(path, null);
         String chk_sum = new SvnDeltaGenerator().sendDelta(path, content, this, true);
@@ -323,7 +340,7 @@ public class SvnHttpEditor implements SvnEditor, ISvnDeltaConsumer {
         path = SvnPath.uriEncode(path);
         DAV.Resource parent = getTopDir(revision);//dirsStack.peek();
         DAV.Resource file = new DAV.Resource(connection, cache, path, revision);
-        if (parent.getVersionURL() == null) {            
+        if (parent.getVersionURL() == null) {
             file.setWorkingURL(SvnPath.append(parent.getWorkingURL(), SvnPath.tail(path)));
         } else {
             file.fetchVersionURL(parent, false);
