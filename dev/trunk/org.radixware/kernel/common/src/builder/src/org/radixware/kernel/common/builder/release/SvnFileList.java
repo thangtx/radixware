@@ -542,7 +542,7 @@ class SvnFileList {
             return true;
         } else {
             existingFile = layerRoot.addFile(entryPath, false, flow.getSettings().getLogger(), true);
-            existingFile.remoteDigest = ("definitions.xml".equals(xDef.getName()) || "usages.xml".equals(xDef.getName()) || "api.xml".equals(xDef.getName()) || "directory.xml".equals(xDef.getName())) ? null : xDef.getDigest();
+            existingFile.remoteDigest = /*("definitions.xml".equals(xDef.getName()) || "usages.xml".equals(xDef.getName()) || "api.xml".equals(xDef.getName()) || "directory.xml".equals(xDef.getName())) ? null : */xDef.getDigest();
             existingFile.external = true;
             existingFile.setExternalRevisionNumber(latestRevision);
             return true;
