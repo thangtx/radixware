@@ -11,6 +11,7 @@
  */
 package org.radixware.kernel.common.svn.client.impl;
 
+import java.io.InputStream;
 import java.net.Socket;
 import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
@@ -178,6 +179,7 @@ public class KeyManager extends X509ExtendedKeyManager {
     }
 
     public static javax.net.ssl.KeyManager[] getKeyManagers(SvnRepository repository) throws RadixSvnException {
+
         KeyManagerFactory kmf;
         try {
             kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
@@ -190,14 +192,19 @@ public class KeyManager extends X509ExtendedKeyManager {
             if (credentials == null) {
                 return new javax.net.ssl.KeyManager[0];
             }
-            KeyStore ks = KeyStore.getInstance("PKCS12");
-            ks.load(credentials.getCertificateData(), credentials.getCertificatePassword());
+            InputStream certificateData = credentials.getCertificateData();
+            if (certificateData == null) {//no credentials provided
+                return new javax.net.ssl.KeyManager[0];
+            } else {
+                KeyStore ks = KeyStore.getInstance("PKCS12");
+                ks.load(certificateData, credentials.getCertificatePassword());
 //            Enumeration<String> aliases = ks.aliases();
 //            while (aliases.hasMoreElements()) {
 //                System.out.println(aliases.nextElement());
 //            }
-            kmf.init(ks, repository.getCredentials().getPassPhrase());
-            return kmf.getKeyManagers();
+                kmf.init(ks, repository.getCredentials().getPassPhrase());
+                return kmf.getKeyManagers();
+            }
         } catch (RadixSvnException ex) {
             throw ex;
         } catch (Exception ex) {

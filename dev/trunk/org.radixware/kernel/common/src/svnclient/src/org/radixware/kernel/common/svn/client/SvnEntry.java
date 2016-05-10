@@ -69,7 +69,7 @@ public class SvnEntry {
     private final Date lastModified;
     private final String message;
     private long size;
-
+    
     private final Kind kind;
 
     public SvnEntry(final String path, final String name, final String repositoryPath, final String author, final long revision, final Date lastModified, long size, final Kind kind, final String message) {

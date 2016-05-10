@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -32,36 +33,8 @@ import org.radixware.kernel.common.svn.client.impl.SvnSshConnector;
  */
 public class SvnRARepository extends SvnRepository {
 
-    private Object lockMarker;
-
     public SvnRARepository(URI location, String path, SvnCredentials[] credentials) {
         super(location, path, credentials, null);
-    }
-
-    private void lock() throws RadixSvnException {
-        synchronized (this) {
-            if (lockMarker == null) {
-                lockMarker = Thread.currentThread();
-            } else {
-                while (lockMarker != null) {
-                    try {
-                        wait();
-                    } catch (InterruptedException ex) {
-                        throw new RadixSvnException("Executor thread was interrupted");
-                    }
-                }
-                lockMarker = Thread.currentThread();
-            }
-        }
-    }
-
-    private void unlock() {
-        synchronized (this) {
-            if (lockMarker == Thread.currentThread()) {
-                lockMarker = null;
-                notify();
-            }
-        }
     }
 
     @Override
@@ -92,24 +65,6 @@ public class SvnRARepository extends SvnRepository {
                 return new SvnPlainConnector();
         }
         return null;
-    }
-
-    @Override
-    protected void disconnect(boolean force) {
-        super.disconnect(force);
-        unlock();
-    }
-
-    @Override
-    protected void disconnect() {
-        disconnect(false);
-
-    }
-
-    @Override
-    public void connect() throws RadixSvnException {
-        lock();
-        super.connect();
     }
 
     @Override
@@ -374,7 +329,20 @@ public class SvnRARepository extends SvnRepository {
 
     @Override
     public void replay(long lowRevision, long highRevision, boolean sendDeltas, SvnEditor editor) throws RadixSvnException {
-        throw new UnsupportedOperationException("Replay operation is not supported");
+        try {
+            connect();
+            getConnection().write(RAMessage.MessageItem.newWord("replay"),
+                    RAMessage.MessageItem.newList(
+                            getRevisionItem(highRevision),
+                            getRevisionItem(lowRevision),
+                            RAMessage.MessageItem.newBoolean(sendDeltas)));
+            authenticate();
+            SvnRAEditModeReader reader = new SvnRAEditModeReader(getConnection(), (SvnRAEditor) editor, true);
+            reader.driveEditor();
+            getConnection().read(false);
+        } finally {
+            disconnect();
+        }
     }
 
     private RAMessage.MessageItem getRevisionItem(long revision) {
@@ -464,6 +432,19 @@ public class SvnRARepository extends SvnRepository {
             close();
             throw e;
         }
+    }
+
+    @Override
+    public String getRootUrl() throws RadixSvnException {
+        if (super.getRootUrl() == null) {
+            try {
+                connect();
+            } finally {
+                disconnect();
+            }
+        }
+        return super.getRootUrl();
+
     }
 
     private String[] getRepositoryPaths(String[] paths) throws RadixSvnException {
@@ -570,7 +551,7 @@ public class SvnRARepository extends SvnRepository {
                 for (RAMessage.MessageItem item : changedPathes) {
                     cpths.add(item.getList().get(0).getString());
                 }
-                handler.accept(new SvnLogEntry(message, author, date, revision, null));
+                handler.accept(new SvnLogEntry(message, author, date, revision, cpths));
 
             }
 

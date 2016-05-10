@@ -225,7 +225,8 @@ public abstract class SvnRepository {
     }
 
     protected String getPathRelativeToMine(String path) throws RadixSvnException {
-
+        if(path == null)
+            path = "";
         final String mPath = getPath();
         if (path.equals(".")) {
             return mPath;

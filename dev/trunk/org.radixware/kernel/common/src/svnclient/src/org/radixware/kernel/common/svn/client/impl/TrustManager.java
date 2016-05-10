@@ -13,6 +13,9 @@ package org.radixware.kernel.common.svn.client.impl;
 
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import javax.net.ssl.X509TrustManager;
 
 /**
@@ -22,6 +25,7 @@ import javax.net.ssl.X509TrustManager;
 public class TrustManager implements X509TrustManager {
 
     private final X509TrustManager delegate;
+    private List<X509Certificate> acceptedIssuers = new LinkedList<>();
 
     public TrustManager(X509TrustManager delegate) {
         this.delegate = delegate;
@@ -36,12 +40,16 @@ public class TrustManager implements X509TrustManager {
     public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
         if (delegate != null) {
             delegate.checkServerTrusted(chain, authType);
-        } 
+        } else {
+            if (chain != null && chain.length > 0) {
+                acceptedIssuers.addAll(Arrays.asList(chain));
+            }
+        }
     }
 
     @Override
     public X509Certificate[] getAcceptedIssuers() {
-        return new X509Certificate[0];
+        return acceptedIssuers.toArray(new X509Certificate[acceptedIssuers.size()]);
     }
 
 }

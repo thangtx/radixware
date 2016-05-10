@@ -41,6 +41,7 @@ import java.util.logging.Logger;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -54,6 +55,7 @@ import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.FileEntity;
@@ -124,6 +126,13 @@ public class SvnHttpConnection extends SvnConnection {
     public static final String SVN_APACHE_PROPERTY_PREFIX = "SA";
 
     static {
+        java.util.logging.Logger.getLogger("org.apache.http.wire").setLevel(java.util.logging.Level.FINEST);
+        java.util.logging.Logger.getLogger("org.apache.http.headers").setLevel(java.util.logging.Level.FINEST);
+        System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
+        System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
+        System.setProperty("org.apache.commons.logging.simplelog.log.httpclient.wire", "ERROR");
+        System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http", "ERROR");
+        System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http.headers", "ERROR");
         WELL_KNOWN_NS_PREFIXES.put(DAV.Element.DAV_NAMESPACE, DAV_NAMESPACE_PREFIX);
         WELL_KNOWN_NS_PREFIXES.put(DAV.Element.SVN_NAMESPACE, SVN_NAMESPACE_PREFIX);
         WELL_KNOWN_NS_PREFIXES.put(DAV.Element.SVN_DAV_PROPERTY_NAMESPACE, SVN_DAV_PROPERTY_PREFIX);
@@ -199,6 +208,7 @@ public class SvnHttpConnection extends SvnConnection {
                 builder.setSSLContext(makeSSLContext(repo));
             }
             builder.setDefaultCredentialsProvider(credentialsProvider);
+            builder.setHostnameVerifier(new AllowAllHostnameVerifier());
             return client = builder.setMaxConnPerRoute(Integer.MAX_VALUE)
                     .setMaxConnTotal(Integer.MAX_VALUE)
                     .build();
@@ -557,6 +567,9 @@ public class SvnHttpConnection extends SvnConnection {
         try {
             HttpPost builder = prepareRequest("GET", path);
             HttpResponse rs = getConnection(repo).execute(builder);
+            if (rs.getStatusLine().getStatusCode() != 200) {
+                throw new RadixSvnException("Path not found:" + path);
+            }
             if (rs.getEntity() != null) {
                 InputStream in = rs.getEntity().getContent();
                 if (in != null) {
@@ -597,7 +610,10 @@ public class SvnHttpConnection extends SvnConnection {
     private void readResponse(int code, HttpEntity response, final IPropAcceptor acceptor) throws IOException {
         if (code == 207) {
             try {
-                SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+                SAXParserFactory factory = SAXParserFactory.newInstance();
+                factory.setValidating(false);
+                SAXParser parser = factory.newSAXParser();
+
                 class Element {
 
                     String qname;
@@ -895,7 +911,9 @@ public class SvnHttpConnection extends SvnConnection {
                 throw new RadixSvnException("Connection refused");
             }
 
-            SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            factory.setValidating(false);
+            SAXParser parser = factory.newSAXParser();
             final StringBuilder url = new StringBuilder();
             final boolean doParse[] = new boolean[]{false};
             parser.parse(rs.getEntity().getContent(), new DefaultHandler() {
@@ -1075,7 +1093,9 @@ public class SvnHttpConnection extends SvnConnection {
                 if (rs.getStatusLine().getStatusCode() == 200) {
                     try {
 
-                        SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+                        SAXParserFactory factory = SAXParserFactory.newInstance();
+                        factory.setValidating(false);
+                        SAXParser parser = factory.newSAXParser();
 
                         final boolean inBaseline[] = new boolean[]{false};
                         final int[] mode = new int[]{0};
@@ -1234,7 +1254,9 @@ public class SvnHttpConnection extends SvnConnection {
                 if (rs.getStatusLine().getStatusCode() != 200) {
                     throw new RadixSvnException("Connection refused");
                 }
-                SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+                SAXParserFactory factory = SAXParserFactory.newInstance();
+                factory.setValidating(false);
+                SAXParser parser = factory.newSAXParser();
                 parser.parse(rs.getEntity().getContent(), handler);
             } catch (IOException | ParserConfigurationException ex) {
                 throw new RadixSvnException(ex);
