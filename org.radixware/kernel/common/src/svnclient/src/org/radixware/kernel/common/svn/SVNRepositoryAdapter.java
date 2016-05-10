@@ -9,7 +9,6 @@
  * or FITNESS FOR A PARTICULAR PURPOSE.  See the Mozilla Public 
  * License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.svn;
 
 import java.io.File;
@@ -58,6 +57,10 @@ public interface SVNRepositoryAdapter {
 
         private X509TrustManager trustManager;
         private List<SvnCredentials> credentials = new LinkedList<>();
+
+        public Builder() {
+            credentials.add(SvnCredentials.Factory.newEmptyInstance());
+        }
 
         public X509TrustManager getTrustManager() {
             return trustManager;
@@ -190,6 +193,8 @@ public interface SVNRepositoryAdapter {
 
     String getRepositoryRoot() throws RadixSvnException;
 
+    String getLocalPath() throws RadixSvnException;
+
     boolean isDir(String path, long revision) throws RadixSvnException;
 
     boolean isFile(String path, long revision) throws RadixSvnException;
@@ -200,6 +205,7 @@ public interface SVNRepositoryAdapter {
 
     byte[] getFileBytes(String path, long revision);
 
+    
     SvnEntry.Kind checkPath(String path, long revision) throws RadixSvnException;
 
     SvnEntry info(String path, long revision) throws RadixSvnException;
@@ -217,6 +223,8 @@ public interface SVNRepositoryAdapter {
     void close();
 
     void log(String path, long startRevision, long endRevision, final ISvnLogHandler logHandler) throws RadixSvnException;
+
+    void log(String path, long startRevision, long endRevision, boolean strictNodes, final ISvnLogHandler logHandler) throws RadixSvnException;
 
     void log(String pathes[], long startRevision, long endRevision, final ISvnLogHandler logHandler) throws RadixSvnException;
 

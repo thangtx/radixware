@@ -550,7 +550,7 @@ public class SVN {
     public static void update(final PrintWriter out, final PrintWriter err, final ISvnFSClient client, final File[] files) throws SvnFsClientException {
         for (int i = 0; i < RADIX_OPTIONS_ITERATION_COUNT; i++) {
             try {
-                client.update(files, client.getHeadRevision(), true, false);
+                client.update(files, client.getHeadRevision(), true, true);
                 return;
             } catch (ISvnFSClient.SvnFsClientException ex) {
                 if (i == RADIX_OPTIONS_ITERATION_COUNT - 1) {

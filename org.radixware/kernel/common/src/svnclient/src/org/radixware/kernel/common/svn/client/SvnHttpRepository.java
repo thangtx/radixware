@@ -438,8 +438,7 @@ public class SvnHttpRepository extends SvnRepository {
             path = getPathRelativeToMine(path);
             if (revision >= 0) {
                 DAV.BaselineInfo info = getBaselineInfo(connection, this, "", revision, false, true, null);
-                path = SvnPath.append(SvnPath.append(info.baselineBase, info.baselinePath), path);
-                System.out.println(path);
+                path = SvnPath.append(SvnPath.append(info.baselineBase, info.baselinePath), path);                
             }
             try {
                 DAV.BaselineInfo info = getBaselineInfo(connection, this, path, revision, true, false, null);

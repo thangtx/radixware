@@ -159,13 +159,7 @@ public class SvnCredentials {
     }
 
     public InputStream getCertificateData() throws IOException {
-        return certificatePath == null ? new InputStream() {
-
-            @Override
-            public int read() throws IOException {
-                return -1;
-            }
-        }
+        return certificatePath == null ? null
                 : new FileInputStream(new File(certificatePath));
     }
 

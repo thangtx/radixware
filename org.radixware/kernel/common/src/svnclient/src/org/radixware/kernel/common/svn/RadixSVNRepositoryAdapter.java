@@ -263,7 +263,7 @@ class RadixSVNRepositoryAdapter implements SVNRepositoryAdapter {
         this.initialCredentials = credentials;
     }
 
-    public RadixSVNRepositoryAdapter(URI localtion, SvnCredentials credentials) throws RadixSvnException{
+    public RadixSVNRepositoryAdapter(URI localtion, SvnCredentials credentials) throws RadixSvnException {
         this(localtion, new SvnCredentials[]{credentials});
     }
 
@@ -280,6 +280,11 @@ class RadixSVNRepositoryAdapter implements SVNRepositoryAdapter {
     @Override
     public String getRepositoryRoot() throws RadixSvnException {
         return radix.getRootUrl();
+    }
+
+    @Override
+    public String getLocalPath() throws RadixSvnException {
+        return radix.getPath();
     }
 
     @Override
@@ -312,6 +317,7 @@ class RadixSVNRepositoryAdapter implements SVNRepositoryAdapter {
             return null;
         }
     }
+    
 
     @Override
     public SvnEntry.Kind checkPath(String path, long revision) throws RadixSvnException {
@@ -362,6 +368,11 @@ class RadixSVNRepositoryAdapter implements SVNRepositoryAdapter {
     @Override
     public void log(String path, long startRevision, long endRevision, ISvnLogHandler logHandler) throws RadixSvnException {
         radix.log(path, startRevision, endRevision, false, logHandler);
+    }
+
+    @Override
+    public void log(String path, long startRevision, long endRevision, boolean strictNodes, ISvnLogHandler logHandler) throws RadixSvnException {
+        radix.log(path, startRevision, endRevision, false, strictNodes, logHandler);
     }
 
     @Override

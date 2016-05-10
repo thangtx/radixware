@@ -114,23 +114,24 @@ public class SvnSshConnector extends SvnConnector {
     @Override
     public void close() {
         wasClosed = true;
-        try {
-            input.close();
-        } catch (IOException ex) {
-        }
-        input = null;
-        try {
-            output.close();
-        } catch (IOException ex) {
-        }
-        output = null;
-        if (sshSession != null) {
-            if (sshSession != null) {
-                sshSession.close();
-                sshSession = null;
+        if (input != null) {
+            try {
+                input.close();
+            } catch (IOException ex) {
             }
+            input = null;
         }
-        sshSession = null;
+        if (output != null) {
+            try {
+                output.close();
+            } catch (IOException ex) {
+            }
+            output = null;
+        }
+        if (sshSession != null) {
+            sshSession.close();
+            sshSession = null;
+        }
     }
 
     @Override

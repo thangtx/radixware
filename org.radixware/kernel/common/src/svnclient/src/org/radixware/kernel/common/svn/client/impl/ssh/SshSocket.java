@@ -25,7 +25,7 @@ import org.radixware.kernel.common.svn.client.SvnCredentials;
 
 public class SshSocket {
 
-    private static final int LIFECICLE_LENGTH_MILLIS = 600 * 1000;
+    private static final int LIFECICLE_LENGTH_MILLIS = 1000 * 60 * 60 * 10;
     private static final int SESSION_POOL_SIZE = 10;
 
     private final String sshHostName;
