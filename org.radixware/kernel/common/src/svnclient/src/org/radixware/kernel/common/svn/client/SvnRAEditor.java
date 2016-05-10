@@ -210,7 +210,7 @@ class SvnRAEditor implements SvnEditor, ISvnDeltaConsumer {
             } else {
                 closeCallback.success();
             }
-            closeCallback = null;            
+            closeCallback = null;
         }
     }
 
@@ -256,7 +256,7 @@ class SvnRAEditor implements SvnEditor, ISvnDeltaConsumer {
             } else {
                 closeCallback.success();
             }
-            closeCallback = null;            
+            closeCallback = null;
         }
     }
 
@@ -267,7 +267,7 @@ class SvnRAEditor implements SvnEditor, ISvnDeltaConsumer {
 
         if (copyFromPath != null) {
             String rootURL = repository.getRootUrl();
-            copyFromPath = SvnPath.append(SvnPath.append(rootURL, repository.getPath()), copyFromPath);
+            copyFromPath = SvnPath.append(rootURL, copyFromPath);
 
             connection.write(RAMessage.MessageItem.newWord("add-file"),
                     RAMessage.MessageItem.newList(
