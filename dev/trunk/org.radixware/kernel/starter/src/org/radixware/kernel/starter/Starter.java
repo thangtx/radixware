@@ -43,7 +43,7 @@ public class Starter {
     public static final String STARTER_APP_DATA_ROOT = "radixware.org/starter";
     private static DateFormat SHUTDOWN_LOG_DATE_FORMAT = new SimpleDateFormat("HH-mm-dd-MM-yyyy");
     private volatile static String[] restartParameters;
-    public static final String VERSION = "1.32";
+    public static final String VERSION = "1.33";
     private static volatile Runnable cleanupHook = null;
     private static final AtomicBoolean cleanupLaunched = new AtomicBoolean(false);
     private static final CountDownLatch cleanupIsDoneLatch = new CountDownLatch(1);

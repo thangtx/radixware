@@ -148,7 +148,10 @@
             <filelist id="starter.add.files" dir="." files="${starter.add.files}"/> 
         </unjar>
         <unjar src="${file.reference.trilead.jar}" dest="${single_build.classes.dir}"/>
+        <unjar src="${file.reference.httpclient-4.5.1.jar}" dest="${single_build.classes.dir}"/>
+        <unjar src="${file.reference.httpcore-4.4.3.jar}" dest="${single_build.classes.dir}"/>
         <unjar src="${file.reference.commons-logging-1.1.1.jar}" dest="${single_build.classes.dir}"/>
+        <unjar src="${file.reference.commons-codec-1.10.jar}" dest="${single_build.classes.dir}"/>
         <unjar src="${reference.org_radixware_kernel-common-svnclient.jar}" dest="${single_build.classes.dir}"/>
         <unjar src="${dist.jar}" dest="${single_build.classes.dir}"/>
         <mkdir dir="${single_dist.dir}"/>
