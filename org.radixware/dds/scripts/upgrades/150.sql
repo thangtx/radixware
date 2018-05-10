@@ -1,3 +1,0 @@
-drop index IDX_RDX_SM_INSTANCESTATEHISTOR
-/
-

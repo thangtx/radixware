@@ -1,8 +1,0 @@
-alter table RDX_REPORTPUB
-	add MAXRESULTSETCACHESIZEKB NUMBER(9,0) null
-/
-
-alter table RDX_SYSTEM
-	add MAXRESULTSETCACHESIZEKB NUMBER(9,0) default 102400 not null
-/
-
