@@ -1,6 +1,0 @@
-alter table RDX_CM_PACKET
-	add PKGSTATE VARCHAR2(20 char) null
-/
-
-update RDX_CM_PACKET set PKGSTATE='UnderConstruction' where CLASSGUID='aclDITXIZNY6NBNROSDPK6PPO3RSM'
-/

@@ -1,4 +1,0 @@
-alter table RDX_PC_CHANNELUNIT
-	add EMAILSECURECONNECTION VARCHAR2(100 char) null
-/
-

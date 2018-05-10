@@ -1,8 +1,0 @@
-alter table RDX_PC_OUTMESSAGE
-	add ROUTINGKEY VARCHAR2(100 char) null
-/
-
-alter table RDX_PC_CHANNELUNIT
-	add ROUTINGKEYREGEXP VARCHAR2(500 char) null
-/
-

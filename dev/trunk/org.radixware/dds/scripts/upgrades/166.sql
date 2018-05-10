@@ -1,8 +1,0 @@
-alter table RDX_PC_CHANNELUNIT
-	add WNSCLIENTID VARCHAR2(400 char) null
-/
-
-alter table RDX_PC_CHANNELUNIT
-	add WNSCLIENTSECRET VARCHAR2(400 char) null
-/
-

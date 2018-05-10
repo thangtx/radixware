@@ -1,4 +1,0 @@
-alter table RDX_MESSAGEQUEUE
-	modify (BROKERADDRESS VARCHAR2(4000 char))
-/
-

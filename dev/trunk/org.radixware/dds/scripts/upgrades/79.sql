@@ -1,4 +1,0 @@
-alter table RDX_PC_OUTMESSAGE
-	add INITIALDUETIME TIMESTAMP(6) null
-/
-
